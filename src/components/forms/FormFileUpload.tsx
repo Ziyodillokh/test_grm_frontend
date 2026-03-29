@@ -1,4 +1,5 @@
 import { CloudUpload, Eye, LoaderCircle, Trash2 } from "lucide-react";
+import { minio_img_url } from "@/constants";
 import { useState } from "react";
 import {
   ControllerRenderProps,
@@ -94,7 +95,7 @@ export default function FormFileUpload({
           {field?.value?.url ? (
             <div className="aspect-[2/3] w-full group relative overflow-hidden">
               <img
-                src={"https://s3.gilam-market.uz" + field?.value?.url}
+                src={minio_img_url + field?.value?.url}
                 alt="image"
                 className="w-full h-full object-cover"
               />
