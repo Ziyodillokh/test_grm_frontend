@@ -1,0 +1,111 @@
+"use client";
+
+import * as React from "react";
+
+import { cn } from "@/lib/utils";
+
+function Table({ className, ...props }: React.ComponentProps<"table">) {
+  return (
+    <div className={cn("relative w-full overflow-auto", className)}>
+      <table
+        data-slot="table"
+        className="w-full caption-bottom text-sm"
+        {...props}
+      />
+    </div>
+  );
+}
+
+function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+  return (
+    <thead
+      data-slot="table-header"
+      className={cn("[&_tr]:border-b border-border bg-muted ", className)}
+      {...props}
+    />
+  );
+}
+
+function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+  return (
+    <tbody
+      data-slot="table-body"
+      // className={cn("[&_tr:last-child]:border-0", className)}
+      className={`w-full  rounded-[3px] border border-border ${className && className}`}
+      {...props}
+    />
+  );
+}
+
+function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
+  return (
+    <tfoot
+      data-slot="table-footer"
+      className={cn(
+        "bg-muted/50 border-t font-medium [&>tr]:last:border-b-0",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+  return (
+    <tr
+      data-slot="table-row"
+      className={cn(
+        "hover:bg-muted/50 text-primary data-[state=selected]:bg-muted  border-b border-border/60 transition-colors",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+  return (
+    <th
+      data-slot="table-head"
+      className=" text-[14px] leading-[16px] text-foreground font-normal p-2 text-left"
+      {...props}
+    />
+  );
+}
+
+function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+  return (
+    <td
+      data-slot="table-cell"
+      className={cn(
+        "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function TableCaption({
+  className,
+  ...props
+}: React.ComponentProps<"caption">) {
+  return (
+    <caption
+      data-slot="table-caption"
+      className={cn("text-primary mt-4 text-sm", className)}
+      {...props}
+    />
+  );
+}
+
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+};
