@@ -1,58 +1,38 @@
-name: Deployment Grm Seller Web
+name: Deploy Test GRM Admin Frontend
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Or other suitable runner environment
-    strategy:
-      matrix:
-        node-version: [20] # Specify Node.js versions to test against
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # Checkout your repository code
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          version: 10 # Specify the pnpm version to install
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+          version: 10
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm' # Enable caching for pnpm dependencies
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build project (example)
-        run: pnpm build
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm build
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Deploying to server...
+      - name: Deploy to test server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          password: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            echo "🚀 Starting deployment on server..."
             cd /home/grm/grm-admin
-
-            # Get latest changes
             git stash
             git pull origin main
-
-            # Install dependencies & build
-            pnpm install --frozen-lockfile
+            pnpm install
             pnpm run build
-
-            echo "✅ Build completed successfully!"
+            echo "✅ Admin frontend deployed!"
