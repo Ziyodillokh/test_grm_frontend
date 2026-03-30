@@ -169,10 +169,10 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
                 key={item?.id}
                 status={
                   row?.original?.status ==
-                    (item?.position.role == 9
+                    (item?.position?.role == 9
                       ? "m_manager_confirmed"
                       : "accountant_confirmed") ||
-                    row?.original?.status == "accepted" || (item?.position.role == 9 && row?.original?.isMManagerConfirmed) || (item?.position.role == 10 && row?.original?.isAccountantConfirmed)
+                    row?.original?.status == "accepted" || (item?.position?.role == 9 && row?.original?.isMManagerConfirmed) || (item?.position?.role == 10 && row?.original?.isAccountantConfirmed)
                     ? "success"
                     : row?.original?.status == "rejected"
                       ? "fail"
@@ -240,7 +240,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
                       : item?.status == "accountant_confirmed" ||
                         item?.status == "m_manager_confirmed" || item?.isAccountantConfirmed || item?.isMManagerConfirmed
                         ? "pending"
-                        : item?.status
+                        : (item?.status || "open")
                   }
                 />
               )}

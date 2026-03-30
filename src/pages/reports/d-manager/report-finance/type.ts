@@ -1,32 +1,52 @@
 export interface TKassareportData {
-  id: string;
-  totalSellCount: number;
-  additionalProfitTotalSum: number;
-  netProfitTotalSum: number;
-  totalSize: number;
-  kassaReportStatus:number;
-  year: number;
-  month: number;
-  status: string;
-  owed?:number;
-  dealer_frozen_owed?:number;
-  in_hand?:number;
-  filial?: {
-    id: string;
-    title: string;
-  };
-  debt_sum?:number;
-  kassaReport?:TKassareportData[];
-  reportStatus?:number;
-  totalPlasticSum: number;
-  totalInternetShopSum: number;
-  totalSale: number;
-  totalSaleReturn: number;
-  totalCashCollection: number;
-  totalDiscount: number;
-  totalIncome: number;
-  totalExpense: number;
-  totalSum: number;
+  id?: string;
+  year?: number;
+  month?: number;
+  // Both old and new field names for backward compatibility
+  totalPlasticSum?: number;
+  plasticSum?: number;
+  totalInternetShopSum?: number;
+  internetShopSum?: number;
+  totalSale?: number;
+  sale?: number;
+  totalSaleReturn?: number;
+  return_sale?: number;
+  totalSaleSizeReturn?: number;
+  return_size?: number;
+  totalCashCollection?: number;
+  cash_collection?: number;
+  totalDiscount?: number;
+  discount?: number;
+  totalIncome?: number;
+  income?: number;
+  totalExpense?: number;
+  expense?: number;
+  kassaReportStatus?: number;
+  kassaStatus?: number;
+  // Common fields (same name in both old and new)
+  totalSum?: number;
+  totalSellCount?: number;
+  totalSize?: number;
+  additionalProfitTotalSum?: number;
+  netProfitTotalSum?: number;
+  in_hand?: number;
+  opening_balance?: number;
+  debt_count?: number;
+  debt_kv?: number;
+  debt_sum?: number;
+  debt_profit_sum?: number;
+  status?: string;
+  confirmationStatus?: string;
+  isAccountantConfirmed?: boolean;
+  isMManagerConfirmed?: boolean;
+  filialType?: string;
+  filial?: any;
+  report?: any;
+  // Extra fields specific to this file
+  owed?: number;
+  dealer_frozen_owed?: number;
+  kassaReport?: TKassareportData[];
+  reportStatus?: number;
 }
 
 export interface TChaFlowData{

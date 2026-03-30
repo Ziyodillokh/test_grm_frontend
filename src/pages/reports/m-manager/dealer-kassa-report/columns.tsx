@@ -27,7 +27,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       return (
         <p className="text-[#89A143] text-nowrap ">
           {
-            (item?.in_hand).toFixed(2) + " $"}
+            (item?.in_hand || 0).toFixed(2) + " $"}
         </p>
       );
     },
@@ -38,7 +38,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "totalSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p className="text-[#58A0C6]"> {item?.totalPlasticSum.toFixed(2)} $</p>;
+      return <p className="text-[#58A0C6]"> {(item?.totalPlasticSum || item?.plasticSum || 0).toFixed(2)} $</p>;
     },
   },
   {
@@ -73,7 +73,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
           {item?.kassaReportStatus == 2 ? (
             <ActionBadge status={"willSell"} />
           ) : (
-            <ActionBadge status={item?.status} />
+            <ActionBadge status={item?.status || "open"} />
           )}
         </div>
       );

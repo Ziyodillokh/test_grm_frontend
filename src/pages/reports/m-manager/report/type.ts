@@ -146,6 +146,7 @@ export interface TQuery {
   kassaId?: string | undefined;
   casherId?: string | undefined;
   filialId?: string;
+  kassa?: string | undefined;
   limit: number;
   year?: number;
   page: number;

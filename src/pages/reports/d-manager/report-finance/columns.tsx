@@ -34,8 +34,8 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       return (
         <p className={`${isTrue ? "text-[#89A143]" : ""}`}>
           {isTrue
-            ? month[item?.month - 1] + "-Продалажется"
-            : month[item?.month - 1] || ""}
+            ? month[(item?.month || 1) - 1] + "-Продалажется"
+            : month[(item?.month || 1) - 1] || ""}
         </p>
       );
     },
@@ -138,7 +138,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
           ) : item?.status == "open" || item?.status == "cancelled" ? (
             <ActionButton onClick={() => mutate()} isLoading={isPending} btnText="Закрыть" status="accept"></ActionButton>
           ) : (
-            <ActionBadge status={item?.status == "closed_by_d" ? "pending" : item?.status} />
+            <ActionBadge status={item?.status == "closed_by_d" ? "pending" : (item?.status || "open")} />
           )}
         </div>
       );

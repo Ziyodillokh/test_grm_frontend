@@ -21,8 +21,8 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       return (
         <p className={`${isTrue ? "text-[#89A143]" : ""}`}>
           {isTrue
-            ? MonthsArray[item?.month - 1].label + "-Продалажется"
-            : MonthsArray[item?.month - 1].label || ""}
+            ? MonthsArray[(item?.month || 1) - 1]?.label + "-Продалажется"
+            : MonthsArray[(item?.month || 1) - 1]?.label || ""}
         </p>
       );
     },
@@ -47,7 +47,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       return (
         <p className="text-[#58A0C6]">
           {" "}
-          {(item?.totalPlasticSum).toFixed(2)} $
+          {(item?.totalPlasticSum || item?.plasticSum || 0).toFixed(2)} $
         </p>
       );
     },
@@ -125,7 +125,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
                 key={item?.id}
                 status={
                   row?.original?.status ==
-                    (item?.position.role == 10
+                    (item?.position?.role == 10
                       ? "m_manager_confirmed"
                       : "accountant_confirmed") ||
                     row?.original?.status == "accepted"

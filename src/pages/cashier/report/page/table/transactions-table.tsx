@@ -21,14 +21,14 @@ export default function TransactionsTable({ report }: TransactionsTableProps) {
     { 
       id: 1, 
       date: "Продалажется", 
-      sum: `${formatPrice(report.income)} $`, 
-      terminal: `${formatPrice(report.plasticSum)} $`, 
-      discount: `${formatPrice(report.expenditureShop)} $`, 
-      navar: "278$", 
-      volume: `${report.totalSize} м²`, 
-      income: `${formatPrice(report.income)} $`, 
-      expense: `-${formatPrice(report.expense)} $`, 
-      inkassation: formatPrice(report.cashFlowSumBoss),
+      sum: `${formatPrice(report.income || 0)} $`,
+      terminal: `${formatPrice(report.plasticSum || 0)} $`, 
+      discount: `${formatPrice(report.expenditureShop || 0)} $`,
+      navar: "278$",
+      volume: `${report.totalSize} м²`,
+      income: `${formatPrice(report.income || 0)} $`, 
+      expense: `-${formatPrice(report.expense || 0)} $`,
+      inkassation: formatPrice(report.cashFlowSumBoss || 0),
       isFirstRow: true 
     },
     ...(report.cashflowAndOrders || []).slice(0, 8).map((_item, index) => {

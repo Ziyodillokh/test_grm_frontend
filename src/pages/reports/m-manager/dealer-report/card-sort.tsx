@@ -50,7 +50,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
         <Skeleton className="h-5 w-12" />
       ) :(
         formatPrice(
-          SortData?.totalSaleReturn || 0 )
+          SortData?.totalSaleReturn || SortData?.return_sale || 0 )
       ),
     },
     {
@@ -59,7 +59,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          SortData?.totalIncome || 0 )
+          SortData?.totalIncome || SortData?.income || 0 )
       ),
       button: (
         <div
@@ -77,7 +77,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
       ) : (
         (
           formatPrice(
-            SortData?.totalExpense || 0 )
+            SortData?.totalExpense || SortData?.expense || 0 )
         )
       ),
       button: (
@@ -110,7 +110,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
         tip: "cashflow",
         comment,
         price,
-        kassaReport:kassaReportId,
+        kassa:kassaReportId,
         is_online:typePay =="cash"? false : true, 
         cashflow_type:types?.[0]?.id  
       };
@@ -154,7 +154,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
               {false ? (
                 <Skeleton className="h-7 w-24 mt-1" />
               ) : (
-                <p className="text-[25px] font-bold text-foreground">{formatPrice(SortData?.totalIncome || 0)}</p>
+                <p className="text-[25px] font-bold text-foreground">{formatPrice(SortData?.totalIncome || SortData?.income || 0)}</p>
               )}
             </div>
           </div>

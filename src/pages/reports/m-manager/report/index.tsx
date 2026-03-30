@@ -87,7 +87,7 @@ export default function ReportPage() {
         fromDate: startDate || undefined,
         toDate: endDate || undefined,
         report: myCashFlow && !FManagerCashFlow ? id : undefined,
-        kassaReport: FManagerCashFlow ? kassaReportId || undefined : undefined,
+        kassa: FManagerCashFlow ? kassaReportId || undefined : undefined,
       },
       enabled: true,
     });

@@ -40,7 +40,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     cell: ({ row }) => {
       const item = row.original;
       return (
-        <p className="text-[#58A0C6]"> {item?.totalPlasticSum.toFixed(2)} $</p>
+        <p className="text-[#58A0C6]"> {(item?.totalPlasticSum || item?.plasticSum || 0).toFixed(2)} $</p>
       );
     },
   },
@@ -118,7 +118,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
               status="accept"
             ></ActionButton>
           ) : (
-            <ActionBadge status={item?.status} />
+            <ActionBadge status={item?.status || "open"} />
           )}
         </div>
       );

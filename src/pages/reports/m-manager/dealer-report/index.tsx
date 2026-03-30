@@ -22,7 +22,7 @@ export default function DealerReportPage() {
         page: 1,
         fromDate: startDate || undefined,
         toDate: endDate || undefined,
-        kassaReport:id,
+        kassa:id,
       },
       enabled: true,
     });

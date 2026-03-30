@@ -42,7 +42,7 @@ export default function SinglePage() {
         filialId: report ? undefined: meUser?.filial?.id || undefined,
         fromDate: startDate || undefined,
         toDate: endDate || undefined,
-        kassaReport: id=="my" ?report ||undefined: undefined,
+        kassa: id=="my" ?report ||undefined: undefined,
            // @ts-ignore
        type: typeFilter[tip as string],
        // @ts-ignore

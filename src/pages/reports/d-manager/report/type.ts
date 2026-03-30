@@ -149,6 +149,7 @@ export interface TQuery {
   casherId?: string | undefined;
   filialId?: string;
   kassaReport?:string | undefined;
+  kassa?:string | undefined;
   limit: number;
   page: number;
   fromDate?: Date | null;

@@ -60,7 +60,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          SortData?.totalIncome || 0 )
+          SortData?.totalIncome || SortData?.income || 0 )
       ),
       button: (
         <div
@@ -96,7 +96,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
       const body = {
         comment,
         price,
-        kassa_report:kassaReportId,
+        kassa:kassaReportId,
         is_online:typePay =="cash"? false : true, 
       };
       await api.post(apiRoutes.cashflowDealerIncome, body);
@@ -139,7 +139,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
               {false ? (
                 <Skeleton className="h-7 w-24 mt-1" />
               ) : (
-                <p className="text-[25px] font-bold text-foreground">{formatPrice(SortData?.totalIncome || 0)}</p>
+                <p className="text-[25px] font-bold text-foreground">{formatPrice(SortData?.totalIncome || SortData?.income || 0)}</p>
               )}
             </div>
           </div>

@@ -53,7 +53,7 @@ export default function PageFinance() {
           isLoading={isLoading}
           isRowClickble={true}
           onSelectionChange={(e) => {
-            const newIds = e.map((item) => item.id);
+            const newIds = e.map((item) => item.id).filter((id): id is string => !!id);
             if (JSON.stringify(seleted) != JSON.stringify(newIds)) {
               setSeleted(newIds);
             }

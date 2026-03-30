@@ -51,7 +51,7 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          SortData?.totalIncome || 0 )
+          SortData?.totalIncome || SortData?.income || 0 )
       ),
       button: (
         <div
@@ -89,7 +89,7 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
               {false ? (
                 <Skeleton className="h-7 w-24 mt-1" />
               ) : (
-                <p className="text-[25px] font-bold text-foreground">{formatPrice(SortData?.totalIncome || 0)}</p>
+                <p className="text-[25px] font-bold text-foreground">{formatPrice(SortData?.totalIncome || SortData?.income || 0)}</p>
               )}
             </div>
           </div>

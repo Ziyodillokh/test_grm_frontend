@@ -108,7 +108,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(KassaReport?.totalIncome || kassaId?.income || 0)
+        formatPrice(KassaReport?.totalIncome || KassaReport?.income || kassaId?.income || 0)
       ),
       button: isAddible ? (
         <div
@@ -133,7 +133,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(KassaReport?.totalSale || kassaId?.sale || 0)
+        formatPrice(KassaReport?.totalSale || KassaReport?.sale || kassaId?.sale || 0)
       ),
     },
     {
@@ -142,7 +142,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(KassaReport?.totalPlasticSum || kassaId?.plasticSum || 0)
+        formatPrice(KassaReport?.totalPlasticSum || KassaReport?.plasticSum || kassaId?.plasticSum || 0)
       ),
     },
     {
@@ -164,7 +164,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        `-${formatPrice(KassaReport?.totalExpense || kassaId?.expense || 0)}`
+        `-${formatPrice(KassaReport?.totalExpense || KassaReport?.expense || kassaId?.expense || 0)}`
       ),
       button: isAddible ? (
         <div
@@ -186,7 +186,7 @@ export default function CardSort({
     {
       title: "Возврат сумма",
       value: "return",
-      price: `-${formatPrice(KassaReport?.totalSaleReturn || kassaId?.return_sale || 0)}`,
+      price: `-${formatPrice(KassaReport?.totalSaleReturn || KassaReport?.return_sale || kassaId?.return_sale || 0)}`,
     },
     {
       title: "Инкассация",
@@ -195,8 +195,8 @@ export default function CardSort({
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          KassaReport?.totalCashCollection
-            ? Math.abs(KassaReport?.totalCashCollection)
+          (KassaReport?.totalCashCollection || KassaReport?.cash_collection)
+            ? Math.abs(KassaReport?.totalCashCollection || KassaReport?.cash_collection || 0)
             : kassaId?.cash_collection || 0
         )
       ),
@@ -208,7 +208,7 @@ export default function CardSort({
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          Number(KassaReport?.totalDiscount || kassaId?.discount) || 0
+          Number(KassaReport?.totalDiscount || KassaReport?.discount || kassaId?.discount) || 0
         )
       ),
     },
@@ -283,8 +283,7 @@ export default function CardSort({
         price,
         is_online: isOnlineCashFlow || undefined,
         casher: meUser?.id,
-        kassa: kassaReports ? undefined : kassaId?.id || undefined,
-        kassaReport: kassaReportId || kassaReports || undefined,
+        kassa: kassaReportId || kassaReports || (kassaReports ? undefined : kassaId?.id) || undefined,
         report: reportId || undefined,
         debtId: isUserLocSelectble ? debtId : undefined,
       };

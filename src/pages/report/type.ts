@@ -96,43 +96,57 @@ export interface TActionData {
   code: string;
 }
 export interface TKassareportData {
-  id: string;
-  totalSellCount: number;
-  dealer_frozen_owed?:number;
-  additionalProfitTotalSum: number;
-  netProfitTotalSum: number;
-  totalSize: number;
-  debt_profit_sum?:number;
-  debt_kv?:number;
-  kassaReportStatus:number;
-  year: number;
-  owed?:number;
-  opening_balance?:number;
-  filialType?:string;
-  month: number;
-  status: string;
-  filial?: {
-    id: string;
-    title: string;
-    owed?:number;
-  };
-
-  in_hand?:number;
-  debt_sum?:number;
-  manegerSum?:number;
-  managerSum?:number;
-  accauntantSum?:number;
-  kassaReport?:TKassareportData[];
-  reportStatus?:number;
-  totalPlasticSum: number;
-  totalInternetShopSum: number;
-  totalSale: number;
-  totalSaleReturn: number;
-  totalCashCollection: number;
-  totalDiscount: number;
-  totalIncome: number;
-  totalExpense: number;
-  totalSum: number;
+  id?: string;
+  year?: number;
+  month?: number;
+  // Both old and new field names for backward compatibility
+  totalPlasticSum?: number;
+  plasticSum?: number;
+  totalInternetShopSum?: number;
+  internetShopSum?: number;
+  totalSale?: number;
+  sale?: number;
+  totalSaleReturn?: number;
+  return_sale?: number;
+  totalSaleSizeReturn?: number;
+  return_size?: number;
+  totalCashCollection?: number;
+  cash_collection?: number;
+  totalDiscount?: number;
+  discount?: number;
+  totalIncome?: number;
+  income?: number;
+  totalExpense?: number;
+  expense?: number;
+  kassaReportStatus?: number;
+  kassaStatus?: number;
+  // Common fields (same name in both old and new)
+  totalSum?: number;
+  totalSellCount?: number;
+  totalSize?: number;
+  additionalProfitTotalSum?: number;
+  netProfitTotalSum?: number;
+  in_hand?: number;
+  opening_balance?: number;
+  debt_count?: number;
+  debt_kv?: number;
+  debt_sum?: number;
+  debt_profit_sum?: number;
+  status?: string;
+  confirmationStatus?: string;
+  isAccountantConfirmed?: boolean;
+  isMManagerConfirmed?: boolean;
+  filialType?: string;
+  filial?: any;
+  report?: any;
+  // Extra fields specific to this file
+  dealer_frozen_owed?: number;
+  owed?: number;
+  manegerSum?: number;
+  managerSum?: number;
+  accauntantSum?: number;
+  kassaReport?: TKassareportData[];
+  reportStatus?: number;
 }
 export interface TChaFlowData{
   expense: number,

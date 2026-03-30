@@ -144,7 +144,8 @@ order: {
 export interface TQuery {
   search?: string | undefined;
   kassaId?: string;
-  kassaReport?:string|undefined
+  kassaReport?:string|undefined;
+  kassa?:string|undefined;
   filialId?: string;
   limit: number;
   page: number;

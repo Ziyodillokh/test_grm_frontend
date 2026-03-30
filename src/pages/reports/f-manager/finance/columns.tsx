@@ -34,8 +34,8 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       return (
         <p className={`${isTrue ? "text-[#89A143]" : ""}`}>
           {isTrue
-            ? month[item?.month - 1] + "-Продалажется"
-            : month[item?.month - 1] || ""}
+            ? month[(item?.month || 1) - 1] + "-Продалажется"
+            : month[(item?.month || 1) - 1] || ""}
         </p>
       );
     },
@@ -46,7 +46,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     cell: ({ row }) => {
       const item = row.original;
       return (
-        <p className={`${(item?.in_hand >= 0) ? "text-[#89A143]" : "text-red-500"} text-nowrap  `}>
+        <p className={`${((item?.in_hand || 0) >= 0) ? "text-[#89A143]" : "text-red-500"} text-nowrap  `}>
           {item?.in_hand}
           $
         </p>
@@ -168,7 +168,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
           ) : item?.status == "open" ? (
             <ActionButton onClick={() => mutate()} isLoading={isPending} btnText={"Закрыт"} status="accept"></ActionButton>
           ) : (
-            <ActionBadge status={(item?.status == "m_manager_confirmed" || item?.status == "accountant_confirmed") ? "pending" : item?.status} />
+            <ActionBadge status={(item?.status == "m_manager_confirmed" || item?.status == "accountant_confirmed") ? "pending" : (item?.status || "open")} />
           )}
         </div>
       );

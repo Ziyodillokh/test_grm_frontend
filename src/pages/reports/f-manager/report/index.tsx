@@ -31,7 +31,7 @@ export default function Page() {
 
   const { data: cashflow, isLoading: cashflowLoading } = useDataCashflow({
     queries: {
-      kassaReport: id || undefined,
+      kassa: id || undefined,
       limit: 10,
       page: 1,
     },
