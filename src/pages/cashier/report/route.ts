@@ -1,5 +1,4 @@
 import Page from "./page";
-// import TransactionDetail from "./single/transaction-detail";
 
 const Route = [
   {
@@ -26,6 +25,11 @@ const Route = [
     url: "/f-manager/reports/:id",
     Element: Page,
     meta: { isAuth: true, role: new Set(["admin", "3"]) },
+  },
+  {
+    url: "/f-manager/kassa",
+    Element: Page,
+    meta: { isAuth: true, role: new Set(["admin", "4"]) },
   },
 ];
 

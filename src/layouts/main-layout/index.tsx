@@ -33,13 +33,13 @@ export default function MainLayout() {
       <SidebarInset >
         {meUser?.position?.role === 3 ? (
           <div className="h-5"></div>
-        ) : pathname.pathname == "/cashier/report" ? (
+        ) : pathname.pathname == "/f-manager/kassa" ? (
           <div className="h-5"></div>
         ) : (
           <Header />
         )}
         <div
-          className={`${(meUser?.position?.role === 3 || pathname.pathname == "/cashier/report") ? "max-h-[calc(100vh-20px)] " : "max-h-[calc(100vh-68px)] "} scrollCastom`}
+          className={`${(meUser?.position?.role === 3 || pathname.pathname == "/f-manager/kassa") ? "max-h-[calc(100vh-20px)] " : "max-h-[calc(100vh-68px)] "} scrollCastom`}
         >
           <Outlet />
         </div>
