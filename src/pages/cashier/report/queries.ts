@@ -1,11 +1,14 @@
 import {
   DefinedInitialDataOptions,
   useInfiniteQuery,
+  useMutation,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import { TQuery } from "@/pages/employees/type";
-import { getAllData } from "@/service/apiHelpers";
+import { getAllData, PatchData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
 import { useMeStore } from "@/store/me-store";
 import { TResponse } from "@/types";
@@ -83,5 +86,17 @@ export const useReport = ({ queries }: { queries: TQueries }) => {
     queryKey: [apiRoutes.kassa, queries],
     queryFn: () =>
       getAllData<KassaReportData, TQueries>(apiRoutes.kassa, queries),
+  });
+};
+
+export const useApproveCashflow = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => PatchData(`/cashflow/approve/${id}`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReport] });
+      toast.success("Cashflow tasdiqlandi");
+    },
   });
 };

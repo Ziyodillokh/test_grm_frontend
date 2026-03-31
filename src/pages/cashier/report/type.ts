@@ -95,6 +95,8 @@ export interface TransactionItem {
   type: string;
   amount: number;
   tip: string;
+  status?: 'pending' | 'approved' | 'rejected' | 'cancelled';
+  isOrderRelated?: boolean;
 
   product: string;
   code?: string;

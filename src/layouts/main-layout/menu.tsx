@@ -30,7 +30,7 @@ export default function Menu() {
           onClick={
             meUser?.position?.role == 3
               ? () => {
-                window.location.replace("/cashier/home");
+                window.location.replace("/cashier/report");
               }
               : () => { }
           }
@@ -61,9 +61,9 @@ export default function Menu() {
         ) : meUser?.position?.role == 3 ? "" : meUser?.position?.role == 4 || meUser?.position?.role == 8 ? (
           <div
             onClick={() => {
-              navigate("/cashier/home");
+              navigate("/cashier/report");
             }}
-            className={`${pathName.pathname.includes("/cashier/home") ? "bg-background" : ""} rounded-xl group w-[80%] mx-auto w-[80%] mx-autow-[80%] iconsColor border-transparent cursor-pointer  text-center flex items-center justify-center  p-2`}
+            className={`${pathName.pathname.includes("/cashier/report") ? "bg-background" : ""} rounded-xl group w-[80%] mx-auto w-[80%] mx-autow-[80%] iconsColor border-transparent cursor-pointer  text-center flex items-center justify-center  p-2`}
           >
             <DeviceDesktopIcons width={22} height={22} />
             <span className="absolute opacity-0 group-hover:opacity-100 flex justify-center align-middle items-center left-full -ml-6   whitespace-nowrap text-[#5D5D53] bg-white border-border border-1 text-[15px] rounded px-[13px] py-[5px] transition-opacity duration-200 z-20">
