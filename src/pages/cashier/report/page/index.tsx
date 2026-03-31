@@ -12,7 +12,7 @@ import { ReportColumns } from "./columns";
 import { parseAsString, useQueryState } from "nuqs";
 import CashierHeader from "@/layouts/main-layout/cashier-header";
 
-const tipFilter = {
+const tipFilter: Record<string, string> = {
   income: "cashflow",
   expense: "cashflow",
   sale: "order",
@@ -21,7 +21,7 @@ const tipFilter = {
   discount: "Скидка",
   navar: "Навар",
 };
-const typeFilter = {
+const typeFilter: Record<string, string> = {
   income: "Приход",
   expense: "Расход",
   sale: "Приход",
