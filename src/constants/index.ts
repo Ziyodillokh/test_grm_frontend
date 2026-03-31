@@ -3,8 +3,8 @@ export const minio_img_url = "https://test.ziyodulloh.uz/storage";
 export const Roles = {
       OTHER : 0,
       CLIENT : 1,
-      Кacca : 2,
-      CASHIER : 3,
+      // Кacca : 2,   // removed: replaced by F_MANAGER
+      // CASHIER : 3, // removed: replaced by F_MANAGER
       F_MANAGER :4,
       DEALER :5,
       D_MANAGER :6,

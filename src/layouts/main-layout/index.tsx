@@ -19,7 +19,7 @@ export default function MainLayout() {
     if (!token) {
       window.location.replace("/login");
     } else if (pathname.pathname == "/") {
-      if (meUser?.position?.role === 3) {
+      if (meUser?.position?.role === 4) {
         navigate("/products");
       } else {
         navigate("/dashboard");
@@ -31,7 +31,7 @@ export default function MainLayout() {
     <SidebarProvider className="px-2.5 gap-4 overflow-hidden">
       <Menu />
       <SidebarInset >
-        {meUser?.position?.role === 3 ? (
+        {meUser?.position?.role === 4 ? (
           <div className="h-5"></div>
         ) : pathname.pathname == "/f-manager/kassa" ? (
           <div className="h-5"></div>
@@ -39,7 +39,7 @@ export default function MainLayout() {
           <Header />
         )}
         <div
-          className={`${(meUser?.position?.role === 3 || pathname.pathname == "/f-manager/kassa") ? "max-h-[calc(100vh-20px)] " : "max-h-[calc(100vh-68px)] "} scrollCastom`}
+          className={`${(meUser?.position?.role === 4 || pathname.pathname == "/f-manager/kassa") ? "max-h-[calc(100vh-20px)] " : "max-h-[calc(100vh-68px)] "} scrollCastom`}
         >
           <Outlet />
         </div>

@@ -28,7 +28,7 @@ export default function Menu() {
         <Avatar
           className="w-[58px] h-[58px] "
           onClick={
-            meUser?.position?.role == 3
+            meUser?.position?.role == 4
               ? () => {
                 window.location.replace("/f-manager/kassa");
               }
@@ -58,7 +58,7 @@ export default function Menu() {
           >
             <ChevronLeft />
           </div>
-        ) : meUser?.position?.role == 3 ? "" : meUser?.position?.role == 4 || meUser?.position?.role == 8 ? (
+        ) : meUser?.position?.role == 4 || meUser?.position?.role == 8 ? (
           <div
             onClick={() => {
               navigate("/f-manager/kassa");

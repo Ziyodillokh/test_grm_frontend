@@ -25,8 +25,6 @@ import {
 // {
 //   OTHER = 0,
 //   CLIENT = 1,
-//   Кacca = 2,
-//   CASHIER = 3,
 //   F_MANAGER = 4,
 //   DEALER = 5,
 //   D_MANAGER = 6,
@@ -39,40 +37,7 @@ import {
 // }
 
 export const DataMenu = {
-  3: [
-
-    // {
-    //   id: 2,
-    //   icons: () => ReportBottom({ width: 28, height: 28 }),
-    //   link: "cashier/report",
-    //   text: "Отчёт кассира",
-    // },
-    {
-      id: 3,
-      icons: () => ProductIcons(),
-      link: "/products",
-      text: "Продукты",
-    },
-
-    // {
-    //   id: 5,
-    //   icons: () => BrCodeIcons({ width: 28, height: 28 }),
-    //   link: "/product-check",
-    //   text: "Проверка продукта",
-    // },
-    {
-      id: 6,
-      icons: () => PriceIcons({ width: 22, height: 22 }),
-      link: "/price",
-      text: "Цени и скидки",
-    },
-    {
-      id: 7,
-      icons: () => DataLibrary({ width: 22, height: 22 }),
-      link: "/data-library",
-      text: "Библиотека",
-    },
-  ],
+  // Key 3 (CASHIER) removed — merged into key 4 (F_MANAGER)
   4: [
 
     {
