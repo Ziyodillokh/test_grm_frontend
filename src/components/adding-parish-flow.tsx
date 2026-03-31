@@ -61,8 +61,8 @@ export default function AddingParishOrFlow({ kassaId }: { kassaId: string }) {
 
   // Fetch cashflow types
   const { data: cashflowTypesResponse, isLoading: typesLoading } = useQuery({
-    queryKey: ["/cashflow-types/for/cashier"],
-    queryFn: () => getAllData("/cashflow-types/for/cashier"),
+    queryKey: ["/cashflow-types/for/branch-manager"],
+    queryFn: () => getAllData("/cashflow-types/for/branch-manager"),
   });
 
   // Create mutation for adding cashflow

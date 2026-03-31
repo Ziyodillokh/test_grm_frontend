@@ -19,9 +19,9 @@ export default function Filters() {
 
   const [myMonth] = useQueryState("myMonth", parseAsInteger);
   const { data: cashflowTypesResponse } = useQuery({
-    queryKey: ["/cashflow-types/for/cashier", tip],
+    queryKey: ["/cashflow-types/for/branch-manager", tip],
     queryFn: () =>
-      getAllData<CashflowType[], object>("/cashflow-types/for/cashier", {
+      getAllData<CashflowType[], object>("/cashflow-types/for/branch-manager", {
         type: tip == "expense" ? "out" : tip == "income" ? tip : undefined,
       }),
     select: (res) =>

@@ -46,7 +46,7 @@ export const apiRoutes = {
   cashflowForMainManager: '/cashflow/for/main-manager',
   cashflowTypes: "/cashflow-types",
   cashflowTypesByManagers: '/cashflow-types/by/managers',
-  cashflowTypesForCashier: "/cashflow-types/for/cashier",
+  cashflowTypesForCashier: "/cashflow-types/for/branch-manager",
   cashflowFilial: '/cashflow/for/filial-manager',
   openKassa: "/kassa/open-kassa",
   qrBaseCode: "/qr-base/find-by",

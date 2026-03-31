@@ -197,7 +197,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
     },
   },
   {
-    header: "Кассир",
+    header: "Менеджер",
     id: "closer",
     cell: ({ row }) => {
       const item = row.original;

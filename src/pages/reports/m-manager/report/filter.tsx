@@ -36,9 +36,9 @@ export default function Filters({
   );
 
   const { data: cashflowTypesResponse } = useQuery({
-    queryKey: [!myCashFlow?"/cashflow-types/for/cashier": "/cashflow-types/by/managers", tip,typesManage],
+    queryKey: [!myCashFlow?"/cashflow-types/for/branch-manager": "/cashflow-types/by/managers", tip,typesManage],
     queryFn: () =>
-      getAllData<CashflowType[], object>(!myCashFlow?"/cashflow-types/for/cashier":"/cashflow-types/by/managers/" + (typesManage ?typesManage :"both"), {
+      getAllData<CashflowType[], object>(!myCashFlow?"/cashflow-types/for/branch-manager":"/cashflow-types/by/managers/" + (typesManage ?typesManage :"both"), {
         type: tip == "expense" ? "out" : tip == "income" ? tip : undefined,
       }),
     select: (res) =>
