@@ -106,12 +106,17 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
       const uploadResult = await uploadVideo.mutateAsync(selectedFile);
       const videoPath = uploadResult?.path || "";
 
+      if (!videoPath) {
+        toast.error("Video yuklashda xatolik — path topilmadi");
+        return;
+      }
+
       // 2. Create video message record
       await createMessage.mutateAsync({
         videoPath,
         title: selectedFile.name,
         targetRole: Number(role),
-        targetUserId: userId || undefined,
+        targetUserId: userId && userId !== "all" ? userId : undefined,
       });
 
       toast.success("Video murojaat muvaffaqiyatli yuborildi!");
