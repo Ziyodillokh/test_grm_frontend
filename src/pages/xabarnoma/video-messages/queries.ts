@@ -28,7 +28,10 @@ export interface VideoMessage {
   title?: string;
   targetRole?: number;
   targetUserId?: string;
-  createdAt: string;
+  createdAt?: string;
+  dateOne?: string;
+  updatedAt?: string;
+  isActive?: boolean;
   sender?: VideoMessageUser;
   targetUser?: VideoMessageUser;
 }
@@ -40,10 +43,7 @@ export const useVideoMessages = () => {
   return useQuery({
     queryKey: [apiRoutes.videoMessages],
     queryFn: () =>
-      getAllData<TResponse<VideoMessage>, { limit: number; page: number }>(
-        apiRoutes.videoMessages,
-        { limit: 100, page: 1 }
-      ),
+      getAllData<VideoMessage[], void>(apiRoutes.videoMessages),
   });
 };
 

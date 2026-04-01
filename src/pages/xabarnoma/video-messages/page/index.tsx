@@ -46,7 +46,7 @@ function formatDate(iso: string): string {
 export default function VideoMessagesPage() {
   const navigate = useNavigate();
   const { data, isLoading, refetch } = useVideoMessages();
-  const videos: VideoMessage[] = data?.items ?? [];
+  const videos: VideoMessage[] = Array.isArray(data) ? data : (data as any)?.items ?? [];
 
   const [selectedVideo, setSelectedVideo] = useState<VideoMessage | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -207,9 +207,9 @@ export default function VideoMessagesPage() {
               >
                 {/* Avatar / Thumbnail */}
                 <div className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden bg-gray-200 flex items-center justify-center">
-                  {video.sender?.avatar ? (
+                  {(video.sender?.avatar as any)?.path || video.sender?.avatar ? (
                     <img
-                      src={minio_img_url + video.sender.avatar}
+                      src={minio_img_url + ((video.sender?.avatar as any)?.path || video.sender?.avatar)}
                       alt={senderName(video)}
                       className="w-full h-full object-cover"
                     />
@@ -228,7 +228,7 @@ export default function VideoMessagesPage() {
                   </p>
                   <p className="text-xs text-[#999]">{senderRole(video)}</p>
                   <p className="text-xs text-[#999] mt-0.5">
-                    {formatDate(video.createdAt)}
+                    {formatDate(video.createdAt || (video as any).dateOne || (video as any).updatedAt)}
                   </p>
                 </div>
 
