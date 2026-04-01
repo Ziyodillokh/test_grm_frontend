@@ -19,7 +19,8 @@ import UploadModal from "../components/upload-modal";
 import { useVideoMessages, VideoMessage } from "../queries";
 
 /** Format ISO date string to human-readable format */
-function formatDate(iso: string): string {
+function formatDate(iso?: string | null): string {
+  if (!iso) return "";
   const d = new Date(iso);
   const months = [
     "Yanvar",
@@ -287,7 +288,7 @@ export default function VideoMessagesPage() {
                       </p>
                       <p className="text-white/70 text-xs">
                         {senderRole(activeVideo)} -{" "}
-                        {formatDate(activeVideo.createdAt)}
+                        {formatDate(activeVideo.createdAt || activeVideo.dateOne || activeVideo.updatedAt)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 pointer-events-auto">
