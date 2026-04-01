@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
-import { Upload } from "lucide-react";
+import { useCallback, useState, useEffect } from "react";
+import { Upload, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +16,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useUploadVideo, useCreateVideoMessage, useUsersByRole } from "../queries";
+
+const ROLE_OPTIONS = [
+  { value: "4", label: "F-manager" },
+  { value: "9", label: "M-manager" },
+  { value: "10", label: "Bugalter" },
+  { value: "12", label: "Rahbar" },
+];
+
 interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,7 +34,31 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [role, setRole] = useState("");
-  const [user, setUser] = useState("");
+  const [userId, setUserId] = useState("");
+
+  const { data: usersData, isLoading: usersLoading } = useUsersByRole(
+    role ? Number(role) : undefined
+  );
+  const users = usersData?.items ?? [];
+
+  const uploadVideo = useUploadVideo();
+  const createMessage = useCreateVideoMessage();
+
+  const isSubmitting = uploadVideo.isPending || createMessage.isPending;
+
+  // Reset user when role changes
+  useEffect(() => {
+    setUserId("");
+  }, [role]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedFile(null);
+      setRole("");
+      setUserId("");
+    }
+  }, [isOpen]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -40,14 +74,12 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      if (
-        file.type === "video/mp4" ||
-        file.type === "video/quicktime"
-      ) {
+      if (file.type === "video/mp4" || file.type === "video/quicktime") {
         setSelectedFile(file);
+      } else {
+        toast.error("Faqat .mp4 va .mov formatdagi videolar qabul qilinadi");
       }
     }
   }, []);
@@ -55,19 +87,38 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files[0]) {
-        setSelectedFile(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file.size > 100 * 1024 * 1024) {
+          toast.error("Video hajmi 100MB dan oshmasligi kerak");
+          return;
+        }
+        setSelectedFile(file);
       }
     },
     []
   );
 
-  const handleSubmit = () => {
-    if (!selectedFile || !role || !user) return;
-    // TODO: implement actual upload logic
-    onClose();
-    setSelectedFile(null);
-    setRole("");
-    setUser("");
+  const handleSubmit = async () => {
+    if (!selectedFile || !role) return;
+
+    try {
+      // 1. Upload video to MinIO
+      const uploadResult = await uploadVideo.mutateAsync(selectedFile);
+      const videoPath = uploadResult?.path || "";
+
+      // 2. Create video message record
+      await createMessage.mutateAsync({
+        videoPath,
+        title: selectedFile.name,
+        targetRole: Number(role),
+        targetUserId: userId || undefined,
+      });
+
+      toast.success("Video murojaat muvaffaqiyatli yuborildi!");
+      onClose();
+    } catch {
+      toast.error("Xatolik yuz berdi, qayta urinib ko'ring");
+    }
   };
 
   return (
@@ -109,6 +160,12 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
                   <p className="text-xs text-[#999] mt-1">
                     {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                   </p>
+                  <button
+                    onClick={() => setSelectedFile(null)}
+                    className="text-xs text-red-500 mt-1 hover:underline"
+                  >
+                    O'chirish
+                  </button>
                 </div>
               ) : (
                 <>
@@ -139,27 +196,39 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
                 <SelectValue placeholder="Lavozimni tanlang" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="f-manager">F-manager</SelectItem>
-                <SelectItem value="m-manager">M-manager</SelectItem>
-                <SelectItem value="accountant">Bugalter</SelectItem>
-                <SelectItem value="boss">Rahbar</SelectItem>
+                {ROLE_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* User Select */}
+          {/* User Select — dynamic from API */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-[#1A1A1A]">
-              Foydalanuvchi
+              Foydalanuvchi (ixtiyoriy)
             </label>
-            <Select value={user} onValueChange={setUser}>
+            <Select value={userId} onValueChange={setUserId} disabled={!role}>
               <SelectTrigger className="w-full h-10 rounded-lg">
-                <SelectValue placeholder="Foydalanuvchini tanlang" />
+                <SelectValue
+                  placeholder={
+                    usersLoading
+                      ? "Yuklanmoqda..."
+                      : !role
+                      ? "Avval lavozimni tanlang"
+                      : "Barchasi (tanlash shart emas)"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">Abbos Janizakov</SelectItem>
-                <SelectItem value="2">Jasur Karimov</SelectItem>
-                <SelectItem value="3">Sardor Aliyev</SelectItem>
+                <SelectItem value="all">Barchasi</SelectItem>
+                {users.map((u: any) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.firstName} {u.lastName || ""}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -167,10 +236,17 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            disabled={!selectedFile || !role || !user}
-            className="w-full h-11 rounded-xl bg-[#0078D4] text-white font-medium text-sm hover:bg-[#006CBF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={!selectedFile || !role || isSubmitting}
+            className="w-full h-11 rounded-xl bg-[#0078D4] text-white font-medium text-sm hover:bg-[#006CBF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
-            Yuborish
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Yuklanmoqda...
+              </>
+            ) : (
+              "+ Yuborish"
+            )}
           </button>
         </div>
       </DialogContent>
