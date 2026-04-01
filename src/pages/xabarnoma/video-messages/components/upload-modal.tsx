@@ -103,11 +103,14 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
 
     try {
       // 1. Upload video to MinIO
-      const uploadResult = await uploadVideo.mutateAsync(selectedFile);
-      const videoPath = uploadResult?.path || "";
+      const uploadResult: any = await uploadVideo.mutateAsync(selectedFile);
+      // Response could be { path: "..." } or { data: { path: "..." } } or the entity directly
+      const videoPath = uploadResult?.path || uploadResult?.data?.path || uploadResult?.url || "";
+      console.log("Upload result:", JSON.stringify(uploadResult));
+      console.log("Video path:", videoPath);
 
       if (!videoPath) {
-        toast.error("Video yuklashda xatolik — path topilmadi");
+        toast.error("Video yuklashda xatolik — path topilmadi. Response: " + JSON.stringify(uploadResult));
         return;
       }
 
