@@ -55,7 +55,7 @@ export const useUploadVideo = () => {
       formData.append("image", file);
       formData.append("type", "video");
       return UploadFile(
-        "/media-upload/single/video-messages/video",
+        "/media-upload/single/video-messages/video-messages",
         formData
       ) as Promise<{ id: string; path: string }>;
     },
