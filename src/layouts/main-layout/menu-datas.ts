@@ -1,4 +1,5 @@
 import {
+  BellRingingIcon,
   BronedIcons,
   BuildingIcons,
   ClientsIcon,
@@ -139,6 +140,12 @@ export const DataMenu = {
       icons: () => ClientsIcon(),
       link: "/filial/my-filial/info",
       text: "переучет",
+    },
+    {
+      id: 50,
+      icons: () => BellRingingIcon(),
+      link: "/xabarnoma",
+      text: "Xabarnomalar",
     },
   ],
   5: [
@@ -419,6 +426,12 @@ export const DataMenu = {
     //   link: "/settings",
     //   text: "Настройка",
     // },
+    {
+      id: 50,
+      icons: () => BellRingingIcon(),
+      link: "/xabarnoma",
+      text: "Xabarnomalar",
+    },
   ],
   9: [
     {
@@ -510,6 +523,12 @@ export const DataMenu = {
       link: "/data-library",
       text: "Справочника",
     },
+    {
+      id: 50,
+      icons: () => BellRingingIcon(),
+      link: "/xabarnoma",
+      text: "Xabarnomalar",
+    },
   ],
   10: [
     {
@@ -568,6 +587,12 @@ export const DataMenu = {
       icons: () => PriceIcons({}),
       link: "/price",
       text: "Цени и скидки",
+    },
+    {
+      id: 50,
+      icons: () => BellRingingIcon(),
+      link: "/xabarnoma",
+      text: "Xabarnomalar",
     },
   ],
   11: [
@@ -678,6 +703,12 @@ export const DataMenu = {
       icons: () => PriceIcons({}),
       link: "/price",
       text: "Цени и скидки",
+    },
+    {
+      id: 50,
+      icons: () => BellRingingIcon(),
+      link: "/xabarnoma",
+      text: "Xabarnomalar",
     },
   ]
 };
