@@ -79,6 +79,33 @@ export const useCreateVideoMessage = () => {
   });
 };
 
+/** Upload video and create message in one step */
+export const useUploadAndCreate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      file: File;
+      targetRole?: number;
+      targetUserId?: string;
+      title?: string;
+    }) => {
+      const formData = new FormData();
+      formData.append("video", data.file);
+      if (data.targetRole) formData.append("targetRole", String(data.targetRole));
+      if (data.targetUserId && data.targetUserId !== "all") formData.append("targetUserId", data.targetUserId);
+      if (data.title) formData.append("title", data.title);
+      return UploadFile(apiRoutes.videoMessages + "/upload", formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.videoMessages] });
+      toast.success("Video murojaat yuborildi!");
+    },
+    onError: () => {
+      toast.error("Xatolik yuz berdi");
+    },
+  });
+};
+
 /** Fetch users filtered by role (for the recipient dropdown) */
 export const useUsersByRole = (role?: number) => {
   return useQuery({

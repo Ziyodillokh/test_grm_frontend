@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useUploadVideo, useCreateVideoMessage, useUsersByRole } from "../queries";
+import { useUsersByRole, useUploadAndCreate } from "../queries";
 
 const ROLE_OPTIONS = [
   { value: "4", label: "F-manager" },
@@ -41,91 +41,50 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
   );
   const users = usersData?.items ?? [];
 
-  const uploadVideo = useUploadVideo();
-  const createMessage = useCreateVideoMessage();
+  const uploadAndCreate = useUploadAndCreate();
+  const isSubmitting = uploadAndCreate.isPending;
 
-  const isSubmitting = uploadVideo.isPending || createMessage.isPending;
-
-  // Reset user when role changes
-  useEffect(() => {
-    setUserId("");
-  }, [role]);
-
-  // Reset form when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedFile(null);
-      setRole("");
-      setUserId("");
-    }
-  }, [isOpen]);
+  useEffect(() => { setUserId(""); }, [role]);
+  useEffect(() => { if (!isOpen) { setSelectedFile(null); setRole(""); setUserId(""); } }, [isOpen]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       const file = e.dataTransfer.files[0];
-      if (file.type === "video/mp4" || file.type === "video/quicktime") {
-        setSelectedFile(file);
-      } else {
-        toast.error("Faqat .mp4 va .mov formatdagi videolar qabul qilinadi");
-      }
+      if (file.type === "video/mp4" || file.type === "video/quicktime") setSelectedFile(file);
+      else toast.error("Faqat .mp4 va .mov formatdagi videolar qabul qilinadi");
     }
   }, []);
 
-  const handleFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        if (file.size > 100 * 1024 * 1024) {
-          toast.error("Video hajmi 100MB dan oshmasligi kerak");
-          return;
-        }
-        setSelectedFile(file);
-      }
-    },
-    []
-  );
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      const file = e.target.files[0];
+      if (file.size > 100 * 1024 * 1024) { toast.error("Video hajmi 100MB dan oshmasligi kerak"); return; }
+      setSelectedFile(file);
+    }
+  }, []);
 
   const handleSubmit = async () => {
     if (!selectedFile || !role) return;
-
     try {
-      // 1. Upload video to MinIO
-      const uploadResult: any = await uploadVideo.mutateAsync(selectedFile);
-      // Response could be { path: "..." } or { data: { path: "..." } } or the entity directly
-      const videoPath = uploadResult?.path || uploadResult?.data?.path || uploadResult?.url || "";
-      console.log("Upload result:", JSON.stringify(uploadResult));
-      console.log("Video path:", videoPath);
-
-      if (!videoPath) {
-        toast.error("Video yuklashda xatolik — path topilmadi. Response: " + JSON.stringify(uploadResult));
-        return;
-      }
-
-      // 2. Create video message record
-      await createMessage.mutateAsync({
-        videoPath,
-        title: selectedFile.name,
+      await uploadAndCreate.mutateAsync({
+        file: selectedFile,
         targetRole: Number(role),
         targetUserId: userId && userId !== "all" ? userId : undefined,
+        title: selectedFile.name,
       });
-
-      toast.success("Video murojaat muvaffaqiyatli yuborildi!");
       onClose();
     } catch {
-      toast.error("Xatolik yuz berdi, qayta urinib ko'ring");
+      // error toast already handled in hook
     }
   };
 
@@ -133,128 +92,68 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
         <DialogHeader className="p-6 pb-2 border-b-0 bg-transparent flex flex-col items-start">
-          <DialogTitle className="text-xl font-bold text-[#1A1A1A]">
-            Video Murojaat Yuklash
-          </DialogTitle>
+          <DialogTitle className="text-xl font-bold text-[#1A1A1A]">Video Murojaat Yuklash</DialogTitle>
           <DialogDescription className="text-sm text-[#999] mt-1">
-            Davomiyligi 20 sekund va hajmi 100mb dan oshmasligi, hamda .mov, .mp4
-            formatda bo'lishi kerak
+            Davomiyligi 20 sekund va hajmi 100mb dan oshmasligi, hamda .mov, .mp4 formatda bo'lishi kerak
           </DialogDescription>
         </DialogHeader>
 
         <div className="p-6 pt-4 space-y-4">
-          {/* Drag & Drop Zone */}
           <div
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
-              dragActive
-                ? "border-[#0078D4] bg-[#0078D4]/5"
-                : "border-gray-200 bg-[#F0F7FF]"
-            }`}
+            onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
+            className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${dragActive ? "border-[#0078D4] bg-[#0078D4]/5" : "border-gray-200 bg-[#F0F7FF]"}`}
           >
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-[#0078D4]/10 flex items-center justify-center">
                 <Upload className="w-6 h-6 text-[#0078D4]" />
               </div>
-
               {selectedFile ? (
                 <div>
-                  <p className="text-sm font-medium text-[#1A1A1A]">
-                    {selectedFile.name}
-                  </p>
-                  <p className="text-xs text-[#999] mt-1">
-                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
-                  </p>
-                  <button
-                    onClick={() => setSelectedFile(null)}
-                    className="text-xs text-red-500 mt-1 hover:underline"
-                  >
-                    O'chirish
-                  </button>
+                  <p className="text-sm font-medium text-[#1A1A1A]">{selectedFile.name}</p>
+                  <p className="text-xs text-[#999] mt-1">{(selectedFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                  <button onClick={() => setSelectedFile(null)} className="text-xs text-red-500 mt-1 hover:underline">O'chirish</button>
                 </div>
               ) : (
                 <>
-                  <p className="text-sm font-medium text-[#1A1A1A]">
-                    Videoni yuklang
-                  </p>
+                  <p className="text-sm font-medium text-[#1A1A1A]">Videoni yuklang</p>
                   <label className="text-sm text-[#0078D4] cursor-pointer hover:underline">
                     Bunga bosib yuklasangiz ham bo'ladi
-                    <input
-                      type="file"
-                      accept=".mp4,.mov,video/mp4,video/quicktime"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                    />
+                    <input type="file" accept=".mp4,.mov,video/mp4,video/quicktime" onChange={handleFileSelect} className="hidden" />
                   </label>
                 </>
               )}
             </div>
           </div>
 
-          {/* Role Select */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#1A1A1A]">
-              Lavozim
-            </label>
+            <label className="text-sm font-medium text-[#1A1A1A]">Lavozim</label>
             <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="w-full h-10 rounded-lg">
-                <SelectValue placeholder="Lavozimni tanlang" />
-              </SelectTrigger>
+              <SelectTrigger className="w-full h-10 rounded-lg"><SelectValue placeholder="Lavozimni tanlang" /></SelectTrigger>
               <SelectContent>
-                {ROLE_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
+                {ROLE_OPTIONS.map((opt) => (<SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* User Select — dynamic from API */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#1A1A1A]">
-              Foydalanuvchi (ixtiyoriy)
-            </label>
+            <label className="text-sm font-medium text-[#1A1A1A]">Foydalanuvchi (ixtiyoriy)</label>
             <Select value={userId} onValueChange={setUserId} disabled={!role}>
               <SelectTrigger className="w-full h-10 rounded-lg">
-                <SelectValue
-                  placeholder={
-                    usersLoading
-                      ? "Yuklanmoqda..."
-                      : !role
-                      ? "Avval lavozimni tanlang"
-                      : "Barchasi (tanlash shart emas)"
-                  }
-                />
+                <SelectValue placeholder={usersLoading ? "Yuklanmoqda..." : !role ? "Avval lavozimni tanlang" : "Barchasi (tanlash shart emas)"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Barchasi</SelectItem>
-                {users.map((u: any) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {u.firstName} {u.lastName || ""}
-                  </SelectItem>
-                ))}
+                {users.map((u: any) => (<SelectItem key={u.id} value={u.id}>{u.firstName} {u.lastName || ""}</SelectItem>))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Submit Button */}
           <button
             onClick={handleSubmit}
             disabled={!selectedFile || !role || isSubmitting}
             className="w-full h-11 rounded-xl bg-[#0078D4] text-white font-medium text-sm hover:bg-[#006CBF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Yuklanmoqda...
-              </>
-            ) : (
-              "+ Yuborish"
-            )}
+            {isSubmitting ? (<><Loader2 className="w-4 h-4 animate-spin" />Yuklanmoqda...</>) : "+ Yuborish"}
           </button>
         </div>
       </DialogContent>
