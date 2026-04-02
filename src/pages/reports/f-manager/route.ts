@@ -12,6 +12,16 @@ import ModelTable from "./remaider/model-table";
 import SizeTable from "./remaider/size-table";
 const Route = [
   {
+    url: "/f-manager/report",
+    Element: ReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports",
+    Element: ReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
     url: "/f-manager/report/:id/info",
     Element: SinglePage,
     meta: { isAuth: true, role: new Set(["admin"]) },
