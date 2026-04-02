@@ -295,7 +295,23 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
             refetchUrl={apiRoutes.cashflow}
             id={row?.original?.id + ""}
           >
-          { (row?.original?.tip == "order" && row?.original?.type!="Расход") &&  <DropdownMenuItem className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
+          {/* PENDING order → Otmena (bekor qilish) */}
+          { (row?.original?.tip == "order" && row?.original?.status === "pending" && row?.original?.type!="Расход") &&  <DropdownMenuItem className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
+                <div
+                  onClick={loading ? ()=>{} :() => RejectFunt()}
+                  className="w-full text-center"
+                >
+                 {loading? <Loader/>: <FileOutput
+                    size={28}
+                    width={28}
+                    height={28}
+                    className="w-[28px] m-auto h-[28px] text-[#FFA500]"
+                  />}
+                  <p className="text-[#FFA500] text-[13px]">Отмена</p>
+                </div>
+            </DropdownMenuItem>}
+          {/* APPROVED order → Vozvrat (qaytarish) */}
+          { (row?.original?.tip == "order" && row?.original?.status === "approved" && row?.original?.type!="Расход") &&  <DropdownMenuItem className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
                 <div
                   onClick={loading ? ()=>{} :() => RejectFunt()}
                   className="w-full text-center"
@@ -306,7 +322,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
                     height={28}
                     className="w-[28px] m-auto h-[28px] text-[#EC6C49]"
                   />}
-                  <p className="text-[#EC6C49] text-[13px]">Возрат</p>
+                  <p className="text-[#EC6C49] text-[13px]">Возврат</p>
                 </div>
             </DropdownMenuItem>}
           </TableAction>
