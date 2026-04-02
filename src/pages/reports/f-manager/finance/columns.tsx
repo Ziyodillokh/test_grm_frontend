@@ -59,7 +59,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "plasticSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalPlasticSum || item?.plasticSum || 0} $</p>;
+      return <p> {item?.plasticSum ?? item?.totalPlasticSum ?? 0} $</p>;
     },
   },
   {
@@ -75,7 +75,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "discount",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalDiscount || item?.discount || 0} $</p>;
+      return <p> {item?.discount ?? item?.totalDiscount ?? 0} $</p>;
     },
   },
 
@@ -101,7 +101,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "income",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalIncome || item?.income || 0} $</p>;
+      return <p> {item?.income ?? item?.totalIncome ?? 0} $</p>;
     },
   },
   {
@@ -109,7 +109,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "expense",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalExpense || item?.expense || 0} $</p>;
+      return <p> {item?.expense ?? item?.totalExpense ?? 0} $</p>;
     },
   },
   {
@@ -117,7 +117,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "cash_collection",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalCashCollection || item?.cash_collection || 0} $</p>;
+      return <p> {item?.cash_collection ?? item?.totalCashCollection ?? 0} $</p>;
     },
   },
   // {
