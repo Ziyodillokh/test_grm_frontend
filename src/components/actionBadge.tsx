@@ -17,7 +17,9 @@ interface IActionBadgeProps {
 
 const ColorStatus = {
   accepted: "#212121",
+  approved: "#212121",
   rejected: "#F05B58",
+  cancelled: "#F05B58",
   open:"#212121",
   pending: "#FFA500",
   new: "#FFA500",
@@ -28,7 +30,9 @@ const ColorStatus = {
 
 const statusObj = {
   accepted: "Принято",
+  approved: "Принято",
   rejected: "Отменено",
+  cancelled: "Отменено",
   pending: "В ожидании",
   new: "Новое",
   open:"Открыто",

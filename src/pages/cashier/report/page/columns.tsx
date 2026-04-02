@@ -32,6 +32,11 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     className:
       "bg-orange-100 text-orange-600 border-orange-300",
   },
+  approved: {
+    label: "Tasdiqlangan",
+    className:
+      "bg-green-100 text-green-600 border-green-300",
+  },
   accepted: {
     label: "Tasdiqlangan",
     className:
@@ -41,6 +46,11 @@ const statusConfig: Record<string, { label: string; className: string }> = {
     label: "Rad etilgan",
     className:
       "bg-red-100 text-red-600 border-red-300",
+  },
+  cancelled: {
+    label: "Bekor qilingan",
+    className:
+      "bg-gray-100 text-gray-600 border-gray-300",
   },
 };
 
