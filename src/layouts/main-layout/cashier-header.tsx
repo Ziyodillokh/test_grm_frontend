@@ -49,7 +49,7 @@ export default function CashierHeader({
                 </p>
               </div>
         </div>
-       { pathName.pathname!= "/f-manager/report" && pathName.pathname != "/f-manager/reports" && <div className="flex  items-center">
+       { pathName.pathname!= "/f-manager/report-finance" && pathName.pathname != "/f-manager/reports" && <div className="flex  items-center">
           <p className="text-[14px] leading-[17px] font-semibold text-foreground mx-2">
             {currency?.items?.[0]?.usd.toLocaleString("uz-UZ")} $
           </p>
