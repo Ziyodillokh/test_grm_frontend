@@ -2,7 +2,7 @@ export interface qrBaseIMarkerData {
   isMetric: boolean;
   id: string;
   code: string;
-  status: "draft" | "published" | "archived";
+  status: "draft" | "published" | "not_ready";
   i_price: number;
   date: string; // ISO date
   other_images: string[];
