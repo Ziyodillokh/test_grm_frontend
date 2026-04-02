@@ -13,7 +13,7 @@ import SizeTable from "./remaider/size-table";
 const Route = [
   {
     url: "/f-manager/report",
-    Element: ReportPage,
+    Element: PageFinance,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
