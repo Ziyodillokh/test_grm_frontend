@@ -56,10 +56,10 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
 
   {
     header: "Терминал",
-    id: "totalSum",
+    id: "plasticSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalPlasticSum} $</p>;
+      return <p> {item?.totalPlasticSum || item?.plasticSum || 0} $</p>;
     },
   },
   {
@@ -75,7 +75,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "discount",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalDiscount} $</p>;
+      return <p> {item?.totalDiscount || item?.discount || 0} $</p>;
     },
   },
 
@@ -101,7 +101,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "income",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalIncome} $</p>;
+      return <p> {item?.totalIncome || item?.income || 0} $</p>;
     },
   },
   {
@@ -109,7 +109,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "expense",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalExpense} $</p>;
+      return <p> {item?.totalExpense || item?.expense || 0} $</p>;
     },
   },
   {
@@ -117,7 +117,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "cash_collection",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.totalCashCollection} $</p>;
+      return <p> {item?.totalCashCollection || item?.cash_collection || 0} $</p>;
     },
   },
   // {
@@ -157,18 +157,17 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
         mutationFn: () =>
           PatchData(apiRoutes.kassaReports + "/" + row?.original?.id, {}),
         onSuccess: () => {
-          toast.success("Closed");
+          toast.success("Закрыт");
           queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
         },
       });
+      const status = item?.status || item?.confirmationStatus || "open";
       return (
         <div onClick={(e) => e.stopPropagation()}>
-          {(item?.kassaReportStatus == 2) ? (
-            <ActionBadge status={"willSell"} />
-          ) : item?.status == "open" ? (
+          {status === "open" || status === "accepted" ? (
             <ActionButton onClick={() => mutate()} isLoading={isPending} btnText={"Закрыт"} status="accept"></ActionButton>
           ) : (
-            <ActionBadge status={(item?.status == "m_manager_confirmed" || item?.status == "accountant_confirmed") ? "pending" : (item?.status || "open")} />
+            <ActionBadge status={status === "closed" || status === "closed_by_c" ? "completed" : status} />
           )}
         </div>
       );
