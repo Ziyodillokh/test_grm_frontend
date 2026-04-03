@@ -38,6 +38,8 @@ export const useQrBaseMutation = ({
           ?.map((img: any) => img.url || img.id) || [],
         status: data?.status,
         i_price: data?.i_price,
+        secondPrice: data?.secondPrice || 0,
+        internetTitle: data?.internetTitle || '',
         sizeType: data?.sizeType?.value,
         country: data?.country?.value,
         collection: data?.collection?.value,

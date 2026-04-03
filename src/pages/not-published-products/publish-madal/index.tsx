@@ -117,7 +117,9 @@ const PulishMadal = () => {
           label: data?.factory?.title,
         },
         i_price: data?.i_price,
-        internetInfo: data?.internetInfo || data?.collection?.description,
+        secondPrice: (data as any)?.secondPrice || 0,
+        internetInfo: data?.internetInfo || data?.collection?.description || '',
+        internetTitle: (data as any)?.internetTitle || '',
         imgUrl: {
           id: data?.imgUrl?.id,
           url: data?.imgUrl?.path,
@@ -126,12 +128,16 @@ const PulishMadal = () => {
           id: (data.videoUrl as any)?.id,
           url: (data.videoUrl as any)?.path,
         } : undefined,
-        otherImgs: Array.isArray(data?.other_images)
-          ? data.other_images.map((img: any) => ({
-              id: img?.id,
-              url: img?.path,
-            }))
-          : [],
+        otherImgs: [
+          ...(Array.isArray(data?.other_images) ? data.other_images.map((img: any) => ({
+            id: img?.id || '',
+            url: img?.path || '',
+          })) : []),
+          ...(Array.isArray((data as any)?.otherImgs) ? (data as any).otherImgs.map((p: any) => ({
+            id: '',
+            url: typeof p === 'string' ? p : p?.path || '',
+          })) : []),
+        ],
       });
     }
   }, [data]);

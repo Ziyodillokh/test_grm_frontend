@@ -94,11 +94,19 @@ export default function FormFileUpload({
           </p>
           {field?.value?.url ? (
             <div className="aspect-[2/3] w-full group relative overflow-hidden">
-              <img
-                src={minio_img_url + field?.value?.url}
-                alt="image"
-                className="w-full h-full object-cover"
-              />
+              {acceptTypes?.includes('video') ? (
+                <video
+                  src={minio_img_url + field?.value?.url}
+                  autoPlay muted loop playsInline
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src={minio_img_url + field?.value?.url}
+                  alt="image"
+                  className="w-full h-full object-cover"
+                />
+              )}
               <div className="absolute -bottom-[300px] gap-2 group-hover:bottom-0 left-0 w-full flex items-center justify-center h-full z-10 bg-black/80">
                 <span onClick={() => hendleRemove(field)}>
                   <Trash2 color="white" />

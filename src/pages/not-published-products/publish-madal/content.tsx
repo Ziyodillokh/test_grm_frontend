@@ -151,8 +151,23 @@ export default function FormContent() {
           classNameInput="rounded-none"
           placeholder="Цена за м² (сум)"
         />
+        <FormTextInput
+          label="Ikkinchi narx (UZS)"
+          className="w-full"
+          type="number"
+          name="secondPrice"
+          classNameInput="rounded-none"
+          placeholder="UZS narx"
+        />
+        <FormTextInput
+          label="Internet nomi"
+          className="w-full"
+          name="internetTitle"
+          classNameInput="rounded-none"
+          placeholder="Qisqa nom (ixtiyoriy)"
+        />
         <FormTextArea
-          label="Харакетистика"
+          label="Харакетристика"
           className="w-full rounded-none col-span-2"
           name="internetInfo"
         />
