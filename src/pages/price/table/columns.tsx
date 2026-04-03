@@ -202,6 +202,36 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
     },
   },
   {
+    header: "Второй цена",
+    cell: ({ row }) => {
+      const [editId] = useQueryState("editId");
+      const changePrices = (val: number, id: string) => {
+        const body = [
+          {
+            secondPrice: val,
+            collectionId: id,
+          },
+        ];
+        api.post(apiRoutes.collectionMultiple, body);
+      };
+      return (
+        <div className="relative max-w-[90px]">
+          <Input
+            disabled={editId != row?.original?.id}
+            className={`border-border bg-card border rounded-[5px] `}
+            defaultValue={row?.original?.collection_prices?.[0]?.secondPrice}
+            placeholder="0"
+            type="number"
+            onChange={debounce((e) => {
+              changePrices(Number(e.target.value), row.original.id);
+            }, 800)}
+          />
+          <p className="absolute right-2 top-3 text-[11px]">сум</p>
+        </div>
+      );
+    },
+  },
+  {
     id: "actions",
     header: "actions",
     size: 50,
