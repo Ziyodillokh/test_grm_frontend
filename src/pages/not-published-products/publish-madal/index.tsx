@@ -121,7 +121,17 @@ const PulishMadal = () => {
         imgUrl: {
           id: data?.imgUrl?.id,
           url: data?.imgUrl?.path,
-        }
+        },
+        videoUrl: data?.videoUrl ? {
+          id: (data.videoUrl as any)?.id,
+          url: (data.videoUrl as any)?.path,
+        } : undefined,
+        otherImgs: Array.isArray(data?.other_images)
+          ? data.other_images.map((img: any) => ({
+              id: img?.id,
+              url: img?.path,
+            }))
+          : [],
       });
     }
   }, [data]);

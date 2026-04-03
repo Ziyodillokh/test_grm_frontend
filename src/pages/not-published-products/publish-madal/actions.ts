@@ -32,10 +32,13 @@ export const useQrBaseMutation = ({
       const costomData: object = {
         internetInfo: data?.internetInfo,
         imgUrl: data?.imgUrl?.id,
+        videoUrl: data?.videoUrl?.id || undefined,
+        otherImgs: data?.otherImgs
+          ?.filter((img: any) => img?.id)
+          ?.map((img: any) => img.url || img.id) || [],
         status: data?.status,
         i_price: data?.i_price,
         sizeType: data?.sizeType?.value,
-        // code: data?.code,
         country: data?.country?.value,
         collection: data?.collection?.value,
         factory: data?.factory?.value,

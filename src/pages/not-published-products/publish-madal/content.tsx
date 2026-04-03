@@ -156,14 +156,37 @@ export default function FormContent() {
           className="w-full rounded-none col-span-2"
           name="internetInfo"
         />
-        <FormFileUpload
-          name="imgUrl"
-          folder="products"
-          className="col-span-4 max-w-[120px]"
-          acceptTypes="image/*"
-          label="Primary photo"
-          text="text"
-        />
+        <div className="col-span-4 flex flex-wrap gap-3">
+          <FormFileUpload
+            name="imgUrl"
+            folder="products"
+            className="max-w-[120px]"
+            acceptTypes="image/*"
+            label="Primary photo"
+            text="selectFile"
+          />
+          <FormFileUpload
+            name="videoUrl"
+            folder="products"
+            className="max-w-[120px]"
+            acceptTypes="video/*"
+            label="Short video"
+            text="selectVideo"
+          />
+        </div>
+        <div className="col-span-4 flex flex-wrap gap-3">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <FormFileUpload
+              key={i}
+              name={`otherImgs.${i}`}
+              folder="products"
+              className="max-w-[120px]"
+              acceptTypes="image/*"
+              label={`Image ${i + 1}`}
+              text="selectFile"
+            />
+          ))}
+        </div>
       </div>
 
       <DialogFooter className="!justify-start mt-2 flex">
