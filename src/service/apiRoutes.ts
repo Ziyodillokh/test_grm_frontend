@@ -59,6 +59,7 @@ export const apiRoutes = {
   kassaReport: "/kassa/report",
   kassaReports: '/kassa-reports',
   kassaReportTotal: '/kassa-reports/total',
+  kassaTotals: '/kassa/totals',
   kassa: "/kassa",
   kassaClose: "/kassa/close-kassa",
   kassaCancel: "/kassa/cancel-kassa",

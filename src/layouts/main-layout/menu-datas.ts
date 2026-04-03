@@ -40,40 +40,11 @@ import {
 export const DataMenu = {
   // Key 3 (CASHIER) removed — merged into key 4 (F_MANAGER)
   4: [
-
     {
       id: 2,
       icons: () => ReportBottom({}),
-      link: "/f-manager/report-finance",
-      text: "Отчеты",
-      items: [
-        {
-          id: 22,
-          link: "/f-manager/reports",
-          text: "Касса магазина",
-        },
-        {
-          id: 23,
-          link: "/f-manager/report-finance",
-          text: "Ежемесячный отчет",
-        },
-        {
-          id: 24,
-          link: "/f-manager/report-remaider",
-          text: "Отчет об остатке",
-        },
-        {
-          id: 25,
-          link: "/f-manager/report-seller",
-          text: "Отчёт по сотрудикам",
-        },
-        {
-          id: 26,
-          link: "/f-manager/report-orginal",
-          text: "Хисобот",
-        },
-
-      ],
+      link: "/f-manager/reports-hub",
+      text: "Hisobotlar",
     },
     // {
     //   id: 2,
