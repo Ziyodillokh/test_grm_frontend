@@ -1,7 +1,7 @@
 import ReportsHubPage from ".";
 import MonthlyReportsPage from "./monthly";
+import MonthlyKassaDetailPage from "./monthly/kassa-detail";
 import SalesReportPage from "./sales";
-import ReportPage from "../report";
 import SinglePage from "../report-single";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
 import PageSellerReport from "../../seller/seller-report";
@@ -26,7 +26,7 @@ const Route = [
   },
   {
     url: "/f-manager/reports-hub/monthly/:id",
-    Element: ReportPage,
+    Element: MonthlyKassaDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
