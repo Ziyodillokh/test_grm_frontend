@@ -12,8 +12,6 @@ import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
 import SizeTable from "../remaider/size-table";
 import PageFinanceFilial from "../filial-report-finance";
-import DealerReportPage from "../dealer-report";
-import PageDealerKassaReport from "../dealer-kassa-report";
 
 const Route = [
   {
