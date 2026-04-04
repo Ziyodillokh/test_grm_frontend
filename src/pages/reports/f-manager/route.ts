@@ -1,5 +1,5 @@
-import PageFinance from "./finance";
 import ReportPage from "./report";
+import MManagerReportPage from "../m-manager/report";
 import SinglePage from "./report-single";
 import PageSellerCashFlow from "../seller/seller-cashflow";
 import PageSellerReport from "../seller/seller-report";
@@ -24,7 +24,7 @@ const Route = [
 
   {
     url: "/f-manager/report-finance",
-    Element: PageFinance,
+    Element: MManagerReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
