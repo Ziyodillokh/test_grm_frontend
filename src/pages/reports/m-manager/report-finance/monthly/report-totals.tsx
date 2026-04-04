@@ -32,7 +32,7 @@ export default function ReportTotals({ data, onGreenCardClick }: ReportTotalsPro
     mainSum = data?.managerSum || 0;
     saldo = data?.managerSaldo || 0;
   } else if (role === 10) {
-    mainSum = data?.accauntantSum || 0;
+    mainSum = data?.accountantSum || data?.accauntantSum || 0;
     saldo = data?.accountantSaldo || 0;
   } else {
     mainSum = data?.totalSale || 0;

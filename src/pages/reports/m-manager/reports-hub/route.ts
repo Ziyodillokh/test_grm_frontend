@@ -1,7 +1,7 @@
 import MManagerReportsHubPage from ".";
 import PlaceholderPage from "./placeholder";
 import MonthlyReportsPage from "../report-finance/monthly";
-import PageFinanceSingle from "../report-finance-single";
+import ReportDetailPage from "./monthly/report-detail";
 import ReportPage from "../report";
 import PageSellerReport from "../../seller/seller-report";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
@@ -27,7 +27,12 @@ const Route = [
   },
   {
     url: "/m-manager/reports-hub/monthly/:id/info",
-    Element: PageFinanceSingle,
+    Element: ReportDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/monthly/:id/info/my",
+    Element: ReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

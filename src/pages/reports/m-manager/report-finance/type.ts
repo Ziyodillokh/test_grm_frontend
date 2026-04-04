@@ -45,6 +45,7 @@ export interface TKassareportData {
   report?: any;
   managerSum?: number;
   accauntantSum?: number;
+  accountantSum?: number;
   managerSaldo?: number;
   accountantSaldo?: number;
   startDate?: string;
