@@ -1,10 +1,8 @@
 import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
-import { useEffect } from "react";
 
 import CardSort from "@/components/card-sort";
 import { DataTable } from "@/components/ui/data-table";
-import { useMeStore } from "@/store/me-store";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
 import { ReportColumns } from "@/pages/cashier/report/page/columns";
 import { useKassaReportSingle } from "@/pages/reports/m-manager/filial-report-finance/queries";
@@ -27,7 +25,6 @@ const typeFilter: Record<string, string> = {
 
 export default function MonthlyKassaDetailPage() {
   const { id } = useParams();
-  const { meUser } = useMeStore();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
   const [tip] = useQueryState("tip", parseAsString);
   const [sortSingle] = useQueryState("sortSingle", parseAsString.withDefault("Все"));
