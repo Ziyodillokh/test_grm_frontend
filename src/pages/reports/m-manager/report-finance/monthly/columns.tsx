@@ -2,8 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MonthsArray } from "@/consts";
 import { TKassareportData } from "../type";
 import { Badge } from "@/components/ui/badge";
-import TebleAvatar from "@/components/teble-avatar";
-import { minio_img_url } from "@/constants";
 
 function getStatusBadge(item: TKassareportData) {
   if (item?.status === "accepted")
