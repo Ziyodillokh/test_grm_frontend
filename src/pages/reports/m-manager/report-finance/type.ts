@@ -52,6 +52,8 @@ export interface TKassareportData {
   endDate?: string;
   kassas?: TKassareportData[];
   reportStatus?: number;
+  isDealer?: boolean;
+  dealerReportId?: string;
 }
 
 export interface TChaFlowData {
