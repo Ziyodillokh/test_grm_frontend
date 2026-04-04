@@ -414,35 +414,8 @@ export const DataMenu = {
     {
       id: 2,
       icons: () => ReportBottom({}),
-      link: "/m-manager/report",
-      text: "Отчеты",
-      items: [
-        {
-          id: 22,
-          link: "/m-manager/reports",
-          text: "Кассовый учёт",
-        },
-        {
-          id: 23,
-          link: "/m-manager/report-finance",
-          text: "Финансовый учёт",
-        },
-        {
-          id: 24,
-          link: "/m-manager/report-remaider",
-          text: "Отчет об остатке",
-        },
-        {
-          id: 25,
-          link: "/m-manager/report-seller",
-          text: "Отчёт по сотрудикам",
-        },
-        {
-          id: 26,
-          link: "/m-manager/report-orginal",
-          text: "Хисобот",
-        },
-      ],
+      link: "/m-manager/reports-hub",
+      text: "Hisobotlar",
     },
     {
       id: 33,
@@ -511,35 +484,8 @@ export const DataMenu = {
     {
       id: 2,
       icons: () => ReportBottom({}),
-      link: "/m-manager/report",
-      text: "Отчеты",
-      items: [
-        {
-          id: 22,
-          link: "/m-manager/reports",
-          text: "Кассовый учёт",
-        },
-        {
-          id: 23,
-          link: "/m-manager/report-finance",
-          text: "Финансовый учёт",
-        },
-        {
-          id: 24,
-          link: "/m-manager/report-remaider",
-          text: "Отчет об остатке",
-        },
-        {
-          id: 25,
-          link: "/m-manager/report-seller",
-          text: "Отчёт по сотрудикам",
-        },
-        {
-          id: 26,
-          link: "/m-manager/report-orginal",
-          text: "Хисобот",
-        },
-      ],
+      link: "/m-manager/reports-hub",
+      text: "Hisobotlar",
     },
     {
       id: 2,
