@@ -413,8 +413,8 @@ export const DataMenu = {
   9: [
     {
       id: 0,
-      icons: () => HomeIcons(),
-      link: "/m-manager/reports-hub/monthly",
+      icons: () => DiamondIcon(),
+      link: "/m-manager/current-month",
       text: "Joriy oy",
     },
     {
@@ -489,8 +489,8 @@ export const DataMenu = {
   10: [
     {
       id: 0,
-      icons: () => HomeIcons(),
-      link: "/m-manager/reports-hub/monthly",
+      icons: () => DiamondIcon(),
+      link: "/m-manager/current-month",
       text: "Joriy oy",
     },
     {
