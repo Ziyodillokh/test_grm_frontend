@@ -30,6 +30,11 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
+    url: "/f-manager/reports-hub/monthly/:id/info",
+    Element: MonthlyKassaDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
     url: "/f-manager/reports-hub/monthly/:report/info/:id/info",
     Element: SinglePage,
     meta: { isAuth: true, role: new Set(["admin"]) },
