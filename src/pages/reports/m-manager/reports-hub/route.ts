@@ -1,6 +1,6 @@
 import MManagerReportsHubPage from ".";
 import PlaceholderPage from "./placeholder";
-import PageFinance from "../report-finance";
+import MonthlyReportsPage from "../report-finance/monthly";
 import PageFinanceSingle from "../report-finance-single";
 import ReportPage from "../report";
 import PageSellerReport from "../../seller/seller-report";
@@ -22,7 +22,7 @@ const Route = [
   // Oylik hisobotlar
   {
     url: "/m-manager/reports-hub/monthly",
-    Element: PageFinance,
+    Element: MonthlyReportsPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

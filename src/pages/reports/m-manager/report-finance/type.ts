@@ -36,14 +36,20 @@ export interface TKassareportData {
   debt_sum?: number;
   debt_profit_sum?: number;
   status?: string;
-  confirmationStatus?: string;
   isAccountantConfirmed?: boolean;
   isMManagerConfirmed?: boolean;
+  isManagerRejected?: boolean;
+  isAccountantRejected?: boolean;
   filialType?: string;
   filial?: any;
   report?: any;
   managerSum?: number;
-  kassaReport?: TKassareportData[];
+  accauntantSum?: number;
+  managerSaldo?: number;
+  accountantSaldo?: number;
+  startDate?: string;
+  endDate?: string;
+  kassas?: TKassareportData[];
   reportStatus?: number;
 }
 
