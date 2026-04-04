@@ -2,6 +2,7 @@ import MManagerReportsHubPage from ".";
 import PlaceholderPage from "./placeholder";
 import MonthlyReportsPage from "../report-finance/monthly";
 import ReportDetailPage from "./monthly/report-detail";
+import KassaCashflowsPage from "./monthly/kassa-cashflows";
 import ReportPage from "../report";
 import PageSellerReport from "../../seller/seller-report";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
@@ -41,13 +42,18 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
+    url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaId/info",
+    Element: KassaCashflowsPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
     url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaReportId/info/f-managers",
     Element: ReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
     url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaReportId/info/:id/info",
-    Element: ReportPage,
+    Element: KassaCashflowsPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Qoldiq hisoboti

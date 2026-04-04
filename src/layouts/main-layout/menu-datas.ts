@@ -412,6 +412,12 @@ export const DataMenu = {
   ],
   9: [
     {
+      id: 0,
+      icons: () => HomeIcons(),
+      link: "/m-manager/reports-hub/monthly",
+      text: "Joriy oy",
+    },
+    {
       id: 2,
       icons: () => ReportBottom({}),
       link: "/m-manager/reports-hub",
@@ -481,6 +487,12 @@ export const DataMenu = {
     },
   ],
   10: [
+    {
+      id: 0,
+      icons: () => HomeIcons(),
+      link: "/m-manager/reports-hub/monthly",
+      text: "Joriy oy",
+    },
     {
       id: 2,
       icons: () => ReportBottom({}),

@@ -19,8 +19,11 @@ export default function MainLayout() {
     if (!token) {
       window.location.replace("/login");
     } else if (pathname.pathname == "/") {
-      if (meUser?.position?.role === 4) {
+      const role = meUser?.position?.role;
+      if (role === 4) {
         navigate("/products");
+      } else if (role === 9 || role === 10) {
+        navigate("/m-manager/reports-hub/monthly");
       } else {
         navigate("/dashboard");
       }
