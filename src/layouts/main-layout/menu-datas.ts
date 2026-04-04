@@ -337,6 +337,12 @@ export const DataMenu = {
   ],
   8: [
     {
+      id: 0,
+      icons: () => HomeIcons(),
+      link: "/cashier/home",
+      text: "Касса",
+    },
+    {
       id: 2,
       icons: () => ReportBottom({}),
       link: "/f-manager/report-finance",
