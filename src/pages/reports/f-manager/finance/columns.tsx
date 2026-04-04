@@ -133,7 +133,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
   //             src={minio_img_url + item?.closer?.avatar?.path}
   //           />
   //         }
-  //         {item?.status != "closed_by_c" ? (
+  //         {item?.status != "closed" ? (
   //           <img
   //             className="w-[40px]  border-background border-[2px]  -translate-x-2 rounded-full h-[40px]"
   //             src={minio_img_url + item?.closer_m?.avatar?.path}
@@ -167,7 +167,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
           {status === "open" || status === "accepted" ? (
             <ActionButton onClick={() => mutate()} isLoading={isPending} btnText={"Закрыт"} status="accept"></ActionButton>
           ) : (
-            <ActionBadge status={status === "closed" || status === "closed_by_c" ? "completed" : status} />
+            <ActionBadge status={status === "closed" ? "completed" : status} />
           )}
         </div>
       );

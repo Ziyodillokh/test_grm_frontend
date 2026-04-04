@@ -125,7 +125,7 @@ export const KassaColumns: ColumnDef<TData>[] = [
 
       const statusObj: Record<string, "success" | "panding" | "fail"> = {
         accepted: "success",
-        closed_by_c: "panding",
+        closed: "panding",
         rejected: "fail"
       }
       const item = row.original;
@@ -135,7 +135,7 @@ export const KassaColumns: ColumnDef<TData>[] = [
           {item?.closer?.avatar && (
             <TebleAvatar status={"success"} url={item?.closer?.avatar?.path} name={item?.closer?.avatar?.name} />
           )}
-          {item?.status != "closed_by_c" && item?.closer_m?.avatar ? (
+          {item?.status != "closed" && item?.closer_m?.avatar ? (
             <TebleAvatar className="-translate-x-2" status={statusObj?.[item?.status || "panding"]} url={item?.closer_m?.avatar?.path} name={item?.closer_m?.avatar?.name} />
           ) : (
             ""
@@ -168,7 +168,7 @@ export const KassaColumns: ColumnDef<TData>[] = [
       return (
         <div onClick={(e) => e.stopPropagation()}>
           {item?.status != "Филиал приходы и расходы" ? (
-            item?.status == "closed_by_c" ? (
+            item?.status == "closed" ? (
               <ActionButton
                 onClick={() => mutate()}
                 isLoading={isPending}

@@ -525,7 +525,7 @@ export const KassaColumns: ColumnDef<KassaItem>[] = [
       const item = row.original;
       return item?.status != "open" && item?.status != "Мои приходы и расходы" ? <div className="flex items-center">
         {<img className="w-[40px] rounded-full object-cover border-background border h-[40px]" src={minio_img_url + item?.closer?.avatar?.path} />}
-        {item?.status != "closed_by_c" ? <img className="w-[40px]  object-cover border-background border-[2px]  -translate-x-2 rounded-full h-[40px]" src={minio_img_url + item?.closer_m?.avatar?.path} /> : ""}
+        {item?.status != "closed" ? <img className="w-[40px]  object-cover border-background border-[2px]  -translate-x-2 rounded-full h-[40px]" src={minio_img_url + item?.closer_m?.avatar?.path} /> : ""}
       </div> : "";
     },
   },
@@ -547,7 +547,7 @@ export const KassaColumns: ColumnDef<KassaItem>[] = [
       });
       return (
         <div onClick={(e) => e.stopPropagation()}>
-          {item?.status == "closed_by_c" ? (
+          {item?.status == "closed" ? (
             <Button disabled={isPending} onClick={() => mutate()} className="rounded-[63px] bg-[#E38157]">{isPending ? <Loader2 /> : ""}  Принят </Button>
           ) : item?.status == "accepted" ? (
             <Button disabled variant={"outline"} className="rounded-[63px] "> Принято </Button>

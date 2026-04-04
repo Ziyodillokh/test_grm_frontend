@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import ActionBadge from "@/components/actionBadge";
 import { MonthsArray } from "@/consts";
 import { TData } from "../../report/type";
+import { Badge } from "@/components/ui/badge";
+import { getKassaDisplayStatus, kassaStatusConfig } from "./utils";
 
 export const MonthlyColumns: ColumnDef<TData>[] = [
   {
@@ -19,19 +20,12 @@ export const MonthlyColumns: ColumnDef<TData>[] = [
     header: "Holat",
     cell: ({ row }) => {
       const item = row.original;
-      const statusMap: Record<string, string> = {
-        open: "inProgress",
-        warning: "inProgress",
-        closed_by_c: "panding",
-        accepted: "success",
-        rejected: "fail",
-      };
+      const displayStatus = getKassaDisplayStatus(item);
+      const config = kassaStatusConfig[displayStatus] || kassaStatusConfig.open;
       return (
-        <ActionBadge
-          status={
-            statusMap[item?.status] || item?.status || "inProgress"
-          }
-        />
+        <Badge variant="outline" className={`rounded-[63px] py-[6px] px-[12px] text-[12px] ${config.className}`}>
+          {config.label}
+        </Badge>
       );
     },
   },
