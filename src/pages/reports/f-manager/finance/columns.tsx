@@ -161,7 +161,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
           queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
         },
       });
-      const status = item?.status || item?.confirmationStatus || "open";
+      const status = item?.status || "open";
       return (
         <div onClick={(e) => e.stopPropagation()}>
           {status === "open" || status === "accepted" ? (
