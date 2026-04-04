@@ -1,5 +1,4 @@
 import ReportPage from "./report";
-import MManagerReportPage from "../m-manager/report";
 import SinglePage from "./report-single";
 import PageSellerCashFlow from "../seller/seller-cashflow";
 import PageSellerReport from "../seller/seller-report";
@@ -10,20 +9,18 @@ import FoctoryTable from "./remaider/factory-table";
 import CollectionTable from "./remaider/collection-table";
 import ModelTable from "./remaider/model-table";
 import SizeTable from "./remaider/size-table";
+import PageFinance from "./finance";
+
 const Route = [
-  {
-    url: "/f-manager/report",
-    Element: MManagerReportPage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
+  // Kassa sahifasi (cashflow ro'yxati)
   {
     url: "/f-manager/reports",
     Element: ReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/f-manager/reports-hub",
-    Element: MManagerReportPage,
+    url: "/f-manager/reports/:id",
+    Element: ReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
@@ -31,10 +28,10 @@ const Route = [
     Element: SinglePage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-
+  // Ежемесячный отчет (oylik kassa ro'yxati)
   {
     url: "/f-manager/report-finance",
-    Element: MManagerReportPage,
+    Element: PageFinance,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
@@ -47,8 +44,7 @@ const Route = [
     Element: SinglePage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  // ShowDelete={row?.original?.tip != "order"}
- 
+  // Qoldiq hisoboti
   {
     url: "/f-manager/report-remaider",
     Element: CountryTable,
@@ -61,19 +57,20 @@ const Route = [
   },
   {
     url: "/f-manager/report-remaider/:countryId/:factoryId",
-    Element:CollectionTable,
+    Element: CollectionTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
     url: "/f-manager/report-remaider/:countryId/:factoryId/:collectionId",
-    Element:ModelTable,
+    Element: ModelTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
     url: "/f-manager/report-remaider/:countryId/:factoryId/:collectionId/:modelId",
-    Element:SizeTable,
+    Element: SizeTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
+  // Sotuvchi hisoboti
   {
     url: "/f-manager/report-seller",
     Element: PageSellerReport,
@@ -84,16 +81,13 @@ const Route = [
     Element: PageSellerCashFlow,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
+  // Mijoz qarzi
   {
     url: "/f-manager/report-finance/client-debt",
     Element: PageCleintDebt,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  {
-    url: "/f-manager/report-finance/client-debt",
-    Element: PageCleintDebt,
-    meta: { isAuth: true, role: new Set(["admin"])},
-  },
+  // Umumiy hisobot
   {
     url: "/f-manager/report-orginal",
     Element: PageOrginal,
