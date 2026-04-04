@@ -9,11 +9,8 @@ export const MonthlyColumns: ColumnDef<TData>[] = [
     header: "Oy",
     cell: ({ row }) => {
       const item = row.original;
-      const month = item?.startDate
-        ? new Date(item.startDate).getMonth()
-        : undefined;
-      const monthName =
-        month !== undefined ? MonthsArray[month]?.label : "—";
+      const month = (item as any)?.month;
+      const monthName = month ? MonthsArray[month - 1]?.label : "—";
       return <p className="font-medium">{monthName}</p>;
     },
   },
