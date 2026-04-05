@@ -17,6 +17,7 @@ export interface TData {
   tip: string;
   title: string;
   in_hand:number;
+  opening_balance?:number;
   debt_sum:number;
   kassaReport?:{
     opening_balance?:number
