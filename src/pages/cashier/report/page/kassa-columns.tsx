@@ -3,6 +3,7 @@ import {
   CheckCircle,
   FileOutput,
   Loader,
+  Trash2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { toast } from "sonner";
-import { UpdatePatchData } from "@/service/apiHelpers";
+import { DeleteData, UpdatePatchData } from "@/service/apiHelpers";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
@@ -230,7 +231,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
             )}
           <TableAction
             ShowUpdate={false}
-            ShowDelete={row?.original?.tip !== "order"}
+            ShowDelete={row?.original?.tip !== "order" || row?.original?.is_cancelled}
             url={apiRoutes.cashflow}
             refetchUrl={apiRoutes.cashflow}
             id={row?.original?.id + ""}
