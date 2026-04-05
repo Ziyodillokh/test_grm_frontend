@@ -14,12 +14,14 @@ interface ITransfers {
   queries?: TQuery;
 }
 
+const imarketClientsUrl = "/user/imarket-clients";
+
 const useClientsData = ({ options, queries }: ITransfers) =>
   useInfiniteQuery({
     ...options,
-    queryKey: [apiRoutes.clients, queries],
+    queryKey: [imarketClientsUrl, queries],
     queryFn: ({ pageParam = 1 }) =>
-      getAllData<TResponse<TData>, TQuery>(apiRoutes.clients, {
+      getAllData<TResponse<TData>, TQuery>(imarketClientsUrl, {
         ...queries,
         page: pageParam as number,
         limit: 20,
