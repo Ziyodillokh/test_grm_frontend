@@ -23,7 +23,7 @@ export default function MainLayout() {
       if (role === 4) {
         navigate("/products");
       } else if (role === 9 || role === 10) {
-        navigate("/m-manager/current-month");
+        navigate("/dashboard");
       } else {
         navigate("/dashboard");
       }

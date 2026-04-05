@@ -414,7 +414,7 @@ export const DataMenu = {
     {
       id: 0,
       icons: () => DataLibrary({}),
-      link: "/m-manager/current-month",
+      link: "/dashboard",
       text: "Joriy oy",
     },
     {
@@ -490,7 +490,7 @@ export const DataMenu = {
     {
       id: 0,
       icons: () => DataLibrary({}),
-      link: "/m-manager/current-month",
+      link: "/dashboard",
       text: "Joriy oy",
     },
     {
