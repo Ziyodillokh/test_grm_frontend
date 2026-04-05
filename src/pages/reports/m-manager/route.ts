@@ -79,17 +79,7 @@ const Route = [
   },
   {
     url: "/m-manager/report-finance/:reportId/info/:id/info",
-    Element: PageFinanceFilial,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-  {
-    url: "/m-manager/report-finance/:reportId/info/:kassaReportId/info/:id/info",
-    Element: ReportPage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-  {
-    url: "/m-manager/report-finance/:reportId/info/:kassaReportId/info/f-managers",
-    Element: ReportPage,
+    Element: PageFinanceSingle,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

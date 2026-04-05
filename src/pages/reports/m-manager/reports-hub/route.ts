@@ -12,7 +12,6 @@ import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
 import SizeTable from "../remaider/size-table";
-import PageFinanceFilial from "../filial-report-finance";
 
 const Route = [
   {
@@ -37,22 +36,7 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/m-manager/reports-hub/monthly/:reportId/info/:id/info",
-    Element: PageFinanceFilial,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-  {
     url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaId/info",
-    Element: KassaCashflowsPage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-  {
-    url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaReportId/info/f-managers",
-    Element: ReportPage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-  {
-    url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaReportId/info/:id/info",
     Element: KassaCashflowsPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
