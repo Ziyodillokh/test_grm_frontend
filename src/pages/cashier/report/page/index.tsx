@@ -74,6 +74,9 @@ export default function Page() {
   return (
     <>
       <CashierHeader>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold">Joriy Oy Kassasi</h1>
+        </div>
         <Filters kassaId={reportData?.id} />
       </CashierHeader>
       <div className="flex w-full ">

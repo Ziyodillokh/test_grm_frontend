@@ -21,7 +21,7 @@ export default function MainLayout() {
     } else if (pathname.pathname == "/") {
       const role = meUser?.position?.role;
       if (role === 4) {
-        navigate("/products");
+        navigate("/f-manager/kassa");
       } else if (role === 9 || role === 10) {
         navigate("/m-manager/current-month");
       } else {
