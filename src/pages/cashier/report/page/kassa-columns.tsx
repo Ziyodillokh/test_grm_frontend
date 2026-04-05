@@ -26,26 +26,37 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
     cell: ({ row }) => {
       const item = row.original;
       const isIncome = item.type === "Приход";
-      const mainPrice =
-        item?.tip === "order" && item?.type !== "Расход"
-          ? item?.order?.price || 0
-          : item?.price || 0;
-      const navar =
-        item?.tip === "order" && isIncome
-          ? item?.order?.additionalProfitSum || 0
-          : 0;
+      const isOrder = item.tip === "order";
 
+      if (isOrder && isIncome) {
+        const totalPrice = item.order?.price || 0;
+        const terminalPrice = item.order?.plasticSum || 0;
+        const cashPrice = totalPrice - terminalPrice;
+
+        return (
+          <div>
+            {cashPrice > 0 && (
+              <p className="font-bold text-[15px] text-foreground">
+                + {formatPrice(cashPrice)}
+              </p>
+            )}
+            {terminalPrice > 0 && (
+              <p className="font-bold text-[13px] text-[#58A0C6]">
+                + {formatPrice(terminalPrice)}
+              </p>
+            )}
+          </div>
+        );
+      }
+
+      // Cashflow yoki Расход order
+      const price = isOrder ? item.order?.price || 0 : item?.price || 0;
       return (
-        <div>
-          <span
-            className={`font-bold text-[15px] ${isIncome ? "text-[#89A143]" : "text-[#E38157]"}`}
-          >
-            {isIncome ? "+" : "-"} {formatPrice(mainPrice)}
-          </span>
-          {navar > 0 && (
-            <p className="text-[13px] text-[#89A143]">+ {formatPrice(navar)}</p>
-          )}
-        </div>
+        <span
+          className={`font-bold text-[15px] ${isIncome ? "text-foreground" : "text-[#E38157]"}`}
+        >
+          {isIncome ? "+" : "-"} {formatPrice(price)}
+        </span>
       );
     },
   },
@@ -54,6 +65,30 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
     header: "Status",
     cell: ({ row }) => {
       const item = row.original;
+      const isOrder = item.tip === "order";
+
+      if (isOrder && item.order?.seller) {
+        return (
+          <div className="flex items-center -space-x-2">
+            {/* Seller avatar — doim ko'rinadi */}
+            <TebleAvatar
+              status="success"
+              name={item.order.seller.firstName}
+              url={item.order.seller.avatar?.path}
+            />
+            {/* F-Manager avatar — faqat tasdiqlanganda */}
+            {item.status === "approved" && item.casher && (
+              <TebleAvatar
+                status="success"
+                name={item.casher.firstName}
+                url={item.casher.avatar?.path}
+              />
+            )}
+          </div>
+        );
+      }
+
+      // Cashflow (order bo'lmagan) — casher avatari
       return (
         <TebleAvatar
           status={item?.is_cancelled ? "fail" : "success"}
@@ -96,6 +131,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
     header: "Malumotlar",
     cell: ({ row }) => {
       const item = row.original;
+
       if (item.tip === "cashflow") {
         return (
           <p className="text-[13px] text-muted-foreground">
@@ -103,30 +139,32 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
           </p>
         );
       }
+
+      // Order malumotlari
+      const order = item.order;
+      const barCode = order?.bar_code;
+      const additionalProfit = order?.additionalProfitSum || 0;
+      const discount = order?.discountSum || 0;
+
       return (
         <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
-          <span>{item.order?.bar_code?.collection?.title}</span>
-          <span>{item.order?.bar_code?.model?.title}</span>
+          <span>{barCode?.collection?.title}</span>
+          <span>{barCode?.model?.title}</span>
+          <span>{barCode?.size?.title}</span>
+          <span>${formatPrice(barCode?.collection?.priceMeter || 0)}</span>
           <span>
-            {item.order?.x
-              ? `${item.order.x}${item.order.bar_code?.isMetric ? "" : "x"}`
-              : ""}
+            {barCode?.isMetric ? `${order?.kv || 0}sm` : `${order?.x || 0}x`}
           </span>
-          <span>{item.order?.price ? `$${formatPrice(item.order.price)}` : ""}</span>
-          <span>
-            {item.order?.bar_code?.size?.kv
-              ? `${item.order.bar_code.size.kv}sm`
-              : ""}
-          </span>
-          {item.order?.discountSum ? (
-            <span className="text-[#E38157]">
-              -{item.order.discountSum}$
+          {additionalProfit > 0 && (
+            <span className="text-[#89A143] font-medium">
+              +{formatPrice(additionalProfit)}$
             </span>
-          ) : item.order?.additionalProfitSum ? (
-            <span className="text-[#89A143]">
-              +{item.order.additionalProfitSum}$
+          )}
+          {discount > 0 && (
+            <span className="text-[#E38157] font-medium">
+              -{formatPrice(discount)}$
             </span>
-          ) : null}
+          )}
         </div>
       );
     },
@@ -149,6 +187,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
           .then(() => {
             toast.success("Bekor qilindi");
             queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+            queryClient.invalidateQueries({ queryKey: [apiRoutes.openKassa] });
           })
           .finally(() => setLoading(false));
       };
@@ -163,28 +202,32 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
           .then(() => {
             toast.success("Tasdiqlandi");
             queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+            queryClient.invalidateQueries({ queryKey: [apiRoutes.openKassa] });
+            queryClient.invalidateQueries({ queryKey: [apiRoutes.kassa] });
           })
           .finally(() => setApproveLoading(false));
       };
 
       return (
         <div className="flex items-center gap-1">
-          {row?.original?.status === "pending" && (
-            <Button
-              variant="ghost"
-              size="icon"
-              disabled={approveLoading}
-              onClick={approveLoading ? () => {} : () => ApproveFunt()}
-              className="text-[#89A143] hover:text-[#89A143] hover:bg-green-50"
-              title="Tasdiqlash"
-            >
-              {approveLoading ? (
-                <Loader className="h-5 w-5 animate-spin" />
-              ) : (
-                <CheckCircle className="h-5 w-5" />
-              )}
-            </Button>
-          )}
+          {row?.original?.tip === "order" &&
+            row?.original?.status === "pending" &&
+            row?.original?.type !== "Расход" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                disabled={approveLoading}
+                onClick={approveLoading ? () => {} : () => ApproveFunt()}
+                className="text-[#89A143] hover:text-[#89A143] hover:bg-green-50 rounded-full w-10 h-10"
+                title="Tasdiqlash"
+              >
+                {approveLoading ? (
+                  <Loader className="h-5 w-5 animate-spin" />
+                ) : (
+                  <CheckCircle className="h-6 w-6" />
+                )}
+              </Button>
+            )}
           <TableAction
             ShowUpdate={false}
             ShowDelete={row?.original?.tip !== "order"}
@@ -196,7 +239,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
             {row?.original?.tip === "order" &&
               row?.original?.status === "pending" &&
               row?.original?.type !== "Расход" && (
-                <DropdownMenuItem className="text-center flex items-center justify-center gap-2 py-2">
+                <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
                   <div
                     onClick={loading ? () => {} : () => RejectFunt()}
                     className="w-full flex items-center gap-2"
@@ -214,7 +257,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
             {row?.original?.tip === "order" &&
               row?.original?.status === "approved" &&
               row?.original?.type !== "Расход" && (
-                <DropdownMenuItem className="text-center flex items-center justify-center gap-2 py-2">
+                <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
                   <div
                     onClick={loading ? () => {} : () => RejectFunt()}
                     className="w-full flex items-center gap-2"
