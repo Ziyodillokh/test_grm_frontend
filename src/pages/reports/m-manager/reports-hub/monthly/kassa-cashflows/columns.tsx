@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { MoreHorizontal, CheckCircle, Loader } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -11,7 +11,6 @@ import TebleAvatar from "@/components/teble-avatar";
 import formatPrice from "@/utils/formatPrice";
 import { apiRoutes } from "@/service/apiRoutes";
 import { UpdatePatchData } from "@/service/apiHelpers";
-import { minio_img_url } from "@/constants";
 
 export const CashflowColumns: ColumnDef<any>[] = [
   {
@@ -20,9 +19,7 @@ export const CashflowColumns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const item = row.original;
       const isIncome = item?.type === "Приход";
-      const price = item?.tip === "order" && item?.type !== "Расход"
-        ? item?.order?.price || 0
-        : item?.price || 0;
+      const price = item?.price || item?.order?.price || 0;
       const terminal = item?.order?.plasticSum || 0;
 
       return (
