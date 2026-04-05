@@ -7,6 +7,11 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
+    url: "/clients",
+    Element: Page,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
     url: "/client/:id",
     Element: Page,
     meta: { isAuth: true, role: new Set(["admin"]) },
