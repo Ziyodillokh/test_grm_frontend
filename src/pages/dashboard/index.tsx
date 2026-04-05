@@ -56,7 +56,7 @@ export default function Dashboard() {
     return <MonitoringDashboard />;
   }
   if (role === 9 || role === 10) {
-    return <CurrentMonthReport />;
+    return null;
   }
   if (role === 12) {
     return (
