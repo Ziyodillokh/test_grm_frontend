@@ -3,7 +3,6 @@ import {
   CheckCircle,
   FileOutput,
   Loader,
-  Trash2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { toast } from "sonner";
-import { DeleteData, UpdatePatchData } from "@/service/apiHelpers";
+import { UpdatePatchData } from "@/service/apiHelpers";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
