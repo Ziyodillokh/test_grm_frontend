@@ -413,7 +413,7 @@ export const DataMenu = {
   9: [
     {
       id: 0,
-      icons: () => DataLibrary(),
+      icons: () => DataLibrary({}),
       link: "/m-manager/current-month",
       text: "Joriy oy",
     },
@@ -489,7 +489,7 @@ export const DataMenu = {
   10: [
     {
       id: 0,
-      icons: () => DataLibrary(),
+      icons: () => DataLibrary({}),
       link: "/m-manager/current-month",
       text: "Joriy oy",
     },

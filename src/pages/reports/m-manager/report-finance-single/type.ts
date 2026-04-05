@@ -47,6 +47,7 @@ export interface TKassareportData {
   isDealer?: boolean;
   dealerReportId?: string;
   kassaReport?: TKassareportData[];
+  kassas?: TKassareportData[];
   reportStatus?: number;
 }
 
