@@ -3,12 +3,12 @@ import DashboardKassaDetail from "./kassa-detail";
 
 const Route = [
   {
-    url: "/dashboard",
+    url: "/m-manager/current-month",
     Element: Dashboard,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/dashboard/:id/info",
+    url: "/m-manager/current-month/:id/info",
     Element: DashboardKassaDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },

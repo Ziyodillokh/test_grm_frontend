@@ -110,7 +110,7 @@ export default function CurrentMonthReport() {
                 `/m-manager/d-manager/report-monthly/${item.dealerReportId}/info`
               );
             } else if (item?.id) {
-              navigate(`/dashboard/${item.id}/info`);
+              navigate(`/m-manager/current-month/${item.id}/info`);
             }
           }}
         />

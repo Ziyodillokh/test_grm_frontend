@@ -73,11 +73,11 @@ export default function DashboardKassaDetail() {
       <div className="flex items-center gap-2 text-sm mb-4">
         <ArrowLeft
           className="w-5 h-5 cursor-pointer hover:text-foreground text-muted-foreground"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/m-manager/current-month")}
         />
         <span
           className="cursor-pointer hover:text-foreground text-muted-foreground"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/m-manager/current-month")}
         >
           Joriy Oy
         </span>
