@@ -73,9 +73,10 @@ export default function Menu() {
         ) : (
           <div
             onClick={() => {
-              navigate("/dashboard");
+              const role = meUser?.position?.role;
+              navigate(role === 9 || role === 10 ? "/m-manager/current-month" : "/dashboard");
             }}
-            className={`${meUser?.position?.role === 11 ? "hidden" : ""} ${pathName.pathname.includes("/dashboard") ? "bg-background" : ""} rounded-xl group w-[80%] mx-auto w-[80%] mx-autow-[80%]w-[80%] iconsColor border-transparent cursor-pointer  text-center flex items-center justify-center  p-2`}
+            className={`${meUser?.position?.role === 11 ? "hidden" : ""} ${pathName.pathname.includes("/dashboard") || pathName.pathname.includes("/m-manager/current-month") ? "bg-background" : ""} rounded-xl group w-[80%] mx-auto w-[80%] mx-autow-[80%]w-[80%] iconsColor border-transparent cursor-pointer  text-center flex items-center justify-center  p-2`}
           >
             <HomeIcons />
             <span className="absolute opacity-0 group-hover:opacity-100 flex justify-center align-middle items-center left-full -ml-6   whitespace-nowrap text-[#5D5D53] bg-white border-border border-1 text-[15px] rounded px-[13px] py-[5px] transition-opacity duration-200 z-20">
