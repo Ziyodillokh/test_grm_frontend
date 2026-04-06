@@ -1,75 +1,46 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import TableAction from "@/components/table-action";
-import { apiRoutes } from "@/service/apiRoutes";
-
 import { TData } from "../type";
-import { MessageSquareText } from "lucide-react";
 
 export const ClientsColumns: ColumnDef<TData>[] = [
   {
     id: "id",
-    accessorKey: "id",
     header: "№",
+    cell: ({ row }) => <>{row.index + 1}</>,
+  },
+  {
+    header: "Ism Familiya",
     cell: ({ row }) => {
-      return <>{row.index + 1}</>;
+      const item = row.original as any;
+      // User entity: firstName + lastName | Client entity: fullName
+      const name = item?.firstName
+        ? `${item.firstName || ""} ${item.lastName || ""}`.trim()
+        : item?.fullName || "—";
+      return <p className="font-medium">{name}</p>;
     },
   },
   {
-    header: "Фамилия имя",
+    header: "Telefon",
     cell: ({ row }) => {
+      return <p className="text-[#58A0C6]">{row.original?.phone || "—"}</p>;
+    },
+  },
+  {
+    header: "Ro'yxatdan o'tgan",
+    cell: ({ row }) => {
+      const item = row.original as any;
+      const date = item?.createdAt || item?.dateOne;
+      if (!date) return <p>—</p>;
+      return <p className="text-muted-foreground text-sm">{new Date(date).toLocaleDateString("uz-UZ")}</p>;
+    },
+  },
+  {
+    header: "Holati",
+    cell: ({ row }) => {
+      const item = row.original as any;
       return (
-        <p>
-          {row.original?.fullName} 
-        </p>
-      );
-    },
-  },
-
-  {
-    header: "Флиал",
-    cell: ({ row }) => {
-      return <p>{row.original?.filial?.title}</p>;
-    },
-  },
-
-  {
-    header: "Телефон",
-    accessorKey: "phone",
-    cell: ({ row }) => {
-      return <p className="text-[#58A0C6]">{row.original?.phone}</p>;
-    },
-  },
-  {
-    header: "Задолжность",
-    accessorKey: "owed",
-      cell: ({ row }) => {
-        return <p className="text-[#FF6600]">{row.original?.owed}</p>;
-    },
-  },
-
-  {
-    header: "Дано",
-    accessorKey: "given",
-      cell: ({ row }) => {
-        return <p className="text-[#89A143]">{row.original?.given}</p>;
-    },
-  },
-  {
-    header: "Комментария",
-    accessorKey: "commit",
-      cell: ({ row }) => {
-      return <p className=" flex items-start text-[#5D5D53] gap-1">  {row?.original?.comment && <MessageSquareText width={14} />} { row?.original?.comment}</p>;
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: true,
-    header: () => <div className="text-right">{"actions"}</div>,
-    size: 50,
-    cell: ({ row }) => {
-      return (
-          <TableAction url={apiRoutes.clients} id={row.original?.id} />
+        <span className={`px-2 py-1 rounded text-xs ${item?.isActive !== false ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          {item?.isActive !== false ? "Faol" : "Nofaol"}
+        </span>
       );
     },
   },
