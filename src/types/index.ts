@@ -10,6 +10,17 @@ export type TResponse<T> = {
     limit: number;
     total: number;
   };
+  totals?: {
+    totalSum: number;
+    plasticSum: number;
+    totalPrice: number;
+    totalExpense: number;
+    totalReturnSale: number;
+    totalDiscount: number;
+    count: number;
+    kv: number;
+    year: number;
+  };
 };
 export type TResponseUserLog<T> = T[];
 

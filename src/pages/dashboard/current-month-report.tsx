@@ -12,9 +12,11 @@ import {
   useReportDealer,
 } from "@/pages/reports/m-manager/report-finance-single/queries";
 import { Monitor } from "lucide-react";
+import { useMeStore } from "@/store/me-store";
 
 export default function CurrentMonthReport() {
   const navigate = useNavigate();
+  const { meUser } = useMeStore();
 
   // Joriy oy reportini olish (GET /reports/current)
   const { data: reportData, isLoading } = useQuery({
@@ -25,10 +27,11 @@ export default function CurrentMonthReport() {
 
   const reportId = reportData?.id;
 
-  // Manager cashflow (prixod/rasxod)
+  // Manager cashflow (prixod/rasxod) — faqat o'z cashflowlarim
   const { data: cashflowData } = useCashflowForMainManager({
     id: reportId,
     enabled: Boolean(reportId),
+    userId: meUser?.id,
   });
 
   // Dealer
@@ -94,7 +97,11 @@ export default function CurrentMonthReport() {
       {/* Yashil card + 8 ta metrika */}
       <ReportTotals
         data={reportTotalsData}
-        onGreenCardClick={() => {}}
+        onGreenCardClick={() => {
+          if (reportId) {
+            navigate(`/m-manager/report-finance/${reportId}/my?myCashFlow=true`);
+          }
+        }}
       />
 
       {/* Filial kassalari jadvali */}

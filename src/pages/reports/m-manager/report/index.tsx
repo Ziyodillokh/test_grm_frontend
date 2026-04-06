@@ -105,10 +105,50 @@ export default function ReportPage() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
+  // Biznes umumiy totallar (filtrlarga qarab o'zgaradi)
+  const businessTotals = data?.pages?.[0]?.totals;
+  const businessIncome = (businessTotals?.totalSum || 0) - (businessTotals?.totalExpense || 0);
+  const businessExpense = businessTotals?.totalExpense || 0;
+
   return (
     <>
       <Filter month={myCashFlow?myCashFlowReports?.month: KassaReportSingle?.month} filial={KassaReportSingle?.filial?.title} />
       < >
+        {myCashFlow && (
+          <div className="grid grid-cols-3 gap-3 mb-3">
+            {/* Oq card — o'zimga tegishli */}
+            <div className="bg-card border border-border rounded-xl p-5">
+              <p className="text-xs text-muted-foreground mb-1">Mening balansim</p>
+              <p className="text-2xl font-bold">
+                {(meUser?.position?.role == 9
+                  ? myCashFlowReports?.managerSum || 0
+                  : myCashFlowReports?.accountantSum || myCashFlowReports?.accauntantSum || 0
+                ).toFixed(2)}$
+              </p>
+              <p className="text-xs text-muted-foreground mt-3 mb-1">Saldo balans</p>
+              <p className="text-sm font-semibold text-[#89A143]">
+                {(meUser?.position?.role == 9
+                  ? myCashFlowReports?.managerSaldo || 0
+                  : myCashFlowReports?.accountantSaldo || 0
+                ).toFixed(2)}$
+              </p>
+            </div>
+            {/* Yashil card — biznes umumiy kirim */}
+            <div className="bg-[#89A143] rounded-xl p-5 text-white">
+              <p className="text-xs opacity-80 mb-1">Biznes kirim</p>
+              <p className="text-2xl font-bold">
+                +{businessIncome.toFixed(2)}$
+              </p>
+            </div>
+            {/* Qizil card — biznes umumiy chiqim */}
+            <div className="bg-[#E38157] rounded-xl p-5 text-white">
+              <p className="text-xs opacity-80 mb-1">Biznes chiqim</p>
+              <p className="text-2xl font-bold">
+                -{businessExpense.toFixed(2)}$
+              </p>
+            </div>
+          </div>
+        )}
         {
           <CardSort
           isUserSelectble
@@ -132,7 +172,7 @@ export default function ReportPage() {
           columns={Columns}
           data={flatData || []}
           isLoading={isLoading}
-          className="h-[calc(100vh-310px)] scrollCastom"
+          className={`${myCashFlow ? "h-[calc(100vh-470px)]" : "h-[calc(100vh-310px)]"} scrollCastom`}
           isRowClickble={false}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}

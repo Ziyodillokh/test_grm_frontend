@@ -28,6 +28,7 @@ interface IPayrollsDealerData {
 interface ICashflowForMainManager {
   enabled?: boolean;
   id:string | undefined;
+  userId?: string;
 }
 
 
@@ -71,10 +72,14 @@ export const useReportsSingle = ({ queries,id ,enabled}: IKassaReportData) =>
         enabled: enabled,
       });
 
-export const useCashflowForMainManager = ({enabled,id}: ICashflowForMainManager) =>
+export const useCashflowForMainManager = ({enabled,id,userId}: ICashflowForMainManager) =>
   useQuery({
-    queryKey: [apiRoutes.cashflowForMainManager],
+    queryKey: [apiRoutes.cashflowForMainManager, id, userId],
     queryFn: () =>
-      getByIdData<TReportData, TDealearQuery>(apiRoutes.cashflowForMainManager ,id || ""),
+      getByIdData<TReportData, TDealearQuery>(
+        apiRoutes.cashflowForMainManager,
+        id || "",
+        userId ? { userId } : undefined,
+      ),
     enabled: enabled,
   });
