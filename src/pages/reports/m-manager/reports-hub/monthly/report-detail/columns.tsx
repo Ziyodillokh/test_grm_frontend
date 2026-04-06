@@ -20,10 +20,12 @@ function getStatusBadge(item: TKassareportData) {
     return { label: "Tasdiqlangan", dot: "bg-green-500", cls: "text-green-700 border-green-300 bg-green-50" };
   if (item?.isManagerRejected || item?.isAccountantRejected)
     return { label: "Qaytarilgan", dot: "bg-red-500", cls: "text-red-700 border-red-300 bg-red-50" };
-  if (item?.status === "closed" || item?.status === "closed_by_d")
-    return { label: "Yopilgan", dot: "bg-blue-500", cls: "text-blue-700 border-blue-300 bg-blue-50" };
-  if (item?.reportStatus === 2)
-    return { label: "Jarayonda...", dot: "bg-green-400", cls: "text-green-700 border-green-300 bg-green-50" };
+  if (item?.status === "closed_by_d")
+    return { label: "D-Manager yopgan", dot: "bg-blue-500", cls: "text-blue-700 border-blue-300 bg-blue-50" };
+  if (item?.status === "warning")
+    return { label: "Kutilmoqda", dot: "bg-yellow-500", cls: "text-yellow-700 border-yellow-300 bg-yellow-50" };
+  if (item?.status === "open")
+    return { label: "Ochiq", dot: "bg-green-400", cls: "text-green-700 border-green-300 bg-green-50" };
   return { label: "Kutilayotgan", dot: "bg-yellow-500", cls: "text-yellow-700 border-yellow-300 bg-yellow-50" };
 }
 
