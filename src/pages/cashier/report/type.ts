@@ -219,6 +219,7 @@ order: {
       secondPrice: number;
       priceMeter: number;
       comingPrice: number;
+      collection_prices?: { priceMeter: number; comingPrice: number; secondPrice: number }[];
     };
     color:{
       title:string

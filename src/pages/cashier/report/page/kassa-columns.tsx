@@ -29,9 +29,8 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
       const isOrder = item.tip === "order";
 
       if (isOrder && isIncome) {
-        const totalPrice = item.order?.price || 0;
+        const cashPrice = item.order?.price || 0;
         const terminalPrice = item.order?.plasticSum || 0;
-        const cashPrice = totalPrice - terminalPrice;
 
         return (
           <div>
@@ -76,10 +75,10 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
               name={item.order.seller.firstName}
               url={item.order.seller.avatar?.path}
             />
-            {/* F-Manager avatar — faqat tasdiqlanganda */}
-            {item.status === "approved" && item.casher && (
+            {/* F-Manager avatar — progress dan boshqa har qanday holatda */}
+            {item.order?.status !== "progress" && item.casher && (
               <TebleAvatar
-                status="success"
+                status={item.is_cancelled ? "fail" : "success"}
                 name={item.casher.firstName}
                 url={item.casher.avatar?.path}
               />
@@ -151,7 +150,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
           <span>{barCode?.collection?.title}</span>
           <span>{barCode?.model?.title}</span>
           <span>{barCode?.size?.title}</span>
-          <span>${formatPrice(barCode?.collection?.priceMeter || 0)}</span>
+          <span>${formatPrice(barCode?.collection?.collection_prices?.[0]?.priceMeter || barCode?.collection?.priceMeter || 0)}</span>
           <span>
             {barCode?.isMetric ? `${order?.kv || 0}sm` : `${order?.x || 0}x`}
           </span>
