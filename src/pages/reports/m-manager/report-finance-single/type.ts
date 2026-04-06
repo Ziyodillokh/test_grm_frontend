@@ -42,6 +42,14 @@ export interface TKassareportData {
   filialType?: string;
   filial?: any;
   report?: any;
+  managerSum?: number;
+  manegerSum?: number;
+  accauntantSum?: number;
+  accountantSum?: number;
+  managerSaldo?: number;
+  accountantSaldo?: number;
+  isManagerRejected?: boolean;
+  isAccountantRejected?: boolean;
   // Extra fields specific to this file
   payrollsDealerId?: string;
   isDealer?: boolean;
@@ -109,4 +117,5 @@ export interface TQuery {
 export interface TDealearQuery {
   month?: number;
   year?: number;
+  userId?: string;
 }
