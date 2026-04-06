@@ -8,10 +8,12 @@ const mediaField = z.object({
 export const QrBaseSchema = z.object({
   imgUrl: mediaField,
   videoUrl: mediaField,
-  otherImgs: z.array(z.object({
-    id: z.string().optional(),
-    url: z.string().optional(),
-  })).optional(),
+  otherImgs: z.array(
+    z.object({
+      id: z.string().optional(),
+      url: z.string().optional(),
+    }).nullish()
+  ).optional(),
   internetInfo: z.string().optional().default(''),
   internetTitle: z.string().optional().default(''),
   country: z.object({value: z.string(), label: z.string()}),

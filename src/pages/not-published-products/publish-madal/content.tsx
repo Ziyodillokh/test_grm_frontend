@@ -57,6 +57,7 @@ export default function FormContent() {
                 id: string;
                 title: string;
               };
+              description?: string;
             };
             setValue("country", {
               value: costomValue?.country?.id,
@@ -70,6 +71,9 @@ export default function FormContent() {
               value: undefined,
               label: "",
             })
+            if (costomValue?.description) {
+              setValue("internetInfo", costomValue.description);
+            }
           }}
 
           placeholder="collection"

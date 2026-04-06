@@ -1,10 +1,8 @@
 export interface ProductCharacteristic {
   id: string;
-  collection: string;
-  characteristics1: string;
-  characteristics2: string;
-  installmentParams: string;
+  title: string;
   description: string;
+  paymentDeliveryInfo: string;
 }
 
 export interface CharacteristicsQuery {
