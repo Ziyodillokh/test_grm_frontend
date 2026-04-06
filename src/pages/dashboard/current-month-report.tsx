@@ -99,7 +99,7 @@ export default function CurrentMonthReport() {
         data={reportTotalsData}
         onGreenCardClick={() => {
           if (reportId) {
-            navigate(`/m-manager/report-finance/${reportId}/my?myCashFlow=true`);
+            navigate(`/m-manager/report-finance/${reportId}/info/my?myCashFlow=true`);
           }
         }}
       />
