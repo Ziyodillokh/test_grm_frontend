@@ -127,4 +127,5 @@ export const apiRoutes = {
   clientOrderItems: '/client-order-items',
   filialPlan: '/filial-plan',
   videoMessages: "/video-messages",
+  qrLogo: "/qr-logo",
 } as const;

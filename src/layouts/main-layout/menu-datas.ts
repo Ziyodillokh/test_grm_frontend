@@ -388,7 +388,7 @@ export const DataMenu = {
     {
       id: 8,
       icons: () => QRCodeIcon(),
-      link: "/qr-code",
+      link: "/qr-logo",
       text: "QR-логотип",
     },
     {
