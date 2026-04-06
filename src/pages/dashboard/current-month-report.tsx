@@ -30,7 +30,7 @@ export default function CurrentMonthReport() {
   // Manager cashflow (prixod/rasxod) — faqat o'z cashflowlarim
   const { data: cashflowData } = useCashflowForMainManager({
     id: reportId,
-    enabled: Boolean(reportId),
+    enabled: Boolean(reportId) && Boolean(meUser?.id),
     userId: meUser?.id,
   });
 
