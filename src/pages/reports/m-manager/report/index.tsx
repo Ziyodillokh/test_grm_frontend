@@ -14,7 +14,7 @@ import { Columns } from "./columns";
 import { useParams } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
 import { useKassaReportSingle } from "../filial-report-finance/queries";
-import { useReportsSingle } from "../report-finance-single/queries";
+import { useCashflowForMainManager, useReportsSingle } from "../report-finance-single/queries";
 import { useYear } from "@/store/year-store";
 
 export default function ReportPage() {
@@ -102,6 +102,13 @@ export default function ReportPage() {
     enabled: Boolean(myCashFlow && id),
   });
 
+  // O'z prixod/rasxodim (myCashFlow uchun)
+  const { data: myTotals } = useCashflowForMainManager({
+    id: myCashFlow ? id : undefined,
+    enabled: Boolean(myCashFlow && id && meUser?.id),
+    userId: meUser?.id,
+  });
+
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
@@ -114,7 +121,7 @@ export default function ReportPage() {
     <>
       <Filter month={myCashFlow?myCashFlowReports?.month: KassaReportSingle?.month} filial={KassaReportSingle?.filial?.title} />
       < >
-        {myCashFlow && (
+        {myCashFlow ? (
           <div className="grid grid-cols-3 gap-3 mb-3">
             {/* Oq card — o'zimga tegishli */}
             <div className="bg-card border border-border rounded-xl p-5">
@@ -125,6 +132,16 @@ export default function ReportPage() {
                   : myCashFlowReports?.accountantSum || myCashFlowReports?.accauntantSum || 0
                 ).toFixed(2)}$
               </p>
+              <div className="flex gap-4 mt-3">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Prixod</p>
+                  <p className="text-sm font-semibold text-[#89A143]">+{(myTotals?.income || 0).toFixed(2)}$</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Rasxod</p>
+                  <p className="text-sm font-semibold text-[#E38157]">-{(myTotals?.expense || 0).toFixed(2)}$</p>
+                </div>
+              </div>
               <p className="text-xs text-muted-foreground mt-3 mb-1">Saldo balans</p>
               <p className="text-sm font-semibold text-[#89A143]">
                 {(meUser?.position?.role == 9
@@ -148,26 +165,23 @@ export default function ReportPage() {
               </p>
             </div>
           </div>
-        )}
-        {
+        ) : (
           <CardSort
           isUserSelectble
             isOnlineCashFlow={meUser?.position.role == 10}
-            isOnlyCash={myCashFlow && Boolean(meUser?.position?.role == 9)}
-            isOnlyTerminal={myCashFlow && Boolean(meUser?.position?.role == 10)}
-            isAddible={myCashFlow}
+            isOnlyCash={false}
+            isOnlyTerminal={false}
+            isAddible={false}
             kassaReportId={FManagerCashFlow ? kassaReportId : undefined}
-            reportId={myCashFlow && !FManagerCashFlow ? id : undefined}
+            reportId={undefined}
             KassaReport={
              ( id === "undefined" || FManagerCashFlow)
                 ? KassaReportSingle
-                : myCashFlow
-                  ? myCashFlowReports
-                  :  !id ?  KassaReport : undefined
+                :  !id ?  KassaReport : undefined
             }
             KassaId={(id === "undefined" || !id) ? undefined : id}
           />
-        }
+        )}
         <DataTable
           columns={Columns}
           data={flatData || []}
