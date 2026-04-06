@@ -89,7 +89,7 @@ export const Columns: ColumnDef<TData>[] = [
         id: "closer",
         cell: ({ row }) => {
           const item = row.original;
-          return  <TebleAvatar status={"none"} name={ item?.casher?.firstName} url={item?.casher?.avatar?.path} />
+          return  <TebleAvatar status={"none"} name={ item?.createdBy?.firstName} url={item?.createdBy?.avatar?.path} />
            
         },
       },

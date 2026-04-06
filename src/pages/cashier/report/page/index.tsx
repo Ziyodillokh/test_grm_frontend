@@ -154,7 +154,7 @@ export default function Page() {
       price: parseFloat(amount),
       type: dialogType === "parish" ? "Приход" : "Расход",
       comment,
-      casher: meUser?.id,
+      createdBy: meUser?.id,
       kassa: reportData?.id,
       cashflow_type: selectedCategory,
       tip: "cashflow",

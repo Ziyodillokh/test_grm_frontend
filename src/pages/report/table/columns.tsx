@@ -95,7 +95,7 @@ export const Columns: ColumnDef<TData>[] = [
   },
   {
     header: "Кассир",
-    accessorKey: "casher.title",
+    accessorKey: "createdBy.title",
   },
   {
     header: "Время",
@@ -171,7 +171,7 @@ export const ColumnsFManager: ColumnDef<TData>[] = [
   },
   {
     header: "Кассир",
-    accessorKey: "casher.title",
+    accessorKey: "createdBy.title",
   },
   {
     header: "Статус",
@@ -254,7 +254,7 @@ export const ColumnsDManagerMonthly: ColumnDef<TData>[] = [
   },
   {
     header: "Менеджера",
-    accessorKey: "casher.title",
+    accessorKey: "createdBy.title",
     cell: () => {
       return (
         <div className="flex gap-1 justify-start">
@@ -395,7 +395,7 @@ export const ColumnsDManager: ColumnDef<TData>[] = [
   },
   {
     header: "Менеджера",
-    accessorKey: "casher.title",
+    accessorKey: "createdBy.title",
     cell: () => {
       return (
         <div className="flex gap-1 justify-start">

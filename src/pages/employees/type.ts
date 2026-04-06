@@ -60,7 +60,7 @@ export type TQuery = {
   filial?: string;
   filialId?: string;
   kassaId?: string;
-  casherId?:string;
+  createdById?:string;
   kassaReport?:string;
   kassa?:string;
   tip?:string;

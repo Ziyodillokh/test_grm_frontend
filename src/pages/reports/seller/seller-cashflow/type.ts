@@ -39,7 +39,7 @@ export interface TData {
     type: string;
     is_visible: boolean;
   }
-  casher: {
+  createdBy: {
     avatar: {
       id: string;
       path: string;

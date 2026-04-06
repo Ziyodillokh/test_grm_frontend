@@ -147,7 +147,7 @@ export default function AddingParishOrFlow({ kassaId }: { kassaId: string }) {
         type === "parish"
           ? categories.find((c) => c.id === selectedCategory)?.title
           : categories.find((c) => c.id === selectedCategory)?.title,
-      casher: meUser.id,
+      createdBy: meUser.id,
       kassa: kassaId,
       cashflow_type: selectedCategory,
       tip: "cashflow",

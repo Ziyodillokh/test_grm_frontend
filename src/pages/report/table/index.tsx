@@ -68,7 +68,7 @@ export default function Page() {
       limit: 10,
       page: 1,
       filialId:  Myid == "myReport" ? undefined: meUser?.position?.role == 10||meUser?.position?.role ===  9   ? filial || undefined :  meUser?.filial?.id || undefined,
-      casherId: Myid =="myReport" ? meUser?.id || undefined : undefined,
+      createdById: Myid =="myReport" ? meUser?.id || undefined : undefined,
       kassa:kassaReports||undefined,
       // @ts-ignore
       type: typeFilter[tip as string],

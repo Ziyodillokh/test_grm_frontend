@@ -76,23 +76,23 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
               url={item.order.seller.avatar?.path}
             />
             {/* F-Manager avatar — progress dan boshqa har qanday holatda */}
-            {item.order?.status !== "progress" && item.casher && (
+            {item.order?.status !== "progress" && item.createdBy && (
               <TebleAvatar
                 status={item.is_cancelled ? "fail" : "success"}
-                name={item.casher.firstName}
-                url={item.casher.avatar?.path}
+                name={item.createdBy.firstName}
+                url={item.createdBy.avatar?.path}
               />
             )}
           </div>
         );
       }
 
-      // Cashflow (order bo'lmagan) — casher avatari
+      // Cashflow (order bo'lmagan) — createdBy avatari
       return (
         <TebleAvatar
           status={item?.is_cancelled ? "fail" : "success"}
-          name={item?.casher?.firstName}
-          url={item?.casher?.avatar?.path}
+          name={item?.createdBy?.firstName}
+          url={item?.createdBy?.avatar?.path}
         />
       );
     },

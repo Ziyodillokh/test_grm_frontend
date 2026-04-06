@@ -25,7 +25,7 @@ export const Columns: ColumnDef<TData>[] = [
             
                 </div>
                 <TebleAvatar status={"none"} className="-ml-2 w-[40px] h-[40px]" size={40} name={ item?.seller?.firstName} url={item?.seller?.avatar?.path} />
-                <TebleAvatar status={"none"} className="-ml-2 w-[40px] h-[40px]" size={40}  name={ item?.casher?.firstName} url={item?.casher?.avatar?.path} />
+                <TebleAvatar status={"none"} className="-ml-2 w-[40px] h-[40px]" size={40}  name={ item?.createdBy?.firstName} url={item?.createdBy?.avatar?.path} />
               </div>
           );
         },

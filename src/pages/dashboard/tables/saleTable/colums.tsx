@@ -20,7 +20,7 @@ export const Columns: ColumnDef<TData>[] = [
                 <SquareArrowOutDownLeft className={`h-6 w-6  ${!item?.isDebt ?  "text-[#85D188]" : "text-[#D76B43] "}`} />
                 </div>
                 <TebleAvatar status={"none"} className="-ml-2 w-[40px] h-[40px]" size={40} name={ item?.seller?.firstName} url={item?.seller?.avatar?.path} />
-                <TebleAvatar status={"none"} className="-ml-2 w-[40px] h-[40px]" size={40}  name={ item?.casher?.firstName} url={item?.casher?.avatar?.path} />
+                <TebleAvatar status={"none"} className="-ml-2 w-[40px] h-[40px]" size={40}  name={ item?.createdBy?.firstName} url={item?.createdBy?.avatar?.path} />
               </div>
           );
         },

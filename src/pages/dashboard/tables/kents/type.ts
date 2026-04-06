@@ -16,7 +16,7 @@ export interface TData {
     id: string;
     fullName: string;
   };
-  casher: {
+  createdBy: {
     id: string;
     firstName: string;
     lastName: string;

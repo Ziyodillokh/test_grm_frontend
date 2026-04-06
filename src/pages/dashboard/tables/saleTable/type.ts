@@ -5,7 +5,7 @@ export interface TData {
     date: string;
     plasticSum: number;
     seller: Person;
-    casher: Person;
+    createdBy: Person;
     isDebt: boolean;
     product: {
       isInternetShop: boolean;

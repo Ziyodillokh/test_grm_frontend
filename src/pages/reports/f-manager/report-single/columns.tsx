@@ -198,8 +198,8 @@ export const Columns: ColumnDef<TData>[] = [
       return (
         <TebleAvatar
           status={item?.order?.status == "rejected" ? "fail" : `success`}
-          url={item?.casher?.avatar?.path}
-          name={item?.casher?.avatar?.name}
+          url={item?.createdBy?.avatar?.path}
+          name={item?.createdBy?.avatar?.name}
         />
       );
     },

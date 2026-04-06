@@ -171,7 +171,7 @@ export const Columns: ColumnDef<TData>[] = [
     id: "closer",
     cell: ({ row }) => {
       const item = row.original;
-      return <TebleAvatar status={item?.order?.status == "rejected" ? "fail" : "success"} name={item?.casher?.fatherName} url={item?.casher?.avatar?.path} />
+      return <TebleAvatar status={item?.order?.status == "rejected" ? "fail" : "success"} name={item?.createdBy?.fatherName} url={item?.createdBy?.avatar?.path} />
 
     },
   },

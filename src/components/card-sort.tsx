@@ -282,7 +282,7 @@ export default function CardSort({
         comment,
         price,
         is_online: isOnlineCashFlow || undefined,
-        casher: meUser?.id,
+        createdBy: meUser?.id,
         kassa: kassaReportId || kassaReports || (kassaReports ? undefined : kassaId?.id) || undefined,
         report: reportId || undefined,
         debtId: isUserLocSelectble ? debtId : undefined,

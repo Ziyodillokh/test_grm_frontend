@@ -77,7 +77,7 @@ export default function ReportPage() {
           id === "undefined" || !id || myCashFlow || FManagerCashFlow
             ? undefined
             : id,
-        casherId:myCashFlow?  typesManage || undefined:  id === "undefined" ? meUser?.id : undefined,
+        createdById:myCashFlow?  typesManage || undefined:  id === "undefined" ? meUser?.id : undefined,
         // @ts-ignore
         type: typeFilter[tip as string],
         // @ts-ignore

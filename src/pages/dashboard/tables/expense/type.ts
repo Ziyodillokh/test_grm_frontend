@@ -13,7 +13,7 @@ export interface TData {
     slug: string;
     type: string;
   };
-  casher: {
+  createdBy: {
     id: string;
     firstName: string;
     lastName: string;

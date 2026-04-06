@@ -135,7 +135,7 @@ export interface TransactionItem {
     type: string;
     is_visible: boolean;
 }
-  casher:{
+  createdBy:{
     avatar: {
       id: string;
       path: string;

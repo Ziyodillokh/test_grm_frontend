@@ -39,7 +39,7 @@ export interface TData {
     type: string;
     is_visible: boolean;
 }
-  casher:{
+  createdBy:{
     avatar: {
       id: string;
       path: string;
@@ -144,7 +144,7 @@ order: {
 export interface TQuery {
   search?: string | undefined;
   kassaId?: string | undefined;
-  casherId?: string | undefined;
+  createdById?: string | undefined;
   filialId?: string;
   kassa?: string | undefined;
   limit: number;
