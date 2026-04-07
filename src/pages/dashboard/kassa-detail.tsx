@@ -1,15 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryState } from "nuqs";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowDown, ArrowUp } from "lucide-react";
 
-import CardSort from "@/components/card-sort";
 import { DataTable } from "@/components/ui/data-table";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
-import { ReportColumns } from "@/pages/cashier/report/page/columns";
+import { KassaPageColumns } from "@/pages/cashier/report/page/kassa-columns";
 import { apiRoutes } from "@/service/apiRoutes";
 import { getByIdData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
+import { formatNumber } from "@/utils/farmatNumber";
 
 const tipFilter: Record<string, string> = {
   income: "cashflow",
@@ -31,7 +31,7 @@ export default function DashboardKassaDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
-  const [tip] = useQueryState("tip", parseAsString);
+  const [tip, setTip] = useQueryState("tip", parseAsString);
   const [sortSingle] = useQueryState(
     "sortSingle",
     parseAsString.withDefault("Все")
@@ -67,9 +67,37 @@ export default function DashboardKassaDetail() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
+  const cards = [
+    { label: "Umumiy sotuv", value: kassaData?.sale || 0, dark: true },
+    { label: "Qarz savdosi", value: kassaData?.debt_sum || 0 },
+    { label: "Terminal", value: kassaData?.plasticSum || 0 },
+    { label: "Qaytarilgan", value: -(kassaData?.return_sale || 0), orange: true },
+    { label: "Inkasatsiya", value: Math.abs(kassaData?.cash_collection || 0) },
+    { label: "Sotuv hajmi m²", value: kassaData?.totalSize || 0 },
+    { label: "Navar foydasi", value: kassaData?.additionalProfitTotalSum || 0 },
+    { label: "Chegirma", value: Number(kassaData?.discount) || 0, orange: true },
+  ];
+
+  const activeFilter = tip;
+
+  const filterMap: Record<string, string> = {
+    "Umumiy sotuv": "sale",
+    "Qarz savdosi": "sale",
+    Terminal: "terminal",
+    Qaytarilgan: "return",
+    Inkasatsiya: "collection",
+    "Sotuv hajmi m²": "sale",
+    "Navar foydasi": "navar",
+    Chegirma: "discount",
+  };
+
+  const handleCardClick = (filterValue: string) => {
+    setTip(activeFilter === filterValue ? null : filterValue);
+  };
+
   return (
-    <div className="p-4">
-      {/* Breadcrumb: ← Joriy Oy > Filial nomi */}
+    <div className="px-4 pt-2">
+      {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm mb-4">
         <ArrowLeft
           className="w-5 h-5 cursor-pointer hover:text-foreground text-muted-foreground"
@@ -87,15 +115,68 @@ export default function DashboardKassaDetail() {
         </span>
       </div>
 
-      <CardSort
-        KassaReport={kassaData as any}
-        KassaId={id || ""}
-        isKassa={false}
-      />
+      {/* Cards */}
+      <div className="flex gap-3 mb-4">
+        {/* Total card */}
+        <div
+          onClick={() => handleCardClick("")}
+          className="bg-[#48B533] text-white rounded-xl p-5 min-w-[280px] cursor-pointer"
+        >
+          <p className="text-[32px] font-bold leading-tight">
+            ${formatNumber(kassaData?.in_hand || 0)}
+          </p>
+          <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
+            <span className="flex items-center gap-1">
+              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(kassaData?.income || 0)}
+            </span>
+            <span className="flex items-center gap-1">
+              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(kassaData?.expense || 0)}
+            </span>
+          </div>
+          <p className="text-[13px] mt-2 opacity-80">
+            Saldo balans — ${formatNumber(kassaData?.opening_balance || 0)}
+          </p>
+        </div>
 
-      <div className="h-[calc(100vh-330px)] scrollCastom">
+        {/* Small cards 2x4 grid */}
+        <div className="grid grid-cols-4 gap-2 w-full">
+          {cards.map((card) => {
+            const filterVal = filterMap[card.label] || "";
+            const isActive = activeFilter === filterVal && filterVal !== "";
+
+            return (
+              <div
+                key={card.label}
+                onClick={() => handleCardClick(filterVal)}
+                className={`rounded-xl px-4 py-3 cursor-pointer transition-colors ${
+                  card.orange
+                    ? isActive
+                      ? "bg-[#c46d3f] text-white"
+                      : "bg-[#E38157] text-white"
+                    : card.dark
+                      ? isActive
+                        ? "bg-[#2d5a1f] text-white"
+                        : "bg-[#3d6b2e] text-white"
+                      : isActive
+                        ? "bg-primary text-background"
+                        : "bg-card border border-border"
+                }`}
+              >
+                <p className="text-[16px] font-bold">
+                  {card.value < 0 ? "-" : ""}
+                  {formatNumber(Math.abs(card.value))}
+                </p>
+                <p className="text-[12px] mt-1 opacity-70">{card.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="h-[calc(100vh-280px)] scrollCastom">
         <DataTable
-          columns={ReportColumns}
+          columns={KassaPageColumns}
           data={flatData || []}
           isLoading={isLoading}
           hasHeader={false}
