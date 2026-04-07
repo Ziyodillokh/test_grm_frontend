@@ -429,7 +429,7 @@ export default function CardSort({
               className={`w-full  grid ${types && types?.length < 6 ? "grid-cols-2" : "grid-cols-3"} gap-0.5`}
             >
               {types
-                ?.filter((i) => i?.is_visible)
+                ?.filter((i) => i?.is_visible && i?.slug !== "Balance")
                 ?.map((item) => (
                   <div
                     key={item.id}

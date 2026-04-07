@@ -158,8 +158,9 @@ export default function Page() {
     cashflowTypesData as unknown as CashflowType[]
   )?.filter(
     (ct) =>
-      ct.type === (dialogType === "parish" ? "income" : "out") ||
-      ct.type === "both"
+      (ct.type === (dialogType === "parish" ? "income" : "out") ||
+        ct.type === "both") &&
+      ct.slug !== "Balance"
   );
 
   const cards = [

@@ -91,7 +91,7 @@ export default function AddingParishOrFlow({ kassaId }: { kassaId: string }) {
 
   const getCategories = () => {
     const operationType = type === "parish" ? "income" : "out";
-    return  (cashflowTypesResponse as unknown as  CashflowType[])?.filter((ct) => ct.type === operationType || ct.type === "both")
+    return  (cashflowTypesResponse as unknown as  CashflowType[])?.filter((ct) => (ct.type === operationType || ct.type === "both") && ct.slug !== "Balance")
       ?.map((ct) => ({
         id: ct.id,
         title: ct.title,
