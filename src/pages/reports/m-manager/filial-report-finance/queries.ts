@@ -8,7 +8,7 @@ import { getAllData, getByIdData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
 import { TResponse } from "@/types";
 
-import { TChaFlowData, TData, TQuery } from "./type";
+import { TData, TQuery } from "./type";
 import { TKassareportData } from "../report-finance/type";
 
 interface IKassaData {
@@ -21,11 +21,6 @@ interface IKassareportId {
   queries?: TQuery;
   id?: string;
   enabled: boolean;
-}
-
-interface ICashflowFilial {
-  enabled: boolean;
-  id: string | undefined;
 }
 
 export const useDataKassa = ({ queries, enabled }: IKassaData) =>
@@ -66,10 +61,3 @@ export const useKassaReportSingle = ({
       ),
   });
 
-export const useCashflowFilial = ({ enabled, id }: ICashflowFilial) =>
-  useQuery({
-    queryKey: [apiRoutes.cashflowFilial],
-    enabled,
-    queryFn: () =>
-      getByIdData<TChaFlowData, TQuery>(apiRoutes.cashflowFilial, id || ""),
-  });

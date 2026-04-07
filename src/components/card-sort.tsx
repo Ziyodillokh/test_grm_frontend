@@ -306,7 +306,6 @@ export default function CardSort({
       queryClient.invalidateQueries({ queryKey: [apiRoutes?.kassaReports] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.kassa] });
-      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflowFilial] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
     } catch (error) {
       toast.error(String(error));

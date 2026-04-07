@@ -3,7 +3,6 @@ import { DataTable } from "@/components/ui/data-table";
 
 import CardSort from "@/components/card-sort";
 import {
-  useCashflowFilial,
   useDataKassa,
   useKassaReportSingle,
 } from "./queries";
@@ -38,10 +37,6 @@ export default function PageFinanceFilial() {
     enabled: Boolean(id),
   });
 
-  const { data: cashflowFilial } = useCashflowFilial({
-    id: id || undefined,
-    enabled: Boolean(id),
-  });
 
   const flatKasssaData =
     kassaData?.pages?.flatMap((page) => page?.items || []) || [];
@@ -57,12 +52,7 @@ export default function PageFinanceFilial() {
         <CardSort KassaReport={KassaReportSingle} />
         <DataTable
           columns={KassaColumns || []}
-          data={[
-            ...(cashflowFilial?.income || cashflowFilial?.expense
-              ? [{ status: "Филиал приходы и расходы", income: cashflowFilial.income, expense: cashflowFilial.expense }]
-              : []),
-            ...flatKasssaData,
-          ]}
+          data={flatKasssaData}
           isLoading={KassaLoading}
           isRowClickble={true}
           // onRowClick={(data) => data?.id ?

@@ -21,7 +21,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useOpenKassa } from "@/pages/report/table/queries";
-import { useCashflowFilial } from "@/pages/report/table/queries";
 import { useMeStore } from "@/store/me-store";
 import { apiRoutes } from "@/service/apiRoutes";
 import { AddData, getAllData } from "@/service/apiHelpers";
@@ -72,11 +71,6 @@ export default function Page() {
     id: meUser?.filial?.id,
   });
 
-  const { data: cashflowTotals } = useCashflowFilial({
-    id: reportData?.id,
-    enabled: Boolean(reportData?.id),
-  });
-
   const { data: cashflowTypesData } = useQuery({
     queryKey: ["/cashflow-types/for/branch-manager"],
     queryFn: () => getAllData("/cashflow-types/for/branch-manager"),
@@ -93,7 +87,6 @@ export default function Page() {
       );
       queryClient.invalidateQueries({ queryKey: [apiRoutes.openKassa] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
-      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflowFilial] });
       setDialogOpen(false);
     },
   });
@@ -270,11 +263,11 @@ export default function Page() {
           <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
             <span className="flex items-center gap-1">
               <ArrowDown className="w-3.5 h-3.5" />$
-              {formatNumber(cashflowTotals?.income || 0)}
+              {formatNumber(reportData?.income || 0)}
             </span>
             <span className="flex items-center gap-1">
               <ArrowUp className="w-3.5 h-3.5" />$
-              {formatNumber(cashflowTotals?.expense || 0)}
+              {formatNumber(reportData?.expense || 0)}
             </span>
           </div>
           <p className="text-[13px] mt-2 opacity-80">

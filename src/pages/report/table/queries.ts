@@ -5,7 +5,7 @@ import { getAllData, getByIdData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
 import { TResponse } from "@/types";
 
-import { TChaFlowData, TData, TKassareportData, TQuery } from "../type";
+import { TData, TKassareportData, TQuery } from "../type";
 
 interface IData {
   options?: DefinedInitialDataOptions<TResponse<TData>>;
@@ -33,10 +33,6 @@ interface IKassareportId {
   enabled: boolean;
 }
 
-interface ICashflowFilial{
-  enabled: boolean;
-  id:string | undefined
-}
 export const useKassa= ({ options, queries }: IData) =>
   useQuery({
     ...options,
@@ -106,14 +102,4 @@ export const useOpenKassa = ({ options, id, queries }: IProductsChecks) =>
         });
     
 
-        export const useCashflowFilial= ({ enabled,id }: ICashflowFilial) =>
-          useQuery({
-            queryKey: [apiRoutes.cashflowFilial],
-            enabled,
-            queryFn: () =>
-              getByIdData<TChaFlowData, TQuery>(
-                apiRoutes.cashflowFilial,
-                id || "",
-              ),
-          });
       
