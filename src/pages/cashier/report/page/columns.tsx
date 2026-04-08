@@ -24,7 +24,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { toast } from "sonner";
-import { UpdatePatchData } from "@/service/apiHelpers";
+import { PatchData, UpdatePatchData } from "@/service/apiHelpers";
 import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 
@@ -256,13 +256,23 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
       const canUpdate = !item.is_cancelled && item.status !== "cancelled" && item.status !== "rejected";
 
       const RejectFunt = () => {
-        setLoading(true)
-        UpdatePatchData(apiRoutes.cashflow +"/"+ row?.original?.id+"" ,"cancel",{})
-          .then(() => {
-              toast.success("Успешно отменено");
-            queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
-          })
-          .finally(()=>setLoading(false));
+        setLoading(true);
+        const orderId = item?.order?.id;
+        if (orderId) {
+          PatchData(apiRoutes.order + "/reject/" + orderId, {})
+            .then(() => {
+              toast.success("Bekor qilindi");
+              queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+            })
+            .finally(() => setLoading(false));
+        } else {
+          UpdatePatchData(apiRoutes.cashflow + "/" + row?.original?.id + "", "cancel", {})
+            .then(() => {
+              toast.success("Bekor qilindi");
+              queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+            })
+            .finally(() => setLoading(false));
+        }
       };
 
       const ApproveFunt = () => {
