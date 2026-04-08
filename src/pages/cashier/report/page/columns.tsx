@@ -6,9 +6,11 @@ import {
   Loader,
   MessageSquareText,
   Minus,
+  Pencil,
   Plus,
   ShoppingCart,
 } from "lucide-react";
+import { parseAsString, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
@@ -249,6 +251,9 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
       const [loading,setLoading] = useState(false)
       const [approveLoading, setApproveLoading] = useState(false)
       const queryClient = useQueryClient();
+      const [, setEditId] = useQueryState("editCashflowId", parseAsString);
+      const item = row.original;
+      const canUpdate = !item.is_cancelled && item.status !== "cancelled" && item.status !== "rejected";
 
       const RejectFunt = () => {
         setLoading(true)
@@ -295,6 +300,15 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
             refetchUrl={apiRoutes.cashflow}
             id={row?.original?.id + ""}
           >
+          {/* Tahrirlash */}
+          {canUpdate && (
+            <DropdownMenuItem onClick={() => setEditId(item.id + "")} className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
+              <div className="w-full text-center">
+                <Pencil size={28} className="w-[28px] m-auto h-[28px]" />
+                <p className="text-[13px]">Tahrirlash</p>
+              </div>
+            </DropdownMenuItem>
+          )}
           {/* PENDING order → Otmena (bekor qilish) */}
           { (row?.original?.tip == "order" && row?.original?.status === "pending" && row?.original?.type!="Расход") &&  <DropdownMenuItem className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
                 <div

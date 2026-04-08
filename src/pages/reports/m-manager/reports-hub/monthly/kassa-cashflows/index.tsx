@@ -32,7 +32,7 @@ export default function KassaCashflowsPage() {
 
       <div className="h-[calc(100vh-340px)] scrollCastom">
         <DataTable
-          columns={CashflowColumns}
+          columns={CashflowColumns.filter(col => col.id !== 'harakatlar')}
           data={flatData}
           isLoading={isLoading}
           hasHeader={true}

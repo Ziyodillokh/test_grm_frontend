@@ -29,6 +29,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 import { useDataCashflow } from "../queries";
 import { KassaPageColumns } from "./kassa-columns";
+import UpdateCashflowDialog from "./update-cashflow-dialog";
 import type { CashflowType } from "@/components/adding-parish-flow";
 
 const tipFilter: Record<string, string> = {
@@ -57,6 +58,7 @@ export default function Page() {
   );
   const [id, setId] = useQueryState("id");
   const [tip, setTip] = useQueryState("tip", parseAsString);
+  const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<"parish" | "flow">("parish");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -415,6 +417,13 @@ export default function Page() {
           </Button>
         </DialogContent>
       </Dialog>
+
+      {/* Update Dialog */}
+      <UpdateCashflowDialog
+        editId={editCashflowId}
+        onClose={() => setEditCashflowId(null)}
+        item={flatData.find((i: any) => String(i.id) === editCashflowId)}
+      />
     </div>
   );
 }

@@ -3,7 +3,9 @@ import {
   CheckCircle,
   FileOutput,
   Loader,
+  Pencil,
 } from "lucide-react";
+import { parseAsString, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
@@ -175,6 +177,9 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
       const [loading, setLoading] = useState(false);
       const [approveLoading, setApproveLoading] = useState(false);
       const queryClient = useQueryClient();
+      const [, setEditId] = useQueryState("editCashflowId", parseAsString);
+      const item = row.original;
+      const canUpdate = !item.is_cancelled && item.status !== "cancelled" && item.status !== "rejected";
 
       const RejectFunt = () => {
         setLoading(true);
@@ -234,6 +239,16 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
             refetchUrl={apiRoutes.cashflow}
             id={row?.original?.id + ""}
           >
+            {/* Tahrirlash */}
+            {canUpdate && (
+              <DropdownMenuItem
+                onClick={() => setEditId(item.id + "")}
+                className="flex items-center gap-2 py-2 cursor-pointer"
+              >
+                <Pencil className="h-4 w-4" />
+                <span className="text-[13px]">Tahrirlash</span>
+              </DropdownMenuItem>
+            )}
             {/* PENDING order → Bekor qilish */}
             {row?.original?.tip === "order" &&
               row?.original?.status === "pending" &&

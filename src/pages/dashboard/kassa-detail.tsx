@@ -176,7 +176,7 @@ export default function DashboardKassaDetail() {
       {/* Table */}
       <div className="h-[calc(100vh-280px)] scrollCastom">
         <DataTable
-          columns={KassaPageColumns}
+          columns={KassaPageColumns.filter(col => col.id !== 'harakatlar')}
           data={flatData || []}
           isLoading={isLoading}
           hasHeader={false}
