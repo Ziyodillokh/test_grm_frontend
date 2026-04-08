@@ -24,7 +24,7 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/f-manager/report/:id/info",
+    url: "/f-manager/report/:id/",
     Element: SinglePage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
