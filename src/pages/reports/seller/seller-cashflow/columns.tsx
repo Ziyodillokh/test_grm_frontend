@@ -1,94 +1,59 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import { TData } from "./type";
-
-import { ShoppingCart } from "lucide-react";
-import ActionBadge from "@/components/actionBadge";
 import { format } from "date-fns";
+import { uz } from "date-fns/locale";
+import formatPrice from "@/utils/formatPrice";
+import type { DayData } from "./type";
 
-export const SellerCashflowColumns: ColumnDef<TData>[] = [
+export const SellerDailyColumns: ColumnDef<DayData>[] = [
   {
-    header: "Фото",
-    cell: () => {
+    id: "date",
+    header: "Kun",
+    cell: ({ row }) => {
+      const item = row.original;
       return (
-        <div
-          className={`w-12 h-12 flex items-center justify-center bg-[#89A143] text-white"`}
-        >
-          <ShoppingCart className={`text-white h-6 w-6`} />
-        </div>
+        <p className="text-[14px] font-medium">
+          {format(new Date(item.date), "d-MMM", { locale: uz })}
+        </p>
       );
     },
   },
   {
-    header: "Сумма",
-    cell: ({ row }) => {
-      const item = row.original;
-      return <p className="text-[#89A143]">{item?.price} $</p>;
-    },
-  },
-
-
-  {
-    header: "Тип",
-    cell: () => {
-      return <ActionBadge childen="Продажа" status="accepted" />;
-    },
+    id: "count",
+    header: "Soni",
+    cell: ({ row }) => <p className="text-[14px]">{row.original.count}</p>,
   },
   {
-    header: "Коллекция",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.bar_code?.collection?.title}</p>;
-    },
+    id: "kv",
+    header: "Hajm",
+    cell: ({ row }) => (
+      <p className="text-[14px]">{row.original.kv} m²</p>
+    ),
   },
   {
-    header: "Модель",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.bar_code?.model?.title}</p>;
-    },
+    id: "earn",
+    header: "Sotuv",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#89A143] font-medium">
+        {formatPrice(row.original.earn)}$
+      </p>
+    ),
   },
   {
-    header: "Размер",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.bar_code?.size?.title}</p>;
-    },
+    id: "discount",
+    header: "Skidka",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#E38157]">
+        {row.original.discount > 0 ? `-${formatPrice(row.original.discount)}$` : "—"}
+      </p>
+    ),
   },
   {
-    header: "Цена",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.bar_code?.collection?.priceMeter}$</p>;
-    },
-  },
-  {
-    header: "Количество",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.x} {item?.order?.bar_code?.isMetric ? "" : "x"}</p>;
-    },
-  },
-  {
-    header: "Скидка",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.discountSum}$</p>;
-    },
-  },
-
-  {
-    header: "Навар",
-    cell: ({ row }) => {
-      const item = row.original
-      return <p>{item?.order?.additionalProfitSum}$</p>;
-    },
-  },
-  {
-    id: "time",
-    cell: ({ row }) => {
-      const item = row.original;
-      return <p className="text-[13px]">{format(item?.date, "dd MMM HH:mm")}</p>;
-    },
+    id: "plastic",
+    header: "Terminal",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#58A0C6]">
+        {row.original.plastic > 0 ? `${formatPrice(row.original.plastic)}$` : "—"}
+      </p>
+    ),
   },
 ];
