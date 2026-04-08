@@ -84,8 +84,17 @@ export default function KassaToolbar({
       if (startDate) query.fromDate = startDate;
       if (endDate) query.toDate = endDate;
       const params = `?${qs.stringify(query, { arrayFormat: "repeat" })}`;
-      window.location.href =
-        import.meta.env.VITE_BASE_URL + apiRoutes.excelCashflowsExcel + params;
+      const url = import.meta.env.VITE_BASE_URL + apiRoutes.excelCashflowsExcel + params;
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "cashflows.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
     },
   });
 
