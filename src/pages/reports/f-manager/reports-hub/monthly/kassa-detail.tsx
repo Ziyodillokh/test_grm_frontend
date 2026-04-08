@@ -1,11 +1,18 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { ArrowLeft, ArrowDown, ArrowUp, Lock, Loader } from "lucide-react";
 
-import CardSort from "@/components/card-sort";
 import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
-import { ReportColumns } from "@/pages/cashier/report/page/columns";
+import { KassaPageColumns } from "@/pages/cashier/report/page/kassa-columns";
+import UpdateCashflowDialog from "@/pages/cashier/report/page/update-cashflow-dialog";
 import { useKassaReportSingle } from "@/pages/reports/m-manager/filial-report-finance/queries";
+import { formatNumber } from "@/utils/farmatNumber";
+import { PatchData } from "@/service/apiHelpers";
+import { apiRoutes } from "@/service/apiRoutes";
 
 const tipFilter: Record<string, string> = {
   income: "cashflow",
@@ -25,13 +32,30 @@ const typeFilter: Record<string, string> = {
 
 export default function MonthlyKassaDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
-  const [tip] = useQueryState("tip", parseAsString);
-  const [sortSingle] = useQueryState("sortSingle", parseAsString.withDefault("Все"));
+  const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
+  const [tip, setTip] = useQueryState("tip", parseAsString);
+  const [sortSingle] = useQueryState(
+    "sortSingle",
+    parseAsString.withDefault("Все")
+  );
 
-  const { data: kassaReport } = useKassaReportSingle({
+  const { data: kassaData } = useKassaReportSingle({
     id: id || undefined,
     enabled: Boolean(id),
+  });
+
+  const { mutate: closeKassa, isPending: closePending } = useMutation({
+    mutationFn: () => PatchData(apiRoutes.kassaClose, { ids: [id] }),
+    onSuccess: () => {
+      toast.success("Kassa muvaffaqiyatli yopildi");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
+    },
+    onError: () => {
+      toast.error("Kassani yopishda xatolik yuz berdi");
+    },
   });
 
   const cashflowStatus =
@@ -56,30 +80,150 @@ export default function MonthlyKassaDetailPage() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
+  const cards = [
+    { label: "Umumiy sotuv", value: kassaData?.sale || 0, dark: true },
+    { label: "Qarz savdosi", value: kassaData?.debt_sum || 0 },
+    { label: "Terminal", value: kassaData?.plasticSum || 0 },
+    { label: "Qaytarilgan", value: -(kassaData?.return_sale || 0), orange: true },
+    { label: "Inkasatsiya", value: Math.abs(kassaData?.cash_collection || 0) },
+    { label: "Sotuv hajmi m²", value: kassaData?.totalSize || 0 },
+    { label: "Navar foydasi", value: kassaData?.additionalProfitTotalSum || 0 },
+    { label: "Chegirma", value: Number(kassaData?.discount) || 0, orange: true },
+  ];
+
+  const activeFilter = tip;
+
+  const filterMap: Record<string, string> = {
+    "Umumiy sotuv": "sale",
+    "Qarz savdosi": "sale",
+    Terminal: "terminal",
+    Qaytarilgan: "return",
+    Inkasatsiya: "collection",
+    "Sotuv hajmi m²": "sale",
+    "Navar foydasi": "navar",
+    Chegirma: "discount",
+  };
+
+  const handleCardClick = (filterValue: string) => {
+    setTip(activeFilter === filterValue ? null : filterValue);
+  };
+
   return (
-    <>
-      <div className="p-4">
-        <h2 className="text-xl font-semibold mb-4">
-          {kassaReport?.filial?.name || "Kassa"} — {kassaReport?.month ? `${kassaReport.month}-oy` : ""}
-        </h2>
+    <div className="px-4 pt-2">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-sm mb-4">
+        <ArrowLeft
+          className="w-5 h-5 cursor-pointer hover:text-foreground text-muted-foreground"
+          onClick={() => navigate("/f-manager/reports-hub")}
+        />
+        <span
+          className="cursor-pointer hover:text-foreground text-muted-foreground"
+          onClick={() => navigate("/f-manager/reports-hub")}
+        >
+          Oylik hisobotlar
+        </span>
+        <span className="text-muted-foreground">•</span>
+        <span className="text-foreground font-medium">
+          {kassaData?.filial?.name || "Kassa"}{kassaData?.month ? ` — ${kassaData.month}-oy` : ""}
+        </span>
       </div>
-      <CardSort
-        KassaReport={kassaReport as any}
-        KassaId={id || ""}
-        isKassa={false}
-      />
-      <div className="h-[calc(100vh-330px)] scrollCastom">
+
+      {/* Toolbar */}
+      {kassaData?.status === "warning" && (
+        <div className="flex items-center justify-end mb-4">
+          <Button
+            onClick={() => closeKassa()}
+            disabled={closePending}
+            className="bg-primary text-background rounded-lg px-5 py-2.5 text-[14px] font-medium"
+          >
+            {closePending ? (
+              <Loader className="w-4 h-4 mr-1 animate-spin" />
+            ) : (
+              <Lock className="w-4 h-4 mr-1" />
+            )}
+            Oylik hisobotni yopish
+          </Button>
+        </div>
+      )}
+
+      {/* Cards */}
+      <div className="flex gap-3 mb-4">
+        {/* Total card */}
+        <div
+          onClick={() => handleCardClick("")}
+          className="bg-[#48B533] text-white rounded-xl p-5 min-w-[280px] cursor-pointer"
+        >
+          <p className="text-[32px] font-bold leading-tight">
+            ${formatNumber(kassaData?.in_hand || 0)}
+          </p>
+          <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
+            <span className="flex items-center gap-1">
+              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(kassaData?.income || 0)}
+            </span>
+            <span className="flex items-center gap-1">
+              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(kassaData?.expense || 0)}
+            </span>
+          </div>
+          <p className="text-[13px] mt-2 opacity-80">
+            Saldo balans — ${formatNumber(kassaData?.opening_balance || 0)}
+          </p>
+        </div>
+
+        {/* Small cards 2x4 grid */}
+        <div className="grid grid-cols-4 gap-2 w-full">
+          {cards.map((card) => {
+            const filterVal = filterMap[card.label] || "";
+            const isActive = activeFilter === filterVal && filterVal !== "";
+
+            return (
+              <div
+                key={card.label}
+                onClick={() => handleCardClick(filterVal)}
+                className={`rounded-xl px-4 py-3 cursor-pointer transition-colors ${
+                  card.orange
+                    ? isActive
+                      ? "bg-[#c46d3f] text-white"
+                      : "bg-[#E38157] text-white"
+                    : card.dark
+                      ? isActive
+                        ? "bg-[#2d5a1f] text-white"
+                        : "bg-[#3d6b2e] text-white"
+                      : isActive
+                        ? "bg-primary text-background"
+                        : "bg-card border border-border"
+                }`}
+              >
+                <p className="text-[16px] font-bold">
+                  {card.value < 0 ? "-" : ""}
+                  {formatNumber(Math.abs(card.value))}
+                </p>
+                <p className="text-[12px] mt-1 opacity-70">{card.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="h-[calc(100vh-280px)] scrollCastom">
         <DataTable
-          columns={ReportColumns}
+          columns={KassaPageColumns}
           data={flatData || []}
           isLoading={isLoading}
-          hasHeader={false}
+          hasHeader={true}
           isRowClickble={false}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}
         />
       </div>
-    </>
+
+      {/* Update Dialog */}
+      <UpdateCashflowDialog
+        editId={editCashflowId}
+        onClose={() => setEditCashflowId(null)}
+        item={flatData.find((i: any) => String(i.id) === editCashflowId)}
+      />
+    </div>
   );
 }
