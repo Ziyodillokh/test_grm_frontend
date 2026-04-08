@@ -37,10 +37,12 @@ export default function KassaCashflowsPage() {
     });
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const cashflowTotals = (data?.pages?.[0] as any)?.totals;
+  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search || !!startDate || !!endDate;
 
   return (
     <div className="p-4">
-      <ReportTotals data={kassaReport as any} />
+      <ReportTotals data={kassaReport as any} filteredTotals={cashflowTotals} hasActiveFilter={hasActiveFilter} />
 
       {/* Toolbar */}
       <KassaToolbar kassaId={activeId || ""} />

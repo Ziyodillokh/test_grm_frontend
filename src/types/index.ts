@@ -18,6 +18,9 @@ export type TResponse<T> = {
     totalExpense: number;
     totalReturnSale: number;
     totalDiscount: number;
+    totalAdditionalProfit: number;
+    totalCashCollection: number;
+    totalDebtSum: number;
     count: number;
     kv: number;
     year: number;

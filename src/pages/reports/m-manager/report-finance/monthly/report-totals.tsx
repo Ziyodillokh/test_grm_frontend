@@ -4,6 +4,8 @@ import { ArrowDown, ArrowUp, DollarSign } from "lucide-react";
 
 interface ReportTotalsProps {
   data?: TKassareportData;
+  filteredTotals?: any;
+  hasActiveFilter?: boolean;
   onGreenCardClick?: () => void;
 }
 
@@ -18,14 +20,25 @@ const metricCards = [
   { key: "totalDiscount", label: "Chegirma", color: "border-orange-400 bg-orange-50 text-orange-600", negative: true },
 ];
 
-export default function ReportTotals({ data, onGreenCardClick }: ReportTotalsProps) {
+const filteredTotalsMap: Record<string, string> = {
+  totalSale: "totalPrice",
+  debt_sum: "totalDebtSum",
+  totalPlasticSum: "plasticSum",
+  totalSaleReturn: "totalReturnSale",
+  totalCashCollection: "totalCashCollection",
+  totalSize: "kv",
+  additionalProfitTotalSum: "totalAdditionalProfit",
+  totalDiscount: "totalDiscount",
+};
+
+export default function ReportTotals({ data, filteredTotals, hasActiveFilter, onGreenCardClick }: ReportTotalsProps) {
   const { meUser } = useMeStore();
   const role = meUser?.position?.role;
 
   // Role-based yashil card
   let mainSum = 0;
-  let prixod = data?.totalIncome || 0;
-  let rasxod = data?.totalExpense || 0;
+  let prixod = hasActiveFilter ? (filteredTotals?.totalIncome || 0) : (data?.totalIncome || 0);
+  let rasxod = hasActiveFilter ? (filteredTotals?.totalExpense || 0) : (data?.totalExpense || 0);
   let saldo = 0;
 
   if (role === 9) {
@@ -71,7 +84,10 @@ export default function ReportTotals({ data, onGreenCardClick }: ReportTotalsPro
         {/* 8 ta metrika card — 2x4 grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
           {metricCards.map((card) => {
-            const value = (data as any)?.[card.key] || 0;
+            const filteredKey = filteredTotalsMap[card.key];
+            const value = (hasActiveFilter && filteredTotals && filteredKey)
+              ? (filteredTotals[filteredKey] || 0)
+              : ((data as any)?.[card.key] || 0);
             const displayValue = card.negative ? `-${Math.abs(value).toLocaleString()}` : value.toLocaleString();
             return (
               <div

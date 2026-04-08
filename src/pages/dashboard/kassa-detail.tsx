@@ -77,22 +77,21 @@ export default function DashboardKassaDetail() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
   const cashflowTotals = (data?.pages?.[0] as any)?.totals;
-  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search;
+  const activeFilter = tip;
+  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search || !!startDate || !!endDate;
   const displayIncome = hasActiveFilter ? (cashflowTotals?.totalIncome || 0) : (kassaData?.income || 0);
   const displayExpense = hasActiveFilter ? (cashflowTotals?.totalExpense || 0) : (kassaData?.expense || 0);
 
   const cards = [
-    { label: "Umumiy sotuv", value: kassaData?.sale || 0, dark: true },
-    { label: "Qarz savdosi", value: kassaData?.debt_sum || 0 },
-    { label: "Terminal", value: kassaData?.plasticSum || 0 },
-    { label: "Qaytarilgan", value: -(kassaData?.return_sale || 0), orange: true },
-    { label: "Inkasatsiya", value: Math.abs(kassaData?.cash_collection || 0) },
-    { label: "Sotuv hajmi m²", value: kassaData?.totalSize || 0 },
-    { label: "Navar foydasi", value: kassaData?.additionalProfitTotalSum || 0 },
-    { label: "Chegirma", value: Number(kassaData?.discount) || 0, orange: true },
+    { label: "Umumiy sotuv", value: hasActiveFilter ? (cashflowTotals?.totalPrice || 0) : (kassaData?.sale || 0), dark: true },
+    { label: "Qarz savdosi", value: hasActiveFilter ? (cashflowTotals?.totalDebtSum || 0) : (kassaData?.debt_sum || 0) },
+    { label: "Terminal", value: hasActiveFilter ? (cashflowTotals?.plasticSum || 0) : (kassaData?.plasticSum || 0) },
+    { label: "Qaytarilgan", value: hasActiveFilter ? -(cashflowTotals?.totalReturnSale || 0) : -(kassaData?.return_sale || 0), orange: true },
+    { label: "Inkasatsiya", value: hasActiveFilter ? Math.abs(cashflowTotals?.totalCashCollection || 0) : Math.abs(kassaData?.cash_collection || 0) },
+    { label: "Sotuv hajmi m²", value: hasActiveFilter ? (cashflowTotals?.kv || 0) : (kassaData?.totalSize || 0) },
+    { label: "Navar foydasi", value: hasActiveFilter ? (cashflowTotals?.totalAdditionalProfit || 0) : (kassaData?.additionalProfitTotalSum || 0) },
+    { label: "Chegirma", value: hasActiveFilter ? (cashflowTotals?.totalDiscount || 0) : (Number(kassaData?.discount) || 0), orange: true },
   ];
-
-  const activeFilter = tip;
 
   const filterMap: Record<string, string> = {
     "Umumiy sotuv": "sale",

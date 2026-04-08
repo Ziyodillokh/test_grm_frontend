@@ -159,37 +159,37 @@ export default function Page() {
       ct.slug !== "Balance"
   );
 
+  const activeFilter = tip;
+  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search || !!startDate || !!endDate;
+
   const cards = [
     {
       label: "Umumiy sotuv",
-      value: reportData?.sale || 0,
+      value: hasActiveFilter ? (cashflowTotals?.totalPrice || 0) : (reportData?.sale || 0),
       dark: true,
     },
-    { label: "Qarz savdosi", value: reportData?.debt_sum || 0 },
-    { label: "Terminal", value: reportData?.plasticSum || 0 },
+    { label: "Qarz savdosi", value: hasActiveFilter ? (cashflowTotals?.totalDebtSum || 0) : (reportData?.debt_sum || 0) },
+    { label: "Terminal", value: hasActiveFilter ? (cashflowTotals?.plasticSum || 0) : (reportData?.plasticSum || 0) },
     {
       label: "Qaytarilgan",
-      value: -(reportData?.return_sale || 0),
+      value: hasActiveFilter ? -(cashflowTotals?.totalReturnSale || 0) : -(reportData?.return_sale || 0),
       orange: true,
     },
     {
       label: "Inkasatsiya",
-      value: Math.abs(reportData?.cash_collection || 0),
+      value: hasActiveFilter ? Math.abs(cashflowTotals?.totalCashCollection || 0) : Math.abs(reportData?.cash_collection || 0),
     },
-    { label: "Sotuv hajmi m²", value: reportData?.totalSize || 0 },
+    { label: "Sotuv hajmi m²", value: hasActiveFilter ? (cashflowTotals?.kv || 0) : (reportData?.totalSize || 0) },
     {
       label: "Navar foydasi",
-      value: reportData?.additionalProfitTotalSum || 0,
+      value: hasActiveFilter ? (cashflowTotals?.totalAdditionalProfit || 0) : (reportData?.additionalProfitTotalSum || 0),
     },
     {
       label: "Chegirma",
-      value: Number(reportData?.discount) || 0,
+      value: hasActiveFilter ? (cashflowTotals?.totalDiscount || 0) : (Number(reportData?.discount) || 0),
       orange: true,
     },
   ];
-
-  const activeFilter = tip;
-  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search;
   const displayIncome = hasActiveFilter ? (cashflowTotals?.totalIncome || 0) : (reportData?.income || 0);
   const displayExpense = hasActiveFilter ? (cashflowTotals?.totalExpense || 0) : (reportData?.expense || 0);
 
