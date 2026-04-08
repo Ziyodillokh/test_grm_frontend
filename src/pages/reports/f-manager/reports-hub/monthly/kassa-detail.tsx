@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
 import { KassaPageColumns } from "@/pages/cashier/report/page/kassa-columns";
 import UpdateCashflowDialog from "@/pages/cashier/report/page/update-cashflow-dialog";
+import KassaToolbar from "@/pages/cashier/report/page/kassa-toolbar";
 import { useKassaReportSingle } from "@/pages/reports/m-manager/filial-report-finance/queries";
 import { formatNumber } from "@/utils/farmatNumber";
 import { PatchData } from "@/service/apiHelpers";
@@ -41,6 +42,11 @@ export default function MonthlyKassaDetailPage() {
     "sortSingle",
     parseAsString.withDefault("Все")
   );
+  const [search] = useQueryState("search", parseAsString);
+  const [sellerId] = useQueryState("sellerId", parseAsString);
+  const [cashflowTypeId] = useQueryState("cashflowTypeId", parseAsString);
+  const [startDate] = useQueryState("startDate", parseAsString);
+  const [endDate] = useQueryState("endDate", parseAsString);
 
   const { data: kassaData } = useKassaReportSingle({
     id: id || undefined,
@@ -74,11 +80,20 @@ export default function MonthlyKassaDetailPage() {
             : sortSingle || typeFilter[tip as string],
         cashflowSlug: tip === "collection" ? "Инкассация" : undefined,
         status: cashflowStatus,
+        search: search || undefined,
+        sellerId: sellerId || undefined,
+        cashflowTypeId: cashflowTypeId || undefined,
+        fromDate: startDate || undefined,
+        toDate: endDate || undefined,
       },
       enabled: Boolean(id),
     });
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const cashflowTotals = (data?.pages?.[0] as any)?.totals;
+  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search;
+  const displayIncome = hasActiveFilter ? (cashflowTotals?.totalIncome || 0) : (kassaData?.income || 0);
+  const displayExpense = hasActiveFilter ? (cashflowTotals?.totalExpense || 0) : (kassaData?.expense || 0);
 
   const cards = [
     { label: "Umumiy sotuv", value: kassaData?.sale || 0, dark: true },
@@ -108,6 +123,14 @@ export default function MonthlyKassaDetailPage() {
     setTip(activeFilter === filterValue ? null : filterValue);
   };
 
+  const handleIncomeClick = () => {
+    setTip(tip === "income" ? null : "income");
+  };
+
+  const handleExpenseClick = () => {
+    setTip(tip === "expense" ? null : "expense");
+  };
+
   return (
     <div className="px-4 pt-2">
       {/* Breadcrumb */}
@@ -129,8 +152,9 @@ export default function MonthlyKassaDetailPage() {
       </div>
 
       {/* Toolbar */}
-      {kassaData?.status === "warning" && (
-        <div className="flex items-center justify-end mb-4">
+      <div className="flex items-center justify-between mb-4">
+        <KassaToolbar kassaId={id || ""} />
+        {kassaData?.status === "warning" && (
           <Button
             onClick={() => closeKassa()}
             disabled={closePending}
@@ -143,8 +167,8 @@ export default function MonthlyKassaDetailPage() {
             )}
             Oylik hisobotni yopish
           </Button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Cards */}
       <div className="flex gap-3 mb-4">
@@ -157,11 +181,17 @@ export default function MonthlyKassaDetailPage() {
             ${formatNumber(kassaData?.in_hand || 0)}
           </p>
           <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
-            <span className="flex items-center gap-1">
-              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(kassaData?.income || 0)}
+            <span
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "income" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleIncomeClick(); }}
+            >
+              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(displayIncome)}
             </span>
-            <span className="flex items-center gap-1">
-              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(kassaData?.expense || 0)}
+            <span
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "expense" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleExpenseClick(); }}
+            >
+              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(displayExpense)}
             </span>
           </div>
           <p className="text-[13px] mt-2 opacity-80">

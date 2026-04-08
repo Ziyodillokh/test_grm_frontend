@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowDown, ArrowUp } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
 import { KassaPageColumns } from "@/pages/cashier/report/page/kassa-columns";
+import KassaToolbar from "@/pages/cashier/report/page/kassa-toolbar";
 import { apiRoutes } from "@/service/apiRoutes";
 import { getByIdData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
@@ -36,8 +37,12 @@ export default function DashboardKassaDetail() {
     "sortSingle",
     parseAsString.withDefault("Все")
   );
+  const [search] = useQueryState("search", parseAsString);
+  const [sellerId] = useQueryState("sellerId", parseAsString);
+  const [cashflowTypeId] = useQueryState("cashflowTypeId", parseAsString);
+  const [startDate] = useQueryState("startDate", parseAsString);
+  const [endDate] = useQueryState("endDate", parseAsString);
 
-  // Kassa ma'lumotlarini olish (GET /kassa/:id)
   const { data: kassaData } = useQuery({
     queryKey: [apiRoutes.kassa, id],
     queryFn: () =>
@@ -61,11 +66,20 @@ export default function DashboardKassaDetail() {
             : sortSingle || typeFilter[tip as string],
         cashflowSlug: tip === "collection" ? "Инкассация" : undefined,
         status: cashflowStatus,
+        search: search || undefined,
+        sellerId: sellerId || undefined,
+        cashflowTypeId: cashflowTypeId || undefined,
+        fromDate: startDate || undefined,
+        toDate: endDate || undefined,
       },
       enabled: Boolean(id),
     });
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const cashflowTotals = (data?.pages?.[0] as any)?.totals;
+  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search;
+  const displayIncome = hasActiveFilter ? (cashflowTotals?.totalIncome || 0) : (kassaData?.income || 0);
+  const displayExpense = hasActiveFilter ? (cashflowTotals?.totalExpense || 0) : (kassaData?.expense || 0);
 
   const cards = [
     { label: "Umumiy sotuv", value: kassaData?.sale || 0, dark: true },
@@ -95,6 +109,14 @@ export default function DashboardKassaDetail() {
     setTip(activeFilter === filterValue ? null : filterValue);
   };
 
+  const handleIncomeClick = () => {
+    setTip(tip === "income" ? null : "income");
+  };
+
+  const handleExpenseClick = () => {
+    setTip(tip === "expense" ? null : "expense");
+  };
+
   return (
     <div className="px-4 pt-2">
       {/* Breadcrumb */}
@@ -115,6 +137,9 @@ export default function DashboardKassaDetail() {
         </span>
       </div>
 
+      {/* Toolbar */}
+      <KassaToolbar kassaId={id || ""} />
+
       {/* Cards */}
       <div className="flex gap-3 mb-4">
         {/* Total card */}
@@ -126,11 +151,17 @@ export default function DashboardKassaDetail() {
             ${formatNumber(kassaData?.in_hand || 0)}
           </p>
           <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
-            <span className="flex items-center gap-1">
-              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(kassaData?.income || 0)}
+            <span
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "income" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleIncomeClick(); }}
+            >
+              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(displayIncome)}
             </span>
-            <span className="flex items-center gap-1">
-              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(kassaData?.expense || 0)}
+            <span
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "expense" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleExpenseClick(); }}
+            >
+              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(displayExpense)}
             </span>
           </div>
           <p className="text-[13px] mt-2 opacity-80">
@@ -174,12 +205,12 @@ export default function DashboardKassaDetail() {
       </div>
 
       {/* Table */}
-      <div className="h-[calc(100vh-280px)] scrollCastom">
+      <div className="h-[calc(100vh-320px)] scrollCastom">
         <DataTable
           columns={KassaPageColumns.filter(col => col.id !== 'harakatlar')}
           data={flatData || []}
           isLoading={isLoading}
-          hasHeader={false}
+          hasHeader={true}
           isRowClickble={false}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}

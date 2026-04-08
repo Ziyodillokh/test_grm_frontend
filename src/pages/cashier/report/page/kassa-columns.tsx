@@ -152,6 +152,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
           <span>{barCode?.collection?.title}</span>
           <span>{barCode?.model?.title}</span>
           <span>{barCode?.size?.title}</span>
+          <span>{barCode?.color?.title}</span>
           <span>${formatPrice(barCode?.collection?.collection_prices?.[0]?.priceMeter || barCode?.collection?.priceMeter || 0)}</span>
           <span>
             {barCode?.isMetric ? `${order?.kv || 0}sm` : `${order?.x || 0}x`}

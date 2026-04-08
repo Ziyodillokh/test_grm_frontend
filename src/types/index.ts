@@ -14,6 +14,7 @@ export type TResponse<T> = {
     totalSum: number;
     plasticSum: number;
     totalPrice: number;
+    totalIncome: number;
     totalExpense: number;
     totalReturnSale: number;
     totalDiscount: number;

@@ -66,5 +66,7 @@ export type TQuery = {
   tip?:string;
   cashflowSlug?:string;
   fromDate?:string,
-  toDate?:string
+  toDate?:string,
+  sellerId?:string,
+  cashflowTypeId?:string
 };

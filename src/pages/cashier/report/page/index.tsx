@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  Search,
-  ArrowUpDown,
-  SlidersHorizontal,
-  FileSpreadsheet,
-  Plus,
   ArrowDown,
   ArrowUp,
   ClipboardCheck,
-  Loader,
 } from "lucide-react";
 import { parseAsString, useQueryState } from "nuqs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import qs from "qs";
 
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
@@ -30,6 +23,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useDataCashflow } from "../queries";
 import { KassaPageColumns } from "./kassa-columns";
 import UpdateCashflowDialog from "./update-cashflow-dialog";
+import KassaToolbar from "./kassa-toolbar";
 import type { CashflowType } from "@/components/adding-parish-flow";
 
 const tipFilter: Record<string, string> = {
@@ -59,6 +53,11 @@ export default function Page() {
   const [id, setId] = useQueryState("id");
   const [tip, setTip] = useQueryState("tip", parseAsString);
   const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
+  const [search] = useQueryState("search", parseAsString);
+  const [sellerId] = useQueryState("sellerId", parseAsString);
+  const [cashflowTypeId] = useQueryState("cashflowTypeId", parseAsString);
+  const [startDate] = useQueryState("startDate", parseAsString);
+  const [endDate] = useQueryState("endDate", parseAsString);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<"parish" | "flow">("parish");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -93,17 +92,6 @@ export default function Page() {
     },
   });
 
-  const { mutate: exportExcel, isPending: excelPending } = useMutation({
-    mutationFn: async () => {
-      const query = { kassaId: reportData?.id || id || undefined };
-      const params = query
-        ? `?${qs.stringify(query, { arrayFormat: "repeat" })}`
-        : "";
-      window.location.href =
-        import.meta.env.VITE_BASE_URL + apiRoutes.excelCashflowsExcel + params;
-    },
-  });
-
   const cashflowStatus =
     sort === "all" ? undefined : sort === "pending" ? "pending" : "accepted";
 
@@ -122,11 +110,17 @@ export default function Page() {
             : sortSingle || typeFilter[tip as string],
         cashflowSlug: tip === "collection" ? "Инкассация" : undefined,
         status: cashflowStatus,
+        search: search || undefined,
+        sellerId: sellerId || undefined,
+        cashflowTypeId: cashflowTypeId || undefined,
+        fromDate: startDate || undefined,
+        toDate: endDate || undefined,
       },
       enabled: !!reportData?.id || Boolean(id),
     });
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const cashflowTotals = (data?.pages?.[0] as any)?.totals;
 
   const openDialog = (type: "parish" | "flow") => {
     setDialogType(type);
@@ -195,9 +189,20 @@ export default function Page() {
   ];
 
   const activeFilter = tip;
+  const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search;
+  const displayIncome = hasActiveFilter ? (cashflowTotals?.totalIncome || 0) : (reportData?.income || 0);
+  const displayExpense = hasActiveFilter ? (cashflowTotals?.totalExpense || 0) : (reportData?.expense || 0);
 
   const handleCardClick = (filterValue: string) => {
     setTip(activeFilter === filterValue ? null : filterValue);
+  };
+
+  const handleIncomeClick = () => {
+    setTip(tip === "income" ? null : "income");
+  };
+
+  const handleExpenseClick = () => {
+    setTip(tip === "expense" ? null : "expense");
   };
 
   return (
@@ -209,49 +214,12 @@ export default function Page() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="rounded-lg">
-            <Search className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="rounded-lg">
-            <ArrowUpDown className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="rounded-lg">
-            <SlidersHorizontal className="w-5 h-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-lg"
-            onClick={() => exportExcel()}
-            disabled={excelPending}
-          >
-            {excelPending ? (
-              <Loader className="w-5 h-5 animate-spin" />
-            ) : (
-              <FileSpreadsheet className="w-5 h-5" />
-            )}
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={() => openDialog("parish")}
-            className="bg-[#48B533] hover:bg-[#3da02b] text-white rounded-lg px-5 py-2.5 text-[14px] font-medium"
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            Kirim qo'shish
-          </Button>
-          <Button
-            onClick={() => openDialog("flow")}
-            className="bg-[#E38157] hover:bg-[#d0724a] text-white rounded-lg px-5 py-2.5 text-[14px] font-medium"
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            Chiqim qo'shish
-          </Button>
-        </div>
-      </div>
+      <KassaToolbar
+        kassaId={reportData?.id || id || ""}
+        showAddButtons
+        onAddIncome={() => openDialog("parish")}
+        onAddExpense={() => openDialog("flow")}
+      />
 
       {/* Cards */}
       <div className="flex gap-3 mb-4">
@@ -264,13 +232,19 @@ export default function Page() {
             ${formatNumber(reportData?.in_hand || 0)}
           </p>
           <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
-            <span className="flex items-center gap-1">
+            <span
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "income" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleIncomeClick(); }}
+            >
               <ArrowDown className="w-3.5 h-3.5" />$
-              {formatNumber(reportData?.income || 0)}
+              {formatNumber(displayIncome)}
             </span>
-            <span className="flex items-center gap-1">
+            <span
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "expense" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleExpenseClick(); }}
+            >
               <ArrowUp className="w-3.5 h-3.5" />$
-              {formatNumber(reportData?.expense || 0)}
+              {formatNumber(displayExpense)}
             </span>
           </div>
           <p className="text-[13px] mt-2 opacity-80">
