@@ -86,7 +86,13 @@ export default function KassaToolbar({
       const params = `?${qs.stringify(query, { arrayFormat: "repeat" })}`;
       const url = import.meta.env.VITE_BASE_URL + apiRoutes.excelCashflowsExcel + params;
       const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Export xatolik: ${response.status}`);
+      }
       const blob = await response.blob();
+      if (blob.type && blob.type.includes('text/html')) {
+        throw new Error('Server xato javob qaytardi');
+      }
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
