@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader, MoreHorizontal } from "lucide-react";
+import { Loader, MoreHorizontal, Trash2 } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -95,8 +95,9 @@ export default function TableAction({
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger onClick={() => setOpen(true)} className="w-full">
                 <p
-                  className={"px-[6px] text-start text-sm rounded-md  py-[4px]"}
+                  className={"px-[6px] text-start text-sm rounded-md py-[4px] flex items-center gap-2"}
                 >
+                  <Trash2 className="h-4 w-4 text-red-500" />
                   {t("delete")}
                 </p>
               </DialogTrigger>

@@ -226,9 +226,9 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
                 title="Tasdiqlash"
               >
                 {approveLoading ? (
-                  <Loader className="h-5 w-5 animate-spin" />
+                  <Loader className="h-7 w-7 animate-spin" />
                 ) : (
-                  <CheckCircle className="h-6 w-6" />
+                  <CheckCircle className="h-7 w-7" />
                 )}
               </Button>
             )}

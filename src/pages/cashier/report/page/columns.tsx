@@ -287,9 +287,9 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
               title="Tasdiqlash"
             >
               {approveLoading ? (
-                <Loader className="h-5 w-5 animate-spin" />
+                <Loader className="h-7 w-7 animate-spin" />
               ) : (
-                <CheckCircle className="h-5 w-5" />
+                <CheckCircle className="h-7 w-7" />
               )}
             </Button>
           )}
@@ -302,43 +302,43 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
           >
           {/* Tahrirlash */}
           {canUpdate && (
-            <DropdownMenuItem onClick={() => setEditId(item.id + "")} className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
-              <div className="w-full text-center">
-                <Pencil size={28} className="w-[28px] m-auto h-[28px]" />
-                <p className="text-[13px]">Tahrirlash</p>
+            <DropdownMenuItem onClick={() => setEditId(item.id + "")} className="flex items-center gap-2 py-2 cursor-pointer">
+              <Pencil className="h-4 w-4" />
+              <span className="text-[13px]">Tahrirlash</span>
+            </DropdownMenuItem>
+          )}
+          {/* PENDING order → Bekor qilish */}
+          {row?.original?.tip == "order" && row?.original?.status === "pending" && row?.original?.type != "Расход" && (
+            <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
+              <div
+                onClick={loading ? () => {} : () => RejectFunt()}
+                className="w-full flex items-center gap-2"
+              >
+                {loading ? (
+                  <Loader className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileOutput className="h-4 w-4 text-[#FFA500]" />
+                )}
+                <span className="text-[#FFA500] text-[13px]">Bekor qilish</span>
               </div>
             </DropdownMenuItem>
           )}
-          {/* PENDING order → Otmena (bekor qilish) */}
-          { (row?.original?.tip == "order" && row?.original?.status === "pending" && row?.original?.type!="Расход") &&  <DropdownMenuItem className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
-                <div
-                  onClick={loading ? ()=>{} :() => RejectFunt()}
-                  className="w-full text-center"
-                >
-                 {loading? <Loader/>: <FileOutput
-                    size={28}
-                    width={28}
-                    height={28}
-                    className="w-[28px] m-auto h-[28px] text-[#FFA500]"
-                  />}
-                  <p className="text-[#FFA500] text-[13px]">Отмена</p>
-                </div>
-            </DropdownMenuItem>}
-          {/* APPROVED order → Vozvrat (qaytarish) */}
-          { (row?.original?.tip == "order" && row?.original?.status === "approved" && row?.original?.type!="Расход") &&  <DropdownMenuItem className="text-center flex items-center justify-center pt-[14px] pb-[8px]">
-                <div
-                  onClick={loading ? ()=>{} :() => RejectFunt()}
-                  className="w-full text-center"
-                >
-                 {loading? <Loader/>: <FileOutput
-                    size={28}
-                    width={28}
-                    height={28}
-                    className="w-[28px] m-auto h-[28px] text-[#EC6C49]"
-                  />}
-                  <p className="text-[#EC6C49] text-[13px]">Возврат</p>
-                </div>
-            </DropdownMenuItem>}
+          {/* APPROVED order → Qaytarish */}
+          {row?.original?.tip == "order" && row?.original?.status === "approved" && row?.original?.type != "Расход" && (
+            <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
+              <div
+                onClick={loading ? () => {} : () => RejectFunt()}
+                className="w-full flex items-center gap-2"
+              >
+                {loading ? (
+                  <Loader className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileOutput className="h-4 w-4 text-[#EC6C49]" />
+                )}
+                <span className="text-[#EC6C49] text-[13px]">Qaytarish</span>
+              </div>
+            </DropdownMenuItem>
+          )}
           </TableAction>
         </div>
       )
