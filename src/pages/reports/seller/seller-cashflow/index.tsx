@@ -44,7 +44,6 @@ export default function PageSellerCashFlow() {
     { label: "Soni", value: `${totals?.count || 0} sht` },
     { label: "Hajm", value: `${totals?.kv || 0} m²` },
     { label: "Skidka", value: `${formatPrice(totals?.discount || 0)}$`, color: "text-[#E38157]" },
-    { label: "Terminal", value: `${formatPrice(totals?.plastic || 0)}$`, color: "text-[#58A0C6]" },
   ];
 
   return (
@@ -88,7 +87,7 @@ export default function PageSellerCashFlow() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-5 gap-3 mb-4">
+      <div className="grid grid-cols-4 gap-3 mb-4">
         {stats.map((s) => (
           <div key={s.label} className="bg-card rounded-xl p-4">
             <p className="text-[12px] text-muted-foreground mb-1">{s.label}</p>
