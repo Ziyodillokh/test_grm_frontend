@@ -8,13 +8,14 @@ import { useDataSellerReports } from "./queries";
 import { getMonth } from "date-fns";
 import { useMeStore } from "@/store/me-store";
 import { useYear } from "@/store/year-store";
+import { useNavigate } from "react-router-dom";
 
 export default function PageSellerReport() {
   const { meUser } = useMeStore();
   const { year } = useYear()
+  const navigate = useNavigate();
 
   const [month] = useQueryState("month", parseAsString.withDefault(getMonth(new Date()) + 1 + ""));
-  const [, setUserName] = useQueryState("userName", parseAsString.withDefault(""));
   const [filial] = useQueryState("filial");
   const {
     data: SellerReportsData,
@@ -44,9 +45,10 @@ export default function PageSellerReport() {
           columns={SellerReportsColumns || []}
           data={flatSellerReportsData}
           isLoading={SellerReportsLoading}
-          isRowClickble={true}
+          isRowClickble={false}
           onRowClick={(row) => {
-            setUserName(row?.firstName + " " + row?.lastName);
+            const name = encodeURIComponent(row?.firstName + " " + row?.lastName);
+            navigate(`${row?.id}/info?month=${month}&userName=${name}`);
           }}
           fetchNextPage={SellerReportsfetchNextPage}
           hasNextPage={SellerReportsfhasNextPage ?? false}

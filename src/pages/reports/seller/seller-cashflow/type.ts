@@ -1,3 +1,17 @@
+export interface OrderItem {
+  id: string;
+  date: string;
+  price: number;
+  kv: number;
+  x: number;
+  plasticSum: number;
+  discountSum: number;
+  collection: string | null;
+  size: string | null;
+  color: string | null;
+  shape: string | null;
+}
+
 export interface DayData {
   date: string;
   count: number;
@@ -5,6 +19,7 @@ export interface DayData {
   earn: number;
   discount: number;
   plastic: number;
+  orders: OrderItem[];
 }
 
 export interface SellerDailyReport {
