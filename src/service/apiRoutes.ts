@@ -133,4 +133,6 @@ export const apiRoutes = {
   salesDealer: '/sales-report/dealer',
   salesInternet: '/sales-report/internet',
   salesPartiya: '/sales-report/partiya',
+  partiyaCollectionPrice: '/partiya-collection-price',
+  partiyaCollectionPriceByPartiya: '/partiya-collection-price/partiya',
 } as const;

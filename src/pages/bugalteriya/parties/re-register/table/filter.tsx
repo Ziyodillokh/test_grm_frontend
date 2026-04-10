@@ -1,4 +1,4 @@
-import { FileCheck, FileOutput, Loader } from "lucide-react";
+import { DollarSign, FileCheck, FileOutput, Loader } from "lucide-react";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import SearchInput from "@/components/filters-ui/search-input";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,9 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdatePatchData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { parseAsString, useQueryState } from "nuqs";
+import CollectionPriceDialog from "./collection-price-dialog";
 
 export default function Filters({
   partiyaStatus = "new",
@@ -23,6 +24,7 @@ export default function Filters({
   const { meUser } = useMeStore();
   const queryClient = useQueryClient();
   const [tip] = useQueryState("tip", parseAsString.withDefault((meUser?.position?.role ==7 || meUser?.position.role == 4) ? "переучет": "new"));
+  const [priceDialogOpen, setPriceDialogOpen] = useState(false);
 
   const changeStatus = useMemo(() => {
     if (partiyaStatus == "new") {
@@ -79,6 +81,21 @@ export default function Filters({
         name="type"
       />
      { meUser?.position?.role == 9 && tip=="new" ? <FileExelUpload partiyaId={id || ""} />:""}
+      {meUser?.position?.role == 9 || meUser?.position?.role == 12 ? (
+        <Button
+          onClick={() => setPriceDialogOpen(true)}
+          variant="outline"
+          className="h-full border-y-0 border-r"
+        >
+          <DollarSign className="w-4 h-4" />
+          Narxlar
+        </Button>
+      ) : null}
+      <CollectionPriceDialog
+        open={priceDialogOpen}
+        onOpenChange={setPriceDialogOpen}
+        partiyaId={id || ""}
+      />
 
       {(meUser?.position?.role == 7 || meUser?.position.role == 4) ? (
         <Button
