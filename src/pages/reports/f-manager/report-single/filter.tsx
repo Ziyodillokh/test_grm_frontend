@@ -35,7 +35,7 @@ export default function Filters() {
     mutationFn: async () => {
       const query = {
         // reportId: myCashFlow && !FManagerCashFlow ? id : undefined,
-        kassaReportId: id == "my" ? report || undefined : undefined,
+        kassaId: id == "my" ? report || undefined : undefined,
         kassaId: id != "my" ? id : undefined,
       };
       const params = query

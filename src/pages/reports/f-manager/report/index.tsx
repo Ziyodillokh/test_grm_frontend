@@ -52,7 +52,7 @@ export default function Page() {
       <Filter status={KassaReportSingle?.status || ""} month={id ? KassaReportSingle?.month : KassaReport?.month} />
       <CardSort
         //  isAddible={Boolean(id)}
-        kassaReportId={id} KassaReport={id ? KassaReportSingle : KassaReport} />
+        kassaId={id} KassaReport={id ? KassaReportSingle : KassaReport} />
       <div className="h-[calc(100vh-370px)] scrollCastom">
         <DataTable
           columns={KassaColumns || []}

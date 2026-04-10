@@ -31,7 +31,7 @@ export default function CardSort({
   KassaId,
   reportId,
   isAddible,
-  kassaReportId,
+  kassaId,
   KassaReport,
   isOnlyCash,
   isOnlineCashFlow,
@@ -44,7 +44,7 @@ export default function CardSort({
   reportId?: string | undefined;
   isAddible?: boolean;
   KassaReport?: TKassareportData;
-  kassaReportId?: string | undefined;
+  kassaId?: string | undefined;
   isOnlyCash?: boolean | undefined;
   isOnlyTerminal?: boolean | undefined;
   isOnlineCashFlow?: boolean | undefined;
@@ -64,6 +64,7 @@ export default function CardSort({
   const [cashflow_type, setCashflow_type] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
+  const [date, setDate] = useState<string>("");
   const [filial, setFilial] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -73,7 +74,7 @@ export default function CardSort({
   >(false);
 
   const { data: filialData } = useDataFetch({});
-  const { data: kassaId, isLoading: isReportLoading } = useKassaById({
+  const { data: kassaData, isLoading: isReportLoading } = useKassaById({
     id: KassaId,
   });
 
@@ -108,7 +109,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(KassaReport?.totalIncome || KassaReport?.income || kassaId?.income || 0)
+        formatPrice(KassaReport?.totalIncome || KassaReport?.income || kassaData?.income || 0)
       ),
       button: isAddible ? (
         <div
@@ -133,7 +134,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(KassaReport?.totalSale || KassaReport?.sale || kassaId?.sale || 0)
+        formatPrice(KassaReport?.totalSale || KassaReport?.sale || kassaData?.sale || 0)
       ),
     },
     {
@@ -142,7 +143,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(KassaReport?.totalPlasticSum || KassaReport?.plasticSum || kassaId?.plasticSum || 0)
+        formatPrice(KassaReport?.totalPlasticSum || KassaReport?.plasticSum || kassaData?.plasticSum || 0)
       ),
     },
     {
@@ -153,7 +154,7 @@ export default function CardSort({
       ) : (
         formatPrice(
           KassaReport?.additionalProfitTotalSum ||
-            kassaId?.additionalProfitTotalSum ||
+            kassaData?.additionalProfitTotalSum ||
             0
         )
       ),
@@ -164,7 +165,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        `-${formatPrice(KassaReport?.totalExpense || KassaReport?.expense || kassaId?.expense || 0)}`
+        `-${formatPrice(KassaReport?.totalExpense || KassaReport?.expense || kassaData?.expense || 0)}`
       ),
       button: isAddible ? (
         <div
@@ -186,7 +187,7 @@ export default function CardSort({
     {
       title: "Возврат сумма",
       value: "return",
-      price: `-${formatPrice(KassaReport?.totalSaleReturn || KassaReport?.return_sale || kassaId?.return_sale || 0)}`,
+      price: `-${formatPrice(KassaReport?.totalSaleReturn || KassaReport?.return_sale || kassaData?.return_sale || 0)}`,
     },
     {
       title: "Инкассация",
@@ -197,7 +198,7 @@ export default function CardSort({
         formatPrice(
           (KassaReport?.totalCashCollection || KassaReport?.cash_collection)
             ? Math.abs(KassaReport?.totalCashCollection || KassaReport?.cash_collection || 0)
-            : kassaId?.cash_collection || 0
+            : kassaData?.cash_collection || 0
         )
       ),
     },
@@ -208,7 +209,7 @@ export default function CardSort({
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          Number(KassaReport?.totalDiscount || KassaReport?.discount || kassaId?.discount) || 0
+          Number(KassaReport?.totalDiscount || KassaReport?.discount || kassaData?.discount) || 0
         )
       ),
     },
@@ -220,7 +221,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(kassaId?.income || 0)
+        formatPrice(kassaData?.income || 0)
       ),
     },
     {
@@ -228,7 +229,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(kassaId?.income || 0)
+        formatPrice(kassaData?.income || 0)
       ),
     },
     {
@@ -236,7 +237,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(kassaId?.income || 0)
+        formatPrice(kassaData?.income || 0)
       ),
     },
     {
@@ -244,7 +245,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(kassaId?.income || 0)
+        formatPrice(kassaData?.income || 0)
       ),
     },
     {
@@ -252,7 +253,7 @@ export default function CardSort({
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(kassaId?.income || 0)
+        formatPrice(kassaData?.income || 0)
       ),
     },
   ];
@@ -281,9 +282,10 @@ export default function CardSort({
         tip: "cashflow",
         comment,
         price,
+        ...(date ? { date } : {}),
         is_online: isOnlineCashFlow || undefined,
         createdBy: meUser?.id,
-        kassa: kassaReportId || kassaReports || (kassaReports ? undefined : kassaId?.id) || undefined,
+        kassa: kassaId || kassaReports || (kassaReports ? undefined : kassaData?.id) || undefined,
         report: reportId || undefined,
         debtId: isUserLocSelectble ? debtId : undefined,
       };
@@ -296,6 +298,7 @@ export default function CardSort({
       setCashflow_type("");
       setComment("");
       setPrice(0);
+      setDate("");
       setDebtId(undefined);
       // Close dialog
       setDialogOpen(false);
@@ -317,6 +320,7 @@ export default function CardSort({
     setCashflow_type("");
     setComment("");
     setPrice(0);
+    setDate("");
     setDebtId(undefined);
   }, [dialogOpen]);
   const column = meUser?.position.role === 11 ? hrColumns : columns;
@@ -335,7 +339,7 @@ export default function CardSort({
                 {isReportLoading ? (
                   <Skeleton className="h-7 w-24 mt-1" />
                 ) : (
-                  <p className={`${((kassaId?.in_hand || KassaReport?.in_hand || 0) >= 0) ? "text-foreground":"text-red-500"} text-[25px] font-bold `}>
+                  <p className={`${((kassaData?.in_hand || KassaReport?.in_hand || 0) >= 0) ? "text-foreground":"text-red-500"} text-[25px] font-bold `}>
                     {formatPrice(
                       isOnlyCash
                         ? KassaReport?.managerSum ||
@@ -344,7 +348,7 @@ export default function CardSort({
                         : isOnlyTerminal
                           ? KassaReport?.accauntantSum || 0
                           : KassaReport?.in_hand ? KassaReport?.in_hand
-                            : (isTotalPage &&  KassaReport?.totalSale) ? KassaReport?.totalSale : kassaId?.in_hand ||0
+                            : (isTotalPage &&  KassaReport?.totalSale) ? KassaReport?.totalSale : kassaData?.in_hand ||0
                     )}
                   </p>
                 )}
@@ -372,20 +376,20 @@ export default function CardSort({
                   Продажа в долг:
                 </p>
                 <p className="text-[14px] text-[#E38157]  inline-block font-semibold">
-                  {KassaReport?.debt_sum ? KassaReport?.debt_sum : kassaId?.debt_sum} { KassaReport?.debt_sum || kassaId?.debt_sum ? "$":""} 
+                  {KassaReport?.debt_sum ? KassaReport?.debt_sum : kassaData?.debt_sum} { KassaReport?.debt_sum || kassaData?.debt_sum ? "$":""} 
                 </p>
               </div>
             )}
             {
-              (kassaId?.kassaReport?.filialType == "filial" || KassaReport?.filialType =="filial") ?<div className="1/2 inline-block">
+              (kassaData?.kassaReport?.filialType == "filial" || KassaReport?.filialType =="filial") ?<div className="1/2 inline-block">
                  <p className="text-[12px] mt-[25px] mb-1 text-[#7E7E72]">
                   Сальдо баланс: 
                 </p>
                 {
                   KassaReport ?  <p className={`text-[14px]   ${(KassaReport?.opening_balance || 0) >0 ? "text-[#89A143]" : (KassaReport?.opening_balance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
                   { KassaReport?.opening_balance}  {KassaReport?.opening_balance? "$":""} 
-                </p>:<p className={`text-[14px]   ${ (kassaId?.kassaReport?.opening_balance ||0) >0 ? "text-[#89A143]" : (kassaId?.kassaReport?.opening_balance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
-                  { kassaId?.kassaReport?.opening_balance}  {kassaId?.kassaReport?.opening_balance? "$":""} 
+                </p>:<p className={`text-[14px]   ${ (kassaData?.kassaReport?.opening_balance ||0) >0 ? "text-[#89A143]" : (kassaData?.kassaReport?.opening_balance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
+                  { kassaData?.kassaReport?.opening_balance}  {kassaData?.kassaReport?.opening_balance? "$":""} 
                 </p>
                 }
                 </div>:""
@@ -499,6 +503,12 @@ export default function CardSort({
                 type="number"
                 placeholder="0.00"
                 className="w-full border-none h-[90px] placeholder:text-[32px] mt-0.5 !text-[32px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+              />
+              <Input
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                type="datetime-local"
+                className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
               />
               <Textarea
                 value={comment}

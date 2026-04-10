@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import api from "@/service/fetchInstance";
 import { TKassareportData } from "@/pages/report/type";
 
-export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReportId?:string,isAddable?:boolean,SortData?:TKassareportData}) {
+export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,isAddable?:boolean,SortData?:TKassareportData}) {
   const queryClient = useQueryClient();
   const [sorttype, setSortType] = useQueryState("sorttype", parseAsString);
   const [type, setType] = useState<string>("Приход");
@@ -21,6 +21,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
   const isReportLoading = false;
   const [comment, setComment] = useState<string>("");
   const [price, setPrice] = useState<number>();
+  const [date, setDate] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -96,8 +97,9 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
       const body = {
         comment,
         price,
-        kassa:kassaReportId,
-        is_online:typePay =="cash"? false : true, 
+        ...(date ? { date } : {}),
+        kassa:kassaId,
+        is_online:typePay =="cash"? false : true,
       };
       await api.post(apiRoutes.cashflowDealerIncome, body);
 
@@ -107,6 +109,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
 
       setComment("");
       setPrice(undefined);
+      setDate("");
       setDialogOpen(false);
       setLoading(false);
       setTypePay("cash")
@@ -126,6 +129,7 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
     setTypePay("cash")
     setComment("");
     setPrice(undefined);
+    setDate("");
   },[dialogOpen])
 
   return (
@@ -196,6 +200,12 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
               />
               <div className="text-4xl text-[#5D5D53] mx-4">$</div>
             </div>
+            <Input
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              type="datetime-local"
+              className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
+            />
            { type === "Приход" ? <div className="text-center mt-1 w-full bg-input p-1  rounded-[7px]">
               <div className="flex items-center justify-center mt-[18px] mb-2">
                 <Banknote />

@@ -35,7 +35,7 @@ export default function ReportPage() {
     return: "Расход",
   };
 
-  const { id, kassaReportId } = useParams();
+  const { id, kassaId } = useParams();
 
   const [myCashFlow] = useQueryState(
     "myCashFlow",
@@ -87,14 +87,14 @@ export default function ReportPage() {
         fromDate: startDate || undefined,
         toDate: endDate || undefined,
         report: myCashFlow && !FManagerCashFlow ? id : undefined,
-        kassa: FManagerCashFlow ? kassaReportId || undefined : undefined,
+        kassa: FManagerCashFlow ? kassaId || undefined : undefined,
       },
       enabled: true,
     });
 
   const { data: KassaReportSingle } = useKassaReportSingle({
-    id: kassaReportId || undefined,
-    enabled: Boolean(kassaReportId),
+    id: kassaId || undefined,
+    enabled: Boolean(kassaId),
   });
 
   const { data: myCashFlowReports } = useReportsSingle({
@@ -172,7 +172,7 @@ export default function ReportPage() {
             isOnlyCash={false}
             isOnlyTerminal={false}
             isAddible={false}
-            kassaReportId={FManagerCashFlow ? kassaReportId : undefined}
+            kassaId={FManagerCashFlow ? kassaId : undefined}
             reportId={undefined}
             KassaReport={
              ( id === "undefined" || FManagerCashFlow)

@@ -65,7 +65,7 @@ export default function SinglePage() {
       <div className="h-[calc(100vh-140px)] scrollCastom">
         <CardSort
         //  isAddible={Boolean(report && id == 'my')} 
-         KassaId={id != 'my'? id : undefined} kassaReportId={report}
+         KassaId={id != 'my'? id : undefined} kassaId={report}
           // KassaReport={KassaReportSingle}
           />
         <DataTable

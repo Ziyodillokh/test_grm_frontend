@@ -14,7 +14,7 @@ import api from "@/service/fetchInstance";
 import { TKassareportData } from "@/pages/report/type";
 import { useDataCashflowTypes } from "@/pages/report/table/queries";
 
-export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReportId?:string,isAddable?:boolean,SortData?:TKassareportData}) {
+export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,isAddable?:boolean,SortData?:TKassareportData}) {
   const queryClient = useQueryClient();
   const [sorttype, setSortType] = useQueryState("sorttype", parseAsString);
   const [type, setType] = useState<string>("Приход");
@@ -110,9 +110,9 @@ export default function CardSort({kassaReportId,isAddable,SortData}:{kassaReport
         tip: "cashflow",
         comment,
         price,
-        kassa:kassaReportId,
-        is_online:typePay =="cash"? false : true, 
-        cashflow_type:types?.[0]?.id  
+        kassa:kassaId,
+        is_online:typePay =="cash"? false : true,
+        cashflow_type:types?.[0]?.id
       };
       await api.post(apiRoutes.cashflow, body);
 

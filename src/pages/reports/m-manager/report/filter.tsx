@@ -20,7 +20,7 @@ export default function Filters({
   month: number | undefined;
   filial: string | undefined;
 }) {
-  const { id, kassaReportId } = useParams();
+  const { id, kassaId } = useParams();
   const { data } = useDataFetch({
     queries: { type: "filial", limit: 50 },
   });
@@ -80,8 +80,8 @@ export default function Filters({
     mutationFn: async () => {
       const query = {
         reportId: myCashFlow && !FManagerCashFlow ? id : undefined,
-        kassaReportId: FManagerCashFlow
-          ? kassaReportId || undefined
+        kassaId: FManagerCashFlow
+          ? kassaId || undefined
           : undefined,
         kassaId: myCashFlow ? undefined : id || undefined,
       };
@@ -117,7 +117,7 @@ export default function Filters({
           {/* <DateRangePicker fromPlaceholder={`от`} toPlaceholder={`до`} /> */}
         </>
       )}
-      {id || kassaReportId ? (
+      {id || kassaId ? (
         <>
           <SearchInput className="w-[250px] h-[65px] px-3 ml-auto" />
 
