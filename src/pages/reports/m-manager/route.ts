@@ -5,7 +5,7 @@ import PageFinance from "./report-finance";
 import PageFinanceSingle from "./report-finance-single";
 import PageSellerReport from "../seller/seller-report";
 import PageSellerCashFlow from "../seller/seller-cashflow";
-import CountryTable from "./remaider/county-table";
+import InventoryPage from "./remaider/index";
 import FoctoryTable from "./remaider/factory-table";
 import CollectionTable from "./remaider/collection-table";
 import ModelTable from "./remaider/model-table";
@@ -26,7 +26,7 @@ const Route = [
 
   {
     url: "/m-manager/report-remaider",
-    Element: CountryTable,
+    Element: InventoryPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

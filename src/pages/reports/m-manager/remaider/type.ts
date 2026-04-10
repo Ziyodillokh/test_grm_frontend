@@ -1,80 +1,81 @@
+// ── Filial snapshot (new inventory-report API) ──
 
+export interface InventoryItem {
+  id: string;
+  title: string;
+  count: number;
+  kv: number;
+  sum: number;
+  profit: number;
+}
 
-type Meta = {
-  pagination:{
-    hasNext:boolean
-    hasPrev:boolean
-    limit:number
-    page:number
-    total:number
-    totalPages:number
-  },
-  totals:{
+export interface InventoryMeta {
+  totals: {
     totalCount: number;
     totalKv: number;
-    totalPrice: number;
-    totalSellCount: number;
-    totalSellKv: number;
-    totalSellPrice: number;
-    totalNetProfitPrice?:number;
-  }
-}
-
-
-export interface SalesData {
-  collection: {
-    id: string;
-    title: string;
+    totalSum: number;
+    totalProfit: number;
   };
-  country: {
-    id: string;
-    title: string;
+  pagination: {
+    page: number;
+    limit: number;
+    totalPages: number;
   };
-  factory: {
-    id: string;
-    title: string;
-  };
-  id?: string;
-  title?: string
-  totalCount: number;
-  totalKv: number;
-  totalPrice: number;
-  totalKvPrice?: number;
-  totalSellCount: number;
-  totalSellKv: number;
-  totalSellPrice: number;
-  totalNetProfitPrice?:number;
 }
 
-export interface ICountryReportData {
-  items: SalesData[]
-  data: SalesData[];
-  meta: Meta
+export interface InventoryResponse {
+  items: InventoryItem[];
+  meta: InventoryMeta;
 }
 
-export interface IModelData {
-  items: SalesData[];
-  meta: Meta
+// ── Partiya snapshot ──
+
+export interface PartiyaItem {
+  partiyaId: string;
+  partiyaNo: string;
+  country: string;
+  factory: string;
+  date: string;
+  initialCount: number;
+  initialKv: number;
+  soldCount: number;
+  soldKv: number;
+  soldSum: number;
+  remainingCount: number;
+  remainingKv: number;
+  remainingSum: number;
+  profit: number;
 }
+
+export interface PartiyaResponse {
+  items: PartiyaItem[];
+  meta: {
+    totals: {
+      totalRemainingCount: number;
+      totalRemainingKv: number;
+      totalRemainingSum: number;
+      totalProfit: number;
+    };
+    pagination: {
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+}
+
+// ── Query params ──
 
 export interface TQuery {
-  search?: string | undefined;
+  search?: string;
   filialId?: string;
-  country?:string;
-  factory?:string;
-  kassaId?: string;
+  date?: string;
+  groupBy?: string;
+  countryId?: string;
+  factoryId?: string;
+  collectionId?: string;
+  modelId?: string;
   limit?: number;
   page?: number;
-  id?: string;
-  month?:string;
-  year?:number;
-  startDate?: Date | null;
-  endDate?: Date | null;
-  to?: Date | null;
-  from?: Date | null;
-  type?: string;
-  collectionId?:string;
-  model?:string;
-  typeOther?: string;
+  year?: number;
 }
-

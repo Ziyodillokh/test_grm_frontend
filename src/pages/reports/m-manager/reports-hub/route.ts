@@ -7,7 +7,7 @@ import ReportPage from "../report";
 import PageSellerReport from "../../seller/seller-report";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
 import PageOrginal from "../../report-orginal";
-import CountryTable from "../remaider/county-table";
+import InventoryPage from "../remaider/index";
 import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
@@ -43,7 +43,7 @@ const Route = [
   // Qoldiq hisoboti
   {
     url: "/m-manager/reports-hub/inventory",
-    Element: CountryTable,
+    Element: InventoryPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

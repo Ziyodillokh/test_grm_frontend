@@ -1,76 +1,60 @@
-import {  Store } from "lucide-react";
-
+import { Store } from "lucide-react";
 import FilterSelect from "@/components/filters-ui/filter-select";
-import { usefilialWarehouseFetch } from "./queries";
-import { MonthsArray } from "@/consts";
-import { getMonth } from "date-fns";
-import { useParams } from "react-router-dom";
+import { parseAsString, useQueryState } from "nuqs";
+import { useMeStore } from "@/store/me-store";
+import { useFilialList } from "./queries";
 
 export default function Filters({
   totalCount,
   totalKv,
-  totalPrice,
+  totalSum,
+  totalProfit,
 }: {
   totalCount: number;
   totalKv: number;
-  totalPrice: number;
+  totalSum: number;
+  totalProfit: number;
 }) {
-  const { data } = usefilialWarehouseFetch({
-    queries: { limit: 50 },
-  });
-  const filialOption =
-    data?.pages[0]?.items?.map((e) => ({
-      label: e?.name,
+  const { meUser } = useMeStore();
+  const role = meUser?.position?.role ?? 0;
+  const isManager = role >= 9; // M_MANAGER=9, BOSS=12
+
+  const [date, setDate] = useQueryState("date", parseAsString.withDefault(""));
+
+  const { data: filialData } = useFilialList({ enabled: isManager });
+  const filialOptions =
+    filialData?.pages?.[0]?.items?.map((e: any) => ({
+      label: e?.name || e?.title,
       value: e?.id,
     })) || [];
 
-    const {countryId} = useParams()
   return (
-    <div className=" h-[64px] items-center  flex  gap-2 mb-2  ">
-      <FilterSelect
-        placeholder="все"
-        className="w-[200px] pl-2  h-[65px] "
-        defaultValue="none"
-        disabled={Boolean(countryId)}
-        options={[
-          {
-            label: "Отчет об остатке",
-            value: "none",
-          },
-          {
-            label: "Отчет о продажах",
-            value: "other",
-          },
-        ]}
-        name="typeOther"
-      />
-      <FilterSelect
-        placeholder="все"
-        className="w-[200px] pl-2 mr-auto h-[65px] "
-        options={[{ value: "clear", label: "все" }, ...filialOption]}
-        name="filial"
-        icons={
-          <>
-            <Store />
-          </>
-        }
-      />
-
-      <div className=" text-nowrap p-5 flex gap-4 items-center  h-full bg-card rounded-xl">
+    <div className="h-[64px] items-center flex gap-2 mb-2">
+      <div className="text-nowrap p-5 flex gap-4 items-center h-full mr-auto bg-card rounded-xl">
         <p className="text-[14px] text-foreground">{totalCount} шт</p>
-        <p className="text-[14px] text-foreground">{totalKv} м²</p>
-        <p className="text-[14px] text-foreground">{totalPrice} $</p>
+        <p className="text-[14px] text-foreground">{totalKv?.toFixed(2)} м²</p>
+        <p className="text-[14px] text-foreground">{totalSum?.toFixed(2)} $</p>
+        <p className="text-[14px] text-foreground font-semibold">
+          {totalProfit?.toFixed(2)} $ foyda
+        </p>
       </div>
 
-      <FilterSelect
-        options={MonthsArray}
-        defaultValue={getMonth(new Date()) + 1 + ""}
-        name="month"
-        className="w-[160px] px-2 h-[62px]  "
+      {isManager && (
+        <FilterSelect
+          placeholder="Barcha filiallar"
+          className="w-[200px] pl-2 h-[62px]"
+          options={[{ value: "clear", label: "Barchasi" }, ...filialOptions]}
+          name="filialId"
+          icons={<Store />}
+        />
+      )}
+
+      <input
+        type="date"
+        value={date || ""}
+        onChange={(e) => setDate(e.target.value || null)}
+        className="h-[62px] px-3 rounded-xl bg-card border border-border text-foreground text-[14px]"
       />
-      {/* <Button className="h-full  w-[140px]  " variant={"secondary"}>
-        <FileOutput /> Экспорт
-      </Button> */}
     </div>
   );
 }
