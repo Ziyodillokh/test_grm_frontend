@@ -1,12 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { InventoryItem, PartiyaItem } from "./type";
+import { PartiyaItem } from "./type";
 
-const SharedColumns: ColumnDef<InventoryItem>[] = [
+// Using `any` for column data type to maintain compatibility with both
+// the new InventoryItem (inventory report) and legacy SalesData (dashboard)
+const SharedColumns: ColumnDef<any>[] = [
   {
     header: "Soni",
     accessorKey: "count",
     cell: ({ row }) => (
-      <p className="text-[14px] font-[500]">{row.original.count || 0} шт</p>
+      <p className="text-[14px] font-[500]">{row.original.count || row.original.totalCount || 0} шт</p>
     ),
   },
   {
@@ -14,7 +16,7 @@ const SharedColumns: ColumnDef<InventoryItem>[] = [
     accessorKey: "kv",
     cell: ({ row }) => (
       <p className="text-[14px] font-[500]">
-        {(row.original.kv || 0).toFixed(2)} м²
+        {(row.original.kv || row.original.totalKv || 0).toFixed(2)} м²
       </p>
     ),
   },
@@ -23,7 +25,7 @@ const SharedColumns: ColumnDef<InventoryItem>[] = [
     accessorKey: "sum",
     cell: ({ row }) => (
       <p className="text-[14px] font-[500]">
-        {(row.original.sum || 0).toFixed(2)} $
+        {(row.original.sum || row.original.totalPrice || row.original.totalKvPrice || 0).toFixed(2)} $
       </p>
     ),
   },
@@ -38,40 +40,40 @@ const SharedColumns: ColumnDef<InventoryItem>[] = [
   },
 ];
 
-export const CountryColumns: ColumnDef<InventoryItem>[] = [
+export const CountryColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Davlat",
     cell: ({ row }) => (
-      <p className="text-[14px] font-[500]">{row.original.title}</p>
+      <p className="text-[14px] font-[500]">{row.original.title || row.original?.country?.title}</p>
     ),
   },
   ...SharedColumns,
 ];
 
-export const FactoryColumns: ColumnDef<InventoryItem>[] = [
+export const FactoryColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Zavod",
     cell: ({ row }) => (
-      <p className="text-[14px] font-[500]">{row.original.title}</p>
+      <p className="text-[14px] font-[500]">{row.original.title || row.original?.factory?.title}</p>
     ),
   },
   ...SharedColumns,
 ];
 
-export const CollectionColumns: ColumnDef<InventoryItem>[] = [
+export const CollectionColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Kolleksiya",
     cell: ({ row }) => (
-      <p className="text-[14px] font-[500]">{row.original.title}</p>
+      <p className="text-[14px] font-[500]">{row.original.title || row.original?.collection?.title}</p>
     ),
   },
   ...SharedColumns,
 ];
 
-export const ModelColumns: ColumnDef<InventoryItem>[] = [
+export const ModelColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Model",
@@ -82,7 +84,7 @@ export const ModelColumns: ColumnDef<InventoryItem>[] = [
   ...SharedColumns,
 ];
 
-export const SizeColumns: ColumnDef<InventoryItem>[] = [
+export const SizeColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "O'lcham",
