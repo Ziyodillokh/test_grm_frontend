@@ -7,7 +7,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { TData } from "../type";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {  PatchData, UpdateData } from "@/service/apiHelpers";
+import { AddData, PatchData, UpdateData } from "@/service/apiHelpers";
 import { toast } from "sonner";
 import debounce from "@/utils/debounce";
 import { useParams } from "react-router-dom";
@@ -222,6 +222,66 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
     header: "Расход за м²",
     cell: ({ row }) => {
       return <p>{row?.original?.expense} $</p>;
+    },
+  },
+  {
+    header: "Зав.цена м²",
+    cell: ({ row }) => {
+      const { id } = useParams();
+      const queryClient = useQueryClient();
+      const { mutate } = useMutation({
+        mutationFn: ({ value, collectionId }: { value: number; collectionId: string }) =>
+          AddData(apiRoutes.partiyaCollectionPrice, {
+            partiyaId: id,
+            items: [{ collectionId, factoryPricePerKv: value, overheadPerKv: row?.original?.overheadPerKv || 0 }],
+          }),
+        onSuccess: () => {
+          toast.success("Saqlandi");
+          queryClient.invalidateQueries({ queryKey: [apiRoutes.excelProducts] });
+          queryClient.invalidateQueries({ queryKey: [apiRoutes.partiyaCollectionPriceByPartiya] });
+        },
+      });
+      return (
+        <Input
+          defaultValue={row?.original?.factoryPricePerKv || ""}
+          className="w-[100px]"
+          onChange={debounce((e: any) => {
+            mutate({ value: Number(e?.target.value), collectionId: row?.original?.id });
+          }, 900)}
+          placeholder="0"
+          type="number"
+        />
+      );
+    },
+  },
+  {
+    header: "Устама м²",
+    cell: ({ row }) => {
+      const { id } = useParams();
+      const queryClient = useQueryClient();
+      const { mutate } = useMutation({
+        mutationFn: ({ value, collectionId }: { value: number; collectionId: string }) =>
+          AddData(apiRoutes.partiyaCollectionPrice, {
+            partiyaId: id,
+            items: [{ collectionId, factoryPricePerKv: row?.original?.factoryPricePerKv || 0, overheadPerKv: value }],
+          }),
+        onSuccess: () => {
+          toast.success("Saqlandi");
+          queryClient.invalidateQueries({ queryKey: [apiRoutes.excelProducts] });
+          queryClient.invalidateQueries({ queryKey: [apiRoutes.partiyaCollectionPriceByPartiya] });
+        },
+      });
+      return (
+        <Input
+          defaultValue={row?.original?.overheadPerKv || ""}
+          className="w-[100px]"
+          onChange={debounce((e: any) => {
+            mutate({ value: Number(e?.target.value), collectionId: row?.original?.id });
+          }, 900)}
+          placeholder="0"
+          type="number"
+        />
+      );
     },
   },
   {

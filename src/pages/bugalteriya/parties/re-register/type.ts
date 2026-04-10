@@ -121,6 +121,8 @@ export interface TData {
   commingPrice: number;
   expence: string;
   partiya_title: string;
+  factoryPricePerKv: number;
+  overheadPerKv: number;
   filial: {
     id: string;
     title: string;
