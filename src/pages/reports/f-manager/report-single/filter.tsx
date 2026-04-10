@@ -34,9 +34,7 @@ export default function Filters() {
   const { mutate: exelMudate, isPending: exelPending } = useMutation({
     mutationFn: async () => {
       const query = {
-        // reportId: myCashFlow && !FManagerCashFlow ? id : undefined,
-        kassaId: id == "my" ? report || undefined : undefined,
-        kassaId: id != "my" ? id : undefined,
+        kassaId: id == "my" ? (report || undefined) : (id || undefined),
       };
       const params = query
         ? `?${qs.stringify(query, { arrayFormat: "repeat" })}`
