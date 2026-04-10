@@ -191,7 +191,7 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
     cell: ({ row }) => {
       return (
         <>
-          <p>{Number((row?.original?.displayPrice || 0) * row.original?.kv).toFixed(1)}$</p>
+          <p>{Number((row?.original?.factoryPricePerKv || 0) * row.original?.kv).toFixed(1)}$</p>
         </>
       );
     },
