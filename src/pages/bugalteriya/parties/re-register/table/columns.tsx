@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { parseAsString, useQueryState } from "nuqs";
 
 import TableAction from "@/components/table-action";
 import { apiRoutes } from "@/service/apiRoutes";
@@ -7,7 +7,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { TData } from "../type";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddData, PatchData, UpdateData } from "@/service/apiHelpers";
+import { AddData, PatchData } from "@/service/apiHelpers";
 import { toast } from "sonner";
 import debounce from "@/utils/debounce";
 import { useParams } from "react-router-dom";
@@ -189,13 +189,9 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
   {
     header: "Сумма",
     cell: ({ row }) => {
-      const [localPrice] = useQueryState(
-        "localPrice",
-        parseAsInteger.withDefault(row?.original?.displayPrice || 0)
-      );
       return (
         <>
-          <p>{Number(localPrice * row.original?.kv).toFixed(1)}$</p>
+          <p>{Number((row?.original?.displayPrice || 0) * row.original?.kv).toFixed(1)}$</p>
         </>
       );
     },
@@ -277,52 +273,6 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
           className="w-[100px]"
           onChange={debounce((e: any) => {
             mutate({ value: Number(e?.target.value), collectionId: row?.original?.id });
-          }, 900)}
-          placeholder="0"
-          type="number"
-        />
-      );
-    },
-  },
-  {
-    header: "Себестоимость",
-    cell: ({ row }) => {
-      const [, setLocalPrice] = useQueryState(
-        "localPrice",
-        parseAsInteger.withDefault(row?.original?.displayPrice || 0)
-      );
-      const queryClient = useQueryClient();
-      const { id } = useParams();
-      const { mutate } = useMutation({
-        mutationFn: ({
-          cost,
-          collectionId,
-        }: {
-          cost: number;
-          collectionId: string;
-        }) =>
-          UpdateData(apiRoutes.excelCollection, id || "", [
-            {
-              cost,
-              collectionId,
-            },
-          ]),
-        onSuccess: () => {
-          toast.success("changed");
-          queryClient.invalidateQueries({ queryKey: [apiRoutes.excelProductsReport] });
-          // queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
-        },
-      });
-      return (
-        <Input
-          defaultValue={row?.original?.displayPrice}
-          className="w-[120px]"
-          onChange={debounce((e) => {
-            setLocalPrice(e?.target.value);
-            mutate({
-              cost: Number(e?.target.value),
-              collectionId: row?.original?.id,
-            });
           }, 900)}
           placeholder="0"
           type="number"
