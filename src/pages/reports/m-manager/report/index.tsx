@@ -76,9 +76,11 @@ export default function ReportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: cfTypes } = useQuery({
-    queryKey: ["/cashflow-types/by/managers", dialogType],
-    queryFn: () => getAllData<CashflowType[], object>("/cashflow-types/by/managers/" + (dialogType === "Приход" ? "in" : "out")),
-    enabled: dialogOpen,
+    queryKey: ["/cashflow-types/by/managers", meUser?.id, dialogType],
+    queryFn: () => getAllData<CashflowType[], object>("/cashflow-types/by/managers/" + (meUser?.id || "both"), {
+      type: dialogType === "Приход" ? "in" : "out",
+    }),
+    enabled: dialogOpen && !!meUser?.id,
   });
 
   const openCfDialog = (type: "Приход" | "Расход") => {
