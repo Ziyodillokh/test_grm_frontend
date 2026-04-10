@@ -1,4 +1,8 @@
 import { DataTable } from "@/components/ui/data-table";
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import Filter from "./filter";
 import CardSort from "@/components/card-sort";
@@ -16,6 +20,16 @@ import { useMeStore } from "@/store/me-store";
 import { useKassaReportSingle } from "../filial-report-finance/queries";
 import { useCashflowForMainManager, useReportsSingle } from "../report-finance-single/queries";
 import { useYear } from "@/store/year-store";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Spinner } from "@/components/ui/spinner";
+import { apiRoutes } from "@/service/apiRoutes";
+import { getAllData } from "@/service/apiHelpers";
+import api from "@/service/fetchInstance";
+import type { CashflowType } from "@/components/adding-parish-flow";
+import { minio_img_url } from "@/constants";
 
 export default function ReportPage() {
   const tipFilter = {
@@ -48,8 +62,60 @@ export default function ReportPage() {
   );
 
   const { meUser } = useMeStore();
+  const queryClient = useQueryClient();
   const {year} = useYear()
   const [filial] = useQueryState("filial");
+
+  // Cashflow create dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<"Приход" | "Расход">("Приход");
+  const [selectedType, setSelectedType] = useState("");
+  const [price, setPrice] = useState<number>(0);
+  const [cfDate, setCfDate] = useState("");
+  const [cfComment, setCfComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data: cfTypes } = useQuery({
+    queryKey: ["/cashflow-types/by/managers", dialogType],
+    queryFn: () => getAllData<CashflowType[], object>("/cashflow-types/by/managers/" + (dialogType === "Приход" ? "in" : "out")),
+    enabled: dialogOpen,
+  });
+
+  const openCfDialog = (type: "Приход" | "Расход") => {
+    setDialogType(type);
+    setSelectedType("");
+    setPrice(0);
+    setCfDate("");
+    setCfComment("");
+    setDialogOpen(true);
+  };
+
+  const handleCfSubmit = async () => {
+    if (!selectedType) { toast.error("Turni tanlang"); return; }
+    if (!price || price <= 0) { toast.error("Summani kiriting"); return; }
+    setIsSubmitting(true);
+    try {
+      await api.post(apiRoutes.cashflow, {
+        cashflow_type: selectedType,
+        type: dialogType,
+        tip: "cashflow",
+        comment: cfComment,
+        price,
+        ...(cfDate ? { date: cfDate } : {}),
+        createdBy: meUser?.id,
+        report: id,
+      });
+      toast.success(`${dialogType === "Приход" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
+      setDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
+      queryClient.invalidateQueries({ queryKey: ["kassa-reports"] });
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const [tip] = useQueryState("tip", parseAsString);
   const [cashflowSlug] = useQueryState("cashflowSlug", parseAsString);
@@ -122,6 +188,16 @@ export default function ReportPage() {
       <Filter month={myCashFlow?myCashFlowReports?.month: KassaReportSingle?.month} filial={KassaReportSingle?.filial?.title} />
       < >
         {myCashFlow ? (
+          <>
+          {/* Kirim / Chiqim buttons */}
+          <div className="flex gap-2 mb-3 justify-end">
+            <Button onClick={() => openCfDialog("Приход")} className="bg-[#89A143] hover:bg-[#799132] text-white px-5 py-3 rounded-xl text-[14px]">
+              <Plus size={16} className="mr-1" /> Kirim qo'shish
+            </Button>
+            <Button onClick={() => openCfDialog("Расход")} className="bg-[#E38157] hover:bg-[#D27047] text-white px-5 py-3 rounded-xl text-[14px]">
+              <Plus size={16} className="mr-1" /> Chiqim qo'shish
+            </Button>
+          </div>
           <div className="grid grid-cols-3 gap-3 mb-3">
             {/* Oq card — o'zimga tegishli */}
             <div className="bg-card border border-border rounded-xl p-5">
@@ -165,6 +241,62 @@ export default function ReportPage() {
               </p>
             </div>
           </div>
+
+          {/* Cashflow create dialog */}
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="sm:max-w-[640px] costomModal rounded-[12px] px-4 pb-4">
+              <div className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[45px] ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}>
+                {dialogType === "Приход" ? "Kirim qo'shish" : "Chiqim qo'shish"}
+              </div>
+              <div className="grid grid-cols-2 gap-1">
+                <div className={`w-full grid ${cfTypes && cfTypes.length < 6 ? "grid-cols-2" : "grid-cols-3"} gap-0.5`}>
+                  {cfTypes?.filter((i) => i?.is_visible && i?.slug !== "Balance")?.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => setSelectedType(item.id)}
+                      className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
+                    >
+                      <img
+                        src={minio_img_url + (typeof item.icon === 'object' ? (item.icon as any)?.path : item.icon)}
+                        style={{ filter: selectedType === item.id ? "invert(1) brightness(2)" : "" }}
+                      />
+                      <p className="text-[13px] font-medium my-2.5">{item.title}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="w-full">
+                  <Input
+                    value={price || ""}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                    type="number"
+                    placeholder="0.00"
+                    className="w-full border-none h-[90px] placeholder:text-[32px] mt-0.5 !text-[32px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                  />
+                  <Input
+                    value={cfDate}
+                    onChange={(e) => setCfDate(e.target.value)}
+                    type="datetime-local"
+                    className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
+                  />
+                  <Textarea
+                    value={cfComment}
+                    onChange={(e) => setCfComment(e.target.value)}
+                    placeholder="Izoh"
+                    className="w-full border-none focus:border-none outline-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5"
+                  />
+                </div>
+              </div>
+              <Button
+                onClick={handleCfSubmit}
+                disabled={isSubmitting}
+                className={`p-5 py-6 rounded-[7px] ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+              >
+                {isSubmitting ? <Spinner className="h-4 w-4 mr-2" /> : null}
+                {isSubmitting ? "Qo'shilmoqda..." : `${dialogType === "Приход" ? "Kirimga" : "Chiqimga"} qo'shish`}
+              </Button>
+            </DialogContent>
+          </Dialog>
+          </>
         ) : (
           <CardSort
           isUserSelectble
