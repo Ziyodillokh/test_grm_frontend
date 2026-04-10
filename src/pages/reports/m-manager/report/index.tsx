@@ -171,7 +171,7 @@ export default function ReportPage() {
             isOnlineCashFlow={meUser?.position.role == 10}
             isOnlyCash={false}
             isOnlyTerminal={false}
-            isAddible={false}
+            isAddible
             kassaId={FManagerCashFlow ? kassaId : undefined}
             reportId={undefined}
             KassaReport={

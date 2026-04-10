@@ -63,6 +63,7 @@ export default function Page() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [comment, setComment] = useState("");
+  const [date, setDate] = useState("");
 
   useEffect(() => {
     setId(null);
@@ -127,6 +128,7 @@ export default function Page() {
     setSelectedCategory("");
     setAmount("");
     setComment("");
+    setDate("");
     setDialogOpen(true);
   };
 
@@ -143,6 +145,7 @@ export default function Page() {
       price: parseFloat(amount),
       type: dialogType === "parish" ? "Приход" : "Расход",
       comment,
+      ...(date ? { date } : {}),
       createdBy: meUser?.id,
       kassa: reportData?.id,
       cashflow_type: selectedCategory,
@@ -361,6 +364,13 @@ export default function Page() {
                 />
                 <div className="text-4xl text-[#5D5D53] mx-4">$</div>
               </div>
+
+              <Input
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                type="datetime-local"
+                className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
+              />
 
               <Textarea
                 placeholder="Izoh"
