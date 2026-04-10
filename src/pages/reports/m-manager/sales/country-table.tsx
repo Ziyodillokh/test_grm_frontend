@@ -32,7 +32,7 @@ export default function CountryTable() {
       },
     });
 
-  const items = data?.pages?.flatMap((page) => page?.items || []) as any[] || [];
+  const items = data?.pages?.flatMap((page: any) => page?.items || []) || [];
   const totals = data?.pages?.[0]?.meta?.totals;
 
   return (
