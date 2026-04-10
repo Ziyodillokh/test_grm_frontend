@@ -215,12 +215,6 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
   //   },
   // },
   {
-    header: "Расход за м²",
-    cell: ({ row }) => {
-      return <p>{row?.original?.expense} $</p>;
-    },
-  },
-  {
     header: "Зав.цена м²",
     cell: ({ row }) => {
       const { id } = useParams();
