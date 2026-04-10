@@ -252,7 +252,7 @@ export default function ReportPage() {
               </div>
               <div className="grid grid-cols-2 gap-1">
                 <div className={`w-full grid ${cfTypes && cfTypes.length < 6 ? "grid-cols-2" : "grid-cols-3"} gap-0.5`}>
-                  {cfTypes?.filter((i) => i?.is_visible && i?.slug !== "Balance")?.map((item) => (
+                  {cfTypes?.filter((i) => i?.is_visible && !["Balance", "delaer", "kassa", "онлайн"].includes(i?.slug))?.map((item) => (
                     <div
                       key={item.id}
                       onClick={() => setSelectedType(item.id)}
