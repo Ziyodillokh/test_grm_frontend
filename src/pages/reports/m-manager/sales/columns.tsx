@@ -1,7 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { SalesItem, SalesPartiyaItem } from "./type";
 
-const SharedColumns: ColumnDef<SalesItem>[] = [
+const SharedColumns: ColumnDef<any>[] = [
   {
     header: "Soni",
     accessorKey: "count",
@@ -47,7 +46,7 @@ const SharedColumns: ColumnDef<SalesItem>[] = [
   },
 ];
 
-export const FilialColumns: ColumnDef<SalesItem>[] = [
+export const FilialColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Filial",
@@ -58,7 +57,7 @@ export const FilialColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const DealerColumns: ColumnDef<SalesItem>[] = [
+export const DealerColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Diller",
@@ -69,7 +68,7 @@ export const DealerColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const InternetColumns: ColumnDef<SalesItem>[] = [
+export const InternetColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Internet filial",
@@ -80,7 +79,7 @@ export const InternetColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const CountryColumns: ColumnDef<SalesItem>[] = [
+export const CountryColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Davlat",
@@ -91,7 +90,7 @@ export const CountryColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const FactoryColumns: ColumnDef<SalesItem>[] = [
+export const FactoryColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Zavod",
@@ -102,7 +101,7 @@ export const FactoryColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const CollectionColumns: ColumnDef<SalesItem>[] = [
+export const CollectionColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Kolleksiya",
@@ -113,7 +112,7 @@ export const CollectionColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const ModelColumns: ColumnDef<SalesItem>[] = [
+export const ModelColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "Model",
@@ -124,7 +123,7 @@ export const ModelColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const SizeColumns: ColumnDef<SalesItem>[] = [
+export const SizeColumns: ColumnDef<any>[] = [
   {
     accessorKey: "title",
     header: "O'lcham",
@@ -135,7 +134,7 @@ export const SizeColumns: ColumnDef<SalesItem>[] = [
   ...SharedColumns,
 ];
 
-export const PartiyaColumns: ColumnDef<SalesPartiyaItem>[] = [
+export const PartiyaColumns: ColumnDef<any>[] = [
   {
     accessorKey: "partiyaNo",
     header: "Partiya",

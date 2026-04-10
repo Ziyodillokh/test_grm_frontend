@@ -35,7 +35,7 @@ export default function CollectionTable() {
       },
     });
 
-  const items = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const items = data?.pages?.flatMap((page) => page?.items || []) as any[] || [];
   const totals = data?.pages?.[0]?.meta?.totals;
 
   return (
@@ -54,7 +54,7 @@ export default function CollectionTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={isPartiya ? undefined : (item) => navigate(`${item.id}`)}
+          onRowClick={isPartiya ? undefined : (item: any) => navigate(`${item.id}`)}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

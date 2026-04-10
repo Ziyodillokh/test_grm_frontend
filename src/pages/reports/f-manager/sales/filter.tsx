@@ -1,7 +1,6 @@
 import { Calendar } from "lucide-react";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { MonthsArray } from "@/consts";
-import { useYear } from "@/store/year-store";
 
 export default function SalesFilter({
   totalCount,
@@ -16,8 +15,6 @@ export default function SalesFilter({
   totalProfit: number;
   totalDiscount: number;
 }) {
-  const { year } = useYear();
-
   return (
     <div className="h-[64px] items-center flex gap-2 mb-2">
       <div className="text-nowrap p-5 flex gap-4 items-center h-full mr-auto bg-card rounded-xl">

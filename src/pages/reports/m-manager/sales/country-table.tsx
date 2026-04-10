@@ -32,7 +32,7 @@ export default function CountryTable() {
       },
     });
 
-  const items = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const items = data?.pages?.flatMap((page) => page?.items || []) as any[] || [];
   const totals = data?.pages?.[0]?.meta?.totals;
 
   return (
@@ -51,7 +51,7 @@ export default function CountryTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item) => navigate(`${item.id}`)}
+          onRowClick={(item: any) => navigate(`${item.id}`)}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}
