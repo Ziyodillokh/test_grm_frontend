@@ -1,51 +1,51 @@
 import { DataTable } from "@/components/ui/data-table";
-
-import {  FactoryColumns } from "./columns";
+import { FactoryColumns } from "./columns";
 import Filter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
-import {  useFactoryReport } from "./queries";
+import { useFilialSnapshot } from "./queries";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
-import { useYear } from "@/store/year-store";
 
 export default function FoctoryTable() {
-  const {meUser} = useMeStore();
-  const [month] = useQueryState("month", parseAsString);
-  const {year}= useYear()
-  const {countryId,factoryId} = useParams()
-  const navigate = useNavigate()
-  const [typeOther] = useQueryState("typeOther", parseAsString.withDefault("none"));
+  const { meUser } = useMeStore();
+  const navigate = useNavigate();
+  const { countryId } = useParams();
+  const [date] = useQueryState("date", parseAsString.withDefault(""));
+  const [filialId] = useQueryState("filialId", parseAsString.withDefault(""));
+
+  const role = meUser?.position?.role ?? 0;
+  const resolvedFilialId = role >= 9 ? (filialId || undefined) : meUser?.filial?.id;
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-  useFactoryReport({
+    useFilialSnapshot({
       queries: {
-        filialId: meUser?.filial?.id || undefined,
-        month: month || undefined,
-        year,
-        country:countryId,
-        factory:factoryId,
-        typeOther
+        filialId: resolvedFilialId,
+        date: date || undefined,
+        groupBy: "factory",
+        countryId,
       },
-      enabled: true,
     });
 
-  const collections = data?.pages?.flatMap((page) => page?.data || []) || [];
+  const items = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const totals = data?.pages?.[0]?.meta?.totals;
 
   return (
     <>
       <Filter
-        totalKv={data?.pages?.[0]?.meta.totals?.totalKv || 0}
-        totalPrice={data?.pages?.[0]?.meta.totals?.totalPrice || 0}
-        totalCount={data?.pages?.[0]?.meta.totals?.totalCount || 0}
+        totalCount={totals?.totalCount || 0}
+        totalKv={totals?.totalKv || 0}
+        totalSum={totals?.totalSum || 0}
+        totalProfit={totals?.totalProfit || 0}
       />
       <div className="h-[calc(100vh-140px)] scrollCastom">
         <DataTable
           columns={FactoryColumns}
-          data={collections || []}
+          data={items}
           isLoading={isLoading}
           isRowClickble={false}
+          isNumberble
+          onRowClick={(item) => navigate(`${item.id}`)}
           fetchNextPage={fetchNextPage}
-          onRowClick={(item)=>navigate(`${item?.factory?.id}`)}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}
         />

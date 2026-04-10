@@ -1,154 +1,168 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableAction from "@/components/table-action";
-import { apiRoutes } from "@/service/apiRoutes";
-import { SalesData } from "./type";
+import { InventoryItem, PartiyaItem } from "./type";
 
-export const AllColumns: ColumnDef<SalesData>[] = [
-
-
+const SharedColumns: ColumnDef<InventoryItem>[] = [
   {
-    header: "Объём",
-    accessorKey: "totalKv",
-    cell: ({ row }) => {
-      return (
-        <p className="text-[14px] font-[500]">
-          {row.original?.totalKv?.toFixed(2) || 0} м²
-        </p>
-      );
-    },
+    header: "Soni",
+    accessorKey: "count",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.count || 0} шт</p>
+    ),
   },
   {
-    header: " Сумма",
-    accessorKey: "totalKvPrice",
-    cell: ({ row }) => {
-      return (
-        <p className="text-[14px] font-[500]">
-         { Number(row.original?.totalPrice || row.original?.totalKvPrice||0)?.toFixed(2) || 0} $
-        </p>
-      );
-    },
+    header: "Hajm",
+    accessorKey: "kv",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.kv || 0).toFixed(2)} м²
+      </p>
+    ),
   },
   {
-    header: "Кол-во ковров",
-    accessorKey: "totalCount",
-    cell: ({ row }) => {
-      return <p className="text-[14px] w-[200px] font-[500]">{row.original?.totalCount || 0} шт</p>;
-    },
+    header: "Summa",
+    accessorKey: "sum",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.sum || 0).toFixed(2)} $
+      </p>
+    ),
   },
- 
   {
-    id: "actions",  
-    enableHiding: true,
-    header: () => <div className="text-right">{"actions"}</div>,
-    size: 50,
-    cell: () => {
-      return (
-        <TableAction
-          url={apiRoutes.products}
-          ShowUpdate={false}
-          ShowDelete={false}
-          ShowPreview={false}
-          // id={row.original.id}
-        />
-      );
-    },
+    header: "Foyda",
+    accessorKey: "profit",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500] text-green-600">
+        {(row.original.profit || 0).toFixed(2)} $
+      </p>
+    ),
   },
 ];
 
-export const CountryColumns: ColumnDef<SalesData>[] = [
-
+export const CountryColumns: ColumnDef<InventoryItem>[] = [
   {
     accessorKey: "title",
-    header: "Страна",
-   
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-[14px] font-[500]">
-            {row.original?.country?.title}
-          </p>
-        </div>
-      );
-    },
+    header: "Davlat",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.title}</p>
+    ),
   },
-  ...AllColumns,
+  ...SharedColumns,
 ];
 
-
-export const FactoryColumns: ColumnDef<SalesData>[] = [
-
+export const FactoryColumns: ColumnDef<InventoryItem>[] = [
   {
     accessorKey: "title",
-    header: "Поставщикам",
-   
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-[14px] font-[500]">
-            {row.original?.factory?.title}
-          </p>
-        </div>
-      );
-    },
+    header: "Zavod",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.title}</p>
+    ),
   },
-  ...AllColumns,
+  ...SharedColumns,
 ];
 
-
-export const CollectionColumns: ColumnDef<SalesData>[] = [
-
+export const CollectionColumns: ColumnDef<InventoryItem>[] = [
   {
     accessorKey: "title",
-    header: "Коллекциям",
-   
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-[14px] font-[500]">
-            {row.original?.collection?.title}
-          </p>
-        </div>
-      );
-    },
+    header: "Kolleksiya",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.title}</p>
+    ),
   },
-  ...AllColumns,
+  ...SharedColumns,
 ];
 
-export const ModelColumns: ColumnDef<SalesData>[] = [
-
+export const ModelColumns: ColumnDef<InventoryItem>[] = [
   {
     accessorKey: "title",
-    header: "Модели",
-   
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-[14px] font-[500]">
-            {row.original?.title}
-          </p>
-        </div>
-      );
-    },
+    header: "Model",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.title}</p>
+    ),
   },
-  ...AllColumns,
+  ...SharedColumns,
 ];
-export const SizeColumns: ColumnDef<SalesData>[] = [
 
+export const SizeColumns: ColumnDef<InventoryItem>[] = [
   {
     accessorKey: "title",
-    header: "Размеры",
-   
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <p className="text-[14px] font-[500]">
-            {row.original?.title}
-          </p>
-        </div>
-      );
-    },
+    header: "O'lcham",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.title}</p>
+    ),
   },
-  ...AllColumns,
+  ...SharedColumns,
 ];
 
-
+export const PartiyaColumns: ColumnDef<PartiyaItem>[] = [
+  {
+    accessorKey: "partiyaNo",
+    header: "Partiya",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.partiyaNo}</p>
+    ),
+  },
+  {
+    accessorKey: "country",
+    header: "Davlat",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.country}</p>
+    ),
+  },
+  {
+    accessorKey: "factory",
+    header: "Zavod",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.factory}</p>
+    ),
+  },
+  {
+    accessorKey: "date",
+    header: "Sana",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.date}</p>
+    ),
+  },
+  {
+    header: "Qoldiq (шт)",
+    accessorKey: "remainingCount",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">{row.original.remainingCount}</p>
+    ),
+  },
+  {
+    header: "Qoldiq (м²)",
+    accessorKey: "remainingKv",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.remainingKv || 0).toFixed(2)}
+      </p>
+    ),
+  },
+  {
+    header: "Qoldiq ($)",
+    accessorKey: "remainingSum",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.remainingSum || 0).toFixed(2)}
+      </p>
+    ),
+  },
+  {
+    header: "Sotilgan (м²)",
+    accessorKey: "soldKv",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.soldKv || 0).toFixed(2)}
+      </p>
+    ),
+  },
+  {
+    header: "Foyda",
+    accessorKey: "profit",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500] text-green-600">
+        {(row.original.profit || 0).toFixed(2)} $
+      </p>
+    ),
+  },
+];

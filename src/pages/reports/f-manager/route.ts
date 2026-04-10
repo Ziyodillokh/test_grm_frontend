@@ -4,7 +4,7 @@ import PageSellerCashFlow from "../seller/seller-cashflow";
 import PageSellerReport from "../seller/seller-report";
 import PageCleintDebt from "./client-debt";
 import PageOrginal from "../report-orginal";
-import CountryTable from "./remaider/county-table";
+import InventoryPage from "./remaider/index";
 import FoctoryTable from "./remaider/factory-table";
 import CollectionTable from "./remaider/collection-table";
 import ModelTable from "./remaider/model-table";
@@ -44,10 +44,10 @@ const Route = [
     Element: SinglePage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  // Qoldiq hisoboti
+  // Qoldiq hisoboti (inventory)
   {
     url: "/f-manager/report-remaider",
-    Element: CountryTable,
+    Element: InventoryPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

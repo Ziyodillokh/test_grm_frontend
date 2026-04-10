@@ -1,53 +1,52 @@
 import { DataTable } from "@/components/ui/data-table";
-
-import {  ModelColumns } from "./columns";
+import { ModelColumns } from "./columns";
 import Filter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
-import { useModelReport } from "./queries";
+import { useFilialSnapshot } from "./queries";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
-import { useYear } from "@/store/year-store";
 
 export default function ModelTable() {
-  const {meUser} = useMeStore();
-  const [month] = useQueryState("month", parseAsString);
-  const {year}= useYear()
-  const [sort] = useQueryState("sort", parseAsString.withDefault("delears"));
-  const [typeOther] = useQueryState("typeOther", parseAsString.withDefault("none"));
-    const navigate = useNavigate()
-    const {collectionId,factoryId,countryId} = useParams()
+  const { meUser } = useMeStore();
+  const navigate = useNavigate();
+  const { countryId, factoryId, collectionId } = useParams();
+  const [date] = useQueryState("date", parseAsString.withDefault(""));
+  const [filialId] = useQueryState("filialId", parseAsString.withDefault(""));
+
+  const role = meUser?.position?.role ?? 0;
+  const resolvedFilialId = role >= 9 ? (filialId || undefined) : meUser?.filial?.id;
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useModelReport({
+    useFilialSnapshot({
       queries: {
-        filialId: meUser?.filial?.id || undefined,
-        month: month || undefined,
-        year,
-        collectionId:collectionId,
-        factory:factoryId,
-        country:countryId,
-        typeOther
+        filialId: resolvedFilialId,
+        date: date || undefined,
+        groupBy: "model",
+        countryId,
+        factoryId,
+        collectionId,
       },
-      enabled: sort == "delears",
     });
 
-  const Models = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const items = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const totals = data?.pages?.[0]?.meta?.totals;
 
   return (
     <>
       <Filter
-        totalKv={data?.pages?.[0]?.meta.totals?.totalKv || 0}
-        totalPrice={data?.pages?.[0]?.meta.totals?.totalPrice || 0}
-        totalCount={data?.pages?.[0]?.meta.totals?.totalCount || 0}
+        totalCount={totals?.totalCount || 0}
+        totalKv={totals?.totalKv || 0}
+        totalSum={totals?.totalSum || 0}
+        totalProfit={totals?.totalProfit || 0}
       />
       <div className="h-[calc(100vh-140px)] scrollCastom">
         <DataTable
           columns={ModelColumns}
-          data={Models || []}
+          data={items}
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item)=>navigate(`${item?.id}`)}
+          onRowClick={(item) => navigate(`${item.id}`)}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

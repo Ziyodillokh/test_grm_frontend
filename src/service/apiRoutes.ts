@@ -127,4 +127,6 @@ export const apiRoutes = {
   filialPlan: '/filial-plan',
   videoMessages: "/video-messages",
   qrLogo: "/qr-logo",
+  inventoryFilialSnapshot: '/inventory-report/filial-snapshot',
+  inventoryPartiyaSnapshot: '/inventory-report/partiya-snapshot',
 } as const;
