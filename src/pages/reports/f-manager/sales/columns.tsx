@@ -189,6 +189,24 @@ export const PartiyaColumns: ColumnDef<any>[] = [
     ),
   },
   {
+    header: "Zavor narxi",
+    accessorKey: "comingSum",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.comingSum || 0).toFixed(2)} $
+      </p>
+    ),
+  },
+  {
+    header: "Ustama",
+    accessorKey: "overheadSum",
+    cell: ({ row }) => (
+      <p className="text-[14px] font-[500]">
+        {(row.original.overheadSum || 0).toFixed(2)} $
+      </p>
+    ),
+  },
+  {
     header: "Foyda",
     accessorKey: "profit",
     cell: ({ row }) => (

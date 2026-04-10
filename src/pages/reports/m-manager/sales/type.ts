@@ -19,6 +19,8 @@ export interface SalesPartiyaItem {
   soldSum: number;
   profit: number;
   discount: number;
+  comingSum: number;
+  overheadSum: number;
 }
 
 export interface SalesMeta {
@@ -28,6 +30,8 @@ export interface SalesMeta {
     totalSum: number;
     totalProfit: number;
     totalDiscount: number;
+    totalComingSum: number;
+    totalOverheadSum: number;
   };
   pagination: {
     page: number;

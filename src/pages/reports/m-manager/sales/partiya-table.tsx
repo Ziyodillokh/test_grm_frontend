@@ -30,6 +30,8 @@ export default function PartiyaTable() {
         totalSum={totals?.totalSum || 0}
         totalProfit={totals?.totalProfit || 0}
         totalDiscount={totals?.totalDiscount || 0}
+        totalComingSum={totals?.totalComingSum || 0}
+        totalOverheadSum={totals?.totalOverheadSum || 0}
       />
       <div className="h-[calc(100vh-140px)] scrollCastom">
         <DataTable

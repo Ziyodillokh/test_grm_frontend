@@ -8,12 +8,16 @@ export default function SalesFilter({
   totalSum,
   totalProfit,
   totalDiscount,
+  totalComingSum,
+  totalOverheadSum,
 }: {
   totalCount: number;
   totalKv: number;
   totalSum: number;
   totalProfit: number;
   totalDiscount: number;
+  totalComingSum?: number;
+  totalOverheadSum?: number;
 }) {
   return (
     <div className="h-[64px] items-center flex gap-2 mb-2">
@@ -21,6 +25,12 @@ export default function SalesFilter({
         <p className="text-[14px] text-foreground">{totalCount} шт</p>
         <p className="text-[14px] text-foreground">{totalKv?.toFixed(2)} м²</p>
         <p className="text-[14px] text-foreground">{totalSum?.toFixed(2)} $</p>
+        {totalComingSum != null && (
+          <p className="text-[14px] text-foreground">{totalComingSum?.toFixed(2)} $ zavor</p>
+        )}
+        {totalOverheadSum != null && (
+          <p className="text-[14px] text-foreground">{totalOverheadSum?.toFixed(2)} $ ustama</p>
+        )}
         <p className="text-[14px] text-foreground font-semibold text-green-600">
           {totalProfit?.toFixed(2)} $ foyda
         </p>
