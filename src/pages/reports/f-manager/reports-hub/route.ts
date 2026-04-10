@@ -1,7 +1,6 @@
 import ReportsHubPage from ".";
 import MonthlyReportsPage from "./monthly";
 import MonthlyKassaDetailPage from "./monthly/kassa-detail";
-import SalesReportPage from "./sales";
 import SinglePage from "../report-single";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
 import PageSellerReport from "../../seller/seller-report";
@@ -11,6 +10,12 @@ import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
 import SizeTable from "../remaider/size-table";
+import SalesPage from "../sales";
+import SalesCountryTable from "../sales/country-table";
+import SalesFactoryTable from "../sales/factory-table";
+import SalesCollectionTable from "../sales/collection-table";
+import SalesModelTable from "../sales/model-table";
+import SalesSizeTable from "../sales/size-table";
 
 const Route = [
   {
@@ -68,7 +73,35 @@ const Route = [
   // Sotuv Hisoboti
   {
     url: "/f-manager/reports-hub/sales",
-    Element: SalesReportPage,
+    Element: SalesPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  // Drill-down: :tabType = filial|dealer|internet|partiya
+  // Partiya: level1=collection, level2=model, level3=size (3 levels)
+  // Others: level1=country, level2=factory, level3=collection, level4=model, level5=size
+  {
+    url: "/f-manager/reports-hub/sales/:tabType/:entityId",
+    Element: SalesCountryTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/sales/:tabType/:entityId/:countryId",
+    Element: SalesFactoryTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId",
+    Element: SalesCollectionTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId/:collectionId",
+    Element: SalesModelTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId/:collectionId/:modelId",
+    Element: SalesSizeTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Sotuvchi Hisoboti

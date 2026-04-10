@@ -129,4 +129,8 @@ export const apiRoutes = {
   qrLogo: "/qr-logo",
   inventoryFilialSnapshot: '/inventory-report/filial-snapshot',
   inventoryPartiyaSnapshot: '/inventory-report/partiya-snapshot',
+  salesFilial: '/sales-report/filial',
+  salesDealer: '/sales-report/dealer',
+  salesInternet: '/sales-report/internet',
+  salesPartiya: '/sales-report/partiya',
 } as const;

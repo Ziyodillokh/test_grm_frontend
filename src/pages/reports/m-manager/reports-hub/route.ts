@@ -12,6 +12,12 @@ import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
 import SizeTable from "../remaider/size-table";
+import SalesPage from "../sales";
+import SalesCountryTable from "../sales/country-table";
+import SalesFactoryTable from "../sales/factory-table";
+import SalesCollectionTable from "../sales/collection-table";
+import SalesModelTable from "../sales/model-table";
+import SalesSizeTable from "../sales/size-table";
 
 const Route = [
   {
@@ -66,9 +72,40 @@ const Route = [
     Element: SizeTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  // Savdo bo'yicha hisobot
+  // Sotuv hisoboti
   {
     url: "/m-manager/reports-hub/sales",
+    Element: SalesPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/sales/:tabType/:entityId",
+    Element: SalesCountryTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/sales/:tabType/:entityId/:countryId",
+    Element: SalesFactoryTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId",
+    Element: SalesCollectionTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId/:collectionId",
+    Element: SalesModelTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId/:collectionId/:modelId",
+    Element: SalesSizeTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  // Savdo bo'yicha hisobot (legacy)
+  {
+    url: "/m-manager/reports-hub/sales-legacy",
     Element: ReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
