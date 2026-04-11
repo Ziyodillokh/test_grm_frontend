@@ -31,15 +31,21 @@ export interface FactoryReportResponse {
   totals: FactoryReportTotals;
 }
 
+export interface CollectionEntry {
+  collection_title: string;
+  price_per_kv: number;
+  total_kv: number;
+  total_cost: number;
+}
+
 export interface FactoryDetailItem {
   id: string;
-  partiya_id?: string;
   entry_type: "partiya" | "payment";
   date: string;
-  collection_title?: string;
-  price_per_kv?: number;
+  partiya_name?: string;
   total_kv?: number;
   total_cost: number;
+  collections?: CollectionEntry[];
   comment?: string;
   who_paid?: string;
 }
