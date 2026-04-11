@@ -3,6 +3,7 @@ import {
   Delete,
   MessageSquareText,
   Minus,
+  Pencil,
   Plus,
   ShoppingCart,
 } from "lucide-react";
@@ -13,7 +14,7 @@ import { format } from "date-fns";
 import { TData } from "./type";
 import TebleAvatar from "@/components/teble-avatar";
 import TableAction from "@/components/table-action";
-import { parseAsBoolean, useQueryState } from "nuqs";
+import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
 import { apiRoutes } from "@/service/apiRoutes";
 
 export const Columns: ColumnDef<TData>[] = [
@@ -190,6 +191,12 @@ export const Columns: ColumnDef<TData>[] = [
         "myCashFlow",
         parseAsBoolean.withDefault(false)
       );
+      const [, setEditCashflowId] = useQueryState(
+        "editCashflowId",
+        parseAsString
+      );
+      const item = row.original;
+      const canEdit = myCashFlow && item.tip !== "order";
       return (
         <TableAction
           ShowDelete={myCashFlow}
@@ -197,7 +204,17 @@ export const Columns: ColumnDef<TData>[] = [
           url={apiRoutes.cashflow}
           refetchUrl={apiRoutes.cashflow}
           id={row?.original?.id + ""}
-        />
+        >
+          {canEdit && (
+            <button
+              onClick={() => setEditCashflowId(String(item.id))}
+              className="px-[6px] text-start text-sm rounded-md py-[4px] flex items-center gap-2 w-full hover:bg-accent"
+            >
+              <Pencil className="h-4 w-4" />
+              Tahrirlash
+            </button>
+          )}
+        </TableAction>
       )
     },
   },

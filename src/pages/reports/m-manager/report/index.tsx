@@ -32,6 +32,7 @@ import type { CashflowType } from "@/components/adding-parish-flow";
 import { minio_img_url } from "@/constants";
 import ShadcnSelect from "@/components/Select";
 import useDeblsData from "@/pages/debt/table/queries";
+import UpdateCashflowDialog from "./update-cashflow-dialog";
 
 export default function ReportPage() {
   const tipFilter = {
@@ -80,6 +81,7 @@ export default function ReportPage() {
   const [isKentSelected, setIsKentSelected] = useState(false);
   const [factoryId, setFactoryId] = useState<string | undefined>(undefined);
   const [isFactorySelected, setIsFactorySelected] = useState(false);
+  const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
 
   const { data: cfTypes } = useQuery({
     queryKey: ["/cashflow-types/by/managers", meUser?.id, dialogType],
@@ -398,6 +400,12 @@ export default function ReportPage() {
           isFetchingNextPage={isFetchingNextPage}
         />
       </>
+
+      <UpdateCashflowDialog
+        editId={editCashflowId}
+        onClose={() => setEditCashflowId(null)}
+        item={flatData.find((i) => String(i.id) === editCashflowId)}
+      />
     </>
   );
 }
