@@ -110,7 +110,7 @@ export default function CardSort({
 
   const { data: logisticsData } = useQuery({
     queryKey: [apiRoutes.logistics, "logistics-select"],
-    queryFn: () => getAllData<any[], undefined>(apiRoutes.logistics + "?limit=100"),
+    queryFn: () => getAllData<any, { limit: number }>(apiRoutes.logistics, { limit: 100 }),
     enabled: Boolean(isLogisticsSelectble),
   });
 
@@ -557,7 +557,7 @@ export default function CardSort({
                 <ShadcnSelect
                   value={logisticsId}
                   options={
-                    (logisticsData as any[])?.map((item: any) => ({
+                    ((logisticsData as any)?.items || [])?.map((item: any) => ({
                       value: item.id,
                       label: item.title,
                     })) || []
