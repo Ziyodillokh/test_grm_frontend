@@ -76,6 +76,8 @@ export default function CardSort({
     boolean | undefined
   >(false);
   const [isFactorySelectble, setIsFactorySelectble] = useState(false);
+  const [logisticsId, setLogisticsId] = useState<string | undefined>(undefined);
+  const [isLogisticsSelectble, setIsLogisticsSelectble] = useState(false);
 
   const { data: filialData } = useDataFetch({});
   const { data: kassaData, isLoading: isReportLoading } = useKassaById({
@@ -104,6 +106,12 @@ export default function CardSort({
     queryKey: [apiRoutes.factoryReportEnabled],
     queryFn: () => getAllData<any[], undefined>(apiRoutes.factoryReportEnabled),
     enabled: Boolean(isFactorySelectble),
+  });
+
+  const { data: logisticsData } = useQuery({
+    queryKey: [apiRoutes.logistics, "logistics-select"],
+    queryFn: () => getAllData<any[], undefined>(apiRoutes.logistics + "?limit=100"),
+    enabled: Boolean(isLogisticsSelectble),
   });
 
   interface TColumns {
@@ -299,6 +307,7 @@ export default function CardSort({
         report: reportId || undefined,
         debtId: isUserLocSelectble ? debtId : undefined,
         factoryId: isFactorySelectble ? factoryId : undefined,
+        logisticsId: isLogisticsSelectble ? logisticsId : undefined,
       };
 
       await api.post(apiRoutes.cashflow, body);
@@ -312,6 +321,8 @@ export default function CardSort({
       setDate("");
       setDebtId(undefined);
       setFactoryId(undefined);
+      setLogisticsId(undefined);
+      setIsLogisticsSelectble(false);
       // Close dialog
       setDialogOpen(false);
 
@@ -335,7 +346,9 @@ export default function CardSort({
     setDate("");
     setDebtId(undefined);
     setFactoryId(undefined);
+    setLogisticsId(undefined);
     setIsFactorySelectble(false);
+    setIsLogisticsSelectble(false);
   }, [dialogOpen]);
   const column = meUser?.position.role === 11 ? hrColumns : columns;
   return (
@@ -459,9 +472,15 @@ export default function CardSort({
                       } else if (item?.title === "Поставщики") {
                         setIsFactorySelectble(true);
                         setisUserLocSelectble(false);
+                        setIsLogisticsSelectble(false);
+                      } else if (item?.slug === "logistika" || item?.title === "Логистика") {
+                        setIsLogisticsSelectble(true);
+                        setisUserLocSelectble(false);
+                        setIsFactorySelectble(false);
                       } else {
                         setisUserLocSelectble(false);
                         setIsFactorySelectble(false);
+                        setIsLogisticsSelectble(false);
                       }
                     }}
                     className={`${cashflow_type === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
@@ -529,6 +548,23 @@ export default function CardSort({
                   placeholder={"Заводы"}
                   onChange={(value) => {
                     setFactoryId(value);
+                  }}
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                />
+              )}
+
+              {isLogisticsSelectble && (
+                <ShadcnSelect
+                  value={logisticsId}
+                  options={
+                    (logisticsData as any[])?.map((item: any) => ({
+                      value: item.id,
+                      label: item.title,
+                    })) || []
+                  }
+                  placeholder={"Логистика"}
+                  onChange={(value) => {
+                    setLogisticsId(value);
                   }}
                   className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
                 />

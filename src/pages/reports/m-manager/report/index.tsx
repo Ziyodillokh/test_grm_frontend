@@ -81,6 +81,8 @@ export default function ReportPage() {
   const [isKentSelected, setIsKentSelected] = useState(false);
   const [factoryId, setFactoryId] = useState<string | undefined>(undefined);
   const [isFactorySelected, setIsFactorySelected] = useState(false);
+  const [logisticsId, setLogisticsId] = useState<string | undefined>(undefined);
+  const [isLogisticsSelected, setIsLogisticsSelected] = useState(false);
   const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
 
   const { data: cfTypes } = useQuery({
@@ -103,6 +105,12 @@ export default function ReportPage() {
     enabled: Boolean(isFactorySelected),
   });
 
+  const { data: logisticsData } = useQuery({
+    queryKey: [apiRoutes.logistics, "logistics-select"],
+    queryFn: () => getAllData<any[], undefined>(apiRoutes.logistics + "?limit=100"),
+    enabled: Boolean(isLogisticsSelected),
+  });
+
   const openCfDialog = (type: "Приход" | "Расход") => {
     setDialogType(type);
     setSelectedType("");
@@ -113,6 +121,8 @@ export default function ReportPage() {
     setIsKentSelected(false);
     setFactoryId(undefined);
     setIsFactorySelected(false);
+    setLogisticsId(undefined);
+    setIsLogisticsSelected(false);
     setDialogOpen(true);
   };
 
@@ -132,6 +142,7 @@ export default function ReportPage() {
         report: id,
         debtId: isKentSelected ? debtId : undefined,
         factoryId: isFactorySelected ? factoryId : undefined,
+        logisticsId: isLogisticsSelected ? logisticsId : undefined,
       });
       toast.success(`${dialogType === "Приход" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
@@ -289,12 +300,21 @@ export default function ReportPage() {
                         } else if (item?.title === "Поставщики") {
                           setIsFactorySelected(true);
                           setIsKentSelected(false);
+                          setIsLogisticsSelected(false);
                           setDebtId(undefined);
-                        } else {
+                        } else if (item?.slug === "logistika" || item?.title === "Логистика") {
+                          setIsLogisticsSelected(true);
                           setIsKentSelected(false);
                           setIsFactorySelected(false);
                           setDebtId(undefined);
                           setFactoryId(undefined);
+                        } else {
+                          setIsKentSelected(false);
+                          setIsFactorySelected(false);
+                          setIsLogisticsSelected(false);
+                          setDebtId(undefined);
+                          setFactoryId(undefined);
+                          setLogisticsId(undefined);
                         }
                       }}
                       className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
@@ -336,6 +356,22 @@ export default function ReportPage() {
                       placeholder={"Заводы"}
                       onChange={(value) => {
                         setFactoryId(value);
+                      }}
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                    />
+                  )}
+                  {isLogisticsSelected && (
+                    <ShadcnSelect
+                      value={logisticsId}
+                      options={
+                        (logisticsData as any[])?.map((item: any) => ({
+                          value: item.id,
+                          label: item.title,
+                        })) || []
+                      }
+                      placeholder={"Логистика"}
+                      onChange={(value) => {
+                        setLogisticsId(value);
                       }}
                       className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
                     />

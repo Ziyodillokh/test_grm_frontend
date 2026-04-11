@@ -141,4 +141,7 @@ export const apiRoutes = {
   factoryDebtReportExcel: '/factory/report/excel',
   factoryReportEnabled: '/factory/report-enabled',
   factoryNotReportEnabled: '/factory/not-report-enabled',
+  logistics: '/logistics',
+  logisticsReport: '/logistics/report',
+  logisticsReportExcel: '/logistics/report/excel',
 } as const;

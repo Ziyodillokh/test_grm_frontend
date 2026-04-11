@@ -1,5 +1,7 @@
 import MManagerReportsHubPage from ".";
 import PlaceholderPage from "./placeholder";
+import LogisticsReportPage from "./logistics";
+import LogisticsDetailPage from "./logistics/detail";
 import KentReportPage from "./kents";
 import KentDetailPage from "./kents/detail";
 import FactoryReportPage from "./factories";
@@ -159,7 +161,12 @@ const Route = [
   },
   {
     url: "/m-manager/reports-hub/logistics",
-    Element: PlaceholderPage,
+    Element: LogisticsReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/logistics/:logisticsId",
+    Element: LogisticsDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
