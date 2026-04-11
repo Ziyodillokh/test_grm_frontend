@@ -170,6 +170,11 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
+    url: "/m-manager/reports-hub/logistics/:logisticsId/info",
+    Element: LogisticsDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
     url: "/m-manager/reports-hub/customs",
     Element: PlaceholderPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
