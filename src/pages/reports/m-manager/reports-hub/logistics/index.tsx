@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useYear } from "@/store/year-store";
 import { apiRoutes } from "@/service/apiRoutes";
-import api from "@/service/api";
+import api from "@/service/fetchInstance";
 import { useLogisticsReport } from "./queries";
 import { LogisticsColumns } from "./columns";
 import LogisticsFilter from "./filter";
