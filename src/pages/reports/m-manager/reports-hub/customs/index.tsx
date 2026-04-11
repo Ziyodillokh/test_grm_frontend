@@ -42,12 +42,12 @@ export default function CustomsReportPage() {
 
   const { mutate: createCustoms, isPending: isCreating } = useMutation({
     mutationFn: (title: string) =>
-      api.post(apiRoutes.bojxona, { title }),
+      api.post(apiRoutes.customs, { title }),
     onSuccess: () => {
       toast.success("Bojxona kompaniya qo'shildi");
       setNewTitle("");
       queryClient.invalidateQueries({
-        queryKey: [apiRoutes.bojxonaReport],
+        queryKey: [apiRoutes.customsReport],
       });
     },
     onError: () => {

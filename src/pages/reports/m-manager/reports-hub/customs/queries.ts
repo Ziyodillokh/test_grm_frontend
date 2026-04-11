@@ -18,10 +18,10 @@ export const useCustomsReport = ({
   enabled = true,
 }: ICustomsReportQuery) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.bojxonaReport, queries],
+    queryKey: [apiRoutes.customsReport, queries],
     queryFn: ({ pageParam = 1 }) =>
       getAllData<CustomsReportResponse, CustomsReportQuery>(
-        apiRoutes.bojxonaReport,
+        apiRoutes.customsReport,
         {
           ...queries,
           page: pageParam as number,
@@ -50,10 +50,10 @@ export const useCustomsDetail = ({
   enabled = true,
 }: ICustomsDetailQuery) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.bojxona, customsId, "report", queries],
+    queryKey: [apiRoutes.customs, customsId, "report", queries],
     queryFn: ({ pageParam = 1 }) =>
       getAllData<CustomsDetailResponse, CustomsDetailQuery>(
-        `${apiRoutes.bojxona}/${customsId}/report`,
+        `${apiRoutes.customs}/${customsId}/report`,
         {
           ...queries,
           page: pageParam as number,

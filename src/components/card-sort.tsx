@@ -117,8 +117,8 @@ export default function CardSort({
   });
 
   const { data: customsData } = useQuery({
-    queryKey: [apiRoutes.bojxona, "customs-select"],
-    queryFn: () => getAllData<any, { limit: number }>(apiRoutes.bojxona, { limit: 100 }),
+    queryKey: [apiRoutes.customs, "customs-select"],
+    queryFn: () => getAllData<any, { limit: number }>(apiRoutes.customs, { limit: 100 }),
     enabled: Boolean(isCustomsSelectble),
   });
 
