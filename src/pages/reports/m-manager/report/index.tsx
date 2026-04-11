@@ -30,6 +30,8 @@ import { getAllData } from "@/service/apiHelpers";
 import api from "@/service/fetchInstance";
 import type { CashflowType } from "@/components/adding-parish-flow";
 import { minio_img_url } from "@/constants";
+import ShadcnSelect from "@/components/Select";
+import useDeblsData from "@/pages/debt/table/queries";
 
 export default function ReportPage() {
   const tipFilter = {
@@ -74,6 +76,8 @@ export default function ReportPage() {
   const [cfDate, setCfDate] = useState("");
   const [cfComment, setCfComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [debtId, setDebtId] = useState<string | undefined>(undefined);
+  const [isKentSelected, setIsKentSelected] = useState(false);
 
   const { data: cfTypes } = useQuery({
     queryKey: ["/cashflow-types/by/managers", meUser?.id, dialogType],
@@ -83,12 +87,20 @@ export default function ReportPage() {
     enabled: dialogOpen && !!meUser?.id,
   });
 
+  const { data: DeblsData } = useDeblsData({
+    queries: { limit: 100, page: 1 },
+    enabled: Boolean(isKentSelected),
+  });
+  const flatDeblsData = DeblsData?.pages?.flatMap((page) => page?.items || []) || [];
+
   const openCfDialog = (type: "Приход" | "Расход") => {
     setDialogType(type);
     setSelectedType("");
     setPrice(0);
     setCfDate("");
     setCfComment("");
+    setDebtId(undefined);
+    setIsKentSelected(false);
     setDialogOpen(true);
   };
 
@@ -106,6 +118,7 @@ export default function ReportPage() {
         ...(cfDate ? { date: cfDate } : {}),
         createdBy: meUser?.id,
         report: id,
+        debtId: isKentSelected ? debtId : undefined,
       });
       toast.success(`${dialogType === "Приход" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
@@ -255,7 +268,15 @@ export default function ReportPage() {
                   {cfTypes?.filter((i) => i?.is_visible && !["Balance", "delaer", "kassa", "онлайн"].includes(i?.slug))?.map((item) => (
                     <div
                       key={item.id}
-                      onClick={() => setSelectedType(item.id)}
+                      onClick={() => {
+                        setSelectedType(item.id);
+                        if (item?.slug === "dolg") {
+                          setIsKentSelected(true);
+                        } else {
+                          setIsKentSelected(false);
+                          setDebtId(undefined);
+                        }
+                      }}
                       className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
                     >
                       <img
@@ -267,6 +288,22 @@ export default function ReportPage() {
                   ))}
                 </div>
                 <div className="w-full">
+                  {isKentSelected && (
+                    <ShadcnSelect
+                      value={debtId}
+                      options={
+                        flatDeblsData.map((item) => ({
+                          value: item.id,
+                          label: item.fullName,
+                        })) || []
+                      }
+                      placeholder={"Кенты"}
+                      onChange={(value) => {
+                        setDebtId(value);
+                      }}
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                    />
+                  )}
                   <Input
                     value={price || ""}
                     onChange={(e) => setPrice(Number(e.target.value))}
