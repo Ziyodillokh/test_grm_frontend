@@ -1,5 +1,7 @@
 import MManagerReportsHubPage from ".";
 import PlaceholderPage from "./placeholder";
+import KentReportPage from "./kents";
+import KentDetailPage from "./kents/detail";
 import MonthlyReportsPage from "../report-finance/monthly";
 import ReportDetailPage from "./monthly/report-detail";
 import KassaCashflowsPage from "./monthly/kassa-cashflows";
@@ -126,10 +128,15 @@ const Route = [
     Element: PageOrginal,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  // Placeholder sahifalar
+  // Kent hisoboti
   {
     url: "/m-manager/reports-hub/clients",
-    Element: PlaceholderPage,
+    Element: KentReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/clients/:debtId",
+    Element: KentDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

@@ -135,4 +135,6 @@ export const apiRoutes = {
   salesPartiya: '/sales-report/partiya',
   partiyaCollectionPrice: '/partiya-collection-price',
   partiyaCollectionPriceByPartiya: '/partiya-collection-price/partiya',
+  debtReport: '/debt/report',
+  debtReportExcel: '/debt/report/excel',
 } as const;
