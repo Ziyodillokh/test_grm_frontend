@@ -9,11 +9,7 @@ import {
   ArrowUp,
   ChevronDown,
   ChevronRight,
-  Pencil,
-  Trash2,
 } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { MonthsArray } from "@/consts";
 import { Button } from "@/components/ui/button";
@@ -22,9 +18,6 @@ import { useFactoryDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
 import { format } from "date-fns";
 import { FactoryDetailItem } from "./type";
-import { DeleteData } from "@/service/apiHelpers";
-import { apiRoutes } from "@/service/apiRoutes";
-import EditPaymentDialog from "./edit-payment-dialog";
 
 export default function FactoryDetailPage() {
   const { factoryId } = useParams();
@@ -34,8 +27,6 @@ export default function FactoryDetailPage() {
     parseAsString.withDefault(String(new Date().getMonth() + 1))
   );
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const [editPaymentId, setEditPaymentId] = useState<string | null>(null);
-  const queryClient = useQueryClient();
 
   const { data, isLoading } = useFactoryDetail({
     factoryId: factoryId || "",
@@ -45,31 +36,10 @@ export default function FactoryDetailPage() {
     },
   });
 
-  const factoryQueryKey = [apiRoutes.factoryDebtReport, factoryId, "detail"];
-
   const flatData: FactoryDetailItem[] =
     data?.pages?.flatMap((page) => page?.items || []) || [];
   const totals = data?.pages?.[0]?.totals;
   const factory = data?.pages?.[0]?.factory;
-
-  const editItem = flatData.find((i) => i.id === editPaymentId);
-
-  const { mutate: deleteCashflow, isPending: isDeleting } = useMutation({
-    mutationFn: (id: string) => DeleteData(apiRoutes.cashflow, id),
-    onSuccess: () => {
-      toast.success("Muvaffaqiyatli o'chirildi");
-      queryClient.invalidateQueries({ queryKey: factoryQueryKey });
-    },
-    onError: (err: any) => {
-      toast.error(err?.response?.data?.message || "Xatolik yuz berdi");
-    },
-  });
-
-  const handleDelete = (id: string) => {
-    if (window.confirm("Haqiqatan ham o'chirmoqchimisiz?")) {
-      deleteCashflow(id);
-    }
-  };
 
   const handleExport = () => {
     const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -170,7 +140,7 @@ export default function FactoryDetailPage() {
       {/* Table */}
       <div className="w-full">
         {/* Table header */}
-        <div className="grid grid-cols-[48px_160px_100px_130px_1fr_150px_70px] px-5 py-3 border-b border-border bg-muted/50 text-[13px] text-muted-foreground font-medium">
+        <div className="grid grid-cols-[48px_160px_100px_130px_1fr_150px_40px] px-5 py-3 border-b border-border bg-muted/50 text-[13px] text-muted-foreground font-medium">
           <div></div>
           <div>Summasi</div>
           <div>Turi</div>
@@ -197,7 +167,7 @@ export default function FactoryDetailPage() {
             <div key={item.id}>
               {/* Main row */}
               <div
-                className={`grid grid-cols-[48px_160px_100px_130px_1fr_150px_70px] px-5 py-3 border-b border-border items-center ${
+                className={`grid grid-cols-[48px_160px_100px_130px_1fr_150px_40px] px-5 py-3 border-b border-border items-center ${
                   hasCollections ? "cursor-pointer hover:bg-muted/30" : ""
                 }`}
                 onClick={() => {
@@ -267,38 +237,14 @@ export default function FactoryDetailPage() {
                   {!isPartiya && item.who_paid ? item.who_paid : ""}
                 </div>
 
-                {/* Actions / Chevron */}
-                <div className="flex items-center justify-center gap-1">
+                {/* Chevron */}
+                <div className="flex items-center justify-center">
                   {hasCollections ? (
                     isExpanded ? (
                       <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     ) : (
                       <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     )
-                  ) : !isPartiya && !item.is_static ? (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditPaymentId(item.id);
-                        }}
-                        className="p-1 rounded hover:bg-muted"
-                        title="Tahrirlash"
-                      >
-                        <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(item.id);
-                        }}
-                        className="p-1 rounded hover:bg-red-50"
-                        title="O'chirish"
-                        disabled={isDeleting}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-red-500" />
-                      </button>
-                    </>
                   ) : null}
                 </div>
               </div>
@@ -309,7 +255,7 @@ export default function FactoryDetailPage() {
                   {item.collections.map((col, idx) => (
                     <div
                       key={`${item.id}-col-${idx}`}
-                      className="grid grid-cols-[48px_160px_100px_130px_1fr_150px_70px] px-5 py-2 border-b border-border/50 items-center"
+                      className="grid grid-cols-[48px_160px_100px_130px_1fr_150px_40px] px-5 py-2 border-b border-border/50 items-center"
                     >
                       <div></div>
                       <div className="text-[13px] text-[#FF6600] font-medium pl-1">
@@ -342,13 +288,6 @@ export default function FactoryDetailPage() {
           </div>
         )}
       </div>
-
-      <EditPaymentDialog
-        editId={editPaymentId}
-        onClose={() => setEditPaymentId(null)}
-        item={editItem}
-        factoryQueryKey={factoryQueryKey}
-      />
     </div>
   );
 }

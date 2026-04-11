@@ -48,7 +48,6 @@ export interface FactoryDetailItem {
   collections?: CollectionEntry[];
   comment?: string;
   who_paid?: string;
-  is_static?: boolean;
 }
 
 export interface FactoryDetailQuery {
