@@ -21,7 +21,7 @@ export const KentColumns: ColumnDef<KentReportItem>[] = [
     cell: ({ row }) => <p>{row.original?.phone}</p>,
   },
   {
-    header: "Взято",
+    header: "Olingan",
     cell: ({ row }) => (
       <p className="text-[#FF6600] font-medium">
         {formatPrice(row.original?.owed || 0)} $
@@ -29,7 +29,7 @@ export const KentColumns: ColumnDef<KentReportItem>[] = [
     ),
   },
   {
-    header: "Дано",
+    header: "Qaytarilgan",
     cell: ({ row }) => (
       <p className="text-[#89A143] font-medium">
         {formatPrice(row.original?.given || 0)} $
@@ -37,7 +37,7 @@ export const KentColumns: ColumnDef<KentReportItem>[] = [
     ),
   },
   {
-    header: "Qoldiq",
+    header: "Qolgan",
     cell: ({ row }) => (
       <p className="font-bold">
         {formatPrice(row.original?.totalDebt || 0)} $
@@ -45,7 +45,7 @@ export const KentColumns: ColumnDef<KentReportItem>[] = [
     ),
   },
   {
-    header: "Davriy kirim",
+    header: "Davriy olingan",
     cell: ({ row }) => (
       <p className="text-[#89A143]">
         {formatPrice(row.original?.period_income || 0)} $
@@ -53,7 +53,7 @@ export const KentColumns: ColumnDef<KentReportItem>[] = [
     ),
   },
   {
-    header: "Davriy chiqim",
+    header: "Davriy qaytarilgan",
     cell: ({ row }) => (
       <p className="text-[#FF6600]">
         {formatPrice(row.original?.period_expense || 0)} $

@@ -23,13 +23,13 @@ export default function KentFilter({
         {totals && (
           <>
             <p className="text-[13px] text-[#FF6600]">
-              Взято: {formatPrice(totals.total_owed || 0)} $
+              Olingan: {formatPrice(totals.total_owed || 0)} $
             </p>
             <p className="text-[13px] text-[#89A143]">
-              Дано: {formatPrice(totals.total_given || 0)} $
+              Qaytarilgan: {formatPrice(totals.total_given || 0)} $
             </p>
             <p className="text-[13px] font-bold">
-              Qoldiq: {formatPrice(totals.total_debt || 0)} $
+              Qolgan: {formatPrice(totals.total_debt || 0)} $
             </p>
           </>
         )}

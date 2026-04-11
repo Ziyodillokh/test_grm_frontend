@@ -140,6 +140,11 @@ const Route = [
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
+    url: "/m-manager/reports-hub/clients/:debtId/info",
+    Element: KentDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
     url: "/m-manager/reports-hub/factories",
     Element: PlaceholderPage,
     meta: { isAuth: true, role: new Set(["admin"]) },

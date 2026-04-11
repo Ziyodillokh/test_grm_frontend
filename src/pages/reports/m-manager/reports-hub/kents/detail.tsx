@@ -42,9 +42,9 @@ export default function KentDetailPage() {
   };
 
   const cards = [
-    { title: "Взято", price: formatPrice(debt?.owed || 0) },
-    { title: "Дано", price: formatPrice(debt?.given || 0) },
-    { title: "Остаток долга", price: formatPrice(debt?.totalDebt || 0) },
+    { title: "Olingan", price: formatPrice(debt?.owed || 0) },
+    { title: "Qaytarilgan", price: formatPrice(debt?.given || 0) },
+    { title: "Qolgan", price: formatPrice(debt?.totalDebt || 0) },
   ];
 
   return (
@@ -68,8 +68,8 @@ export default function KentDetailPage() {
           className="border-border max-w-[150px] w-full border-l"
           options={[
             { label: "Hammasi", value: "clear" },
-            { label: "Kirim", value: "Приход" },
-            { label: "Chiqim", value: "Расход" },
+            { label: "Olingan", value: "Приход" },
+            { label: "Qaytarilgan", value: "Расход" },
           ]}
           defaultValue="clear"
           placeholder="Turi"
@@ -92,7 +92,7 @@ export default function KentDetailPage() {
           <div className="flex items-center">
             <DollarSign size={48} />
             <div>
-              <p className="text-[12px]">Итого задолженность</p>
+              <p className="text-[12px]">Jami qarz</p>
               <p className="text-[22px] font-bold text-foreground">
                 {formatPrice(debt?.totalDebt || 0)} $
               </p>
@@ -121,13 +121,13 @@ export default function KentDetailPage() {
             Davriy balans
           </p>
           <p className="p-[20px] border-border border-r text-[14px] w-full text-[#89A143]">
-            Kirim: {formatPrice(totals.total_income || 0)} $
+            Olingan: {formatPrice(totals.total_income || 0)} $
           </p>
           <p className="p-[20px] border-border border-r text-[14px] w-full text-[#E38157]">
-            Chiqim: {formatPrice(totals.total_expense || 0)} $
+            Qaytarilgan: {formatPrice(totals.total_expense || 0)} $
           </p>
           <p className="p-[20px] text-[14px] w-full font-bold">
-            Balans: {formatPrice(totals.balance || 0)} $
+            Qolgan: {formatPrice(totals.balance || 0)} $
           </p>
         </div>
       )}
