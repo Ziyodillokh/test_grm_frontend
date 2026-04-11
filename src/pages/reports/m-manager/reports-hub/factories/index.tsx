@@ -120,7 +120,7 @@ export default function FactoryReportPage() {
         columns={columnsWithActions}
         data={flatData}
         isLoading={isLoading}
-        isRowClickble={true}
+        isRowClickble={false}
         onRowClick={(row) =>
           navigate(`/m-manager/reports-hub/factories/${row.id}`)
         }
