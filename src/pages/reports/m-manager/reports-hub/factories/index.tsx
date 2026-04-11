@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import ShadcnSelect from "@/components/Select";
 import { useYear } from "@/store/year-store";
 import { apiRoutes } from "@/service/apiRoutes";
-import { api } from "@/service/apiHelpers";
+import api from "@/service/fetchInstance";
 import { useFactoryReport, useFactoryNotReportEnabled } from "./queries";
 import { FactoryColumns } from "./columns";
 import FactoryFilter from "./filter";
