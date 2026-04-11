@@ -25,14 +25,14 @@ export default function Filters({
   const [tip] = useQueryState("tip", parseAsString.withDefault((meUser?.position?.role ==7 || meUser?.position.role == 4) ? "переучет": "new"));
 
   const changeStatus = useMemo(() => {
-    if (partiyaStatus == "new") {
-      return "pending"; // panding by M-Manager(9) 
-    } else if (partiyaStatus == "pending" && !check) {
-      return "closed"; // close my w-manager(7)
-    } else if (partiyaStatus == "closed" && check) {
-      return "finished"; // finish after closing by M-Manager(9) 
+    if (partiyaStatus == "new" && meUser?.position?.role == 9) {
+      return "pending"; // pending by M-Manager(9)
+    } else if (partiyaStatus == "pending" && (meUser?.position?.role == 7 || meUser?.position?.role == 4)) {
+      return "closed"; // close by W-Manager(7) / F-Manager(4)
+    } else if (partiyaStatus == "closed" && meUser?.position?.role == 9) {
+      return "finished"; // finish after closing by M-Manager(9)
     }
-  }, [partiyaStatus]);
+  }, [partiyaStatus, meUser]);
 
   const StatusText = {
     new: "Отправить на приходование",
@@ -93,7 +93,7 @@ export default function Filters({
       ) : (
         <Button
           onClick={() => mutate()}
-          disabled={(partiyaStatus == "pending" && check) || isPending}
+          disabled={!changeStatus || isPending}
           className="h-full ml-auto  border-y-0"
           variant={(partiyaStatus == "new" || partiyaStatus == "closed")  ?"default": "outline"}
         >
