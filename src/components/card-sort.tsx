@@ -78,6 +78,8 @@ export default function CardSort({
   const [isFactorySelectble, setIsFactorySelectble] = useState(false);
   const [logisticsId, setLogisticsId] = useState<string | undefined>(undefined);
   const [isLogisticsSelectble, setIsLogisticsSelectble] = useState(false);
+  const [customsId, setCustomsId] = useState<string | undefined>(undefined);
+  const [isCustomsSelectble, setIsCustomsSelectble] = useState(false);
 
   const { data: filialData } = useDataFetch({});
   const { data: kassaData, isLoading: isReportLoading } = useKassaById({
@@ -112,6 +114,12 @@ export default function CardSort({
     queryKey: [apiRoutes.logistics, "logistics-select"],
     queryFn: () => getAllData<any, { limit: number }>(apiRoutes.logistics, { limit: 100 }),
     enabled: Boolean(isLogisticsSelectble),
+  });
+
+  const { data: customsData } = useQuery({
+    queryKey: [apiRoutes.bojxona, "customs-select"],
+    queryFn: () => getAllData<any, { limit: number }>(apiRoutes.bojxona, { limit: 100 }),
+    enabled: Boolean(isCustomsSelectble),
   });
 
   interface TColumns {
@@ -308,6 +316,7 @@ export default function CardSort({
         debtId: isUserLocSelectble ? debtId : undefined,
         factoryId: isFactorySelectble ? factoryId : undefined,
         logisticsId: isLogisticsSelectble ? logisticsId : undefined,
+        customsId: isCustomsSelectble ? customsId : undefined,
       };
 
       await api.post(apiRoutes.cashflow, body);
@@ -323,6 +332,8 @@ export default function CardSort({
       setFactoryId(undefined);
       setLogisticsId(undefined);
       setIsLogisticsSelectble(false);
+      setCustomsId(undefined);
+      setIsCustomsSelectble(false);
       // Close dialog
       setDialogOpen(false);
 
@@ -347,8 +358,10 @@ export default function CardSort({
     setDebtId(undefined);
     setFactoryId(undefined);
     setLogisticsId(undefined);
+    setCustomsId(undefined);
     setIsFactorySelectble(false);
     setIsLogisticsSelectble(false);
+    setIsCustomsSelectble(false);
   }, [dialogOpen]);
   const column = meUser?.position.role === 11 ? hrColumns : columns;
   return (
@@ -477,10 +490,17 @@ export default function CardSort({
                         setIsLogisticsSelectble(true);
                         setisUserLocSelectble(false);
                         setIsFactorySelectble(false);
+                        setIsCustomsSelectble(false);
+                      } else if (item?.slug === "tamojnya" || item?.title === "Таможня") {
+                        setIsCustomsSelectble(true);
+                        setisUserLocSelectble(false);
+                        setIsFactorySelectble(false);
+                        setIsLogisticsSelectble(false);
                       } else {
                         setisUserLocSelectble(false);
                         setIsFactorySelectble(false);
                         setIsLogisticsSelectble(false);
+                        setIsCustomsSelectble(false);
                       }
                     }}
                     className={`${cashflow_type === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
@@ -565,6 +585,23 @@ export default function CardSort({
                   placeholder={"Логистика"}
                   onChange={(value) => {
                     setLogisticsId(value);
+                  }}
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                />
+              )}
+
+              {isCustomsSelectble && (
+                <ShadcnSelect
+                  value={customsId}
+                  options={
+                    ((customsData as any)?.items || [])?.map((item: any) => ({
+                      value: item.id,
+                      label: item.title,
+                    })) || []
+                  }
+                  placeholder={"Таможня"}
+                  onChange={(value) => {
+                    setCustomsId(value);
                   }}
                   className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
                 />

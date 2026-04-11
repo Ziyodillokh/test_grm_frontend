@@ -144,4 +144,7 @@ export const apiRoutes = {
   logistics: '/logistics',
   logisticsReport: '/logistics/report',
   logisticsReportExcel: '/logistics/report/excel',
+  bojxona: '/bojxona',
+  bojxonaReport: '/bojxona/report',
+  bojxonaReportExcel: '/bojxona/report/excel',
 } as const;

@@ -83,6 +83,8 @@ export default function ReportPage() {
   const [isFactorySelected, setIsFactorySelected] = useState(false);
   const [logisticsId, setLogisticsId] = useState<string | undefined>(undefined);
   const [isLogisticsSelected, setIsLogisticsSelected] = useState(false);
+  const [customsId, setCustomsId] = useState<string | undefined>(undefined);
+  const [isCustomsSelected, setIsCustomsSelected] = useState(false);
   const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
 
   const { data: cfTypes } = useQuery({
@@ -111,6 +113,12 @@ export default function ReportPage() {
     enabled: Boolean(isLogisticsSelected),
   });
 
+  const { data: customsData } = useQuery({
+    queryKey: [apiRoutes.bojxona, "customs-select"],
+    queryFn: () => getAllData<any, { limit: number }>(apiRoutes.bojxona, { limit: 100 }),
+    enabled: Boolean(isCustomsSelected),
+  });
+
   const openCfDialog = (type: "Приход" | "Расход") => {
     setDialogType(type);
     setSelectedType("");
@@ -123,6 +131,8 @@ export default function ReportPage() {
     setIsFactorySelected(false);
     setLogisticsId(undefined);
     setIsLogisticsSelected(false);
+    setCustomsId(undefined);
+    setIsCustomsSelected(false);
     setDialogOpen(true);
   };
 
@@ -143,6 +153,7 @@ export default function ReportPage() {
         debtId: isKentSelected ? debtId : undefined,
         factoryId: isFactorySelected ? factoryId : undefined,
         logisticsId: isLogisticsSelected ? logisticsId : undefined,
+        customsId: isCustomsSelected ? customsId : undefined,
       });
       toast.success(`${dialogType === "Приход" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
@@ -306,15 +317,27 @@ export default function ReportPage() {
                           setIsLogisticsSelected(true);
                           setIsKentSelected(false);
                           setIsFactorySelected(false);
+                          setIsCustomsSelected(false);
                           setDebtId(undefined);
                           setFactoryId(undefined);
-                        } else {
+                          setCustomsId(undefined);
+                        } else if (item?.slug === "tamojnya" || item?.title === "Таможня") {
+                          setIsCustomsSelected(true);
                           setIsKentSelected(false);
                           setIsFactorySelected(false);
                           setIsLogisticsSelected(false);
                           setDebtId(undefined);
                           setFactoryId(undefined);
                           setLogisticsId(undefined);
+                        } else {
+                          setIsKentSelected(false);
+                          setIsFactorySelected(false);
+                          setIsLogisticsSelected(false);
+                          setIsCustomsSelected(false);
+                          setDebtId(undefined);
+                          setFactoryId(undefined);
+                          setLogisticsId(undefined);
+                          setCustomsId(undefined);
                         }
                       }}
                       className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
@@ -372,6 +395,22 @@ export default function ReportPage() {
                       placeholder={"Логистика"}
                       onChange={(value) => {
                         setLogisticsId(value);
+                      }}
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                    />
+                  )}
+                  {isCustomsSelected && (
+                    <ShadcnSelect
+                      value={customsId}
+                      options={
+                        ((customsData as any)?.items || [])?.map((item: any) => ({
+                          value: item.id,
+                          label: item.title,
+                        })) || []
+                      }
+                      placeholder={"Таможня"}
+                      onChange={(value) => {
+                        setCustomsId(value);
                       }}
                       className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
                     />

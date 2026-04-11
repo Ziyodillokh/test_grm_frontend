@@ -1,7 +1,8 @@
 import MManagerReportsHubPage from ".";
-import PlaceholderPage from "./placeholder";
 import LogisticsReportPage from "./logistics";
 import LogisticsDetailPage from "./logistics/detail";
+import CustomsReportPage from "./customs";
+import CustomsDetailPage from "./customs/detail";
 import KentReportPage from "./kents";
 import KentDetailPage from "./kents/detail";
 import FactoryReportPage from "./factories";
@@ -174,9 +175,20 @@ const Route = [
     Element: LogisticsDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
+  // Bojxona hisoboti
   {
-    url: "/m-manager/reports-hub/customs",
-    Element: PlaceholderPage,
+    url: "/m-manager/reports-hub/bojxona",
+    Element: CustomsReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/bojxona/:customsId",
+    Element: CustomsDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/bojxona/:customsId/info",
+    Element: CustomsDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];

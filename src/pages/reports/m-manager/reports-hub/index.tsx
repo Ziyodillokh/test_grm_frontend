@@ -53,7 +53,7 @@ const reports = [
   {
     title: "Tamojniy",
     description: "Qarzdorlik to'langan va qoldiq",
-    link: "/m-manager/reports-hub/customs",
+    link: "/m-manager/reports-hub/bojxona",
     icon: Shield,
   },
   {
