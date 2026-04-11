@@ -140,17 +140,13 @@ export default function FactoryDetailPage() {
       {/* Table */}
       <div className="w-full">
         {/* Table header */}
-        <div className="grid grid-cols-[40px_40px_130px_100px_1fr_120px_120px_150px_160px_1fr] px-5 py-3 border-b border-border bg-muted/50 text-[13px] text-muted-foreground font-medium">
+        <div className="grid grid-cols-[48px_180px_120px_1fr_160px_40px] px-5 py-3 border-b border-border bg-muted/50 text-[13px] text-muted-foreground font-medium">
           <div></div>
-          <div></div>
-          <div>Sana</div>
-          <div>Turi</div>
-          <div>Nomi</div>
-          <div>M kv</div>
-          <div>Narxi</div>
           <div>Summasi</div>
+          <div>Turi</div>
+          <div>Ma'lumoti</div>
           <div>Kim to'lagan</div>
-          <div>Izoh</div>
+          <div></div>
         </div>
 
         {isLoading && (
@@ -170,30 +166,17 @@ export default function FactoryDetailPage() {
             <div key={item.id}>
               {/* Main row */}
               <div
-                className={`grid grid-cols-[40px_40px_130px_100px_1fr_120px_120px_150px_160px_1fr] px-5 py-3 border-b border-border items-center ${
-                  isPartiya && hasCollections
-                    ? "cursor-pointer hover:bg-muted/30"
-                    : ""
+                className={`grid grid-cols-[48px_180px_120px_1fr_160px_40px] px-5 py-3 border-b border-border items-center ${
+                  hasCollections ? "cursor-pointer hover:bg-muted/30" : ""
                 }`}
                 onClick={() => {
-                  if (isPartiya && hasCollections) toggleExpand(item.id);
+                  if (hasCollections) toggleExpand(item.id);
                 }}
               >
-                {/* Expand icon */}
-                <div className="flex items-center justify-center">
-                  {isPartiya && hasCollections ? (
-                    isExpanded ? (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    )
-                  ) : null}
-                </div>
-
-                {/* Arrow icon */}
+                {/* Icon */}
                 <div>
                   <div
-                    className={`w-8 h-8 flex items-center justify-center rounded ${
+                    className={`w-9 h-9 flex items-center justify-center rounded ${
                       isPartiya
                         ? "bg-[#FF6600] text-white"
                         : "bg-[#89A143] text-white"
@@ -207,50 +190,59 @@ export default function FactoryDetailPage() {
                   </div>
                 </div>
 
-                {/* Date */}
-                <div className="text-[13px]">
-                  {format(new Date(item.date), "dd MMM yyyy")}
+                {/* Summa */}
+                <div>
+                  <span
+                    className={`font-bold text-[16px] ${
+                      isPartiya ? "text-[#FF6600]" : "text-[#89A143]"
+                    }`}
+                  >
+                    {formatPrice(item.total_cost || 0)} $
+                  </span>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {format(new Date(item.date), "dd MMM yyyy")}
+                  </p>
                 </div>
 
-                {/* Type */}
+                {/* Turi */}
                 <div
                   className={`text-[13px] font-medium ${
                     isPartiya ? "text-[#FF6600]" : "text-[#89A143]"
                   }`}
                 >
-                  {isPartiya ? "Partiya" : "To'lov"}
+                  {isPartiya ? "Расход" : "Приход"}
                 </div>
 
-                {/* Name */}
-                <div className="text-[13px] font-medium">
-                  {isPartiya ? item.partiya_name || "" : ""}
-                </div>
-
-                {/* M kv */}
+                {/* Ma'lumoti */}
                 <div className="text-[13px]">
-                  {isPartiya && item.total_kv
-                    ? formatPrice(item.total_kv)
-                    : ""}
+                  {isPartiya ? (
+                    <span className="font-medium">
+                      {item.partiya_name || "Partiya"}
+                      <span className="text-muted-foreground font-normal ml-2">
+                        {item.total_kv ? `${formatPrice(item.total_kv)} m²` : ""}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">
+                      {item.comment || ""}
+                    </span>
+                  )}
                 </div>
 
-                {/* Price per kv - empty for grouped partiya */}
-                <div className="text-[13px]"></div>
-
-                {/* Total */}
-                <div
-                  className={`font-bold text-[15px] ${
-                    isPartiya ? "text-[#FF6600]" : "text-[#89A143]"
-                  }`}
-                >
-                  {formatPrice(item.total_cost || 0)} $
+                {/* Kim to'lagan */}
+                <div className="text-[13px]">
+                  {!isPartiya && item.who_paid ? item.who_paid : ""}
                 </div>
 
-                {/* Who paid */}
-                <div className="text-[13px]">{item.who_paid || ""}</div>
-
-                {/* Comment */}
-                <div className="text-[13px] text-muted-foreground">
-                  {item.comment || ""}
+                {/* Chevron */}
+                <div className="flex items-center justify-center">
+                  {hasCollections ? (
+                    isExpanded ? (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    )
+                  ) : null}
                 </div>
               </div>
 
@@ -260,23 +252,21 @@ export default function FactoryDetailPage() {
                   {item.collections.map((col, idx) => (
                     <div
                       key={`${item.id}-col-${idx}`}
-                      className="grid grid-cols-[40px_40px_130px_100px_1fr_120px_120px_150px_160px_1fr] px-5 py-2 border-b border-border/50 items-center"
+                      className="grid grid-cols-[48px_180px_120px_1fr_160px_40px] px-5 py-2 border-b border-border/50 items-center"
                     >
                       <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div className="text-[13px] pl-2">
-                        {col.collection_title}
-                      </div>
-                      <div className="text-[13px]">
-                        {formatPrice(col.total_kv)}
-                      </div>
-                      <div className="text-[13px]">
-                        {formatPrice(col.price_per_kv)} $
-                      </div>
-                      <div className="text-[13px] text-[#FF6600] font-medium">
+                      <div className="text-[13px] text-[#FF6600] font-medium pl-1">
                         {formatPrice(col.total_cost)} $
+                      </div>
+                      <div></div>
+                      <div className="text-[13px]">
+                        <span>{col.collection_title}</span>
+                        <span className="text-muted-foreground ml-3">
+                          {formatPrice(col.total_kv)} m²
+                        </span>
+                        <span className="text-muted-foreground ml-3">
+                          × {formatPrice(col.price_per_kv)} $
+                        </span>
                       </div>
                       <div></div>
                       <div></div>
