@@ -137,4 +137,8 @@ export const apiRoutes = {
   partiyaCollectionPriceByPartiya: '/partiya-collection-price/partiya',
   debtReport: '/debt/report',
   debtReportExcel: '/debt/report/excel',
+  factoryDebtReport: '/factory/report',
+  factoryDebtReportExcel: '/factory/report/excel',
+  factoryReportEnabled: '/factory/report-enabled',
+  factoryNotReportEnabled: '/factory/not-report-enabled',
 } as const;

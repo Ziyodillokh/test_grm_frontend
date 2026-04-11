@@ -26,6 +26,8 @@ import ShadcnSelect from "./Select";
 import useDeblsData from "@/pages/debt/table/queries";
 import { TTotalDebt } from "@/pages/reports/f-manager/finance/type";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getAllData } from "@/service/apiHelpers";
 
 export default function CardSort({
   KassaId,
@@ -69,9 +71,11 @@ export default function CardSort({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [debtId, setDebtId] = useState<string | undefined>(undefined);
+  const [factoryId, setFactoryId] = useState<string | undefined>(undefined);
   const [isUserLocSelectble, setisUserLocSelectble] = useState<
     boolean | undefined
   >(false);
+  const [isFactorySelectble, setIsFactorySelectble] = useState(false);
 
   const { data: filialData } = useDataFetch({});
   const { data: kassaData, isLoading: isReportLoading } = useKassaById({
@@ -95,6 +99,12 @@ export default function CardSort({
   });
   const flatDeblsData =
     DeblsData?.pages?.flatMap((page) => page?.items || []) || [];
+
+  const { data: factoriesData } = useQuery({
+    queryKey: [apiRoutes.factoryReportEnabled],
+    queryFn: () => getAllData<any[], undefined>(apiRoutes.factoryReportEnabled),
+    enabled: Boolean(isFactorySelectble),
+  });
 
   interface TColumns {
     title: string;
@@ -288,6 +298,7 @@ export default function CardSort({
         kassa: kassaId || kassaReports || (kassaReports ? undefined : kassaData?.id) || undefined,
         report: reportId || undefined,
         debtId: isUserLocSelectble ? debtId : undefined,
+        factoryId: isFactorySelectble ? factoryId : undefined,
       };
 
       await api.post(apiRoutes.cashflow, body);
@@ -300,6 +311,7 @@ export default function CardSort({
       setPrice(0);
       setDate("");
       setDebtId(undefined);
+      setFactoryId(undefined);
       // Close dialog
       setDialogOpen(false);
 
@@ -322,6 +334,8 @@ export default function CardSort({
     setPrice(0);
     setDate("");
     setDebtId(undefined);
+    setFactoryId(undefined);
+    setIsFactorySelectble(false);
   }, [dialogOpen]);
   const column = meUser?.position.role === 11 ? hrColumns : columns;
   return (
@@ -441,8 +455,13 @@ export default function CardSort({
                       setCashflow_type(item.id);
                       if (item?.slug == "dolg" && isUserSelectble) {
                         setisUserLocSelectble(true);
+                        setIsFactorySelectble(false);
+                      } else if (item?.title === "Поставщики") {
+                        setIsFactorySelectble(true);
+                        setisUserLocSelectble(false);
                       } else {
                         setisUserLocSelectble(false);
+                        setIsFactorySelectble(false);
                       }
                     }}
                     className={`${cashflow_type === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
@@ -493,6 +512,23 @@ export default function CardSort({
                   placeholder={"Кенты"}
                   onChange={(value) => {
                     setDebtId(value);
+                  }}
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                />
+              )}
+
+              {isFactorySelectble && (
+                <ShadcnSelect
+                  value={factoryId}
+                  options={
+                    (factoriesData as any[])?.map((item: any) => ({
+                      value: item.id,
+                      label: item.title,
+                    })) || []
+                  }
+                  placeholder={"Заводы"}
+                  onChange={(value) => {
+                    setFactoryId(value);
                   }}
                   className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
                 />

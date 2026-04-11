@@ -2,6 +2,8 @@ import MManagerReportsHubPage from ".";
 import PlaceholderPage from "./placeholder";
 import KentReportPage from "./kents";
 import KentDetailPage from "./kents/detail";
+import FactoryReportPage from "./factories";
+import FactoryDetailPage from "./factories/detail";
 import MonthlyReportsPage from "../report-finance/monthly";
 import ReportDetailPage from "./monthly/report-detail";
 import KassaCashflowsPage from "./monthly/kassa-cashflows";
@@ -144,9 +146,15 @@ const Route = [
     Element: KentDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
+  // Zavod hisoboti
   {
     url: "/m-manager/reports-hub/factories",
-    Element: PlaceholderPage,
+    Element: FactoryReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/factories/:factoryId",
+    Element: FactoryDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

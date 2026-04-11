@@ -78,6 +78,8 @@ export default function ReportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [debtId, setDebtId] = useState<string | undefined>(undefined);
   const [isKentSelected, setIsKentSelected] = useState(false);
+  const [factoryId, setFactoryId] = useState<string | undefined>(undefined);
+  const [isFactorySelected, setIsFactorySelected] = useState(false);
 
   const { data: cfTypes } = useQuery({
     queryKey: ["/cashflow-types/by/managers", meUser?.id, dialogType],
@@ -93,6 +95,12 @@ export default function ReportPage() {
   });
   const flatDeblsData = DeblsData?.pages?.flatMap((page) => page?.items || []) || [];
 
+  const { data: factoriesData } = useQuery({
+    queryKey: [apiRoutes.factoryReportEnabled],
+    queryFn: () => getAllData<any[], undefined>(apiRoutes.factoryReportEnabled),
+    enabled: Boolean(isFactorySelected),
+  });
+
   const openCfDialog = (type: "Приход" | "Расход") => {
     setDialogType(type);
     setSelectedType("");
@@ -101,6 +109,8 @@ export default function ReportPage() {
     setCfComment("");
     setDebtId(undefined);
     setIsKentSelected(false);
+    setFactoryId(undefined);
+    setIsFactorySelected(false);
     setDialogOpen(true);
   };
 
@@ -119,6 +129,7 @@ export default function ReportPage() {
         createdBy: meUser?.id,
         report: id,
         debtId: isKentSelected ? debtId : undefined,
+        factoryId: isFactorySelected ? factoryId : undefined,
       });
       toast.success(`${dialogType === "Приход" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
@@ -272,9 +283,16 @@ export default function ReportPage() {
                         setSelectedType(item.id);
                         if (item?.slug === "dolg") {
                           setIsKentSelected(true);
-                        } else {
+                          setIsFactorySelected(false);
+                        } else if (item?.title === "Поставщики") {
+                          setIsFactorySelected(true);
                           setIsKentSelected(false);
                           setDebtId(undefined);
+                        } else {
+                          setIsKentSelected(false);
+                          setIsFactorySelected(false);
+                          setDebtId(undefined);
+                          setFactoryId(undefined);
                         }
                       }}
                       className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
@@ -300,6 +318,22 @@ export default function ReportPage() {
                       placeholder={"Кенты"}
                       onChange={(value) => {
                         setDebtId(value);
+                      }}
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                    />
+                  )}
+                  {isFactorySelected && (
+                    <ShadcnSelect
+                      value={factoryId}
+                      options={
+                        (factoriesData as any[])?.map((item: any) => ({
+                          value: item.id,
+                          label: item.title,
+                        })) || []
+                      }
+                      placeholder={"Заводы"}
+                      onChange={(value) => {
+                        setFactoryId(value);
                       }}
                       className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
                     />
