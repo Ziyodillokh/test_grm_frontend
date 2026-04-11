@@ -140,12 +140,13 @@ export default function FactoryDetailPage() {
       {/* Table */}
       <div className="w-full">
         {/* Table header */}
-        <div className="grid grid-cols-[48px_180px_120px_1fr_160px_40px] px-5 py-3 border-b border-border bg-muted/50 text-[13px] text-muted-foreground font-medium">
+        <div className="grid grid-cols-[48px_160px_100px_130px_1fr_150px_40px] px-5 py-3 border-b border-border bg-muted/50 text-[13px] text-muted-foreground font-medium">
           <div></div>
           <div>Summasi</div>
           <div>Turi</div>
+          <div>Sanasi</div>
           <div>Ma'lumoti</div>
-          <div>Kim to'lagan</div>
+          <div>To'lovchi</div>
           <div></div>
         </div>
 
@@ -166,7 +167,7 @@ export default function FactoryDetailPage() {
             <div key={item.id}>
               {/* Main row */}
               <div
-                className={`grid grid-cols-[48px_180px_120px_1fr_160px_40px] px-5 py-3 border-b border-border items-center ${
+                className={`grid grid-cols-[48px_160px_100px_130px_1fr_150px_40px] px-5 py-3 border-b border-border items-center ${
                   hasCollections ? "cursor-pointer hover:bg-muted/30" : ""
                 }`}
                 onClick={() => {
@@ -190,7 +191,7 @@ export default function FactoryDetailPage() {
                   </div>
                 </div>
 
-                {/* Summa */}
+                {/* Summasi */}
                 <div>
                   <span
                     className={`font-bold text-[16px] ${
@@ -199,9 +200,6 @@ export default function FactoryDetailPage() {
                   >
                     {formatPrice(item.total_cost || 0)} $
                   </span>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {format(new Date(item.date), "dd MMM yyyy")}
-                  </p>
                 </div>
 
                 {/* Turi */}
@@ -210,7 +208,12 @@ export default function FactoryDetailPage() {
                     isPartiya ? "text-[#FF6600]" : "text-[#89A143]"
                   }`}
                 >
-                  {isPartiya ? "Расход" : "Приход"}
+                  {isPartiya ? "Partiya" : "To'lov"}
+                </div>
+
+                {/* Sanasi */}
+                <div className="text-[13px]">
+                  {format(new Date(item.date), "dd MMM yyyy")}
                 </div>
 
                 {/* Ma'lumoti */}
@@ -229,7 +232,7 @@ export default function FactoryDetailPage() {
                   )}
                 </div>
 
-                {/* Kim to'lagan */}
+                {/* To'lovchi */}
                 <div className="text-[13px]">
                   {!isPartiya && item.who_paid ? item.who_paid : ""}
                 </div>
@@ -252,12 +255,13 @@ export default function FactoryDetailPage() {
                   {item.collections.map((col, idx) => (
                     <div
                       key={`${item.id}-col-${idx}`}
-                      className="grid grid-cols-[48px_180px_120px_1fr_160px_40px] px-5 py-2 border-b border-border/50 items-center"
+                      className="grid grid-cols-[48px_160px_100px_130px_1fr_150px_40px] px-5 py-2 border-b border-border/50 items-center"
                     >
                       <div></div>
                       <div className="text-[13px] text-[#FF6600] font-medium pl-1">
                         {formatPrice(col.total_cost)} $
                       </div>
+                      <div></div>
                       <div></div>
                       <div className="text-[13px]">
                         <span>{col.collection_title}</span>
