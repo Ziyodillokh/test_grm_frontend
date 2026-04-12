@@ -1,4 +1,6 @@
 import MManagerReportsHubPage from ".";
+import DealerListPage from "./dealers";
+import DealerDetailPage from "../../d-manager/report";
 import LogisticsReportPage from "./logistics";
 import LogisticsDetailPage from "./logistics/detail";
 import CustomsReportPage from "./customs";
@@ -147,6 +149,17 @@ const Route = [
   {
     url: "/m-manager/reports-hub/clients/:debtId/info",
     Element: KentDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  // Diller hisoboti
+  {
+    url: "/m-manager/reports-hub/dealers",
+    Element: DealerListPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/dealers/:dealerId",
+    Element: DealerDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Zavod hisoboti

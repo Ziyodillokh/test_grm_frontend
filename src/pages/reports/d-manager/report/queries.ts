@@ -1,37 +1,36 @@
-import {
-  DefinedInitialDataOptions,
-  useInfiniteQuery,
-} from "@tanstack/react-query";
-
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAllData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
-import { TResponse } from "@/types";
-import { TData, TQuery} from "./type";
+import { DealerDetailResponse, DealerDetailQuery } from "./type";
 
-interface IData {
-  options?: DefinedInitialDataOptions<TResponse<TData>>;
-  queries?: TQuery;
-  enabled?: boolean
+interface IDealerDetailQuery {
+  dealerId: string;
+  queries?: DealerDetailQuery;
+  enabled?: boolean;
 }
 
-export const useDataCashflow = ({ queries ,enabled}: IData) =>
+export const useDealerKassaDetail = ({
+  dealerId,
+  queries,
+  enabled = true,
+}: IDealerDetailQuery) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.cashflow, queries],
-    queryFn: ({ pageParam = 10 }) =>
-      getAllData<TResponse<TData>, TQuery>(apiRoutes.cashflow, {
-        ...queries,
-        page: pageParam as number,
-        limit: 10,
-      }),
+    queryKey: [apiRoutes.dealerKassaDetail, dealerId, "detail", queries],
+    queryFn: ({ pageParam = 1 }) =>
+      getAllData<DealerDetailResponse, DealerDetailQuery>(
+        `${apiRoutes.dealerKassaDetail}/${dealerId}`,
+        {
+          ...queries,
+          page: pageParam as number,
+          limit: queries?.limit || 50,
+        }
+      ),
     getNextPageParam: (lastPage) => {
-      if (lastPage.meta?.currentPage <= lastPage.meta?.totalPages) {
-        return lastPage?.meta?.currentPage + 1;
-      } else {
-        return null;
+      if (lastPage?.meta?.currentPage < lastPage?.meta?.totalPages) {
+        return lastPage.meta.currentPage + 1;
       }
+      return null;
     },
-    enabled: enabled,
+    enabled: enabled && !!dealerId,
     initialPageParam: 1,
   });
-
-

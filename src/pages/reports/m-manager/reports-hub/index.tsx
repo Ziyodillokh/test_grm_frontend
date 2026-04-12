@@ -11,6 +11,7 @@ import {
   Shield,
   UserCheck,
   FileText,
+  Handshake,
 } from "lucide-react";
 
 const reports = [
@@ -37,6 +38,12 @@ const reports = [
     description: "Mijozlar qarzdorligi",
     link: "/m-manager/reports-hub/clients",
     icon: Users,
+  },
+  {
+    title: "Dillerlar Hisoboti",
+    description: "Diller qarzdorligi to'langan va qoldiq",
+    link: "/m-manager/reports-hub/dealers",
+    icon: Handshake,
   },
   {
     title: "Zavodlar Hisoboti",

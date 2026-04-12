@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import formatPrice from "@/utils/formatPrice";
-import { TData } from "../type";
+import { DealerReportItem } from "./type";
 
-export const Columns: ColumnDef<TData>[] = [
+export const DealerColumns: ColumnDef<DealerReportItem>[] = [
   {
     header: "№",
     cell: ({ row }) => <p>{row.index + 1}</p>,

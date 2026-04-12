@@ -201,15 +201,9 @@ export const DataMenu = {
   ],
   6: [
     {
-      id: 4,
-      icons: () => UfoBottom(),
-      link: "/dealer",
-      text: "Дилеры",
-    },
-    {
       id: 2,
       icons: () => ReportBottom({}),
-      link: "/d-manager/report-monthly",
+      link: "/d-manager/reports-hub",
       text: "Отчеты",
       // items: [
       // {

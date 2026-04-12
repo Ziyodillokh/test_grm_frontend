@@ -10,7 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
 import { format } from "date-fns";
-import { TData } from "./type";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TData = any;
 import TableAction from "@/components/table-action";
 import { apiRoutes } from "@/service/apiRoutes";
 
