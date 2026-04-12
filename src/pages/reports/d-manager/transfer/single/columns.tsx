@@ -14,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import debounce from "@/utils/debounce";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 
+// Helper: get status from either 'progres' or 'progress' field
+const getStatus = (row: any) => row?.progres || row?.progress || "";
+
 export const ListColumns: ColumnDef<TransferDealerData>[] = [
   {
     accessorKey: "id",
@@ -27,19 +30,19 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
             <TebleAvatar
               size={38}
               url={row?.original?.transferer?.avatar?.path}
-              name={row?.original?.transferer?.firstName}
+              name={row?.original?.transferer?.firstName || ""}
               status="none"
             />
             <RefreshCcw size={14} />
             <TebleAvatar
               size={38}
               url={row?.original?.courier?.avatar?.path}
-              name={row.original?.courier?.firstName}
+              name={row?.original?.courier?.firstName || ""}
               status="none"
             />
-            <p className="ml-8 ">{group?.split("-")?.[1]} шт</p>
+            <p className="ml-8 ">{group?.split("-")?.[1] || "0"} шт</p>
             <p>{Number(group?.split("-")?.[2] || 0)?.toFixed(2)} м²</p>
-            <p className="ml-auto">{group?.split("-")?.[3]} </p>
+            <p className="ml-auto">{group?.split("-")?.[3] || ""} </p>
           </div>
         );
       }
@@ -65,12 +68,12 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
     header: "Обьём м²",
     id: "лм",
     cell: ({ row }) => {
-      return (
-        <p>
-          {`${(row.original?.product?.bar_code?.size?.x * (row.original.product?.bar_code?.isMetric ? +row.original.count / 100 : +row.original.count * +row.original?.product?.y)).toFixed(2)}`}
-          м²
-        </p>
-      );
+      const sizeX = Number(row.original?.product?.bar_code?.size?.x || 0);
+      const isMetric = row.original?.product?.bar_code?.isMetric;
+      const count = Number(row.original?.count || 0);
+      const productY = Number(row.original?.product?.y || 0);
+      const kv = isMetric ? sizeX * (count / 100) : sizeX * count * productY;
+      return <p>{kv.toFixed(2)} м²</p>;
     },
   },
 
@@ -97,7 +100,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
   {
     header: "Статус",
     cell: ({ row }) => {
-      const status = row?.original?.progres;
+      const status = getStatus(row?.original);
 
       if (row.original?.type === "header") {
         return <div className="h-14"></div>;
@@ -113,7 +116,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
       if (row.original?.type === "header") {
         return null;
       }
-      return <p>{row.original.count} x</p>;
+      return <p>{row.original?.count || 0} x</p>;
     },
   },
   {
@@ -126,6 +129,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
         return null;
       }
       const queryClient = useQueryClient();
+      const status = getStatus(row?.original);
       const { mutate, isPending } = useMutation({
         mutationFn: () =>
           UpdatePatchData(
@@ -147,7 +151,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
           ShowDelete={false}
           ShowUpdate={false}
         >
-          {row?.original?.progres == "Accepted_F" && (
+          {status == "Accepted_F" && (
             <DropdownMenuItem disabled={isPending} onClick={() => mutate()}>
               {isPending ? <Loader /> : ""}Отменить
             </DropdownMenuItem>
@@ -177,7 +181,7 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
     id: "total_count",
     accessorKey: "total_count",
     cell: ({ row }) => {
-      return <p>{row.original?.total_count}  шт</p>;
+      return <p>{row.original?.total_count || 0}  шт</p>;
     },
   },
 
@@ -185,7 +189,7 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
     header: "Обёm",
     id: "total_kv",
     cell: ({ row }) => {
-      return <p>{Number(row.original?.total_kv).toFixed(2)} м²</p>;
+      return <p>{Number(row.original?.total_kv || 0).toFixed(2)} м²</p>;
     },
   },
   {
@@ -193,15 +197,17 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
     cell: ({ row }) => {
       const [localPrice] = useQueryState(
         "localPrice",
-        parseAsInteger.withDefault(+row?.original?.comingPrice || 0)
+        parseAsInteger.withDefault(Number(row?.original?.comingPrice) || 0)
       );
       const [changeId] = useQueryState(
         "changeId",
         parseAsString
       );
+      const price = changeId == row?.original?.id ? localPrice : Number(row?.original?.comingPrice || 0);
+      const kv = Number(row.original?.total_kv || 0);
       return (
         <>
-          <p>{(Number(changeId == row?.original?.id ?localPrice :row?.original?.comingPrice) * Number(row.original?.total_kv)).toFixed(1)}$</p>
+          <p>{(price * kv).toFixed(1)}$</p>
         </>
       );
     },
@@ -211,10 +217,10 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
     header: "Нavar",
     id: "total_profit_sum",
     cell: ({ row }) => {
-      return <p>{Number(row.original?.total_profit_sum).toFixed(2)} $</p>;
+      return <p>{Number(row.original?.total_profit_sum || 0).toFixed(2)} $</p>;
     },
   },
-  
+
   {
     header: "Цена за м²",
     cell: ({ row }) => {
@@ -222,13 +228,13 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
       const queryClient = useQueryClient();
       const [, setLocalPrice] = useQueryState(
         "localPrice",
-        parseAsInteger.withDefault(+row?.original?.comingPrice || 0)
+        parseAsInteger.withDefault(Number(row?.original?.comingPrice) || 0)
       );
       const [, setChangeId] = useQueryState(
         "changeId",
         parseAsString
       );
-    
+
       const { mutate } = useMutation({
         mutationFn: ({ price }: { price: number }) =>
           AddData(apiRoutes.transferGivePrice,  {
@@ -244,7 +250,7 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
       });
       return (
         <Input
-          defaultValue={+row?.original?.comingPrice || undefined}
+          defaultValue={Number(row?.original?.comingPrice) || undefined}
           className="w-[120px]"
           onChange={debounce((e) => {
             mutate({

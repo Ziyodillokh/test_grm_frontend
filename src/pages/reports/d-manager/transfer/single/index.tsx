@@ -10,22 +10,29 @@ import { TransferCollectionDealerData, TransferDealerData } from "../type";
 import useTransferDealersFetch from "./queries";
 import { useNavigate, useParams } from "react-router-dom";
 
-const buildFlatList = (data:TransferDealerData[]) => {
-  const result = [];
-  let lastDate = null;
-  let counter = 0; 
+const buildFlatList = (data: TransferDealerData[]) => {
+  if (!data || !data.length) return [];
+  const result: any[] = [];
+  let lastDate: string | null = null;
+  let counter = 0;
 
   for (const item of data) {
-    const group = item.group;
+    if (!item) continue;
+    const group = item.group || "";
     if (group !== lastDate) {
-      result.push({ type: 'header',transferer:item?.transferer,courier:item?.courier ,group: group });
+      result.push({
+        type: "header",
+        transferer: item?.transferer || {},
+        courier: item?.courier || {},
+        group: group,
+      });
       lastDate = group;
-      counter = 0; 
+      counter = 0;
     }
-    counter++; 
+    counter++;
     result.push({
       ...item,
-      number: counter, // add number field
+      number: counter,
     });
   }
 
@@ -103,7 +110,7 @@ export default function TrasferDealerSinglePage() {
             isLoading={isLoading}
             className="max-h-[calc(100vh-140px)]   scrollCastom"
             columns={collactionColumns}
-            data={flatData as unknown as TransferCollectionDealerData[]}
+            data={(flatData || []) as unknown as TransferCollectionDealerData[]}
             fetchNextPage={fetchNextPage}
             hasNextPage={hasNextPage ?? false}
             ischeckble={false}
