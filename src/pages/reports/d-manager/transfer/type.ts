@@ -10,6 +10,8 @@ enum progresEnum {
 export type TransferData = {
   dateOne: Date;
   dateTwo: Date;
+  createdAt: Date;
+  updatedAt: Date;
   deletedDate: null;
   id: string;
   total_kv: number;

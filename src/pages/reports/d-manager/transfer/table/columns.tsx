@@ -30,7 +30,7 @@ export const collactionColumns: ColumnDef<TransferData>[] = [
           {format(
             row?.original?.status === "progress"
               ? new Date()
-              : new Date(row.original?.dateTwo),
+              : new Date(row.original?.updatedAt || row.original?.dateTwo || new Date()),
             "dd.MM.yyyy"
           )}
         </p>
