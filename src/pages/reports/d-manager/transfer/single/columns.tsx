@@ -3,16 +3,25 @@ import { TransferCollectionDealerData, TransferDealerData } from "../type";
 import { Loader, RefreshCcw } from "lucide-react";
 import { apiRoutes } from "@/service/apiRoutes";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import TableAction from "@/components/table-action";
-import { AddData, DeleteData } from "@/service/apiHelpers";
+import { AddData, DeleteData, getAllData } from "@/service/apiHelpers";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionBadge from "@/components/actionBadge";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import debounce from "@/utils/debounce";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // Helper: get status from either 'progres' or 'progress' field and map to ActionBadge values
 const statusMap: Record<string, string> = {
@@ -144,7 +153,18 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
       const queryClient = useQueryClient();
       const rawStatus = getRawStatus(row?.original);
       const transferId = row?.original?.id;
-      const fromFilialId = (row?.original as any)?.from?.id;
+
+      const [returnOpen, setReturnOpen] = useState(false);
+      const [selectedFilialId, setSelectedFilialId] = useState<string>("");
+
+      // Fetch filials (warehouse + filial) for return target selection
+      const { data: filialsData } = useQuery({
+        queryKey: [apiRoutes.filialWarehouse],
+        queryFn: () =>
+          getAllData<any, any>(apiRoutes.filialWarehouse, { limit: 100, page: 1 }),
+        enabled: returnOpen,
+      });
+      const filials = filialsData?.items || filialsData || [];
 
       // Cancel — for Processing / Accepted_F (before package accepted)
       const { mutate: cancelMutate, isPending: cancelPending } = useMutation({
@@ -163,13 +183,15 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
 
       // Return — for Accepted (after package accepted)
       const { mutate: returnMutate, isPending: returnPending } = useMutation({
-        mutationFn: () =>
+        mutationFn: (targetFilialId: string) =>
           AddData(
             `package-transfer/${package_id}/transfer/${transferId}/return`,
-            { targetFilialId: fromFilialId }
+            { targetFilialId }
           ),
         onSuccess: () => {
           toast.success("Возврат выполнен");
+          setReturnOpen(false);
+          setSelectedFilialId("");
           queryClient.invalidateQueries({
             queryKey: [apiRoutes.transferDealer],
           });
@@ -180,23 +202,64 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
       const canReturn = rawStatus === "Accepted";
 
       return (
-        <TableAction
-          url={apiRoutes.transfers}
-          id={row.original?.id}
-          ShowDelete={false}
-          ShowUpdate={false}
-        >
-          {canCancel && (
-            <DropdownMenuItem disabled={cancelPending} onClick={() => cancelMutate()}>
-              {cancelPending ? <Loader className="mr-1 h-4 w-4 animate-spin" /> : null}Отменить
-            </DropdownMenuItem>
-          )}
-          {canReturn && (
-            <DropdownMenuItem disabled={returnPending} onClick={() => returnMutate()}>
-              {returnPending ? <Loader className="mr-1 h-4 w-4 animate-spin" /> : null}Возврат
-            </DropdownMenuItem>
-          )}
-        </TableAction>
+        <>
+          <TableAction
+            url={apiRoutes.transfers}
+            id={row.original?.id}
+            ShowDelete={false}
+            ShowUpdate={false}
+          >
+            {canCancel && (
+              <DropdownMenuItem disabled={cancelPending} onClick={() => cancelMutate()}>
+                {cancelPending ? <Loader className="mr-1 h-4 w-4 animate-spin" /> : null}Отменить
+              </DropdownMenuItem>
+            )}
+            {canReturn && (
+              <DropdownMenuItem onClick={() => setReturnOpen(true)}>
+                Возврат
+              </DropdownMenuItem>
+            )}
+          </TableAction>
+
+          <Dialog open={returnOpen} onOpenChange={setReturnOpen}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Филиал танланг</DialogTitle>
+              </DialogHeader>
+              <div className="max-h-[300px] overflow-y-auto flex flex-col gap-1 p-4">
+                {filials.map((f: any) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setSelectedFilialId(f.id)}
+                    className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm text-left transition-colors ${
+                      selectedFilialId === f.id
+                        ? "border-primary bg-primary/10 font-medium"
+                        : "border-border hover:bg-muted"
+                    }`}
+                  >
+                    {f.title || f.name}
+                  </button>
+                ))}
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setReturnOpen(false)}
+                >
+                  Бекор
+                </Button>
+                <Button
+                  disabled={!selectedFilialId || returnPending}
+                  onClick={() => returnMutate(selectedFilialId)}
+                >
+                  {returnPending ? <Loader className="mr-1 h-4 w-4 animate-spin" /> : null}
+                  Қайтариш
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>
       );
     },
   },
