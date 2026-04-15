@@ -29,6 +29,11 @@ const Route = [
     Element: DealerReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
+  {
+    url: "/d-manager/reports-hub/monthly/:reportId/info/:id",
+    Element: DealerReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
   // Dillerlar hisoboti (reports-hub ichida)
   {
     url: "/d-manager/reports-hub/dealers",
