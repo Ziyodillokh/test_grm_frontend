@@ -45,16 +45,6 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
       ),
     },
     {
-      title: "Скидка",
-      price: isReportLoading ? (
-        <Skeleton className="h-5 w-12" />
-      ) : (
-        formatPrice(
-          SortData?.totalDiscount || SortData?.discount || 0 )
-      ),
-    },
-
-    {
       title: "Получено",
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
@@ -80,6 +70,15 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
             SortData?.reportStatus == 2? (SortData?.owed ||0 ): (SortData?.dealer_frozen_owed  || 0) )
         )
       )
+    },
+    {
+      title: "Скидка",
+      price: isReportLoading ? (
+        <Skeleton className="h-5 w-12" />
+      ) : (
+        formatPrice(
+          SortData?.totalDiscount || SortData?.discount || 0 )
+      ),
     },
   ];
 
