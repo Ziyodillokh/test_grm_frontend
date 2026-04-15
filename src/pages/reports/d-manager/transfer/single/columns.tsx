@@ -52,8 +52,8 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
               name={row?.original?.courier?.firstName || ""}
               status="none"
             />
-            <p className="ml-8 ">{group?.split("-")?.[1] || "0"} шт</p>
-            <p>{Number(group?.split("-")?.[2] || 0)?.toFixed(2)} м²</p>
+            <p className="ml-8 ">{(row?.original as any)?.activeCount ?? (group?.split("-")?.[1] || "0")} шт</p>
+            <p>{Number((row?.original as any)?.activeKv ?? (group?.split("-")?.[2] || 0))?.toFixed(2)} м²</p>
             <p className="ml-auto">{group?.split("-")?.[3] || ""} </p>
           </div>
         );

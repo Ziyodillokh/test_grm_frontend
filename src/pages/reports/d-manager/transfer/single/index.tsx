@@ -10,30 +10,39 @@ import { TransferCollectionDealerData, TransferDealerData } from "../type";
 import useTransferDealersFetch from "./queries";
 import { useNavigate, useParams } from "react-router-dom";
 
+const EXCLUDED_STATUSES = ["Rejected", "Returned"];
+
 const buildFlatList = (data: TransferDealerData[]) => {
   if (!data || !data.length) return [];
   const result: any[] = [];
-  let lastDate: string | null = null;
+  let lastGroup: string | null = null;
+  let headerIndex = -1;
   let counter = 0;
 
   for (const item of data) {
     if (!item) continue;
     const group = item.group || "";
-    if (group !== lastDate) {
+    if (group !== lastGroup) {
       result.push({
         type: "header",
         transferer: item?.transferer || {},
         courier: item?.courier || {},
         group: group,
+        activeCount: 0,
+        activeKv: 0,
       });
-      lastDate = group;
+      headerIndex = result.length - 1;
+      lastGroup = group;
       counter = 0;
     }
     counter++;
-    result.push({
-      ...item,
-      number: counter,
-    });
+    result.push({ ...item, number: counter });
+
+    const status = (item as any)?.progres || (item as any)?.progress || "";
+    if (!EXCLUDED_STATUSES.includes(status) && headerIndex >= 0) {
+      result[headerIndex].activeCount += Number((item as any)?.count || 0);
+      result[headerIndex].activeKv += Number((item as any)?.kv || 0);
+    }
   }
 
   return result;
