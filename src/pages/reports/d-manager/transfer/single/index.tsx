@@ -7,8 +7,9 @@ import { collactionColumns, ListColumns } from "./columns";
 import Filters from "./filters";
 import { TData } from "@/pages/deller/type";
 import { TransferCollectionDealerData, TransferDealerData } from "../type";
-import useTransferDealersFetch from "./queries";
+import useTransferDealersFetch, { usePackageById } from "./queries";
 import { useNavigate, useParams } from "react-router-dom";
+import ActionBadge from "@/components/actionBadge";
 
 const EXCLUDED_STATUSES = ["Rejected", "Returned"];
 
@@ -69,6 +70,15 @@ export default function TrasferDealerSinglePage() {
       flatDataFilial?.filter((i) => i.type === "filial")?.[0]?.id || ""
     )
   );
+  const { data: pkgData } = usePackageById(package_id);
+  const pkg = pkgData;
+
+  const statusMap: Record<string, string> = {
+    progress: "inprogress",
+    accepted: "accepted",
+    rejected: "rejected",
+  };
+
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useTransferDealersFetch({
       queries: {
@@ -113,6 +123,19 @@ export default function TrasferDealerSinglePage() {
         </div>
       </div>
       <div className="col-span-10">
+        {pkg && (
+          <div className="flex items-center gap-4 mb-2 px-4 py-3 bg-sidebar rounded-lg">
+            <h3 className="text-sm font-semibold">{pkg.title || "Пакет"}</h3>
+            <ActionBadge status={statusMap[pkg.status] || pkg.status} />
+            <div className="flex gap-4 ml-auto text-sm text-muted-foreground">
+              <span>{pkg.total_count || 0} шт</span>
+              <span>{Number(pkg.total_kv || 0).toFixed(2)} м²</span>
+              {Number(pkg.total_sum || 0) > 0 && (
+                <span className="font-medium text-foreground">{Number(pkg.total_sum || 0).toFixed(2)} $</span>
+              )}
+            </div>
+          </div>
+        )}
         <Filters />
         {mode == "collection" ? (
           <DataTable

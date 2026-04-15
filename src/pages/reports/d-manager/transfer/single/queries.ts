@@ -1,6 +1,7 @@
 import {
   DefinedInitialDataInfiniteOptions,
   useInfiniteQuery,
+  useQuery,
 } from "@tanstack/react-query";
 
 import { getAllData } from "@/service/apiHelpers";
@@ -30,6 +31,13 @@ const useTransferDealersFetch = ({ options, queries }: ITransferDealers) =>
       return undefined;
     },
     initialPageParam: 1,
+  });
+
+export const usePackageById = (id?: string) =>
+  useQuery({
+    queryKey: [apiRoutes.packageTransfer, id],
+    queryFn: () => getAllData<any, any>(`${apiRoutes.packageTransfer}/${id}`, {}),
+    enabled: !!id,
   });
 
 export default useTransferDealersFetch;
