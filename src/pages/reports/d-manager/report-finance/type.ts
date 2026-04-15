@@ -21,7 +21,6 @@ export interface TKassareportData {
   income?: number;
   totalExpense?: number;
   expense?: number;
-  kassaReportStatus?: number;
   kassaStatus?: number;
   // Common fields (same name in both old and new)
   totalSum?: number;
@@ -46,7 +45,6 @@ export interface TKassareportData {
   owed?: number;
   dealer_frozen_owed?: number;
   kassaReport?: TKassareportData[];
-  reportStatus?: number;
 }
 
 export interface TChaFlowData{

@@ -67,7 +67,7 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
       ) : (
         (
           formatPrice(
-            SortData?.reportStatus == 2? (SortData?.owed ||0 ): (SortData?.dealer_frozen_owed  || 0) )
+            SortData?.kassaStatus == 2? (SortData?.owed ||0 ): (SortData?.dealer_frozen_owed  || 0) )
         )
       )
     },

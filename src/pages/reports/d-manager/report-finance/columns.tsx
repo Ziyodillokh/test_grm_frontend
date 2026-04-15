@@ -30,7 +30,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
         "Декабрь",
       ]
       const item = row.original;
-      const isTrue = item?.kassaReportStatus == 2
+      const isTrue = item?.kassaStatus == 2
       return (
         <p className={`${isTrue ? "text-[#89A143]" : ""}`}>
           {isTrue
@@ -71,7 +71,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "expense",
     cell: ({ row }) => {
       const item = row.original;
-      return <p className={'text-[#E38157]'}>  {item?.reportStatus == 2 ? item?.owed : item?.dealer_frozen_owed} $</p>;
+      return <p className={'text-[#E38157]'}>  {item?.kassaStatus == 2 ? item?.owed : item?.dealer_frozen_owed} $</p>;
     },
   },
 
@@ -133,7 +133,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
 
       return (
         <div onClick={(e) => e.stopPropagation()}>
-          {item?.reportStatus == 2 ? (
+          {item?.kassaStatus == 2 ? (
             <ActionBadge status={"willSell"} />
           ) : item?.status == "open" || item?.status == "cancelled" ? (
             <ActionButton onClick={() => mutate()} isLoading={isPending} btnText="Закрыть" status="accept"></ActionButton>

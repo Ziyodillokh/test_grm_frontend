@@ -45,7 +45,6 @@ export interface TKassareportData {
   // Extra fields specific to this file
   dealer_frozen_owed?: number;
   kassaReport?: TKassareportData[];
-  reportStatus?: number;
 }
 
 export interface TQuery {
