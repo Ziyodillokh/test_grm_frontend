@@ -72,6 +72,8 @@ export default function TrasferDealerSinglePage() {
     });
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  console.log('[TRANSFER DEBUG] mode:', mode, 'pages:', data?.pages?.length, 'flatData:', flatData.length, 'isLoading:', isLoading, 'hasNextPage:', hasNextPage);
+  if (flatData.length > 0) console.log('[TRANSFER DEBUG] first item:', JSON.stringify(flatData[0]).slice(0, 200));
 
   const onSelectFilial = (data: TData) => {
     setFilial(data?.id);
