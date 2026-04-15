@@ -237,13 +237,13 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
     cell: ({ row }) => {
       const [localPrice] = useQueryState(
         "localPrice",
-        parseAsInteger.withDefault(Number(row?.original?.comingPrice) || 0)
+        parseAsInteger.withDefault(Number((row?.original as any)?.dealerPriceMeter) || 0)
       );
       const [changeId] = useQueryState(
         "changeId",
         parseAsString
       );
-      const price = changeId == row?.original?.id ? localPrice : Number(row?.original?.comingPrice || 0);
+      const price = changeId == row?.original?.id ? localPrice : Number((row?.original as any)?.dealerPriceMeter || 0);
       const kv = Number(row.original?.total_kv || 0);
       return (
         <>
@@ -268,7 +268,7 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
       const queryClient = useQueryClient();
       const [, setLocalPrice] = useQueryState(
         "localPrice",
-        parseAsInteger.withDefault(Number(row?.original?.comingPrice) || 0)
+        parseAsInteger.withDefault(Number((row?.original as any)?.dealerPriceMeter) || 0)
       );
       const [, setChangeId] = useQueryState(
         "changeId",
@@ -290,7 +290,7 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
       });
       return (
         <Input
-          defaultValue={Number(row?.original?.comingPrice) || undefined}
+          defaultValue={Number((row?.original as any)?.dealerPriceMeter) || undefined}
           className="w-[120px]"
           onChange={debounce((e) => {
             mutate({

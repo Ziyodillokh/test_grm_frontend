@@ -169,24 +169,15 @@ export type TTransferCategory = {
 
 export type TransferCollectionDealerData = {
   id: string;
-  title:string;
-  total_kv: string;
-  total_count: string;
-  comingPrice:string;
-  total_profit_sum: string;
-  collection_prices: 
-    {
-      id: string;
-      date: string;
-      type: string;
-      dateOne: string;
-      dateTwo: string;
-      priceMeter: number;
-      comingPrice: number;
-      deletedDate: null;
-      secondPrice: number;
-      collectionId: string;
-    }[]};
+  title: string;
+  total_kv: number;
+  total_count: number;
+  comingPrice: number;
+  priceMeter: number;
+  dealerPriceMeter: number;
+  total_profit_sum: number;
+  collection_prices: any[];
+};
 export type TransferQuery = {
   limit: number;
   page: number;
