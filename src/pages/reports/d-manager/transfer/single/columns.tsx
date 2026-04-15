@@ -207,7 +207,7 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
     header: "№",
     size: 50,
     cell: ({ row }) => {
-      return <p>{row.index}</p>;
+      return <p>{row.index + 1}</p>;
     },
   },
   {
@@ -254,10 +254,10 @@ export const collactionColumns: ColumnDef<TransferCollectionDealerData>[] = [
   },
 
   {
-    header: "Нavar",
-    id: "total_profit_sum",
+    header: "Касса цена",
+    id: "priceMeter",
     cell: ({ row }) => {
-      return <p>{Number(row.original?.total_profit_sum || 0).toFixed(2)} $</p>;
+      return <p>{Number((row.original as any)?.priceMeter || 0).toFixed(0)} $</p>;
     },
   },
 
