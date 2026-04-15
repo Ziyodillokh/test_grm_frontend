@@ -23,7 +23,6 @@ export interface TKassareportData {
   totalExpense?: number;
   expense?: number;
   kassaStatus?: number;
-  kassaStatus?: number;
   // Common fields (same name in both old and new)
   totalSum?: number;
   totalSellCount?: number;
