@@ -68,9 +68,9 @@ export default function CurrentMonthReport() {
         totalPlasticSum: dealerData[0]?.totalPlasticSum || 0,
         debt_sum: dealerData[0]?.debt_sum || 0,
         totalCashCollection: dealerData[0]?.totalCashCollection || 0,
-        totalSize: dealerData[0]?.totalSize || 0,
+        totalSize: dealerData[0]?.debt_kv || 0,
         additionalProfitTotalSum:
-          dealerData[0]?.additionalProfitTotalSum || 0,
+          dealerData[0]?.debt_profit_sum || 0,
         totalDiscount: dealerData[0]?.totalDiscount || 0,
         status: dealerData[0]?.status || "open",
         isMManagerConfirmed: dealerData[0]?.isMManagerConfirmed,
