@@ -59,7 +59,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "owed",
     cell: ({ row }) => {
       const item = row.original;
-      return <p className="text-[#FF6600]"> {item?.kassaReportStatus == 2 ? item?.filial?.owed : item?.dealer_frozen_owed} $</p>;
+      return <p className="text-[#FF6600]"> {item?.kassaStatus == 2 ? item?.filial?.owed : item?.dealer_frozen_owed} $</p>;
     },
   },
 
@@ -109,7 +109,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
 
       return (
         <div onClick={(e) => e.stopPropagation()}>
-          {item?.kassaReportStatus == 2 ? (
+          {item?.kassaStatus == 2 ? (
             <ActionBadge status={"willSell"} />
           ) : item?.status == "open" ? (
             <ActionButton
