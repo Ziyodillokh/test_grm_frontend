@@ -5,7 +5,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import TableAction from "@/components/table-action";
-import { AddData, UpdatePatchData } from "@/service/apiHelpers";
+import { AddData, DeleteData } from "@/service/apiHelpers";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionBadge from "@/components/actionBadge";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -14,8 +14,20 @@ import { Input } from "@/components/ui/input";
 import debounce from "@/utils/debounce";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 
-// Helper: get status from either 'progres' or 'progress' field
-const getStatus = (row: any) => row?.progres || row?.progress || "";
+// Helper: get status from either 'progres' or 'progress' field and map to ActionBadge values
+const statusMap: Record<string, string> = {
+  Processing: "inprogress",
+  Accepted: "accepted",
+  Rejected: "rejected",
+  Accepted_F: "pending",
+  Booked: "new",
+  Returned: "rejected",
+};
+const getStatus = (row: any) => {
+  const raw = row?.progres || row?.progress || "";
+  return statusMap[raw] || raw.toLowerCase();
+};
+const getRawStatus = (row: any) => row?.progres || row?.progress || "";
 
 export const ListColumns: ColumnDef<TransferDealerData>[] = [
   {
@@ -106,7 +118,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
         return <div className="h-14"></div>;
       }
       return (
-        <ActionBadge status={status == "Accepted_F" ? "pending" : status} />
+        <ActionBadge status={status} />
       );
     },
   },
@@ -128,22 +140,45 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
       if (row.original?.type === "header") {
         return null;
       }
+      const { package_id } = useParams();
       const queryClient = useQueryClient();
-      const status = getStatus(row?.original);
-      const { mutate, isPending } = useMutation({
+      const rawStatus = getRawStatus(row?.original);
+      const transferId = row?.original?.id;
+      const fromFilialId = (row?.original as any)?.from?.id;
+
+      // Cancel — for Processing / Accepted_F (before package accepted)
+      const { mutate: cancelMutate, isPending: cancelPending } = useMutation({
         mutationFn: () =>
-          UpdatePatchData(
-            apiRoutes.transferRejectDealer,
-            row?.original?.id,
-            {}
+          DeleteData(
+            `package-transfer/${package_id}/transfer`,
+            transferId
           ),
         onSuccess: () => {
-          toast.success("canceled");
+          toast.success("Отменено");
           queryClient.invalidateQueries({
             queryKey: [apiRoutes.transferDealer],
           });
         },
       });
+
+      // Return — for Accepted (after package accepted)
+      const { mutate: returnMutate, isPending: returnPending } = useMutation({
+        mutationFn: () =>
+          AddData(
+            `package-transfer/${package_id}/transfer/${transferId}/return`,
+            { targetFilialId: fromFilialId }
+          ),
+        onSuccess: () => {
+          toast.success("Возврат выполнен");
+          queryClient.invalidateQueries({
+            queryKey: [apiRoutes.transferDealer],
+          });
+        },
+      });
+
+      const canCancel = rawStatus === "Processing" || rawStatus === "Accepted_F";
+      const canReturn = rawStatus === "Accepted";
+
       return (
         <TableAction
           url={apiRoutes.transfers}
@@ -151,9 +186,14 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
           ShowDelete={false}
           ShowUpdate={false}
         >
-          {status == "Accepted_F" && (
-            <DropdownMenuItem disabled={isPending} onClick={() => mutate()}>
-              {isPending ? <Loader /> : ""}Отменить
+          {canCancel && (
+            <DropdownMenuItem disabled={cancelPending} onClick={() => cancelMutate()}>
+              {cancelPending ? <Loader className="mr-1 h-4 w-4 animate-spin" /> : null}Отменить
+            </DropdownMenuItem>
+          )}
+          {canReturn && (
+            <DropdownMenuItem disabled={returnPending} onClick={() => returnMutate()}>
+              {returnPending ? <Loader className="mr-1 h-4 w-4 animate-spin" /> : null}Возврат
             </DropdownMenuItem>
           )}
         </TableAction>
