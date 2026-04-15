@@ -44,7 +44,16 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
           SortData?.debt_profit_sum || 0 )
       ),
     },
-    
+    {
+      title: "Скидка",
+      price: isReportLoading ? (
+        <Skeleton className="h-5 w-12" />
+      ) : (
+        formatPrice(
+          SortData?.totalDiscount || SortData?.discount || 0 )
+      ),
+    },
+
     {
       title: "Получено",
       price: isReportLoading ? (
