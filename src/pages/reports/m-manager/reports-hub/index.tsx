@@ -12,6 +12,7 @@ import {
   UserCheck,
   FileText,
   Handshake,
+  CreditCard,
 } from "lucide-react";
 
 const reports = [
@@ -62,6 +63,12 @@ const reports = [
     description: "Qarzdorlik to'langan va qoldiq",
     link: "/m-manager/reports-hub/bojxona",
     icon: Shield,
+  },
+  {
+    title: "Qarz Hisoboti",
+    description: "Filiallar bo'yicha mijozlar qarzdorligi",
+    link: "/m-manager/reports-hub/client-debt",
+    icon: CreditCard,
   },
   {
     title: "Sotuvchi Hisoboti",

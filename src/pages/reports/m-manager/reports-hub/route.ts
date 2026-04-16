@@ -13,6 +13,9 @@ import MonthlyReportsPage from "../report-finance/monthly";
 import ReportDetailPage from "./monthly/report-detail";
 import KassaCashflowsPage from "./monthly/kassa-cashflows";
 import ReportPage from "../report";
+import ClientDebtFilials from "./client-debt";
+import ClientDebtClients from "./client-debt/clients";
+import ClientDebtOrders from "./client-debt/client-orders";
 import PageSellerReport from "../../seller/seller-report";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
 import PageOrginal from "../../report-orginal";
@@ -116,6 +119,22 @@ const Route = [
   {
     url: "/m-manager/reports-hub/sales-legacy",
     Element: ReportPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  // Qarz hisoboti
+  {
+    url: "/m-manager/reports-hub/client-debt",
+    Element: ClientDebtFilials,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/client-debt/:filialId",
+    Element: ClientDebtClients,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/client-debt/:filialId/:clientId",
+    Element: ClientDebtOrders,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Sotuvchi hisoboti
