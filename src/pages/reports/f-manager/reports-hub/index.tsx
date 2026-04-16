@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { ChevronRight, CalendarDays, Package, ShoppingCart, Users, FileText } from "lucide-react";
+import { ChevronRight, CalendarDays, Package, ShoppingCart, Users, FileText, CreditCard } from "lucide-react";
 
 const reports = [
   {
@@ -20,6 +20,12 @@ const reports = [
     description: "Oylik sotuv ma'lumotlari",
     link: "/f-manager/reports-hub/sales",
     icon: ShoppingCart,
+  },
+  {
+    title: "Qarz Hisoboti",
+    description: "Mijozlar qarzdorligi",
+    link: "/f-manager/reports-hub/client-debt",
+    icon: CreditCard,
   },
   {
     title: "Sotuvchi Hisoboti",

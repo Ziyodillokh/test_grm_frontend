@@ -1,12 +1,27 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { DataTable } from "@/components/ui/data-table";
 import formatPrice from "@/utils/formatPrice";
+import { useMeStore } from "@/store/me-store";
+import { Roles } from "@/constants";
 import { useDebtFilials } from "./queries";
 import { filialColumns } from "./columns";
 
 export default function ClientDebtFilials() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { meUser } = useMeStore();
   const { data, isLoading } = useDebtFilials();
+
+  const basePath = location.pathname.includes("/f-manager/")
+    ? "/f-manager/reports-hub/client-debt"
+    : "/m-manager/reports-hub/client-debt";
+
+  useEffect(() => {
+    if (meUser?.position?.role === Roles.F_MANAGER && meUser?.filial?.id) {
+      navigate(`${basePath}/${meUser.filial.id}`, { replace: true });
+    }
+  }, [meUser, basePath, navigate]);
 
   const items = data?.items || [];
   const totals = data?.totals || { totalOwed: 0, totalGiven: 0, balance: 0 };
@@ -44,7 +59,7 @@ export default function ClientDebtFilials() {
         isLoading={isLoading}
         isRowClickble={false}
         onRowClick={(row: any) =>
-          navigate(`/m-manager/reports-hub/client-debt/${row.filialId}`)
+          navigate(`${basePath}/${row.filialId}`)
         }
       />
     </div>

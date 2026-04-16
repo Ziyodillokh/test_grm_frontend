@@ -3,6 +3,9 @@ import MonthlyReportsPage from "./monthly";
 import MonthlyKassaDetailPage from "./monthly/kassa-detail";
 import SinglePage from "../report-single";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
+import ClientDebtFilials from "../../m-manager/reports-hub/client-debt";
+import ClientDebtClients from "../../m-manager/reports-hub/client-debt/clients";
+import ClientDebtOrders from "../../m-manager/reports-hub/client-debt/client-orders";
 import PageSellerReport from "../../seller/seller-report";
 import PageOrginal from "../../report-orginal";
 import CountryTable from "../remaider/county-table";
@@ -102,6 +105,22 @@ const Route = [
   {
     url: "/f-manager/reports-hub/sales/:tabType/:entityId/:countryId/:factoryId/:collectionId/:modelId",
     Element: SalesSizeTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  // Qarz hisoboti
+  {
+    url: "/f-manager/reports-hub/client-debt",
+    Element: ClientDebtFilials,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/client-debt/:filialId",
+    Element: ClientDebtClients,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/client-debt/:filialId/:clientId",
+    Element: ClientDebtOrders,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Sotuvchi Hisoboti

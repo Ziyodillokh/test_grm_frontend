@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { DataTable } from "@/components/ui/data-table";
 import formatPrice from "@/utils/formatPrice";
 import { useDebtClients } from "./queries";
@@ -6,8 +6,13 @@ import { clientColumns } from "./columns";
 
 export default function ClientDebtClients() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { filialId } = useParams();
   const { data, isLoading } = useDebtClients(filialId);
+
+  const basePath = location.pathname.includes("/f-manager/")
+    ? "/f-manager/reports-hub/client-debt"
+    : "/m-manager/reports-hub/client-debt";
 
   const items = data?.items || [];
   const summary = data?.summary || { totalOwed: 0, totalGiven: 0, balance: 0 };
@@ -16,7 +21,7 @@ export default function ClientDebtClients() {
     <div>
       <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
         <button
-          onClick={() => navigate("/m-manager/reports-hub/client-debt")}
+          onClick={() => navigate(basePath)}
           className="text-muted-foreground hover:text-foreground text-sm"
         >
           Qarz Hisoboti
@@ -52,9 +57,7 @@ export default function ClientDebtClients() {
         isLoading={isLoading}
         isRowClickble={false}
         onRowClick={(row: any) =>
-          navigate(
-            `/m-manager/reports-hub/client-debt/${filialId}/${row.id}`
-          )
+          navigate(`${basePath}/${filialId}/${row.id}`)
         }
       />
     </div>
