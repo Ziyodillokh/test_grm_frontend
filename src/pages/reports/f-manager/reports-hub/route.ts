@@ -8,6 +8,7 @@ import ClientDebtClients from "../../m-manager/reports-hub/client-debt/clients";
 import ClientDebtOrders from "../../m-manager/reports-hub/client-debt/client-orders";
 import PageSellerReport from "../../seller/seller-report";
 import PageOrginal from "../../report-orginal";
+import GeneralReportDetail from "../../report-orginal/detail-page";
 import CountryTable from "../remaider/county-table";
 import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
@@ -138,6 +139,11 @@ const Route = [
   {
     url: "/f-manager/reports-hub/general",
     Element: PageOrginal,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/reports-hub/general/detail/:type",
+    Element: GeneralReportDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];

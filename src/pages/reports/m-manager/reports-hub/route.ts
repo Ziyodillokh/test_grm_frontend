@@ -19,6 +19,7 @@ import ClientDebtOrders from "./client-debt/client-orders";
 import PageSellerReport from "../../seller/seller-report";
 import PageSellerCashFlow from "../../seller/seller-cashflow";
 import PageOrginal from "../../report-orginal";
+import GeneralReportDetail from "../../report-orginal/detail-page";
 import InventoryPage from "../remaider/index";
 import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
@@ -152,6 +153,11 @@ const Route = [
   {
     url: "/m-manager/reports-hub/general",
     Element: PageOrginal,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/general/detail/:type",
+    Element: GeneralReportDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Kent hisoboti

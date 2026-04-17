@@ -1,11 +1,11 @@
 import { useMeStore } from "@/store/me-store";
 import { format, getMonth } from "date-fns";
 import { parseAsString, useQueryState } from "nuqs";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { useDataFetch } from "./queries";
 import { useYear } from "@/store/year-store";
-import DrillInDialog from "./drill-in-dialog";
 
 // Qator komponenti — chevron va onClick qo'shildi
 function RowUI({
@@ -33,7 +33,7 @@ function RowUI({
       <p className="px-[23px] py-[11px] flex-1 text-[#272727] text-[15px] font-medium">
         {title}
       </p>
-      {(kv !== undefined && kv !== null) && (
+      {kv !== undefined && kv !== null && (
         <p className="px-[12px] py-[11px] min-w-[100px] text-nowrap text-[#272727] text-[15px] font-medium">
           {kv === 0 ? "-" : `${kv.toFixed(2)}m²`}
         </p>
@@ -52,6 +52,8 @@ function RowUI({
 
 export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
   const { meUser } = useMeStore();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [month] = useQueryState(
     "month",
     parseAsString.withDefault(getMonth(new Date()) + 1 + "")
@@ -68,28 +70,16 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
     },
   });
 
-  // Drill-in dialog holati
-  const [drillIn, setDrillIn] = useState<{
-    open: boolean;
-    title: string;
-    type: string;
-  }>({ open: false, title: "", type: "" });
-
-  const openDrillIn = (title: string, type: string) =>
-    setDrillIn({ open: true, title, type });
+  // Sahifaga o'tish — detail/:type + query params saqlash
+  const goToDetail = (type: string) => {
+    navigate(`${location.pathname}/detail/${type}${location.search || ""}`);
+  };
 
   // Rejimlar
   const isDealers = filial === "#dealers";
   const isFManager = meUser?.position?.role == 4;
-  const isFilial = !!(filial || isFManager);    // filial tanlangan yoki F_MANAGER
-  const isUmumiy = !filial && !isFManager;      // hech nima tanlanmagan
-
-  // filialId — detail endpoint uchun
-  const detailFilialId = isFManager
-    ? meUser?.filial?.id
-    : filial && filial !== "#dealers"
-      ? filial
-      : undefined;
+  const isFilial = !!(filial || isFManager);
+  const isUmumiy = !filial && !isFManager;
 
   return (
     <div
@@ -112,7 +102,7 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
       <div className="w-full max-w-[610px] max-h-[700px] mx-auto bg-white rounded-2xl m-[20px]">
         <div className="max-h-[620px] scrollCastom">
 
-          {/* ═══ OQ BO'LIM — Umumiy ko'rsatkichlar (chevron yo'q) ═══ */}
+          {/* OQ BO'LIM — Umumiy ko'rsatkichlar (chevron yo'q) */}
           <div className="bg-[#F9F9F9] rounded-2xl m-2">
             <RowUI
               title="Savdo aylanmasi"
@@ -128,14 +118,12 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
               title="Chegirma"
               price={data?.discount?.price || 0}
             />
-            {/* Foyda hisobi — faqat umumiy va dillerda */}
             {(isUmumiy || isDealers) && (
               <RowUI
                 title="Foyda hisobi"
                 price={data?.profit?.price || 0}
               />
             )}
-            {/* Foyda qoldig'i — faqat umumiy */}
             {isUmumiy && (
               <RowUI
                 title="Foyda qoldig'i"
@@ -149,146 +137,139 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
             />
           </div>
 
-          {/* ═══ YASHIL BO'LIM — Kirimlar (prixodlar) ═══ */}
+          {/* YASHIL BO'LIM — Kirimlar */}
           {isDealers ? (
-            // #dealers rejimi — faqat diller naqd va perechesleniya
             <div className="bg-[#85D188]/10 rounded-2xl m-2">
               <RowUI
                 title="Diller Naqd"
                 price={data?.dealer_cash?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Diller Naqd", "dealer_cash")}
+                onClick={() => goToDetail("dealer_cash")}
               />
               <RowUI
                 title="Diller perechesleniya"
                 price={data?.dealer_terminal?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Diller perechesleniya", "dealer_terminal")}
+                onClick={() => goToDetail("dealer_terminal")}
                 isLast
               />
             </div>
           ) : isFilial ? (
-            // Filial rejimi — naqd kassa, terminal, inkassatsiya qizilga o'tadi
             <div className="bg-[#85D188]/10 rounded-2xl m-2">
               <RowUI
                 title="Kelgan qarzlar"
                 price={data?.owed_debt?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Kelgan qarzlar", "kelgan_qarz")}
+                onClick={() => goToDetail("kelgan_qarz")}
               />
               <RowUI
                 title="O'tgan pul"
                 price={data?.opening_balance?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("O'tgan pul", "opening_balance")}
+                onClick={() => goToDetail("opening_balance")}
               />
               <RowUI
                 title="Boss prixod"
                 price={data?.boss_income?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Boss prixod", "boss_income")}
+                onClick={() => goToDetail("boss_income")}
                 isLast
               />
             </div>
           ) : (
-            // Umumiy rejim — barcha kirimlar
             <div className="bg-[#85D188]/10 rounded-2xl m-2">
               <RowUI
                 title="Naqd kassa"
                 price={data?.cash?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Naqd kassa", "naqd_kassa")}
+                onClick={() => goToDetail("naqd_kassa")}
               />
               <RowUI
                 title="Terminal"
                 price={data?.terminal?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Terminal", "terminal")}
+                onClick={() => goToDetail("terminal")}
               />
               <RowUI
                 title="Inkassatsiya"
                 price={data?.cash_collection?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Inkassatsiya", "inkassatsiya")}
+                onClick={() => goToDetail("inkassatsiya")}
               />
               <RowUI
                 title="Diller Naqd"
                 price={data?.dealer_cash?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Diller Naqd", "dealer_cash")}
+                onClick={() => goToDetail("dealer_cash")}
               />
               <RowUI
                 title="Diller perechesleniya"
                 price={data?.dealer_terminal?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Diller perechesleniya", "dealer_terminal")}
+                onClick={() => goToDetail("dealer_terminal")}
               />
               <RowUI
                 title="Kelgan qarzlar"
                 price={data?.owed_debt?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Kelgan qarzlar", "kelgan_qarz")}
+                onClick={() => goToDetail("kelgan_qarz")}
               />
               <RowUI
                 title="O'tgan pul"
                 price={data?.opening_balance?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("O'tgan pul", "opening_balance")}
+                onClick={() => goToDetail("opening_balance")}
               />
               <RowUI
                 title="Boss prixod"
                 price={data?.boss_income?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Boss prixod", "boss_income")}
+                onClick={() => goToDetail("boss_income")}
               />
               <RowUI
                 title="Kent prixod"
                 price={data?.kent_income?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Kent prixod", "kent_income")}
+                onClick={() => goToDetail("kent_income")}
               />
               <RowUI
                 title="Qo'shimcha prixodlar"
                 price={data?.extra_income?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Qo'shimcha prixodlar", "extra_income")}
+                onClick={() => goToDetail("extra_income")}
                 isLast
               />
             </div>
           )}
 
-          {/* ═══ TO'Q SARIQ BO'LIM — Chiqimlar (rasxodlar) ═══ */}
-          {/* Dillerda ko'rinmaydi */}
+          {/* TO'Q SARIQ BO'LIM — Chiqimlar */}
           {!isDealers && (
             <div className="bg-[#D76B43]/7 rounded-2xl m-2">
-              {/* Kent rasxod — faqat umumiy */}
               {isUmumiy && (
                 <RowUI
                   title="Kent rasxod"
                   price={data?.kent_expense?.price || 0}
                   hasChevron
-                  onClick={() => openDrillIn("Kent rasxod", "kent_expense")}
+                  onClick={() => goToDetail("kent_expense")}
                 />
               )}
-              {/* Filialda: naqd kassa, terminal, inkassatsiya shu yerda */}
               {isFilial && (
                 <>
                   <RowUI
                     title="Naqd kassa"
                     price={data?.cash?.price || 0}
                     hasChevron
-                    onClick={() => openDrillIn("Naqd kassa", "naqd_kassa")}
+                    onClick={() => goToDetail("naqd_kassa")}
                   />
                   <RowUI
                     title="Terminal"
                     price={data?.terminal?.price || 0}
-                    // filialda chevron yo'q
                   />
                   <RowUI
                     title="Inkassatsiya"
                     price={data?.cash_collection?.price || 0}
                     hasChevron
-                    onClick={() => openDrillIn("Inkassatsiya", "inkassatsiya")}
+                    onClick={() => goToDetail("inkassatsiya")}
                   />
                 </>
               )}
@@ -296,34 +277,33 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
                 title="Boss rasxod"
                 price={data?.boss_expense?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Boss rasxod", "boss_expense")}
+                onClick={() => goToDetail("boss_expense")}
               />
               <RowUI
                 title="Biznes rasxod"
                 price={data?.business_expense?.price || 0}
                 hasChevron
-                onClick={() => openDrillIn("Biznes rasxod", "business_expense")}
+                onClick={() => goToDetail("business_expense")}
               />
-              {/* Faqat umumiy: taminotchi, logistika, bojxona */}
               {isUmumiy && (
                 <>
                   <RowUI
                     title="Taminotchi (Pastavchik)"
                     price={data?.factory?.price || 0}
                     hasChevron
-                    onClick={() => openDrillIn("Taminotchi", "factory")}
+                    onClick={() => goToDetail("factory")}
                   />
                   <RowUI
                     title="Logistika"
                     price={data?.logistics?.price || 0}
                     hasChevron
-                    onClick={() => openDrillIn("Logistika", "logistics")}
+                    onClick={() => goToDetail("logistics")}
                   />
                   <RowUI
                     title="Bojxona (tamojniy)"
                     price={data?.tamojniy?.price || 0}
                     hasChevron
-                    onClick={() => openDrillIn("Bojxona", "tamojniy")}
+                    onClick={() => goToDetail("tamojniy")}
                   />
                 </>
               )}
@@ -332,20 +312,19 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
                 price={data?.return_orders?.price || 0}
                 kv={data?.return_orders?.kv || 0}
               />
-              {/* Navar rasxod — faqat filial */}
               {isFilial && (
                 <RowUI
                   title="Navar Rasxod"
                   price={data?.navar_expense?.price || 0}
                   hasChevron
-                  onClick={() => openDrillIn("Navar Rasxod", "navar_expense")}
+                  onClick={() => goToDetail("navar_expense")}
                   isLast
                 />
               )}
             </div>
           )}
 
-          {/* ═══ KO'K BO'LIM — Balanslar (chevron yo'q) ═══ */}
+          {/* KO'K BO'LIM — Balanslar (chevron yo'q) */}
           {!isDealers && (
             <div className="bg-[#4A90D9]/8 rounded-2xl m-2">
               <RowUI
@@ -366,17 +345,6 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
 
         </div>
       </div>
-
-      {/* Drill-in dialog */}
-      <DrillInDialog
-        open={drillIn.open}
-        onClose={() => setDrillIn({ open: false, title: "", type: "" })}
-        title={drillIn.title}
-        detailType={drillIn.type}
-        month={+month || undefined}
-        year={year}
-        filialId={detailFilialId}
-      />
     </div>
   );
 });

@@ -11,6 +11,7 @@ import CollectionTable from "./remaider/collection-table";
 import ModelTable from "./remaider/model-table";
 import SizeTable from "./remaider/size-table";
 import PageOrginal from "../report-orginal";
+import GeneralReportDetail from "../report-orginal/detail-page";
 
 const Route = [
   {
@@ -99,6 +100,11 @@ const Route = [
   {
     url: "/m-manager/report-orginal",
     Element: PageOrginal,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/report-orginal/detail/:type",
+    Element: GeneralReportDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];

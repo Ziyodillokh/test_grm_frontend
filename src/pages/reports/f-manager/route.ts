@@ -4,6 +4,7 @@ import PageSellerCashFlow from "../seller/seller-cashflow";
 import PageSellerReport from "../seller/seller-report";
 import PageCleintDebt from "./client-debt";
 import PageOrginal from "../report-orginal";
+import GeneralReportDetail from "../report-orginal/detail-page";
 import InventoryPage from "./remaider/index";
 import FoctoryTable from "./remaider/factory-table";
 import CollectionTable from "./remaider/collection-table";
@@ -91,6 +92,11 @@ const Route = [
   {
     url: "/f-manager/report-orginal",
     Element: PageOrginal,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/f-manager/report-orginal/detail/:type",
+    Element: GeneralReportDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];
