@@ -117,7 +117,7 @@ export const apiRoutes = {
   reportsHomePageCurrentMonthProdaja: "/reports/home-page/current-month/prodaja",
   reportsHomePageCurrentMonthSellDebt: "/reports/home-page/current-month/sell/debt",
   reportsMonthlyV2: "/reports/monthly/v2",
-  reportsMonthlyV2Detail: "/reports/monthly/v2/detail",
+  reportsMonthlyV2Detail: "/reports/monthly/v2-detail",
   reportsTotal: '/reports/total',
   reInventoryGetByFilialReport: '/re-inventory/get-by/filial-report',
   reInventoryGetByFilialReportTotals: '/re-inventory/get-by/filial-report/totals',
