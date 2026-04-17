@@ -84,7 +84,7 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
   return (
     <div
       ref={ref}
-      className="min-h-full flex flex-col w-full border-border border-x"
+      className="h-full flex flex-col w-full border-border border-x"
     >
       {/* Header */}
       <div className="flex items-center border-border border-b min-h-[56px] gap-[100px] justify-center">
@@ -99,8 +99,8 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
         </p>
       </div>
 
-      <div className="w-full max-w-[610px] max-h-[700px] mx-auto bg-white rounded-2xl m-[20px]">
-        <div className="max-h-[620px] scrollCastom">
+      <div className="w-full max-w-[610px] mx-auto bg-white rounded-2xl m-[20px] mb-[20px] flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-auto scrollCastom">
 
           {/* OQ BO'LIM — Umumiy ko'rsatkichlar (chevron yo'q) */}
           <div className="bg-[#F9F9F9] rounded-2xl m-2">
