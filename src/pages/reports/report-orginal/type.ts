@@ -5,6 +5,7 @@ export type TData = {
   debt_trading: PriceKv;
   discount: PriceKv;
   profit: PriceKv;
+  profit_remaining: PriceKv;    // foyda qoldig'i = foyda - biznes rasxod
   cash: PriceKv;
   terminal: PriceKv;
   cash_collection: PriceKv;
@@ -13,11 +14,15 @@ export type TData = {
   owed_debt: PriceKv;
   opening_balance: PriceKv;
   filial_balance: PriceKv;
+  manager_balance: PriceKv;     // manager balansi
+  accountant_balance: PriceKv;  // bugalter balansi
   boss_income: PriceKv;
   kent_income: PriceKv;
   kent_expense: PriceKv;
   boss_expense: PriceKv;
   business_expense: PriceKv;
+  logistics: PriceKv;           // logistika (alohida)
+  extra_income: PriceKv;        // qo'shimcha prixodlar
   factory: PriceKv;
   return_orders: PriceKv;
   tamojniy: PriceKv;

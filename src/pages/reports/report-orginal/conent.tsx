@@ -1,75 +1,51 @@
 import { useMeStore } from "@/store/me-store";
 import { format, getMonth } from "date-fns";
 import { parseAsString, useQueryState } from "nuqs";
-import TableAction from "@/components/table-action";
-import { apiRoutes } from "@/service/apiRoutes";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
+import { ChevronRight } from "lucide-react";
 import { useDataFetch } from "./queries";
 import { useYear } from "@/store/year-store";
+import DrillInDialog from "./drill-in-dialog";
 
+// Qator komponenti — chevron va onClick qo'shildi
 function RowUI({
-  id,
   title,
   price,
   kv,
-  price1,
-  price2,
-  isbordereble = true,
+  hasChevron,
+  onClick,
+  isLast = false,
 }: {
-  id?: string;
   title: string;
   price: number;
   kv?: number;
-  price1?: number;
-  price2?: number;
-  isbordereble?: boolean;
+  hasChevron?: boolean;
+  onClick?: () => void;
+  isLast?: boolean;
 }) {
   return (
     <div
-      className={`flex items-center w-full border-border/20 ${isbordereble ? "border-b" : ""}`}
+      className={`flex items-center w-full border-border/20 ${!isLast ? "border-b" : ""} ${
+        hasChevron ? "cursor-pointer hover:bg-black/3" : ""
+      }`}
+      onClick={hasChevron ? onClick : undefined}
     >
-      <p
-        className={`${id ? "pr-[23px]" : "px-[23px]"}  py-[11px] flex items-center gap-[3px]  w-[379px] text-[#272727] text-[15px] border-border/20 border-r font-medium`}
-      >
-        {id ? (
-          <TableAction
-            ShowPreview={false}
-            ShowUpdate={false}
-            id={id}
-            url={apiRoutes.paperReport}
-            refetchUrl={apiRoutes.paperReport}
-          />
-        ) : (
-          ""
-        )}
+      <p className="px-[23px] py-[11px] flex-1 text-[#272727] text-[15px] font-medium">
         {title}
       </p>
-      {kv || kv == 0 ? (
-        <p className="px-[23px] py-[11px] w-[110px]  text-nowrap text-[#272727] text-[15px]  border-border/20 border-r font-medium">
-          {kv == 0 ? "-" : `${kv.toFixed(2)}м²`}
+      {(kv !== undefined && kv !== null) && (
+        <p className="px-[12px] py-[11px] min-w-[100px] text-nowrap text-[#272727] text-[15px] font-medium">
+          {kv === 0 ? "-" : `${kv.toFixed(2)}m²`}
         </p>
-      ) : (
-        ""
       )}
-      {price1 || price1 == 0 ? (
-        <p className="px-[23px] py-[11px] w-[120px]  text-nowrap text-[#272727] text-[15px]  border-border/20 border-r font-medium">
-          {price1 == 0 ? "-" : `$${price1.toFixed(2)}`}
-        </p>
+      <p className="px-[12px] py-[11px] min-w-[110px] text-nowrap text-right text-[#272727] text-[15px] font-medium">
+        {price === 0 ? "-" : `$${price.toFixed(2)}`}
+      </p>
+      {hasChevron ? (
+        <ChevronRight className="w-4 h-4 text-muted-foreground mr-3 shrink-0" />
       ) : (
-        ""
+        <div className="w-4 mr-3 shrink-0" />
       )}
-      {price2 || price2 == 0 ? (
-        <p className="px-[23px] py-[11px] w-[120px]  text-nowrap text-[#272727] text-[15px]  border-border/20 border-r font-medium">
-          {price2 == 0 ? "-" : `$${price2.toFixed(2)}`}
-        </p>
-      ) : (
-        ""
-      )}
-      {
-        <p className="px-[23px] py-[11px]  w-[120px] text-nowrap text-[#272727] text-[15px] font-medium">
-          {price == 0 ? "-" : `$${price.toFixed(2)}`}
-        </p>
-      }
     </div>
   );
 }
@@ -80,10 +56,9 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
     "month",
     parseAsString.withDefault(getMonth(new Date()) + 1 + "")
   );
-
   const [filial] = useQueryState("filial");
-  const {year}= useYear();
-  
+  const { year } = useYear();
+
   const { data } = useDataFetch({
     queries: {
       filialId:
@@ -93,203 +68,315 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
     },
   });
 
+  // Drill-in dialog holati
+  const [drillIn, setDrillIn] = useState<{
+    open: boolean;
+    title: string;
+    type: string;
+  }>({ open: false, title: "", type: "" });
+
+  const openDrillIn = (title: string, type: string) =>
+    setDrillIn({ open: true, title, type });
+
+  // Rejimlar
+  const isDealers = filial === "#dealers";
+  const isFManager = meUser?.position?.role == 4;
+  const isFilial = !!(filial || isFManager);    // filial tanlangan yoki F_MANAGER
+  const isUmumiy = !filial && !isFManager;      // hech nima tanlanmagan
+
+  // filialId — detail endpoint uchun
+  const detailFilialId = isFManager
+    ? meUser?.filial?.id
+    : filial && filial !== "#dealers"
+      ? filial
+      : undefined;
+
   return (
     <div
       ref={ref}
       className="min-h-full flex flex-col w-full border-border border-x"
     >
+      {/* Header */}
       <div className="flex items-center border-border border-b min-h-[56px] gap-[100px] justify-center">
         <p className="text-[13px] text-[#272727] font-semibold">
           {format(new Date(2025, +month - 1, 1), "MMMM")} {year}
         </p>
         <p className="text-[17px] text-[#272727] font-extrabold">
-          {meUser?.position?.role == 4 ? meUser?.filial?.name : "Филиал"}
+          {isFManager ? meUser?.filial?.name : "Филиал"}
         </p>
         <p className="text-[13px] text-[#272727] font-semibold">
           {meUser?.firstName} {meUser?.lastName}
         </p>
       </div>
 
-      <div className="w-full max-w-[610px] max-h-[700px] mx-auto bg-white rounded-2xl m-[20px] ">
-        <div className=" max-h-[620px]  scrollCastom ">
+      <div className="w-full max-w-[610px] max-h-[700px] mx-auto bg-white rounded-2xl m-[20px]">
+        <div className="max-h-[620px] scrollCastom">
+
+          {/* ═══ OQ BO'LIM — Umumiy ko'rsatkichlar (chevron yo'q) ═══ */}
           <div className="bg-[#F9F9F9] rounded-2xl m-2">
             <RowUI
-              title={"Savdo aylanmasi"}
+              title="Savdo aylanmasi"
               price={data?.turnover?.price || 0}
               kv={data?.turnover?.kv || 0}
             />
             <RowUI
-              title={"Qarz savdosi"}
+              title="Qarz savdosi"
               price={data?.debt_trading?.price || 0}
               kv={data?.debt_trading?.kv || 0}
             />
             <RowUI
-              title={"Chegirma(Skidka)"}
+              title="Chegirma"
               price={data?.discount?.price || 0}
-              kv={data?.discount?.kv || 0}
             />
+            {/* Foyda hisobi — faqat umumiy va dillerda */}
+            {(isUmumiy || isDealers) && (
+              <RowUI
+                title="Foyda hisobi"
+                price={data?.profit?.price || 0}
+              />
+            )}
+            {/* Foyda qoldig'i — faqat umumiy */}
+            {isUmumiy && (
+              <RowUI
+                title="Foyda qoldig'i"
+                price={data?.profit_remaining?.price || 0}
+              />
+            )}
             <RowUI
-              title={"Foyda hisobi"}
-              price={data?.profit?.price || 0}
-              kv={data?.profit?.kv || 0}
-              isbordereble={false}
+              title="Navar"
+              price={data?.navar_income?.price || 0}
+              isLast
             />
           </div>
-          {filial == "#dealers" ? (
+
+          {/* ═══ YASHIL BO'LIM — Kirimlar (prixodlar) ═══ */}
+          {isDealers ? (
+            // #dealers rejimi — faqat diller naqd va perechesleniya
             <div className="bg-[#85D188]/10 rounded-2xl m-2">
               <RowUI
-                title={"Diller Naqd"}
+                title="Diller Naqd"
                 price={data?.dealer_cash?.price || 0}
-                kv={data?.dealer_cash?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("Diller Naqd", "dealer_cash")}
               />
               <RowUI
-                title={"Diller perechesleniya"}
+                title="Diller perechesleniya"
                 price={data?.dealer_terminal?.price || 0}
-                kv={data?.dealer_terminal?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("Diller perechesleniya", "dealer_terminal")}
+                isLast
+              />
+            </div>
+          ) : isFilial ? (
+            // Filial rejimi — naqd kassa, terminal, inkassatsiya qizilga o'tadi
+            <div className="bg-[#85D188]/10 rounded-2xl m-2">
+              <RowUI
+                title="Kelgan qarzlar"
+                price={data?.owed_debt?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Kelgan qarzlar", "kelgan_qarz")}
+              />
+              <RowUI
+                title="O'tgan pul"
+                price={data?.opening_balance?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("O'tgan pul", "opening_balance")}
+              />
+              <RowUI
+                title="Boss prixod"
+                price={data?.boss_income?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Boss prixod", "boss_income")}
+                isLast
               />
             </div>
           ) : (
+            // Umumiy rejim — barcha kirimlar
             <div className="bg-[#85D188]/10 rounded-2xl m-2">
-              {!filial && meUser?.position?.role != 4 && (
-                <>
-                  <RowUI
-                    title={"Naqd kassa"}
-                    price={data?.cash?.price || 0}
-                    kv={data?.cash?.kv || 0}
-                  />
-                  <RowUI
-                    title={"Terminal va perechesleniya"}
-                    price={data?.terminal?.price || 0}
-                    kv={data?.terminal?.kv || 0}
-                  />
-                  <RowUI
-                    title={"Inkassatsiya"}
-                    price={data?.cash_collection?.price || 0}
-                    kv={data?.cash_collection?.kv || 0}
-                  />
-                  <RowUI
-                    title={"Diller Naqd"}
-                    price={data?.dealer_cash?.price || 0}
-                    kv={data?.dealer_cash?.kv || 0}
-                  />
-                  <RowUI
-                    title={"Diller perechesleniya"}
-                    price={data?.dealer_terminal?.price || 0}
-                    kv={data?.dealer_terminal?.kv || 0}
-                  />
-                </>
-              )}
-
               <RowUI
-                title={"Kelgan qarzlar"}
+                title="Naqd kassa"
+                price={data?.cash?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Naqd kassa", "naqd_kassa")}
+              />
+              <RowUI
+                title="Terminal"
+                price={data?.terminal?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Terminal", "terminal")}
+              />
+              <RowUI
+                title="Inkassatsiya"
+                price={data?.cash_collection?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Inkassatsiya", "inkassatsiya")}
+              />
+              <RowUI
+                title="Diller Naqd"
+                price={data?.dealer_cash?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Diller Naqd", "dealer_cash")}
+              />
+              <RowUI
+                title="Diller perechesleniya"
+                price={data?.dealer_terminal?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Diller perechesleniya", "dealer_terminal")}
+              />
+              <RowUI
+                title="Kelgan qarzlar"
                 price={data?.owed_debt?.price || 0}
-                kv={data?.owed_debt?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("Kelgan qarzlar", "kelgan_qarz")}
               />
               <RowUI
-                title={"Oldingi oydan o'tgan pul"}
+                title="O'tgan pul"
                 price={data?.opening_balance?.price || 0}
-                kv={data?.opening_balance?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("O'tgan pul", "opening_balance")}
               />
               <RowUI
-                title={"Filial balansi"}
-                price={data?.filial_balance?.price || 0}
-                kv={data?.filial_balance?.kv || 0}
-              />
-              <RowUI
-                title={"Boss prixod"}
+                title="Boss prixod"
                 price={data?.boss_income?.price || 0}
-                kv={data?.boss_income?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("Boss prixod", "boss_income")}
               />
-              {(filial || meUser?.position?.role == 4)  && (
-                <RowUI
-                  title={"Navar"}
-                  price={data?.navar_income?.price || 0}
-                  kv={data?.navar_income?.kv || 0}
-                />
-              )}
-              {!filial && meUser?.position?.role != 4 && (
-                <>
-                  <RowUI
-                    title={"Kent prixod"}
-                    price={data?.kent_income?.price || 0}
-                    kv={data?.kent_income?.kv || 0}
-                    isbordereble={false}
-                  />
-                </>
-              )}
+              <RowUI
+                title="Kent prixod"
+                price={data?.kent_income?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Kent prixod", "kent_income")}
+              />
+              <RowUI
+                title="Qo'shimcha prixodlar"
+                price={data?.extra_income?.price || 0}
+                hasChevron
+                onClick={() => openDrillIn("Qo'shimcha prixodlar", "extra_income")}
+                isLast
+              />
             </div>
           )}
 
-          {filial != "#dealers" && (
+          {/* ═══ TO'Q SARIQ BO'LIM — Chiqimlar (rasxodlar) ═══ */}
+          {/* Dillerda ko'rinmaydi */}
+          {!isDealers && (
             <div className="bg-[#D76B43]/7 rounded-2xl m-2">
-              {!filial && meUser?.position?.role != 4 && (
+              {/* Kent rasxod — faqat umumiy */}
+              {isUmumiy && (
                 <RowUI
-                  title={"Kent rasxod"}
+                  title="Kent rasxod"
                   price={data?.kent_expense?.price || 0}
-                  kv={data?.kent_expense?.kv || 0}
+                  hasChevron
+                  onClick={() => openDrillIn("Kent rasxod", "kent_expense")}
                 />
               )}
-              {(filial || meUser?.position?.role == 4)  && (
+              {/* Filialda: naqd kassa, terminal, inkassatsiya shu yerda */}
+              {isFilial && (
                 <>
                   <RowUI
-                    title={"Naqd kassa"}
+                    title="Naqd kassa"
                     price={data?.cash?.price || 0}
-                    kv={data?.cash?.kv || 0}
+                    hasChevron
+                    onClick={() => openDrillIn("Naqd kassa", "naqd_kassa")}
                   />
                   <RowUI
-                    title={"Terminal va perechesleniya"}
+                    title="Terminal"
                     price={data?.terminal?.price || 0}
-                    kv={data?.terminal?.kv || 0}
+                    // filialda chevron yo'q
                   />
                   <RowUI
-                    title={"Inkassatsiya"}
+                    title="Inkassatsiya"
                     price={data?.cash_collection?.price || 0}
-                    kv={data?.cash_collection?.kv || 0}
+                    hasChevron
+                    onClick={() => openDrillIn("Inkassatsiya", "inkassatsiya")}
                   />
                 </>
               )}
               <RowUI
-                title={"Boss rasxod"}
+                title="Boss rasxod"
                 price={data?.boss_expense?.price || 0}
-                kv={data?.boss_expense?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("Boss rasxod", "boss_expense")}
               />
               <RowUI
-                title={"Biznes rasxod"}
+                title="Biznes rasxod"
                 price={data?.business_expense?.price || 0}
-                kv={data?.business_expense?.kv || 0}
+                hasChevron
+                onClick={() => openDrillIn("Biznes rasxod", "business_expense")}
               />
-              {!filial && meUser?.position?.role != 4 && (
+              {/* Faqat umumiy: taminotchi, logistika, bojxona */}
+              {isUmumiy && (
                 <>
                   <RowUI
-                    title={"Yetkazib beruvchi(Pastavshik)"}
-                    price={data?.dealer_cash?.price || 0}
-                    kv={data?.dealer_cash?.kv || 0}
+                    title="Taminotchi (Pastavchik)"
+                    price={data?.factory?.price || 0}
+                    hasChevron
+                    onClick={() => openDrillIn("Taminotchi", "factory")}
                   />
                   <RowUI
-                    title={"Bojxona(tamojniy)"}
-                    price={data?.debt_trading?.price || 0}
-                    kv={data?.debt_trading?.kv || 0}
+                    title="Logistika"
+                    price={data?.logistics?.price || 0}
+                    hasChevron
+                    onClick={() => openDrillIn("Logistika", "logistics")}
+                  />
+                  <RowUI
+                    title="Bojxona (tamojniy)"
+                    price={data?.tamojniy?.price || 0}
+                    hasChevron
+                    onClick={() => openDrillIn("Bojxona", "tamojniy")}
                   />
                 </>
               )}
               <RowUI
-                title={"Qaytgan Tavarlar(Vazvrad)"}
-                isbordereble={false}
+                title="Qaytgan Tavarlar"
                 price={data?.return_orders?.price || 0}
                 kv={data?.return_orders?.kv || 0}
               />
-              {(filial || meUser?.position?.role == 4)  && (
+              {/* Navar rasxod — faqat filial */}
+              {isFilial && (
                 <RowUI
-                  title={"Navar Rasxod"}
-                  isbordereble={false}
+                  title="Navar Rasxod"
                   price={data?.navar_expense?.price || 0}
-                  kv={data?.navar_expense?.kv || 0}
+                  hasChevron
+                  onClick={() => openDrillIn("Navar Rasxod", "navar_expense")}
+                  isLast
                 />
               )}
             </div>
           )}
+
+          {/* ═══ KO'K BO'LIM — Balanslar (chevron yo'q) ═══ */}
+          {!isDealers && (
+            <div className="bg-[#4A90D9]/8 rounded-2xl m-2">
+              <RowUI
+                title="Filial balansi"
+                price={data?.filial_balance?.price || 0}
+              />
+              <RowUI
+                title="Manager balansi"
+                price={data?.manager_balance?.price || 0}
+              />
+              <RowUI
+                title="Bugalter balansi"
+                price={data?.accountant_balance?.price || 0}
+                isLast
+              />
+            </div>
+          )}
+
         </div>
       </div>
+
+      {/* Drill-in dialog */}
+      <DrillInDialog
+        open={drillIn.open}
+        onClose={() => setDrillIn({ open: false, title: "", type: "" })}
+        title={drillIn.title}
+        detailType={drillIn.type}
+        month={+month || undefined}
+        year={year}
+        filialId={detailFilialId}
+      />
     </div>
   );
 });
