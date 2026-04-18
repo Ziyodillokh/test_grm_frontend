@@ -1,7 +1,6 @@
 import {
   BellRingingIcon,
   BronedIcons,
-  BuildingIcons,
   ClientsIcon,
   DataLibrary,
   DiamondIcon,
@@ -20,7 +19,6 @@ import {
   StatementIcon,
   TransferIcons,
   UfoBottom,
-  WareHouseIcons,
 } from "../../components/icons";
 import {
   DeviceAnalyticsIcon,

@@ -31,7 +31,7 @@ const typeFilter: Record<string, string> = {
 export default function DashboardKassaDetail() {
   const { id } = useParams();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
-  const [tip, setTip] = useQueryState("tip", parseAsString);
+  const [tip] = useQueryState("tip", parseAsString);
   const [sortSingle] = useQueryState(
     "sortSingle",
     parseAsString.withDefault("Все")

@@ -30,7 +30,7 @@ export default function CurrentMonthReport() {
   const pushBreadcrumb = useBreadcrumbStore((s) => s.push);
 
   // Joriy oy reportini olish (GET /reports/current)
-  const { data: reportData, isLoading } = useQuery({
+  const { data: reportData } = useQuery({
     queryKey: [apiRoutes.reports, "current"],
     queryFn: () =>
       getAllData<TKassareportData, object>(apiRoutes.reports + "/current", {}),
