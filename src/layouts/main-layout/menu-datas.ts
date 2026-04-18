@@ -22,6 +22,16 @@ import {
   UfoBottom,
   WareHouseIcons,
 } from "../../components/icons";
+import {
+  DeviceAnalyticsIcon,
+  FileTextIcon,
+  RefreshCcwIcon,
+  ShoppingCartIcon,
+  TagIcon,
+  UsersIcon,
+  BooksIcon,
+  PieChartIcon,
+} from "./sidebar-icons";
 
 // {
 //   OTHER = 0,
@@ -407,77 +417,51 @@ export const DataMenu = {
   9: [
     {
       id: 0,
-      icons: () => DataLibrary({}),
+      icons: () => DeviceAnalyticsIcon(),
       link: "/m-manager/current-month",
-      text: "Joriy oy",
+      text: "Joriy Oy",
     },
     {
       id: 2,
-      icons: () => ReportBottom({}),
+      icons: () => FileTextIcon(),
       link: "/m-manager/reports-hub",
       text: "Hisobotlar",
     },
     {
-      id: 33,
-      icons: () => PartiesIcons(),
-      link: "/parties",
-      text: "Партии",
-    },
-    {
-      id: 2,
-      icons: () => ProductIcons(),
-      link: "/products",
-      text: "Продукты в продаже",
-    },
-    {
       id: 32,
-      icons: () => TransferIcons(),
+      icons: () => RefreshCcwIcon(),
       link: "/transfers",
-      text: "Трансферы",
+      text: "Transfer",
     },
-
     {
       id: 3,
-      icons: () => BuildingIcons(),
-      link: "/filial",
-      text: "Филиалы",
-    },
-    {
-      id: 39,
-      icons: () => WareHouseIcons(),
-      link: "/warehouse",
-      text: "Склады",
-    },
-    {
-      id: 4,
-      icons: () => UfoBottom(),
-      link: "/dealer",
-      text: "Дилеры",
+      icons: () => ShoppingCartIcon(),
+      link: "/products",
+      text: "Mahsulotlar",
     },
     {
       id: 42,
-      icons: () => PriceIcons({}),
+      icons: () => TagIcon(),
       link: "/price",
-      text: "Цени и скидки",
-    },
-
-    {
-      id: 37,
-      icons: () => ClientsIcon(),
-      link: "/debt",
-      text: "Кенты",
+      text: "Narx-navo",
     },
     {
-      id: 4,
-      icons: () => DataLibrary({}),
+      id: 5,
+      icons: () => UsersIcon(),
+      link: "/user",
+      text: "Ishchilar boshqaruvi",
+    },
+    {
+      id: 6,
+      icons: () => BooksIcon(),
       link: "/data-library",
-      text: "Справочника",
+      text: "Markaziy ma'lumotlar",
     },
     {
-      id: 50,
-      icons: () => BellRingingIcon(),
-      link: "/xabarnoma",
-      text: "Xabarnomalar",
+      id: 7,
+      icons: () => PieChartIcon(),
+      link: "/monitoring",
+      text: "Monitoring",
     },
   ],
   10: [

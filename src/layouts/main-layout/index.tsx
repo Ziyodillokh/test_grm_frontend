@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/auth-store";
 import { useMeStore } from "@/store/me-store";
 
 import Header from "./header";
 import Menu from "./menu";
-// import CashierHeader from "./cashier-header";
 
 export default function MainLayout() {
   const { token } = useAuthStore();
@@ -31,22 +29,36 @@ export default function MainLayout() {
   }, [token, meUser]);
 
   return (
-    <SidebarProvider className="px-2.5 gap-4 overflow-hidden">
-      <Menu />
-      <SidebarInset >
-        {meUser?.position?.role === 4 ? (
-          <div className="h-5"></div>
-        ) : pathname.pathname == "/f-manager/kassa" ? (
-          <div className="h-5"></div>
-        ) : (
-          <Header />
-        )}
-        <div
-          className={`${(meUser?.position?.role === 4 || pathname.pathname == "/f-manager/kassa") ? "max-h-[calc(100vh-20px)] " : "max-h-[calc(100vh-68px)] "} scrollCastom`}
+    <div className="h-screen w-screen flex flex-col bg-[#f5f5f5] overflow-hidden">
+      {/* Header — 90px, 16-column grid */}
+      <Header />
+
+      {/* Content — 16-column grid, 4:8:4 */}
+      <div
+        className="flex-1 min-h-0"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(16, 1fr)",
+          columnGap: "20px",
+          padding: "0 20px",
+        }}
+      >
+        {/* Sidebar — 4 cols */}
+        <aside
+          style={{ gridColumn: "1 / 5" }}
+          className="min-h-0 overflow-hidden"
+        >
+          <Menu />
+        </aside>
+
+        {/* Main content — 11 cols */}
+        <main
+          style={{ gridColumn: "5 / 16" }}
+          className="min-h-0 overflow-hidden flex flex-col"
         >
           <Outlet />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </main>
+      </div>
+    </div>
   );
 }

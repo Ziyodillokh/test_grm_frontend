@@ -1,7 +1,6 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryState } from "nuqs";
-import { ArrowLeft, ArrowDown, ArrowUp } from "lucide-react";
 
 import { DataTable } from "@/components/ui/data-table";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
@@ -10,7 +9,8 @@ import KassaToolbar from "@/pages/cashier/report/page/kassa-toolbar";
 import { apiRoutes } from "@/service/apiRoutes";
 import { getByIdData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
-import { formatNumber } from "@/utils/farmatNumber";
+import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
+import { useMemo } from "react";
 
 const tipFilter: Record<string, string> = {
   income: "cashflow",
@@ -30,7 +30,6 @@ const typeFilter: Record<string, string> = {
 
 export default function DashboardKassaDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
   const [tip, setTip] = useQueryState("tip", parseAsString);
   const [sortSingle] = useQueryState(
@@ -77,134 +76,54 @@ export default function DashboardKassaDetail() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
   const cashflowTotals = (data?.pages?.[0] as any)?.totals;
-  const activeFilter = tip;
   const hasActiveFilter = !!cashflowTypeId || !!sellerId || !!search || !!startDate || !!endDate;
-  const displayIncome = hasActiveFilter ? (cashflowTotals?.totalIncome || 0) : (kassaData?.income || 0);
-  const displayExpense = hasActiveFilter ? (cashflowTotals?.totalExpense || 0) : (kassaData?.expense || 0);
 
-  const cards = [
-    { label: "Umumiy sotuv", value: hasActiveFilter ? (cashflowTotals?.totalPrice || 0) : (kassaData?.sale || 0), dark: true },
-    { label: "Qarz savdosi", value: hasActiveFilter ? (cashflowTotals?.totalDebtSum || 0) : (kassaData?.debt_sum || 0) },
-    { label: "Terminal", value: hasActiveFilter ? (cashflowTotals?.plasticSum || 0) : (kassaData?.plasticSum || 0) },
-    { label: "Qaytarilgan", value: hasActiveFilter ? -(cashflowTotals?.totalReturnSale || 0) : -(kassaData?.return_sale || 0), orange: true },
-    { label: "Inkasatsiya", value: hasActiveFilter ? Math.abs(cashflowTotals?.totalCashCollection || 0) : Math.abs(kassaData?.cash_collection || 0) },
-    { label: "Sotuv hajmi m²", value: hasActiveFilter ? (cashflowTotals?.kv || 0) : (kassaData?.totalSize || 0) },
-    { label: "Navar foydasi", value: hasActiveFilter ? (cashflowTotals?.totalAdditionalProfit || 0) : (kassaData?.additionalProfitTotalSum || 0) },
-    { label: "Chegirma", value: hasActiveFilter ? (cashflowTotals?.totalDiscount || 0) : (Number(kassaData?.discount) || 0), orange: true },
-  ];
+  // ReportTotals uchun data tayyorlash
+  const reportTotalsData = useMemo(() => {
+    if (!kassaData) return undefined;
+    return {
+      ...kassaData,
+      totalIncome: kassaData?.income ?? 0,
+      totalExpense: kassaData?.expense ?? 0,
+      totalSale: kassaData?.sale ?? 0,
+      totalPlasticSum: kassaData?.plasticSum ?? 0,
+      totalCashCollection: kassaData?.cash_collection ?? 0,
+      totalDiscount: kassaData?.discount ?? 0,
+      totalSaleReturn: kassaData?.return_sale ?? 0,
+      managerSum: kassaData?.in_hand ?? 0,
+      managerSaldo: kassaData?.opening_balance ?? 0,
+    } as TKassareportData;
+  }, [kassaData]);
 
-  const filterMap: Record<string, string> = {
-    "Umumiy sotuv": "sale",
-    "Qarz savdosi": "sale",
-    Terminal: "terminal",
-    Qaytarilgan: "return",
-    Inkasatsiya: "collection",
-    "Sotuv hajmi m²": "sale",
-    "Navar foydasi": "navar",
-    Chegirma: "discount",
-  };
-
-  const handleCardClick = (filterValue: string) => {
-    setTip(activeFilter === filterValue ? null : filterValue);
-  };
-
-  const handleIncomeClick = () => {
-    setTip(tip === "income" ? null : "income");
-  };
-
-  const handleExpenseClick = () => {
-    setTip(tip === "expense" ? null : "expense");
-  };
+  const filteredTotals = hasActiveFilter ? {
+    totalPrice: cashflowTotals?.totalPrice || 0,
+    totalDebtSum: cashflowTotals?.totalDebtSum || 0,
+    plasticSum: cashflowTotals?.plasticSum || 0,
+    totalReturnSale: cashflowTotals?.totalReturnSale || 0,
+    totalCashCollection: cashflowTotals?.totalCashCollection || 0,
+    kv: cashflowTotals?.kv || 0,
+    totalAdditionalProfit: cashflowTotals?.totalAdditionalProfit || 0,
+    totalDiscount: cashflowTotals?.totalDiscount || 0,
+    totalIncome: cashflowTotals?.totalIncome || 0,
+    totalExpense: cashflowTotals?.totalExpense || 0,
+  } : undefined;
 
   return (
-    <div className="px-4 pt-2">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm mb-4">
-        <ArrowLeft
-          className="w-5 h-5 cursor-pointer hover:text-foreground text-muted-foreground"
-          onClick={() => navigate("/m-manager/current-month")}
-        />
-        <span
-          className="cursor-pointer hover:text-foreground text-muted-foreground"
-          onClick={() => navigate("/m-manager/current-month")}
-        >
-          Joriy Oy
-        </span>
-        <span className="text-muted-foreground">•</span>
-        <span className="text-foreground font-medium">
-          {kassaData?.filial?.title || kassaData?.filial?.name || "Kassa"}
-        </span>
-      </div>
+    <div className="flex flex-col h-full">
+      {/* Yashil card + 8 ta metrika */}
+      <ReportTotals
+        data={reportTotalsData}
+        filteredTotals={filteredTotals}
+        hasActiveFilter={hasActiveFilter}
+      />
 
       {/* Toolbar */}
-      <KassaToolbar kassaId={id || ""} />
-
-      {/* Cards */}
-      <div className="flex gap-3 mb-4">
-        {/* Total card */}
-        <div
-          onClick={() => handleCardClick("")}
-          className="bg-[#48B533] text-white rounded-xl p-5 min-w-[280px] cursor-pointer"
-        >
-          <p className="text-[32px] font-bold leading-tight">
-            ${formatNumber(kassaData?.in_hand || 0)}
-          </p>
-          <div className="flex items-center gap-4 mt-2 text-[14px] opacity-90">
-            <span
-              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "income" ? "opacity-100 underline" : ""}`}
-              onClick={(e) => { e.stopPropagation(); handleIncomeClick(); }}
-            >
-              <ArrowDown className="w-3.5 h-3.5" />${formatNumber(displayIncome)}
-            </span>
-            <span
-              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${tip === "expense" ? "opacity-100 underline" : ""}`}
-              onClick={(e) => { e.stopPropagation(); handleExpenseClick(); }}
-            >
-              <ArrowUp className="w-3.5 h-3.5" />${formatNumber(displayExpense)}
-            </span>
-          </div>
-          <p className="text-[13px] mt-2 opacity-80">
-            Saldo balans — ${formatNumber(kassaData?.opening_balance || 0)}
-          </p>
-        </div>
-
-        {/* Small cards 2x4 grid */}
-        <div className="grid grid-cols-4 gap-2 w-full">
-          {cards.map((card) => {
-            const filterVal = filterMap[card.label] || "";
-            const isActive = activeFilter === filterVal && filterVal !== "";
-
-            return (
-              <div
-                key={card.label}
-                onClick={() => handleCardClick(filterVal)}
-                className={`rounded-xl px-4 py-3 cursor-pointer transition-colors ${
-                  card.orange
-                    ? isActive
-                      ? "bg-[#c46d3f] text-white"
-                      : "bg-[#E38157] text-white"
-                    : card.dark
-                      ? isActive
-                        ? "bg-[#2d5a1f] text-white"
-                        : "bg-[#3d6b2e] text-white"
-                      : isActive
-                        ? "bg-primary text-background"
-                        : "bg-card border border-border"
-                }`}
-              >
-                <p className="text-[16px] font-bold">
-                  {card.value < 0 ? "-" : ""}
-                  {formatNumber(Math.abs(card.value))}
-                </p>
-                <p className="text-[12px] mt-1 opacity-70">{card.label}</p>
-              </div>
-            );
-          })}
-        </div>
+      <div className="shrink-0 my-[10px]">
+        <KassaToolbar kassaId={id || ""} />
       </div>
 
       {/* Table */}
-      <div className="h-[calc(100vh-320px)] scrollCastom">
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom">
         <DataTable
           columns={KassaPageColumns.filter(col => col.id !== 'harakatlar')}
           data={flatData || []}

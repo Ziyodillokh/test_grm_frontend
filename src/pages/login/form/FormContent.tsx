@@ -60,11 +60,11 @@ export default function LoginFormContent({
     minute: "2-digit",
     hour12: false,
   });
-  const dateStr = now.toLocaleDateString("uz-UZ", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const months = [
+    "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+    "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr",
+  ];
+  const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#f5f5f5] overflow-hidden">
@@ -93,7 +93,7 @@ export default function LoginFormContent({
           </span>
         </div>
         <div
-          style={{ gridColumn: "14 / 17" }}
+          style={{ gridColumn: "12 / 15" }}
           className="flex items-center justify-end gap-2 text-[15px] text-[#272727]"
         >
           <Sun className="w-5 h-5" />
@@ -101,15 +101,15 @@ export default function LoginFormContent({
         </div>
       </header>
 
-      {/* Main content — 16 column grid */}
+      {/* Main content — 16 column grid, no page scroll */}
       <div
-        className="flex-1 overflow-auto"
+        className="flex-1 min-h-0 overflow-hidden"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(16, 1fr)",
+          gridTemplateRows: "auto auto auto 1fr",
           columnGap: "20px",
           padding: "0 20px",
-          alignContent: "start",
         }}
       >
         {/* Logo — col 3, 50px pastda */}
@@ -119,20 +119,20 @@ export default function LoginFormContent({
 
         {/* Section labels — bitta qator, har biri o'z columnida */}
         <span
-          style={{ gridColumn: "3 / 6" }}
-          className="mt-[50px] text-[15px] text-[#8a8a8a]"
+          style={{ gridColumn: "3 / 5" }}
+          className="mt-[50px] mb-[20px] text-[15px] text-[#8a8a8a]"
         >
           Bugun
         </span>
         <span
-          style={{ gridColumn: "6 / 10" }}
-          className="mt-[50px] text-[15px] text-[#8a8a8a]"
+          style={{ gridColumn: "5 / 10" }}
+          className="mt-[50px] mb-[20px] pl-[10px] text-[15px] text-[#8a8a8a]"
         >
           Ko'rsatkichlar
         </span>
         <span
-          style={{ gridColumn: "10 / 17" }}
-          className="mt-[50px] text-[15px] text-[#8a8a8a] text-right"
+          style={{ gridColumn: "10 / 15" }}
+          className="mt-[50px] mb-[20px] text-[15px] text-[#8a8a8a]"
         >
           Murojaatlar, talablar va takliflar +4
         </span>
@@ -140,21 +140,34 @@ export default function LoginFormContent({
         {/* ═══ CHAP TOMON — cols 3-9 ═══ */}
         <div
           style={{ gridColumn: "3 / 10" }}
-          className="mt-[16px] flex flex-col"
+          className="flex flex-col"
         >
-          {/* Soat + Ko'rsatkichlar (ob-havo, server) */}
-          <div className="flex items-end gap-[40px]">
-            {/* Soat + sana */}
-            <div>
+          {/* Soat + Ko'rsatkichlar — nested 7-col grid (parent cols 3-9 ga mos) */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(7, 1fr)",
+              columnGap: "20px",
+            }}
+          >
+            {/* Soat + sana — nested cols 1-2 → parent cols 3-4 */}
+            <div style={{ gridColumn: "1 / 3" }}>
               <p className="text-[72px] font-light text-[#272727] leading-none tracking-tight">
                 {timeStr}
               </p>
-              <p className="text-[15px] text-[#8a8a8a] mt-[4px]">{dateStr}</p>
+              <p className="text-[15px] text-[#8a8a8a] mt-[8px]">{dateStr}</p>
             </div>
-            {/* Ob-havo + Server */}
-            <div className="flex flex-col gap-[16px] pb-[6px]">
+
+            {/* Ko'rsatkichlar — nested cols 3-7 → parent cols 5-9 */}
+            <div
+              style={{ gridColumn: "3 / 8" }}
+              className="flex items-start gap-[30px] pl-[10px]"
+            >
+              {/* Ob-havo */}
               <div className="flex items-center gap-[12px]">
-                <WeatherIcon />
+                <div className="w-[60px] h-[60px] bg-white rounded-xl flex items-center justify-center shrink-0">
+                  <WeatherIcon />
+                </div>
                 <div>
                   <p className="text-[17px] font-semibold text-[#272727]">
                     +4 °C
@@ -162,14 +175,17 @@ export default function LoginFormContent({
                   <p className="text-[13px] text-[#8a8a8a]">Quyoshli kun</p>
                 </div>
               </div>
+              {/* Server indikatori */}
               <div className="flex items-center gap-[12px]">
-                <div className="relative w-[32px] h-[32px] flex items-center justify-center">
-                  <span className="text-[18px] font-bold text-[#272727]">
-                    28
-                  </span>
-                  <span className="text-[10px] text-[#272727] absolute top-0 right-0">
-                    %
-                  </span>
+                <div className="w-[60px] h-[60px] bg-white rounded-xl flex items-center justify-center shrink-0">
+                  <div className="relative">
+                    <span className="text-[22px] font-bold text-[#272727]">
+                      28
+                    </span>
+                    <span className="text-[10px] text-[#272727] absolute -top-2 -right-3">
+                      %
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <p className="text-[17px] font-semibold text-[#272727]">
@@ -181,8 +197,15 @@ export default function LoginFormContent({
             </div>
           </div>
 
-          {/* Kirish bo'limi — soatdan 40px pastda */}
-          <div className="mt-[40px] flex items-center gap-[16px]">
+        </div>
+
+        {/* ═══ KIRISH — cols 3-5, alohida grid item ═══ */}
+        <div
+          style={{ gridColumn: "3 / 6" }}
+          className="mt-[40px] flex flex-col"
+        >
+          {/* Avatar */}
+          <div className="flex items-center gap-[16px]">
             <div className="w-[60px] h-[60px] rounded-full bg-[#4A9FE5] flex items-center justify-center shrink-0">
               <User className="w-7 h-7 text-white" />
             </div>
@@ -194,7 +217,7 @@ export default function LoginFormContent({
             </div>
           </div>
 
-          {/* PIN input — avatardan 24px pastda */}
+          {/* PIN input */}
           <div className="mt-[24px]">
             <div className="relative">
               <Key className="absolute left-[16px] top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#8a8a8a]" />
@@ -222,22 +245,25 @@ export default function LoginFormContent({
           </div>
         </div>
 
-        {/* ═══ O'NG TOMON — cols 10-14 (5 column) ═══ */}
+        {/* ═══ O'NG TOMON — cols 10-14, rows 3-4 span ═══ */}
         <div
-          style={{ gridColumn: "10 / 15" }}
-          className="mt-[16px] flex flex-col pb-[20px]"
+          style={{ gridColumn: "10 / 15", gridRow: "3 / 5" }}
+          className="flex flex-col min-h-0 pb-[20px]"
         >
-          {/* Carousel — 570px */}
-          <div className="h-[570px] rounded-2xl overflow-hidden relative bg-[#1a1a1a]">
+          {/* Carousel — 4:3 aspect ratio */}
+          <div
+            className="w-full shrink-0 rounded-2xl overflow-hidden relative bg-[#1a1a1a]"
+            style={{ aspectRatio: "5 / 3" }}
+          >
             <Carousel
               plugins={[plugin.current]}
               className="w-full h-full"
               onMouseEnter={plugin.current.stop}
               onMouseLeave={plugin.current.reset}
             >
-              <CarouselContent className="h-[570px]">
+              <CarouselContent className="h-full">
                 {[1, 2, 3, 4].map((n) => (
-                  <CarouselItem key={n} className="h-[570px]">
+                  <CarouselItem key={n} className="h-full">
                     <img
                       src={`/login/${n}.png`}
                       className="w-full h-full object-cover"
@@ -259,42 +285,44 @@ export default function LoginFormContent({
             </Carousel>
           </div>
 
-          {/* Yangi Xabarlar — carousel dan 24px pastda */}
-          <div className="mt-[24px] bg-white rounded-2xl p-[24px] flex-1">
-            <div className="flex items-center gap-2 mb-[16px]">
+          {/* Yangi Xabarlar — qolgan joy, ichki scroll */}
+          <div className="mt-[16px] flex-1 min-h-0 bg-white rounded-2xl p-[32px] flex flex-col">
+            <div className="flex items-center gap-2 mb-[16px] shrink-0 pl-[16px]">
               <span className="text-[16px]">🔔</span>
-              <span className="text-[15px] font-semibold text-[#272727]">
+              <span className="text-[15px] font-normal text-[#272727]">
                 Yangi Xabarlar
               </span>
             </div>
 
-            <div className="flex flex-col gap-[8px]">
-              {notifications.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-[16px] py-[10px]"
-                >
+            <div className="flex-1 min-h-0 overflow-auto">
+              <div className="flex flex-col gap-[8px]">
+                {notifications.map((item) => (
                   <div
-                    className={`w-[48px] h-[48px] rounded-full ${item.color} flex items-center justify-center text-white text-[18px] shrink-0`}
+                    key={item.id}
+                    className="flex items-center gap-[16px] py-[4px]"
                   >
-                    {item.icon}
+                    <div
+                      className={`w-[60px] h-[60px] p-[8px] rounded-full ${item.color} flex items-center justify-center text-white text-[18px] shrink-0`}
+                    >
+                      {item.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-[#272727]">
+                        {item.title}
+                      </p>
+                      <p className="text-[13px] text-[#8a8a8a] truncate">
+                        {item.desc}
+                      </p>
+                    </div>
+                    <button className="w-[40px] h-[40px] rounded-[8px] bg-[#E8F4FD] flex items-center justify-center shrink-0">
+                      <Eye className="w-4 h-4 text-[#4A9FE5]" />
+                    </button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-semibold text-[#272727]">
-                      {item.title}
-                    </p>
-                    <p className="text-[13px] text-[#8a8a8a] truncate">
-                      {item.desc}
-                    </p>
-                  </div>
-                  <button className="w-[36px] h-[36px] rounded-full bg-[#E8F4FD] flex items-center justify-center shrink-0">
-                    <Eye className="w-4 h-4 text-[#4A9FE5]" />
-                  </button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            <button className="text-[14px] text-[#4A9FE5] font-medium mt-[12px]">
+            <button className="text-[14px] text-[#4A9FE5] font-medium mt-0 ml-[68px] shrink-0 text-left">
               Barcha xabarlar
             </button>
           </div>

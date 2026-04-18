@@ -1,126 +1,69 @@
-import { ChevronLeft, LogOut } from "lucide-react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import { useAuthStore } from "@/store/auth-store";
 import { useMeStore } from "@/store/me-store";
-
-import { DeviceDesktopIcons, HomeIcons } from "../../components/icons";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { DataMenu } from "./menu-datas";
-import { parseAsBoolean, useQueryState } from "nuqs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { minio_img_url } from "@/constants";
-// import NotePage from "./note/list";
-// import Weather from "./weather";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ThemeSwitcherDock } from "@/components/ThemeSwitcherDock";
 
 export default function Menu() {
   const navigate = useNavigate();
-  const { meUser, removeUserMe } = useMeStore();
-  const { removeToken } = useAuthStore();
-  const pathName = useLocation();
-  const [isBack] = useQueryState("isBack", parseAsBoolean.withDefault(false));
+  const location = useLocation();
+  const { meUser } = useMeStore();
+  const activeMenuLink = useBreadcrumbStore((s) => s.activeMenuLink);
+  const setMenu = useBreadcrumbStore((s) => s.setMenu);
+
+  const role = meUser?.position?.role;
+  const menuItems =
+    DataMenu[(role || "admin") as keyof typeof DataMenu] || [];
+
+  // Sahifaga to'g'ridan-to'g'ri kirganda (login redirect, refresh) — URLga qarab menu activate
+  useEffect(() => {
+    if (activeMenuLink || menuItems.length === 0) return;
+    const match = menuItems
+      .filter((e) => location.pathname.includes(e.link))
+      .sort((a, b) => b.link.length - a.link.length)[0];
+    if (match) {
+      setMenu(match.link, match.text);
+    }
+  }, [location.pathname, activeMenuLink, menuItems, setMenu]);
+
+  const isActive = (link: string) => activeMenuLink === link;
+
+  const handleClick = (item: (typeof menuItems)[0]) => {
+    setMenu(item.link, item.text);
+    navigate(item.link);
+  };
+
   return (
-    <div
-      className={`${" min-w-[66px] "} flex relative max-h-screen  flex-col  bg-background   `}
-    >
-      <div className="p-1 bg-white mx-auto mt-2.5 mb-8 rounded-xl inline-block">
-        <Avatar
-          className="w-[58px] h-[58px] "
-          onClick={
-            meUser?.position?.role == 4
-              ? () => {
-                window.location.replace("/f-manager/kassa");
-              }
-              : () => { }
-          }
-        >
-          <AvatarImage src={minio_img_url + meUser?.avatar?.path} />
-          <AvatarFallback className="bg-primary text-white w-[58px] flex items-center justify-center h-[50px]">
-            {meUser?.firstName?.[0]}
-            {meUser?.lastName?.[0]}
-          </AvatarFallback>
-        </Avatar>
-      </div>
-      <ScrollArea
-        className={`max-h-[calc(100vh-100px)] flex flex-col justify-between items-between h-full  bg-white mb-auto mx-auto rounded-xl p-0.5 `}
-      >
-        {pathName.pathname.split("/").length > 3 || isBack ? (
+    <nav className="flex flex-col gap-0 w-fit">
+      {menuItems.map((item) => {
+        const active = isActive(item.link);
+        return (
           <div
-            onClick={() => {
-              if (isBack) {
-                window.location.replace(pathName.pathname);
-              } else {
-                navigate(-1);
-              }
-            }}
-            className={`cursor-pointer sticky top-0 bg-white  border-border border-b text-center flex items-center justify-center p-5`}
+            key={item.link}
+            onClick={() => handleClick(item)}
+            className={`flex items-center py-[12px] rounded-[8px] cursor-pointer transition-colors ${
+              active ? "bg-white" : ""
+            }`}
+            style={{ paddingLeft: 0, paddingRight: "16px" }}
           >
-            <ChevronLeft />
-          </div>
-        ) : meUser?.position?.role == 4 || meUser?.position?.role == 8 ? (
-          <div
-            onClick={() => {
-              navigate("/f-manager/kassa");
-            }}
-            className={`${pathName.pathname.includes("/f-manager/kassa") ? "bg-background" : ""} rounded-xl group w-[80%] mx-auto w-[80%] mx-autow-[80%] iconsColor border-transparent cursor-pointer  text-center flex items-center justify-center  p-2`}
-          >
-            <DeviceDesktopIcons width={22} height={22} />
-            <span className="absolute opacity-0 group-hover:opacity-100 flex justify-center align-middle items-center left-full -ml-6   whitespace-nowrap text-[#5D5D53] bg-white border-border border-1 text-[15px] rounded px-[13px] py-[5px] transition-opacity duration-200 z-20">
-              Касса
-            </span>
-          </div>
-        ) : (
-          <div
-            onClick={() => {
-              const role = meUser?.position?.role;
-              navigate(role === 9 || role === 10 ? "/m-manager/current-month" : "/dashboard");
-            }}
-            className={`${meUser?.position?.role === 11 ? "hidden" : ""} ${pathName.pathname.includes("/dashboard") || pathName.pathname.includes("/m-manager/current-month") ? "bg-background" : ""} rounded-xl group w-[80%] mx-auto w-[80%] mx-autow-[80%]w-[80%] iconsColor border-transparent cursor-pointer  text-center flex items-center justify-center  p-2`}
-          >
-            <HomeIcons />
-            <span className="absolute opacity-0 group-hover:opacity-100 flex justify-center align-middle items-center left-full -ml-6   whitespace-nowrap text-[#5D5D53] bg-white border-border border-1 text-[15px] rounded px-[13px] py-[5px] transition-opacity duration-200 z-20">
-              Dashboard
-            </span>
-          </div>
-        )}
-        {DataMenu[
-          (meUser?.position?.role || "admin") as keyof typeof DataMenu
-        ]?.map((e) => (
-          <div
-            onClick={() => {
-              if (e?.link) {
-                navigate(e?.link);
-              }
-            }}
-            className={`${pathName.pathname.includes(e?.link) ? "bg-background" : " opacity-70"} group w-[80%] mx-auto w-[80%] mx-autow-[80%]  rounded-xl border-transparent cursor-pointer    text-center flex items-center justify-center p-2`}
-            key={e?.link}
-          >
-            {e?.icons()}
-            <span className="absolute hidden opacity-0 text-[12px] group-hover:opacity-100 group-hover:flex justify-center align-middle items-center left-full -ml-6   whitespace-nowrap text-[#5D5D53] bg-white border-border border-1 text-md rounded px-[13px] py-[5px] transition-opacity duration-200 z-20">
-              {e?.text}
-            </span>
-          </div>
-        ))}
+            {/* Tayoqcha — 5px left, 3x18px */}
+            <div className="w-[3px] h-[18px] rounded-full shrink-0" style={{ marginLeft: "5px", backgroundColor: active ? "#4A9FE5" : "transparent" }} />
 
-        {/* <NotePage /> */}
-        <div
-          onClick={() => {
-            removeToken();
-            removeUserMe();
-            window.location.replace("/login");
-          }}
-          className={`group w-[80%] mx-auto w-[80%] mx-autow-[80%]  cursor-pointer  text-center flex items-center justify-center p-5`}
-        >
-          <LogOut className="min-w-[20px]" width={20} />
-          <span className="absolute opacity-0 group-hover:opacity-100 flex justify-center align-middle items-center left-full -ml-6   whitespace-nowrap text-[#5D5D53] bg-card border-border border-1 text-[15px] rounded px-[13px] py-[5px] transition-opacity duration-200 z-20">
-            Выйти
-          </span>
-        </div>
-      </ScrollArea>
+            {/* Badge — 5px gap, 4x4px */}
+            <div className="w-[4px] h-[4px] rounded-full shrink-0" style={{ marginLeft: "5px", backgroundColor: active ? "#E38157" : "transparent" }} />
 
-      <ThemeSwitcherDock />
-      {/* <Weather /> */}
-    </div>
+            {/* Icon — 5px gap, 20x20 */}
+            <div className="w-[20px] h-[20px] flex items-center justify-center shrink-0" style={{ marginLeft: "5px" }}>
+              {item.icons()}
+            </div>
+
+            {/* Text */}
+            <span className="text-[15px] font-normal text-[#1a1a1a] whitespace-nowrap ml-[12px]">
+              {item.text}
+            </span>
+          </div>
+        );
+      })}
+    </nav>
   );
 }

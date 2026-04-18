@@ -1,6 +1,6 @@
 import { useMeStore } from "@/store/me-store";
 import { TKassareportData } from "../type";
-import { ArrowDown, ArrowUp, DollarSign } from "lucide-react";
+import { ArrowDown, ArrowUp, TrendingUp, TrendingDown } from "lucide-react";
 
 interface ReportTotalsProps {
   data?: TKassareportData;
@@ -10,14 +10,14 @@ interface ReportTotalsProps {
 }
 
 const metricCards = [
-  { key: "totalSale", label: "Umumiy sotuv", color: "border-blue-500 bg-blue-50" },
-  { key: "debt_sum", label: "Qarz savdosi", color: "" },
-  { key: "totalPlasticSum", label: "Terminal", color: "" },
-  { key: "totalSaleReturn", label: "Qaytarilgan", color: "border-orange-400 text-orange-600", negative: true },
-  { key: "totalCashCollection", label: "Inkasatsiya", color: "" },
-  { key: "totalSize", label: "Sotuv hajmi m²", color: "", suffix: " m²" },
-  { key: "additionalProfitTotalSum", label: "Navar foydasi", color: "" },
-  { key: "totalDiscount", label: "Chegirma", color: "border-orange-400 bg-orange-50 text-orange-600", negative: true },
+  { key: "totalSale", label: "Umumiy sotuv", isFirst: true },
+  { key: "debt_sum", label: "Qarz savdosi" },
+  { key: "totalPlasticSum", label: "Terminal" },
+  { key: "totalSaleReturn", label: "Qaytarilgan", negative: true },
+  { key: "totalCashCollection", label: "Inkasatsiya" },
+  { key: "totalSize", label: "Sotuv hajmi m²", suffix: " m²" },
+  { key: "additionalProfitTotalSum", label: "Navar foydasi" },
+  { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314" },
 ];
 
 const filteredTotalsMap: Record<string, string> = {
@@ -52,52 +52,69 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
   }
 
   return (
-    <div className="px-4 mb-4">
-      <div className="flex gap-4 flex-col lg:flex-row">
+    <div>
+      <div className="flex gap-[4px] flex-col lg:flex-row">
         {/* Yashil card */}
         <div
-          className="bg-[#89A143] text-white rounded-xl p-5 min-w-[260px] cursor-pointer hover:bg-[#7a9138] transition-colors"
+          className="bg-[#47B13C] text-white rounded-[8px] p-5 min-w-[260px] h-[140px] w-[30%] shrink-0 cursor-pointer hover:bg-[#3da032] transition-colors flex flex-col justify-between relative overflow-hidden"
           onClick={onGreenCardClick}
         >
-          <div className="flex items-center gap-2 mb-3">
-            <DollarSign className="w-5 h-5" />
-            <span className="text-sm opacity-80">Umumiy summa</span>
-          </div>
-          <p className="text-3xl font-bold mb-4">
-            {mainSum.toLocaleString("uz-UZ", { minimumFractionDigits: 2 })} $
+          <p className="text-[28px] font-medium">
+            ${mainSum.toLocaleString("uz-UZ", { minimumFractionDigits: 2 })}
           </p>
-          <div className="flex justify-between text-sm">
+          <div className="flex items-center gap-[16px] text-[15px]">
             <div className="flex items-center gap-1">
               <ArrowDown className="w-4 h-4" />
-              <span>Prixod: {prixod.toLocaleString()} $</span>
+              <span>${prixod.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-1">
               <ArrowUp className="w-4 h-4" />
-              <span>Rasxod: {rasxod.toLocaleString()} $</span>
+              <span>${rasxod.toLocaleString()}</span>
             </div>
           </div>
-          <div className="mt-2 text-sm opacity-80">
-            Saldo balans: {saldo.toLocaleString()} $
+          <div className="text-[15px] opacity-50">
+            Saldo balans — ${saldo.toLocaleString()}
           </div>
+          <svg className="absolute right-[10px] bottom-[20px] opacity-70" width="92" height="60" viewBox="0 0 61 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path opacity="0.3" d="M6.72032 23.7873L0.368164 30.6778V40H60.3677V2.64208L55.5589 5.65377C53.8525 6.72247 52.4565 8.22039 51.5105 9.99777C48.9524 14.804 43.3749 17.1583 38.1467 15.6386L35.4451 14.8534C34.0685 14.4533 32.9121 13.5137 32.2385 12.2482C29.9493 7.94705 23.5607 8.73988 22.3922 13.4702L20.8222 19.8261C19.9904 23.1934 16.1106 24.7635 13.1711 22.9226C11.0929 21.621 8.38237 21.9844 6.72032 23.7873Z" fill="url(#paint0_linear_green)"/>
+            <path d="M0.368164 30.7143L6.72067 23.8152C8.38208 22.0108 11.0937 21.6472 13.1717 22.9502C16.1099 24.7925 19.99 23.2228 20.8207 19.8558L22.3924 13.4853C23.5599 8.7532 29.9515 7.96069 32.2393 12.2643C32.9124 13.5303 34.0686 14.4705 35.4452 14.8711L38.1372 15.6545C43.37 17.1772 48.9533 14.8199 51.5115 10.0078C52.4568 8.22951 53.8524 6.73052 55.5586 5.66065L60.3677 2.64522" stroke="white"/>
+            <defs>
+              <linearGradient id="paint0_linear_green" x1="30.3679" y1="0" x2="30.3679" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stopColor="white"/>
+                <stop offset="1" stopColor="white" stopOpacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
 
         {/* 8 ta metrika card — 2x4 grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
+        <div className="grid grid-cols-2 sm:grid-cols-4 grid-rows-2 gap-[4px] flex-1 h-[140px]">
           {metricCards.map((card) => {
             const filteredKey = filteredTotalsMap[card.key];
             const value = (hasActiveFilter && filteredTotals && filteredKey)
               ? (filteredTotals[filteredKey] || 0)
               : ((data as any)?.[card.key] || 0);
             const displayValue = card.negative ? `-${Math.abs(value).toLocaleString()}` : value.toLocaleString();
+            const isFirst = (card as any).isFirst;
+            const isNegative = card.negative || value < 0;
             return (
               <div
                 key={card.key}
-                className={`border rounded-xl p-3 text-center ${card.color || "border-border"}`}
+                className={`rounded-[8px] p-[10px] flex flex-col justify-between ${isFirst ? "bg-[#0078D4] text-white" : "bg-white"}`}
               >
-                <p className="text-xs text-muted-foreground mb-1">{card.label}</p>
-                <p className="text-lg font-semibold">
-                  {displayValue}{card.suffix || " $"}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className={`text-[17px] font-medium ${isFirst ? "text-white" : ""}`} style={(card as any).valueColor ? { color: (card as any).valueColor } : undefined}>
+                    {displayValue}
+                  </p>
+                  <div className={`flex items-center gap-1 text-[12px] ${isNegative ? "text-red-500" : "text-green-500"}`}>
+                    {isNegative
+                      ? <TrendingDown className="w-3 h-3" />
+                      : <TrendingUp className="w-3 h-3" />
+                    }
+                    <span>-1.8%</span>
+                  </div>
+                </div>
+                <p className={`text-[13px] ${isFirst ? "text-white/60" : "text-[#1a1a1a] opacity-60"}`}>{card.label}</p>
               </div>
             );
           })}
