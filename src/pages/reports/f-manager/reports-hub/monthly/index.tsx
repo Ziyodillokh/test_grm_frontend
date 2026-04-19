@@ -125,7 +125,7 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: any; onRowClick:
           size={42}
           status={item?.status === "accepted" ? "success" : item?.status === "closed" ? "panding" : "none"}
           url={meUser?.avatar?.path}
-          name={meUser?.firstName}
+          name={meUser?.firstName || ""}
         />
       </div>
 

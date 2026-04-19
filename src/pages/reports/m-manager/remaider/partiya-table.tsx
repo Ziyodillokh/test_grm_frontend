@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 import Filter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { usePartiyaSnapshot } from "./queries";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { useYear } from "@/store/year-store";
 
@@ -12,7 +12,6 @@ const columnLabels = ["Partiya", "Davlat", "Zavod", "Sana", "Soni", "Hajm", "Sum
 
 export default function PartiyaTable() {
   const navigate = useNavigate();
-  const location = useLocation();
   const push = useBreadcrumbStore((s) => s.push);
   const { year } = useYear();
   const [date] = useQueryState("date", parseAsString.withDefault(""));
