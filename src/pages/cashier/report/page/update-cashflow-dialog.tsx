@@ -41,7 +41,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
       (ct.type ===
         (item?.type === "Приход" ? "income" : "out") ||
         ct.type === "both") &&
-      ct.slug !== "Balance"
+      ct.slug !== "balance"
   );
 
   // Populate form when item changes

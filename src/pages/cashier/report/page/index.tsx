@@ -31,9 +31,9 @@ const tipFilter: Record<string, string> = {
   expense: "cashflow",
   sale: "order",
   return: "order",
-  terminal: "Терминал",
-  discount: "Скидка",
-  navar: "Навар",
+  terminal: "terminal",
+  discount: "discount",
+  navar: "markup",
 };
 const typeFilter: Record<string, string> = {
   income: "Приход",
@@ -109,7 +109,7 @@ export default function Page() {
           sortSingle === "Все"
             ? typeFilter[tip as string]
             : sortSingle || typeFilter[tip as string],
-        cashflowSlug: tip === "collection" ? "Инкассация" : undefined,
+        cashflowSlug: tip === "collection" ? "cash_collection" : undefined,
         status: cashflowStatus,
         search: search || undefined,
         sellerId: sellerId || undefined,
@@ -159,7 +159,7 @@ export default function Page() {
     (ct) =>
       (ct.type === (dialogType === "parish" ? "income" : "out") ||
         ct.type === "both") &&
-      ct.slug !== "Balance"
+      ct.slug !== "balance"
   );
 
   const activeFilter = tip;

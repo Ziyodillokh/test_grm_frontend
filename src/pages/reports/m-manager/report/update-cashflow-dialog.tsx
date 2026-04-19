@@ -40,7 +40,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   const categories = (cashflowTypesData as unknown as CashflowType[])?.filter(
     (ct) =>
       ct.is_visible &&
-      !["Balance", "delaer", "kassa", "онлайн"].includes(ct.slug)
+      !["balance", "dealer", "kassa", "online"].includes(ct.slug)
   );
 
   useEffect(() => {

@@ -13,9 +13,9 @@ const tipFilter = {
   expense: "cashflow",
   sale: "order",
   return: "order",
-  terminal:"Терминал",
-  discount:"Скидка",
-  navar:"Навар",
+  terminal:"terminal",
+  discount:"discount",
+  navar:"markup",
 };
 
 const typeFilter = {
@@ -48,7 +48,7 @@ export default function SinglePage() {
        // @ts-ignore
        tip: tipFilter[tip],
        search: search || undefined,
-       cashflowSlug: tip == "collection" ? "Инкассация" :cashflowSlug|| undefined,
+       cashflowSlug: tip == "collection" ? "cash_collection" :cashflowSlug|| undefined,
       },
       enabled: Boolean(id),
     });

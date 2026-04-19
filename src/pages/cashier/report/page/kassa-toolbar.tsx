@@ -71,7 +71,7 @@ export default function KassaToolbar({
   });
 
   const cashflowTypes = (cashflowTypesData as unknown as CashflowType[])?.filter(
-    (ct) => ct.slug !== "Balance"
+    (ct) => ct.slug !== "balance"
   ) || [];
 
   // Excel export

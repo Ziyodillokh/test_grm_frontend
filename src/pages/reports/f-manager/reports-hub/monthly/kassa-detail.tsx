@@ -1,8 +1,8 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowDown, ArrowUp, Lock, Loader } from "lucide-react";
+import { ArrowDown, ArrowUp, Lock, Loader } from "lucide-react";
 
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,9 @@ const tipFilter: Record<string, string> = {
   expense: "cashflow",
   sale: "order",
   return: "order",
-  terminal: "Терминал",
-  discount: "Скидка",
-  navar: "Навар",
+  terminal: "terminal",
+  discount: "discount",
+  navar: "markup",
 };
 const typeFilter: Record<string, string> = {
   income: "Приход",
@@ -33,7 +33,6 @@ const typeFilter: Record<string, string> = {
 
 export default function MonthlyKassaDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
   const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
@@ -78,7 +77,7 @@ export default function MonthlyKassaDetailPage() {
           sortSingle === "Все"
             ? typeFilter[tip as string]
             : sortSingle || typeFilter[tip as string],
-        cashflowSlug: tip === "collection" ? "Инкассация" : undefined,
+        cashflowSlug: tip === "collection" ? "cash_collection" : undefined,
         status: cashflowStatus,
         search: search || undefined,
         sellerId: sellerId || undefined,
@@ -132,24 +131,6 @@ export default function MonthlyKassaDetailPage() {
 
   return (
     <div className="px-4 pt-2">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm mb-4">
-        <ArrowLeft
-          className="w-5 h-5 cursor-pointer hover:text-foreground text-muted-foreground"
-          onClick={() => navigate("/f-manager/reports-hub")}
-        />
-        <span
-          className="cursor-pointer hover:text-foreground text-muted-foreground"
-          onClick={() => navigate("/f-manager/reports-hub")}
-        >
-          Oylik hisobotlar
-        </span>
-        <span className="text-muted-foreground">•</span>
-        <span className="text-foreground font-medium">
-          {kassaData?.filial?.name || "Kassa"}{kassaData?.month ? ` — ${kassaData.month}-oy` : ""}
-        </span>
-      </div>
-
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-4">
         <KassaToolbar kassaId={id || ""} />

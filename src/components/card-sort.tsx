@@ -473,25 +473,25 @@ export default function CardSort({
               className={`w-full  grid ${types && types?.length < 6 ? "grid-cols-2" : "grid-cols-3"} gap-0.5`}
             >
               {types
-                ?.filter((i) => i?.is_visible && i?.slug !== "Balance")
+                ?.filter((i) => i?.is_visible && i?.slug !== "balance")
                 ?.map((item) => (
                   <div
                     key={item.id}
                     onClick={() => {
                       setCashflow_type(item.id);
-                      if (item?.slug == "dolg" && isUserSelectble) {
+                      if (item?.slug === "kent" && isUserSelectble) {
                         setisUserLocSelectble(true);
                         setIsFactorySelectble(false);
                       } else if (item?.title === "Поставщики") {
                         setIsFactorySelectble(true);
                         setisUserLocSelectble(false);
                         setIsLogisticsSelectble(false);
-                      } else if (item?.slug === "logistika" || item?.title === "Логистика") {
+                      } else if (item?.slug === "logistics") {
                         setIsLogisticsSelectble(true);
                         setisUserLocSelectble(false);
                         setIsFactorySelectble(false);
                         setIsCustomsSelectble(false);
-                      } else if (item?.slug === "tamojnya" || item?.title === "Таможня") {
+                      } else if (item?.slug === "customs") {
                         setIsCustomsSelectble(true);
                         setisUserLocSelectble(false);
                         setIsFactorySelectble(false);

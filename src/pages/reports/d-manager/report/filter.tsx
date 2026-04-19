@@ -43,7 +43,7 @@ export default function Filters() {
               { value: "expense", label: "Расход" }, // Расход cashflow
               { value: "sale", label: "Продажа" }, // Приход order
               { value: "return", label: "Возврат" }, // Расход order
-              { value: "collection", label: "Инкассация" }, // cashflowSlug => Инкассация
+              { value: "collection", label: "Inkassa" }, // cashflowSlug => Инкассация
             ]}
             name="tip"
           /> */}
