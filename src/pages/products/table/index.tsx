@@ -335,12 +335,14 @@ export default function Page() {
               <SheetTitle>Filter</SheetTitle>
             </SheetHeader>
             <div className="flex flex-col gap-4 mt-4">
-              <div>
-                <p className="text-[13px] text-muted-foreground mb-1">
-                  Filial
-                </p>
-                <FilialFilterSelect />
-              </div>
+              {!meUser?.filial?.id && (
+                <div>
+                  <p className="text-[13px] text-muted-foreground mb-1">
+                    Filial
+                  </p>
+                  <FilialFilterSelect />
+                </div>
+              )}
               <div>
                 <p className="text-[13px] text-muted-foreground mb-1">
                   Ko'rinish
