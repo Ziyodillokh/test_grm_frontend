@@ -53,7 +53,7 @@ const useDataFetch = ({ options, queries, role }: ITransfers) =>
         {
           ...queries,
           page: pageParam as number,
-          limit: 10,
+          limit: 30,
         }
       ),
     getNextPageParam: (lastPage) => {

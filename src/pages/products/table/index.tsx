@@ -177,6 +177,7 @@ export default function Page() {
     if (!el) return;
     const observer = new IntersectionObserver(handleObserver, {
       threshold: 0.1,
+      rootMargin: "0px 0px 400px 0px",
     });
     observer.observe(el);
     return () => observer.disconnect();
@@ -408,10 +409,10 @@ export default function Page() {
                 {displayTotals.count?.toLocaleString()} ta
               </span>
               <span className="text-[14px] font-medium text-[#1a1a1a]">
-                {displayTotals.kv?.toFixed(2)} m²
+                {displayTotals.kv?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²
               </span>
-              <span className="text-[14px] font-medium text-[#0078D4]">
-                ${displayTotals.sum?.toFixed(2)}
+              <span className="text-[14px] font-medium text-[#1a1a1a]">
+                {displayTotals.sum?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $
               </span>
             </>
           ) : (
@@ -420,7 +421,7 @@ export default function Page() {
                 {(collectionMeta?.totalItems || collections.length).toLocaleString()} ta
               </span>
               <span className="text-[14px] font-medium text-[#1a1a1a]">
-                {collectionTotals.totalKv.toFixed(2)} m²
+                {collectionTotals.totalKv.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²
               </span>
               <span className="text-[14px] font-medium text-[#1a1a1a]">
                 {collectionTotals.totalCount.toLocaleString()} dona
