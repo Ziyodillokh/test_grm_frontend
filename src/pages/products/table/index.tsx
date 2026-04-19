@@ -450,8 +450,8 @@ export default function Page() {
       {/* Search filial chiplar — search pastida, labels ustida */}
       {isProductView && activeSearch && searchFilials && searchFilials.length > 0 && (
         <div className="flex items-center gap-[8px] mb-[10px] shrink-0 flex-wrap">
-          {/* 1-chi: hozir filterlangan filial yoki Barchasi */}
-          {!filial && (
+          {/* 1-chi: "Barchasi" faqat filiali yo'q userlar uchun (m-manager) */}
+          {!filial && !meUser?.filial?.id && (
             <button
               className="text-[12px] px-[10px] py-[4px] rounded-full border bg-[#1a1a1a] text-white border-[#1a1a1a]"
             >
