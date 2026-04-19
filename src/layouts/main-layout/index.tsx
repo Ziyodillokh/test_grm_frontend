@@ -33,28 +33,20 @@ export default function MainLayout() {
       {/* Header — 90px, 16-column grid */}
       <Header />
 
-      {/* Content — 16-column grid, 4:8:4 */}
+      {/* Content — 16-column grid, 4:10 → 4:12 on narrow screens */}
       <div
-        className="flex-1 min-h-0"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(16, 1fr)",
-          columnGap: "20px",
-          padding: "0 20px",
-        }}
+        className="flex-1 min-h-0 layout-grid"
       >
         {/* Sidebar — 4 cols */}
         <aside
-          style={{ gridColumn: "1 / 5" }}
-          className="min-h-0 overflow-hidden"
+          className="min-h-0 overflow-hidden layout-sidebar"
         >
           <Menu />
         </aside>
 
-        {/* Main content — 10 cols */}
+        {/* Main content — 10 cols, expands to 12 on narrow */}
         <main
-          style={{ gridColumn: "5 / 15" }}
-          className="min-h-0 overflow-hidden"
+          className="min-h-0 overflow-hidden layout-content"
         >
           <div className="h-full flex flex-col">
             <Outlet />

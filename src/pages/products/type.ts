@@ -2,14 +2,24 @@ export interface ProductsData {
   id: number;
   count: number;
   price: number;
+  priceMeter: number;
+  comingPrice: number;
+  secondPrice: number;
+  x: number;
+  y: number;
+  totalSize: number;
+  filial?: {
+    id: string;
+    title: string;
+  };
   bar_code?: {
     code: string;
     imgUrl: {
-      path?:string
+      path?: string;
     };
     collection: {
       title: string;
-      collection_prices: {priceMeter:number}[]
+      collection_prices: { priceMeter: number }[];
     };
     model: {
       title: string;
@@ -41,7 +51,7 @@ export interface ProductsData {
   // Collection fields
   title?: string;
   imgUrl: {
-    path?:string
+    path?: string;
   };
   model?: {
     title: string;

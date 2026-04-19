@@ -65,7 +65,7 @@ export default function FactoryDetailPage() {
   ];
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       {/* Header */}
       <div className="px-5 h-[64px] flex items-center gap-2 border-b border-border bg-sidebar">
         <p className="text-[20px] mr-auto font-medium">

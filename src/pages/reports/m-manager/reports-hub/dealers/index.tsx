@@ -33,7 +33,7 @@ export default function DealerReportPage() {
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
         <p className="text-[16px] font-medium mr-auto">Dillerlar Hisoboti</p>
         <Button

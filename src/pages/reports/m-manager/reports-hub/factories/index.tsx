@@ -100,7 +100,7 @@ export default function FactoryReportPage() {
     })) || [];
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
         <div className="w-[280px]">
           <ShadcnSelect

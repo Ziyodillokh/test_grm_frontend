@@ -23,11 +23,9 @@ import CarpetCard from "@/components/cards/carpet-card";
 import useDataFetch, { useCollectionDataFetch } from "./queries";
 import { ProductsData, CollectionData } from "../type";
 
-const productGridTemplate =
-  "50px 1fr 1fr 80px 80px 80px 60px 80px 90px";
+const productGridTemplate = "2fr 1fr 70px 70px 1fr 50px 60px 70px 1fr";
 
 const productLabels = [
-  "Surat",
   "Kolleksiya",
   "Model",
   "O'lcham",
@@ -36,6 +34,7 @@ const productLabels = [
   "Miqdor",
   "Hajm",
   "Summa",
+  "Filial",
 ];
 
 const collectionGridTemplate = "1fr 80px 80px 90px";
@@ -89,32 +88,14 @@ export default function Page() {
   const collections =
     collectionsData?.pages?.flatMap((p) => p?.items || []) || [];
 
-  // Totals from backend
+  // Totals from backend (filter/search bilan bir xil)
   const totals = productsData?.pages?.[0]?.totals;
-  const meta = productsData?.pages?.[0]?.meta;
   const collectionMeta = collectionsData?.pages?.[0]?.meta;
 
-  // Local totals from loaded data
-  const localTotals = useMemo(() => {
-    let totalCount = 0;
-    let totalKv = 0;
-    let totalSum = 0;
-    for (const item of productsFlat) {
-      const count = item.count || 0;
-      const x = item.bar_code?.size?.x || 0;
-      const y = item.bar_code?.size?.y || 0;
-      totalCount += count;
-      totalKv += x * y * count;
-      totalSum += item.price || 0;
-    }
-    return { totalCount, totalKv, totalSum };
-  }, [productsFlat]);
-
-  // Use backend totals if available, otherwise local
   const displayTotals = {
-    count: totals?.count ?? meta?.totalItems ?? localTotals.totalCount,
-    kv: totals?.kv ?? localTotals.totalKv,
-    sum: totals?.totalSum ?? totals?.totalPrice ?? localTotals.totalSum,
+    count: totals?.count || 0,
+    kv: totals?.kv || 0,
+    sum: totals?.totalSum || 0,
   };
 
   // Collection totals
@@ -345,6 +326,12 @@ export default function Page() {
             <div className="flex flex-col gap-4 mt-4">
               <div>
                 <p className="text-[13px] text-muted-foreground mb-1">
+                  Filial
+                </p>
+                <TabsFilter />
+              </div>
+              <div>
+                <p className="text-[13px] text-muted-foreground mb-1">
                   Ko'rinish
                 </p>
                 <FilterSelect
@@ -402,32 +389,6 @@ export default function Page() {
           )}
         </button>
 
-        {/* View toggle: List / Card */}
-        {isProductView && (
-          <div className="flex items-center bg-white rounded-[8px] overflow-hidden ml-[4px]">
-            <button
-              onClick={() => setCard("list")}
-              className={`w-[42px] h-[42px] flex items-center justify-center transition-colors ${
-                isListView
-                  ? "bg-[#0078D4] text-white"
-                  : "text-[#A3A3A3] hover:bg-gray-50"
-              }`}
-            >
-              <LayoutList className="w-[18px] h-[18px]" />
-            </button>
-            <button
-              onClick={() => setCard("card")}
-              className={`w-[42px] h-[42px] flex items-center justify-center transition-colors ${
-                !isListView
-                  ? "bg-[#0078D4] text-white"
-                  : "text-[#A3A3A3] hover:bg-gray-50"
-              }`}
-            >
-              <LayoutGrid className="w-[18px] h-[18px]" />
-            </button>
-          </div>
-        )}
-
         {/* Totals */}
         <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
           <span className="text-[13px] text-[#A3A3A3]">Umumiy:</span>
@@ -457,11 +418,24 @@ export default function Page() {
             </>
           )}
         </div>
-      </div>
 
-      {/* Filial tabs */}
-      <div className="scrollCastom shrink-0 mb-[10px]">
-        <TabsFilter />
+        {/* View toggle: List / Card */}
+        {isProductView && (
+          <div className="flex items-center gap-[4px] ml-[4px]">
+            <button
+              onClick={() => setCard("list")}
+              className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 transition-colors"
+            >
+              <LayoutList className={`w-[18px] h-[18px] ${isListView ? "text-[#0078D4]" : "text-[#1a1a1a] opacity-50"}`} />
+            </button>
+            <button
+              onClick={() => setCard("card")}
+              className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 transition-colors"
+            >
+              <LayoutGrid className={`w-[18px] h-[18px] ${!isListView ? "text-[#0078D4]" : "text-[#1a1a1a] opacity-50"}`} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* === PRODUCT LIST VIEW === */}
@@ -469,11 +443,13 @@ export default function Page() {
         <>
           {/* Labels */}
           <div
-            className="mb-[10px] shrink-0 px-[12px]"
+            className="mb-[10px] shrink-0"
             style={{
               display: "grid",
               gridTemplateColumns: productGridTemplate,
-              gap: "8px",
+              gap: "16px",
+              paddingLeft: "66px",
+              paddingRight: "10px",
             }}
           >
             {productLabels.map((label, i) => (
@@ -604,13 +580,19 @@ function ProductRow({ item }: { item: ProductsData }) {
   const shapeName = bc?.shape?.title || "—";
   const colorName = bc?.color?.title || "—";
   const count = item.count || 0;
-  const volume = (bc?.size?.x || 0) * (bc?.size?.y || 0) * count;
-  const price = bc?.collection?.collection_prices?.[0]?.priceMeter || 0;
+  const isMetric = bc?.isMetric || false;
+  const volume = isMetric
+    ? (item.y || 0) * (bc?.size?.x || 0)
+    : count * (bc?.size?.x || 0) * (bc?.size?.y || 0);
+  // Summa = priceMeter * hajm(m²)
+  const priceMeter = item.priceMeter || bc?.collection?.collection_prices?.[0]?.priceMeter || 0;
+  const summa = priceMeter * volume;
+  const filialName = item.filial?.title || "—";
 
   return (
-    <ListRow gridTemplate={productGridTemplate}>
-      {/* Surat */}
-      <div className="w-[40px] h-[40px] rounded-[6px] overflow-hidden bg-[#F5F5F5] shrink-0">
+    <div className="h-[80px] px-[10px] py-[8px] bg-white rounded-[8px] shrink-0 flex items-center gap-[16px]">
+      {/* Rasm */}
+      <div className="w-[40px] h-[64px] overflow-hidden bg-[#F5F5F5] shrink-0">
         {imgPath ? (
           <img
             src={minio_img_url + imgPath}
@@ -625,38 +607,26 @@ function ProductRow({ item }: { item: ProductsData }) {
         )}
       </div>
 
-      {/* Kolleksiya */}
-      <span className="text-[13px] font-medium text-[#1a1a1a] truncate">
-        {collectionName}
-      </span>
-
-      {/* Model */}
-      <span className="text-[13px] text-[#1a1a1a] truncate">{modelName}</span>
-
-      {/* O'lcham */}
-      <span className="text-[13px] text-[#1a1a1a]">{sizeStr}</span>
-
-      {/* Shakl */}
-      <span className="text-[13px] text-[#1a1a1a] truncate">{shapeName}</span>
-
-      {/* Rang */}
-      <span className="text-[13px] text-[#1a1a1a] truncate">{colorName}</span>
-
-      {/* Miqdor */}
-      <span className="text-[13px] font-medium text-[#1a1a1a]">
-        {count} x
-      </span>
-
-      {/* Hajm */}
-      <span className="text-[13px] text-[#1a1a1a]">
-        {volume.toFixed(1)} m²
-      </span>
-
-      {/* Summa */}
-      <span className="text-[13px] font-medium text-[#EC6724]">
-        {price ? `${price}$` : "—"}
-      </span>
-    </ListRow>
+      {/* Data grid — 9 ustun, labellar bilan bir xil */}
+      <div
+        className="flex-1 min-w-0 items-center"
+        style={{
+          display: "grid",
+          gridTemplateColumns: productGridTemplate,
+          gap: "16px",
+        }}
+      >
+        <span className="text-[13px] font-medium text-[#1a1a1a] truncate">{collectionName}</span>
+        <span className="text-[13px] text-[#1a1a1a] truncate">{modelName}</span>
+        <span className="text-[13px] text-[#1a1a1a]">{sizeStr}</span>
+        <span className="text-[13px] text-[#1a1a1a] truncate">{shapeName}</span>
+        <span className="text-[13px] text-[#1a1a1a] truncate">{colorName}</span>
+        <span className="text-[13px] font-medium text-[#1a1a1a]">{count} x</span>
+        <span className="text-[13px] text-[#1a1a1a]">{volume.toFixed(1)} m²</span>
+        <span className="text-[13px] font-medium text-[#EC6724]">{summa ? `${summa.toLocaleString()}$` : "—"}</span>
+        <span className="text-[13px] text-[#1a1a1a] truncate">{filialName}</span>
+      </div>
+    </div>
   );
 }
 

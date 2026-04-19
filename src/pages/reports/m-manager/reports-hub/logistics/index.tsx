@@ -75,7 +75,7 @@ export default function LogisticsReportPage() {
   };
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <LogisticsFilter
         totals={totals}
         showExport={true}

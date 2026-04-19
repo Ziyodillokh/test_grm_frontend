@@ -133,6 +133,25 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+/* Layout grid — responsive 4:10 → 4:12 */
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  column-gap: 20px;
+  padding: 0 20px;
+}
+.layout-sidebar {
+  grid-column: 1 / 5;
+}
+.layout-content {
+  grid-column: 5 / 15;
+}
+@media (max-width: 1440px) {
+  .layout-content {
+    grid-column: 5 / 17;
+  }
+}
+
 .scrollCastom{
   overflow: scroll;
 }

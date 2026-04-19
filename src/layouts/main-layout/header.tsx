@@ -69,15 +69,22 @@ export default function Header() {
         alignItems: "center",
       }}
     >
-      {/* Col 1-4: Logo + theme + profil + notification + logout */}
+      {/* Col 1-4: Logo + theme + notification + profil */}
       <div
-        style={{ gridColumn: "1 / 5" }}
-        className="flex items-center gap-[32px] h-full"
+        style={{ gridColumn: "1 / 5", gap: "clamp(4px, 2vw, 32px)" }}
+        className="flex items-center h-full min-w-0 overflow-hidden"
       >
-        <img src="/logo.svg" className="h-[32px]" alt="OneIP" />
+        <img src="/logo.svg" className="h-[32px] shrink-0" alt="OneIP" />
 
         <button className="w-[20px] h-[20px] flex items-center justify-center shrink-0">
           <Sun className="w-[20px] h-[20px] text-[#272727]" />
+        </button>
+
+        <button
+          onClick={() => navigate("/xabarnoma")}
+          className="w-[20px] h-[20px] flex items-center justify-center shrink-0"
+        >
+          <BellRingingIcon />
         </button>
 
         <div
@@ -91,22 +98,10 @@ export default function Header() {
               {meUser?.lastName?.[0]}
             </AvatarFallback>
           </Avatar>
-          <span className="text-[13px] font-medium text-[#272727]">Profil</span>
+          <span className="text-[13px] font-medium text-[#272727] whitespace-nowrap">
+            {{ 4: "Fmenejer", 6: "Dmenejer", 9: "Menejer", 10: "Hisobchi", 12: "Boss", 8: "Smenejer" }[role as number] || "Profil"}
+          </span>
         </div>
-
-        <button
-          onClick={() => navigate("/xabarnoma")}
-          className="w-[20px] h-[20px] flex items-center justify-center shrink-0"
-        >
-          <BellRingingIcon />
-        </button>
-
-        <button
-          onClick={handleLogout}
-          className="w-[20px] h-[20px] flex items-center justify-center shrink-0 opacity-40 hover:opacity-100 transition-opacity"
-        >
-          <LogOut className="w-[20px] h-[20px] text-[#272727]" />
-        </button>
       </div>
 
       {/* Col 5-15: Breadcrumb */}
@@ -172,6 +167,20 @@ export default function Header() {
             </span>
           </>
         )}
+      </div>
+
+      {/* Col 16: Logout */}
+      <div
+        style={{ gridColumn: "16 / 17" }}
+        className="flex items-center justify-end h-full"
+      >
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-[8px] opacity-40 hover:opacity-100 transition-opacity"
+        >
+          <span className="text-[15px] font-medium text-[#272727] cursor-pointer">Chiqish</span>
+          <LogOut className="w-[18px] h-[18px] text-[#272727]" />
+        </button>
       </div>
     </header>
   );

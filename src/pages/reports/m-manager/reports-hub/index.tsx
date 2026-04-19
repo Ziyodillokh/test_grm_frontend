@@ -90,7 +90,7 @@ export default function MManagerReportsHubPage() {
   const push = useBreadcrumbStore((s) => s.push);
 
   return (
-    <div className="py-2 space-y-[4px]">
+    <div className="py-2 space-y-[4px] h-full overflow-y-auto scrollCastom">
       {reports.map((report) => (
         <ListRow
           key={report.link}

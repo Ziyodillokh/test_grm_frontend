@@ -19,7 +19,7 @@ export default function TabsFilter() {
       ),
     select: (res) => ({
       data: res?.items
-        .filter((i) => i.type !== "market")
+        .filter((i) => i.type !== "market" && i.type !== "dealer")
         .sort((a, b) =>
           a.type === "warehouse" ? -1 : b.type === "warehouse" ? 1 : 0
         )

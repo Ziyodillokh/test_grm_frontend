@@ -75,7 +75,7 @@ export default function CustomsReportPage() {
   };
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <CustomsFilter
         totals={totals}
         showExport={true}
