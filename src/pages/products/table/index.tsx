@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
-import TabsFilter from "@/components/filters-ui/tabs-filter";
+import { useQuery } from "@tanstack/react-query";
+import { getAllData } from "@/service/apiHelpers";
 import { useMeStore } from "@/store/me-store";
 import { apiRoutes } from "@/service/apiRoutes";
 import { minio_img_url } from "@/constants";
@@ -337,7 +338,7 @@ export default function Page() {
                 <p className="text-[13px] text-muted-foreground mb-1">
                   Filial
                 </p>
-                <TabsFilter />
+                <FilialFilterSelect />
               </div>
               <div>
                 <p className="text-[13px] text-muted-foreground mb-1">
@@ -690,5 +691,40 @@ function CollectionRow({ item }: { item: CollectionData }) {
         {price ? `${price}$` : "—"}
       </span>
     </ListRow>
+  );
+}
+
+function FilialFilterSelect() {
+  const { meUser } = useMeStore();
+  const [filial, setFilial] = useQueryState("filial");
+
+  const { data } = useQuery({
+    queryKey: ["/filial/warehouse-and-filial"],
+    queryFn: () =>
+      getAllData<{ items: { id: string; title: string; type: string }[]; meta: any }, { limit: number }>(
+        "/filial/warehouse-and-filial",
+        { limit: 50 }
+      ),
+    select: (res) =>
+      res?.items
+        ?.filter((i) => i.type !== "market" && i.type !== "dealer")
+        .sort((a, b) =>
+          a.id === meUser?.filial?.id ? -1 : b.id === meUser?.filial?.id ? 1 : 0
+        ) || [],
+  });
+
+  return (
+    <select
+      value={filial || ""}
+      onChange={(e) => setFilial(e.target.value || null)}
+      className="w-full h-[40px] px-[12px] bg-input border border-border rounded-[8px] text-[14px] outline-none"
+    >
+      {!meUser?.filial?.id && <option value="">Barchasi</option>}
+      {data?.map((f) => (
+        <option key={f.id} value={f.id}>
+          {f.title}
+        </option>
+      ))}
+    </select>
   );
 }
