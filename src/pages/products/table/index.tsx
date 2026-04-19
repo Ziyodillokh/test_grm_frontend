@@ -20,7 +20,7 @@ import { minio_img_url } from "@/constants";
 import debounce from "@/utils/debounce";
 import CarpetCard from "@/components/cards/carpet-card";
 
-import useDataFetch, { useCollectionDataFetch, useSearchFilials } from "./queries";
+import useDataFetch, { useCollectionDataFetch } from "./queries";
 import { ProductsData, CollectionData } from "../type";
 
 const productGridTemplate = "2fr 1fr 70px 70px 1fr 50px 60px 70px 1fr";
@@ -115,8 +115,8 @@ export default function Page() {
   const isProductView = collection === "product";
   const isListView = card === "list";
 
-  // Search natijasi bo'lgan filiallar ro'yxati (backend dan)
-  const { data: searchFilials } = useSearchFilials(activeSearch);
+  // Search natijasi bo'lgan filiallar ro'yxati (findAll javobidan)
+  const searchFilials = (productsData?.pages?.[0] as any)?.searchFilials || [];
 
   // Excel export
   const [excelPending, setExcelPending] = useState(false);

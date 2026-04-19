@@ -11,7 +11,6 @@ export const apiRoutes = {
   products: "/product",
   orderBasketBookings: '/order-basket/bookings',
   productsIManager: "/product/internet-shop",
-  productSearchFilials: "/product/search-filials",
   collection: "/collection/remaining-collections",
   collections: "/collection",
   collectionProducts: "/collection/remaining-products",
