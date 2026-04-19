@@ -447,6 +447,36 @@ export default function Page() {
         )}
       </div>
 
+      {/* Search filial chiplar — search pastida, labels ustida */}
+      {isProductView && activeSearch && searchFilials && searchFilials.length > 0 && (
+        <div className="flex items-center gap-[8px] mb-[10px] shrink-0 flex-wrap">
+          {/* 1-chi: hozir filterlangan filial yoki Barchasi */}
+          {!filial && (
+            <button
+              className="text-[12px] px-[10px] py-[4px] rounded-full border bg-[#1a1a1a] text-white border-[#1a1a1a]"
+            >
+              Barchasi
+            </button>
+          )}
+          {searchFilials.map((f: { id: string; title: string; count: number }) => {
+            const isActive = activeFilialId === f.id;
+            return (
+              <button
+                key={f.id}
+                onClick={() => setFilial(isActive ? null : f.id)}
+                className={`text-[12px] px-[10px] py-[4px] rounded-full border transition-colors ${
+                  isActive
+                    ? "bg-[#1a1a1a] text-white border-[#1a1a1a]"
+                    : "bg-white text-[#1a1a1a] border-border hover:bg-gray-50"
+                }`}
+              >
+                {f.title} ({f.count})
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* === PRODUCT LIST VIEW === */}
       {isProductView && isListView && (
         <>
@@ -467,28 +497,6 @@ export default function Page() {
               </span>
             ))}
           </div>
-
-          {/* Search natijasi bo'lgan filiallar */}
-          {activeSearch && searchFilials && searchFilials.length > 0 && (
-            <div className="flex items-center gap-[8px] mb-[10px] shrink-0 flex-wrap">
-              {searchFilials.map((f: { id: string; title: string; count: number }) => {
-                const isActive = activeFilialId === f.id;
-                return (
-                  <button
-                    key={f.id}
-                    onClick={() => setFilial(isActive && f.id !== meUser?.filial?.id ? null : f.id)}
-                    className={`text-[12px] px-[10px] py-[4px] rounded-full border transition-colors ${
-                      isActive
-                        ? "bg-[#1a1a1a] text-white border-[#1a1a1a]"
-                        : "bg-white text-[#1a1a1a] border-border hover:bg-gray-50"
-                    }`}
-                  >
-                    {f.title} ({f.count})
-                  </button>
-                );
-              })}
-            </div>
-          )}
 
           {/* Product rows */}
           <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
