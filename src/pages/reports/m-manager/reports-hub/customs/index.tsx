@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader, Plus } from "lucide-react";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import CustomsFilter from "./filter";
 
 export default function CustomsReportPage() {
   const navigate = useNavigate();
+  const push = useBreadcrumbStore((s) => s.push);
   const queryClient = useQueryClient();
   const { year } = useYear();
   const [month] = useQueryState(
@@ -109,9 +111,11 @@ export default function CustomsReportPage() {
         data={flatData}
         isLoading={isLoading}
         isRowClickble={true}
-        onRowClick={(row) =>
-          navigate(`/m-manager/reports-hub/bojxona/${row.id}`)
-        }
+        onRowClick={(row) => {
+          const path = `/m-manager/reports-hub/bojxona/${row.id}`;
+          push(row.title || "Detail", path);
+          navigate(path);
+        }}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage ?? false}
         isFetchingNextPage={isFetchingNextPage}

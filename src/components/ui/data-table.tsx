@@ -42,6 +42,7 @@ interface DataTableProps<TData, TValue> {
   ischeckble?: boolean;
   classNameBody?: string;
   classNameTable?: string;
+  headerClassName?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -62,6 +63,7 @@ export function DataTable<TData, TValue>({
   hasHeader = true,
   classNameBody,
   classNameTable,
+  headerClassName,
 }: DataTableProps<TData, TValue>) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -165,14 +167,14 @@ export function DataTable<TData, TValue>({
         <>
           <Table className={classNameTable + "h-full"}>
             {hasHeader ? (
-              <TableHeader className={`border-border  border sticky top-0 ${borderClass}`}>
+              <TableHeader className={headerClassName || `border-border  border sticky top-0 ${borderClass}`}>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow key={headerGroup.id} className={headerClassName ? "border-none hover:bg-transparent" : undefined}>
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead
                           key={header.id}
-                          className="!flex !justify-center  "
+                          className={headerClassName ? headerClassName : "!flex !justify-center  "}
                         >
                           {header.isPlaceholder
                             ? null

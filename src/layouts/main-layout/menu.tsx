@@ -22,14 +22,16 @@ export default function Menu() {
       .filter((e) => location.pathname.includes(e.link))
       .sort((a, b) => b.link.length - a.link.length)[0];
     if (match) {
-      setMenu(match.link, match.text);
+      const label = (match as any).headerText || match.text;
+      setMenu(match.link, label);
     }
   }, [location.pathname, activeMenuLink, menuItems, setMenu]);
 
   const isActive = (link: string) => activeMenuLink === link;
 
   const handleClick = (item: (typeof menuItems)[0]) => {
-    setMenu(item.link, item.text);
+    const label = (item as any).headerText || item.text;
+    setMenu(item.link, label);
     navigate(item.link);
   };
 

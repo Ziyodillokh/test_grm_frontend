@@ -3,14 +3,17 @@ import { FilialColumns } from "./columns";
 import SalesFilter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useSalesFilial } from "./queries";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useYear } from "@/store/year-store";
 import { useMeStore } from "@/store/me-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function FilialTable() {
   const { year } = useYear();
   const { meUser } = useMeStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
 
   const role = meUser?.position?.role ?? 0;
@@ -47,7 +50,11 @@ export default function FilialTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item) => navigate(`filial/${item.id}`)}
+          onRowClick={(item: any) => {
+            const path = `${location.pathname}/filial/${item.id}`;
+            push(item.name || item.title || "Detail", path);
+            navigate(`filial/${item.id}`);
+          }}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

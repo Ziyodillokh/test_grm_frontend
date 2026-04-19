@@ -1,12 +1,9 @@
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { ListRow } from "@/components/ui/list-row";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryState } from "nuqs";
-import { X, Loader, MoreVertical } from "lucide-react";
+import { X, Loader } from "lucide-react";
 import qs from "qs";
-import { toast } from "sonner";
-import { format } from "date-fns";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -17,26 +14,17 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
 import { apiRoutes } from "@/service/apiRoutes";
-import { getByIdData, getAllData, PatchData, UpdatePatchData } from "@/service/apiHelpers";
+import { getByIdData, getAllData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
 import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
 import { useMeStore } from "@/store/me-store";
 import useData from "@/pages/employees/table/queries";
 import debounce from "@/utils/debounce";
-import formatPrice from "@/utils/formatPrice";
-import TebleAvatar from "@/components/teble-avatar";
 import type { CashflowType } from "@/components/adding-parish-flow";
-import type { TransactionItem } from "@/pages/cashier/report/type";
 
 const tipFilter: Record<string, string> = {
   income: "cashflow",
@@ -368,7 +356,6 @@ export default function DashboardKassaDetail() {
         data={reportTotalsData}
         filteredTotals={filteredTotals}
         hasActiveFilter={hasActiveFilter}
-        activeFilter={tip}
         onCardClick={handleCardClick}
         onIncomeClick={handleIncomeClick}
         onExpenseClick={handleExpenseClick}
@@ -380,7 +367,7 @@ export default function DashboardKassaDetail() {
         className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
         style={{ display: "grid", gridTemplateColumns: cashflowGridTemplate, gap: "16px" }}
       >
-        {cashflowLabels.map((label, i) => (
+        {cashflowLabels.map((label: any, i: any) => (
           <span key={i} className={`text-[13px] text-[#A3A3A3] ${label.center ? "text-center" : ""} ${(label as any).right ? "text-right" : ""}`}>{label.text}</span>
         ))}
       </div>

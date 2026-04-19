@@ -47,7 +47,7 @@ const useDataFetch = ({ options, queries, role }: ITransfers) =>
   useInfiniteQuery({
     ...options,
     queryKey: [role == 8 ? apiRoutes.productsIManager : apiRoutes.products, queries],
-    queryFn: ({ pageParam = 10 }) =>
+    queryFn: ({ pageParam = 1 }) =>
       getAllData<TResponse<ProductsData>, ProductsQuery>(
         role == 8 ? apiRoutes.productsIManager : apiRoutes.products,
         {

@@ -11,7 +11,7 @@ import FactoryReportPage from "./factories";
 import FactoryDetailPage from "./factories/detail";
 import MonthlyReportsPage from "../report-finance/monthly";
 import ReportDetailPage from "./monthly/report-detail";
-import KassaCashflowsPage from "./monthly/kassa-cashflows";
+import DashboardKassaDetail from "@/pages/dashboard/kassa-detail";
 import ReportPage from "../report";
 import ClientDebtFilials from "./client-debt";
 import ClientDebtClients from "./client-debt/clients";
@@ -56,7 +56,7 @@ const Route = [
   },
   {
     url: "/m-manager/reports-hub/monthly/:reportId/info/:kassaId/info",
-    Element: KassaCashflowsPage,
+    Element: DashboardKassaDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Qoldiq hisoboti

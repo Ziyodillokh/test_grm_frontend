@@ -6,11 +6,13 @@ import { useDataKassa } from "../../report/queries";
 import { useKassaTotals } from "./queries";
 import { MonthlyColumns } from "./columns";
 import CardSort from "@/components/card-sort";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function MonthlyReportsPage() {
   const { meUser } = useMeStore();
   const { year } = useYear();
   const navigate = useNavigate();
+  const push = useBreadcrumbStore((s) => s.push);
 
   const filialId = meUser?.filial?.id;
 
@@ -50,8 +52,9 @@ export default function MonthlyReportsPage() {
           data={flatData}
           isLoading={isLoading}
           isRowClickble={true}
-          onRowClick={(row) => {
+          onRowClick={(row: any) => {
             if (row?.id) {
+              push(row?.filial?.name || "Kassa", `/f-manager/reports-hub/monthly/${row.id}`);
               navigate(`/f-manager/reports-hub/monthly/${row.id}`);
             }
           }}

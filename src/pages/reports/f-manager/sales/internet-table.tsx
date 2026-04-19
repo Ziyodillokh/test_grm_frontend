@@ -3,12 +3,15 @@ import { InternetColumns } from "./columns";
 import SalesFilter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useSalesInternet } from "./queries";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useYear } from "@/store/year-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function InternetTable() {
   const { year } = useYear();
   const navigate = useNavigate();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -38,7 +41,11 @@ export default function InternetTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item) => navigate(`internet/${item.id}`)}
+          onRowClick={(item: any) => {
+            const path = `${location.pathname}/internet/${item.id}`;
+            push(item.name || item.title || "Detail", path);
+            navigate(`internet/${item.id}`);
+          }}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

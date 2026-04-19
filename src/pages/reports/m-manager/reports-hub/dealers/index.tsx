@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import ActionPageDealer from "@/pages/filial/formDealer";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { useDealerReport } from "./queries";
 import { DealerColumns } from "./columns";
 import DealerFilter from "./filter";
@@ -12,6 +13,7 @@ import { DealerReportItem } from "./type";
 export default function DealerReportPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [search] = useQueryState("search");
   const [limit] = useQueryState("limit", parseAsInteger.withDefault(50));
   const [, setId] = useQueryState("id");
@@ -51,9 +53,11 @@ export default function DealerReportPage() {
         data={flatData}
         isLoading={isLoading}
         isRowClickble={false}
-        onRowClick={(row: DealerReportItem) =>
-          navigate(`${basePath}/${row.id}`)
-        }
+        onRowClick={(row: DealerReportItem) => {
+          const path = `${basePath}/${row.id}`;
+          push(row.title || "Detail", path);
+          navigate(path);
+        }}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage ?? false}
         isFetchingNextPage={isFetchingNextPage}

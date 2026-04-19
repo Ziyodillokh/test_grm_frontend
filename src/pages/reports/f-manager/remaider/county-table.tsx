@@ -3,12 +3,15 @@ import { CountryColumns } from "./columns";
 import Filter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useFilialSnapshot } from "./queries";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function CountryTable() {
   const { meUser } = useMeStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [date] = useQueryState("date", parseAsString.withDefault(""));
   const [filialId] = useQueryState("filialId", parseAsString.withDefault(""));
 
@@ -42,7 +45,11 @@ export default function CountryTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item) => navigate(`${item.id}`)}
+          onRowClick={(item: any) => {
+            const path = `${location.pathname}/${item.id}`;
+            push(item.name || item.title || "Zavod", path);
+            navigate(path);
+          }}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

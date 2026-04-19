@@ -51,12 +51,14 @@ export default function MainLayout() {
           <Menu />
         </aside>
 
-        {/* Main content — 11 cols */}
+        {/* Main content — 10 cols */}
         <main
-          style={{ gridColumn: "5 / 16" }}
-          className="min-h-0 overflow-hidden flex flex-col"
+          style={{ gridColumn: "5 / 15" }}
+          className="min-h-0 overflow-hidden"
         >
-          <Outlet />
+          <div className="h-full flex flex-col">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

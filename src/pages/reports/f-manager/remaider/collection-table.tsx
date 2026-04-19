@@ -3,12 +3,15 @@ import { CollectionColumns } from "./columns";
 import Filter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useFilialSnapshot } from "./queries";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function CollectionTable() {
   const { meUser } = useMeStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const { countryId, factoryId } = useParams();
   const [date] = useQueryState("date", parseAsString.withDefault(""));
   const [filialId] = useQueryState("filialId", parseAsString.withDefault(""));
@@ -45,7 +48,11 @@ export default function CollectionTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item) => navigate(`${item.id}`)}
+          onRowClick={(item: any) => {
+            const path = `${location.pathname}/${item.id}`;
+            push(item.name || item.title || "Model", path);
+            navigate(path);
+          }}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

@@ -36,6 +36,7 @@ export interface ProductsData {
     partiya_no: {
       title: string;
     };
+    isMetric?: boolean;
   };
   // Collection fields
   title?: string;

@@ -239,7 +239,7 @@ export default function FManagerCurrent() {
       totalSaleReturn: reportData?.return_sale ?? 0,
       managerSum: reportData?.in_hand ?? 0,
       managerSaldo: reportData?.opening_balance ?? 0,
-    } as TKassareportData;
+    } as unknown as TKassareportData;
   }, [reportData]);
 
   const filteredTotals = hasActiveFilter ? {
@@ -377,7 +377,6 @@ export default function FManagerCurrent() {
         data={reportTotalsData}
         filteredTotals={filteredTotals}
         hasActiveFilter={hasActiveFilter}
-        activeFilter={tip}
         onCardClick={handleCardClick}
         onIncomeClick={() => setTip(tip === "income" ? null : "income")}
         onExpenseClick={() => setTip(tip === "expense" ? null : "expense")}

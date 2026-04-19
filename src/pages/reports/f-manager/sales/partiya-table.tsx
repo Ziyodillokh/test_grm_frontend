@@ -3,12 +3,15 @@ import { PartiyaColumns } from "./columns";
 import SalesFilter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useSalesPartiya } from "./queries";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useYear } from "@/store/year-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function PartiyaTable() {
   const { year } = useYear();
   const navigate = useNavigate();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -40,7 +43,11 @@ export default function PartiyaTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item) => navigate(`partiya/${item.partiyaId}`)}
+          onRowClick={(item: any) => {
+            const path = `${location.pathname}/partiya/${item.partiyaId}`;
+            push(item.name || item.title || "Detail", path);
+            navigate(`partiya/${item.partiyaId}`);
+          }}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

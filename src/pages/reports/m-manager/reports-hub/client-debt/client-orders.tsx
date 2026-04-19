@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { DataTable } from "@/components/ui/data-table";
 import formatPrice from "@/utils/formatPrice";
@@ -8,18 +8,13 @@ import { orderColumns } from "./columns";
 const currentYear = new Date().getFullYear();
 
 export default function ClientDebtOrders() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { filialId, clientId } = useParams();
+  const { clientId } = useParams();
   const [year, setYear] = useQueryState(
     "year",
     parseAsInteger.withDefault(currentYear)
   );
   const [month, setMonth] = useQueryState("month", parseAsInteger);
 
-  const basePath = location.pathname.includes("/f-manager/")
-    ? "/f-manager/reports-hub/client-debt"
-    : "/m-manager/reports-hub/client-debt";
 
   const { data, isLoading } = useDebtOrders(clientId, {
     year,
@@ -43,20 +38,6 @@ export default function ClientDebtOrders() {
   return (
     <div>
       <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
-        <button
-          onClick={() => navigate(basePath)}
-          className="text-muted-foreground hover:text-foreground text-sm"
-        >
-          Qarz Hisoboti
-        </button>
-        <span className="text-muted-foreground">/</span>
-        <button
-          onClick={() => navigate(`${basePath}/${filialId}`)}
-          className="text-muted-foreground hover:text-foreground text-sm"
-        >
-          Clientlar
-        </button>
-        <span className="text-muted-foreground">/</span>
         <p className="text-[16px] font-medium">
           {client.fullName || "Client"}
         </p>

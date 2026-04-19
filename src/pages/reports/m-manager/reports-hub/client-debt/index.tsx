@@ -6,10 +6,12 @@ import { useMeStore } from "@/store/me-store";
 import { Roles } from "@/constants";
 import { useDebtFilials } from "./queries";
 import { filialColumns } from "./columns";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function ClientDebtFilials() {
   const navigate = useNavigate();
   const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const { meUser } = useMeStore();
   const { data, isLoading } = useDebtFilials();
 
@@ -58,9 +60,11 @@ export default function ClientDebtFilials() {
         data={items}
         isLoading={isLoading}
         isRowClickble={false}
-        onRowClick={(row: any) =>
-          navigate(`${basePath}/${row.filialId}`)
-        }
+        onRowClick={(row: any) => {
+          const path = `${basePath}/${row.filialId}`;
+          push(row.filialName || row.name || "Filial", path);
+          navigate(path);
+        }}
       />
     </div>
   );

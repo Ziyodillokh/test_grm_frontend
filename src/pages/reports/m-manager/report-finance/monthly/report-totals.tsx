@@ -7,17 +7,21 @@ interface ReportTotalsProps {
   filteredTotals?: any;
   hasActiveFilter?: boolean;
   onGreenCardClick?: () => void;
+  activeFilter?: string | null;
+  onCardClick?: (filterValue: string) => void;
+  onIncomeClick?: () => void;
+  onExpenseClick?: () => void;
 }
 
 const metricCards = [
-  { key: "totalSale", label: "Umumiy sotuv", isFirst: true },
-  { key: "debt_sum", label: "Qarz savdosi" },
-  { key: "totalPlasticSum", label: "Terminal" },
-  { key: "totalSaleReturn", label: "Qaytarilgan", negative: true },
-  { key: "totalCashCollection", label: "Inkasatsiya" },
-  { key: "totalSize", label: "Sotuv hajmi m²", suffix: " m²" },
-  { key: "additionalProfitTotalSum", label: "Navar foydasi" },
-  { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314" },
+  { key: "totalSale", label: "Umumiy sotuv", isFirst: true, filterValue: "sale" },
+  { key: "debt_sum", label: "Qarz savdosi", filterValue: "debt" },
+  { key: "totalPlasticSum", label: "Terminal", filterValue: "terminal" },
+  { key: "totalSaleReturn", label: "Qaytarilgan", negative: true, filterValue: "return" },
+  { key: "totalCashCollection", label: "Inkasatsiya", filterValue: "collection" },
+  { key: "totalSize", label: "Sotuv hajmi m²", suffix: " m²", filterValue: "sale" },
+  { key: "additionalProfitTotalSum", label: "Navar foydasi", filterValue: "navar" },
+  { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314", filterValue: "discount" },
 ];
 
 const filteredTotalsMap: Record<string, string> = {
@@ -31,7 +35,7 @@ const filteredTotalsMap: Record<string, string> = {
   totalDiscount: "totalDiscount",
 };
 
-export default function ReportTotals({ data, filteredTotals, hasActiveFilter, onGreenCardClick }: ReportTotalsProps) {
+export default function ReportTotals({ data, filteredTotals, hasActiveFilter, onGreenCardClick, activeFilter, onCardClick, onIncomeClick, onExpenseClick }: ReportTotalsProps) {
   const { meUser } = useMeStore();
   const role = meUser?.position?.role;
 
@@ -56,18 +60,24 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
       <div className="flex gap-[4px] flex-col lg:flex-row">
         {/* Yashil card */}
         <div
-          className="bg-[#47B13C] text-white rounded-[8px] p-5 min-w-[260px] h-[140px] w-[30%] shrink-0 cursor-pointer hover:bg-[#3da032] transition-colors flex flex-col justify-between relative overflow-hidden"
+          className="bg-[#47B13C] text-white rounded-[8px] p-5 min-w-[260px] h-[150px] w-[30%] shrink-0 cursor-pointer hover:bg-[#3da032] transition-colors flex flex-col justify-between relative overflow-hidden"
           onClick={onGreenCardClick}
         >
           <p className="text-[28px] font-medium">
             ${mainSum.toLocaleString("uz-UZ", { minimumFractionDigits: 2 })}
           </p>
           <div className="flex items-center gap-[16px] text-[15px]">
-            <div className="flex items-center gap-1">
+            <div
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${activeFilter === "income" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); onIncomeClick?.(); }}
+            >
               <ArrowDown className="w-4 h-4" />
               <span>${prixod.toLocaleString()}</span>
             </div>
-            <div className="flex items-center gap-1">
+            <div
+              className={`flex items-center gap-1 cursor-pointer hover:opacity-100 ${activeFilter === "expense" ? "opacity-100 underline" : ""}`}
+              onClick={(e) => { e.stopPropagation(); onExpenseClick?.(); }}
+            >
               <ArrowUp className="w-4 h-4" />
               <span>${rasxod.toLocaleString()}</span>
             </div>
@@ -88,7 +98,7 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
         </div>
 
         {/* 8 ta metrika card — 2x4 grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 grid-rows-2 gap-[4px] flex-1 h-[140px]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 grid-rows-2 gap-[4px] flex-1 h-[150px]">
           {metricCards.map((card) => {
             const filteredKey = filteredTotalsMap[card.key];
             const value = (hasActiveFilter && filteredTotals && filteredKey)
@@ -97,10 +107,16 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
             const displayValue = card.negative ? `-${Math.abs(value).toLocaleString()}` : value.toLocaleString();
             const isFirst = (card as any).isFirst;
             const isNegative = card.negative || value < 0;
+            const isActive = activeFilter === card.filterValue && card.filterValue !== "";
             return (
               <div
                 key={card.key}
-                className={`rounded-[8px] p-[10px] flex flex-col justify-between ${isFirst ? "bg-[#0078D4] text-white" : "bg-white"}`}
+                onClick={() => onCardClick?.(card.filterValue)}
+                className={`rounded-[8px] p-[10px] flex flex-col justify-between cursor-pointer transition-colors ${
+                  isFirst
+                    ? isActive ? "bg-[#005a9e] text-white" : "bg-[#0078D4] text-white"
+                    : isActive ? "bg-[#e8e8e8]" : "bg-white"
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <p className={`text-[17px] font-medium ${isFirst ? "text-white" : ""}`} style={(card as any).valueColor ? { color: (card as any).valueColor } : undefined}>

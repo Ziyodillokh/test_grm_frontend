@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { ListRow } from "@/components/ui/list-row";
 import { useQuery } from "@tanstack/react-query";
 import { apiRoutes } from "@/service/apiRoutes";
 import { getAllData } from "@/service/apiHelpers";
@@ -98,8 +99,8 @@ export default function CurrentMonthReport() {
   }, [reportData, dealerData]);
 
   // Bitta grid template — label va row bir xil ishlatadi
-  const gridTemplate = "80px 100px 120px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 70px";
-  const columnLabels = ["Saldo", "Status", "Holati", "Filial", "Savdo", "Terminal", "Qarz", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
+  const gridTemplate = "4px 80px 100px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 70px";
+  const columnLabels = ["", "Saldo", "Status", "Filial", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
 
   return (
     <div className="flex flex-col h-full">
@@ -117,10 +118,10 @@ export default function CurrentMonthReport() {
       {/* Labellar — sticky, row bilan aynan bir xil grid */}
       <div
         className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "4px" }}
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
       >
-        {columnLabels.map((label) => (
-          <span key={label} className={`text-[13px] text-[#A3A3A3] ${label === "Status" || label === "Saldo" ? "text-center" : ""}`}>{label}</span>
+        {columnLabels.map((label, i) => (
+          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" || label === "Saldo" ? "text-center" : ""}`}>{label}</span>
         ))}
       </div>
 
@@ -144,16 +145,63 @@ export default function CurrentMonthReport() {
   );
 }
 
-function getStatusBadge(item: TKassareportData): { label: string; color: string; hideBadge?: boolean } {
-  if (item?.status === "accepted")
-    return { label: "Tasdiqlangan", color: "#47B13C" };
-  if (item?.isManagerRejected || item?.isAccountantRejected)
-    return { label: "Qaytarilgan", color: "#EC6724" };
-  if (item?.status === "closed_by_d")
-    return { label: "D-Manager yopgan", color: "#0078D4" };
-  if (item?.status === "warning" || item?.status === "open")
-    return { label: "Jarayonda...", color: "#FFA91E", hideBadge: true };
-  return { label: "Kutilayotgan", color: "#E38157" };
+function getRowStatus(item: TKassareportData): {
+  barColor: string;
+  showBar: boolean;
+  showConfirmBtn: boolean;
+  getBadgeStatus: (userRole: number) => string;
+} {
+  const bothConfirmed = item?.isMManagerConfirmed && item?.isAccountantConfirmed;
+  const isRejected = item?.isManagerRejected || item?.isAccountantRejected;
+  const isClosed = item?.status === "closed" || item?.status === "closed_by_d";
+
+  // Har ikkalasi tasdiqlagan
+  if (item?.status === "accepted" || bothConfirmed) {
+    return {
+      barColor: "transparent",
+      showBar: false,
+      showConfirmBtn: false,
+      getBadgeStatus: () => "success",
+    };
+  }
+
+  // Birontasi reject qilgan
+  if (isRejected) {
+    return {
+      barColor: "#EF5C12",
+      showBar: true,
+      showConfirmBtn: false,
+      getBadgeStatus: (role: number) => {
+        if (role === 9 && item?.isManagerRejected) return "fail";
+        if (role === 10 && item?.isAccountantRejected) return "fail";
+        if (role === 9 && item?.isMManagerConfirmed) return "success";
+        if (role === 10 && item?.isAccountantConfirmed) return "success";
+        return "fail";
+      },
+    };
+  }
+
+  // Tasdiqlashga jo'natilgan (closed yoki closed_by_d yoki biri tasdiqlagan)
+  if (isClosed || item?.isMManagerConfirmed || item?.isAccountantConfirmed) {
+    return {
+      barColor: "#FFA91E",
+      showBar: true,
+      showConfirmBtn: true,
+      getBadgeStatus: (role: number) => {
+        if (role === 9 && item?.isMManagerConfirmed) return "success";
+        if (role === 10 && item?.isAccountantConfirmed) return "success";
+        return "panding";
+      },
+    };
+  }
+
+  // Hali tasdiqlashga jo'natilmagan (open/warning)
+  return {
+    barColor: "#3ABC49",
+    showBar: true,
+    showConfirmBtn: false,
+    getBadgeStatus: () => "none",
+  };
 }
 
 function ReportRow({ item, onRowClick, gridTemplate }: { item: TKassareportData; onRowClick: (item: TKassareportData) => void; gridTemplate: string }) {
@@ -164,7 +212,6 @@ function ReportRow({ item, onRowClick, gridTemplate }: { item: TKassareportData;
   });
 
   const saldo = item?.in_hand || 0;
-  const badge = getStatusBadge(item);
   const filialName = item?.isDealer ? "Dillerlar" : item?.filial?.title || "—";
   const sale = item?.sale ?? item?.totalSale ?? 0;
   const terminal = item?.plasticSum ?? item?.totalPlasticSum ?? 0;
@@ -174,79 +221,69 @@ function ReportRow({ item, onRowClick, gridTemplate }: { item: TKassareportData;
   const foyda = item?.additionalProfitTotalSum ?? 0;
   const chegirma = item?.discount ?? item?.totalDiscount ?? 0;
 
+  const rowStatus = getRowStatus(item);
+
   return (
-    <div
-      className="items-center bg-white rounded-[8px] px-[12px] py-[10px] cursor-pointer hover:bg-gray-50 transition-colors"
-      style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "4px" }}
+    <ListRow
+      gridTemplate={gridTemplate}
       onClick={() => onRowClick(item)}
     >
+      {/* Tayoqcha */}
+      {rowStatus.showBar ? (
+        <div className="w-[2px] h-[30px] rounded-full" style={{ backgroundColor: rowStatus.barColor }} />
+      ) : (
+        <div />
+      )}
+
       {/* Saldo */}
-      <span className={`text-[15px] whitespace-nowrap text-right ${saldo >= 0 ? "text-[#47B13C]" : "text-[#EC6724]"}`}>
-        {saldo >= 0 ? "+" : ""}{saldo.toFixed(2)}
+      <span className={`text-[15px] font-medium whitespace-nowrap text-right ${saldo === 0 ? "text-[#1a1a1a]" : saldo > 0 ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+        {saldo === 0 ? "0$" : saldo > 0 ? `+${saldo.toLocaleString()}$` : `${saldo.toLocaleString()}$`}
       </span>
 
       {/* Avatarlar */}
-      <div className="flex items-center justify-center [&>*:not(:first-child)]:ml-[-12px]">
+      <div className="flex items-center justify-center [&>*:not(:first-child)]:ml-[-8px]">
         {usersData?.items?.map((user: IUserData) => (
           <TebleAvatar
             key={user?.id}
             size={42}
-            status={
-              badge.hideBadge
-                ? "none"
-                : item?.status === "accepted" ||
-                  (user?.position?.role == 9 && item?.isMManagerConfirmed) ||
-                  (user?.position?.role == 10 && item?.isAccountantConfirmed)
-                  ? "success"
-                  : item?.isManagerRejected && user?.position?.role == 9
-                    ? "fail"
-                    : item?.isAccountantRejected && user?.position?.role == 10
-                      ? "fail"
-                      : "panding"
-            }
+            status={rowStatus.getBadgeStatus(user?.position?.role)}
             url={user?.avatar?.path}
             name={user?.firstName}
           />
         ))}
       </div>
 
-      {/* Holati */}
-      <div className="flex items-center gap-[6px]">
-        <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: badge.color }} />
-        <span className="text-[13px]" style={{ color: badge.color }}>{badge.label}</span>
-      </div>
-
       {/* Filial */}
-      <span className="text-[13px] text-[#1a1a1a]">{filialName}</span>
+      <span className="text-[13px] font-medium text-[#1a1a1a]">{filialName}</span>
 
       {/* Savdo */}
-      <span className="text-[13px] text-[#A3A3A3]">{sale.toLocaleString()}$</span>
-
-      {/* Terminal */}
-      <span className="text-[13px] text-[#0078D4]">{terminal.toLocaleString()}$</span>
+      <span className="text-[13px] text-[#1a1a1a]">{sale ? `${sale.toLocaleString()}$` : "0$"}</span>
 
       {/* Qarz */}
-      <span className="text-[13px] text-[#A3A3A3]">{debt.toLocaleString()}$</span>
+      <span className="text-[13px] text-[#1a1a1a]">{debt ? `${debt.toLocaleString()}$` : "0$"}</span>
+
+      {/* Terminal */}
+      <span className="text-[13px] text-[#0078D4]">{terminal ? `${terminal.toLocaleString()}$` : "0$"}</span>
 
       {/* Inkassa */}
-      <span className="text-[13px] text-[#A3A3A3]">{inkassa.toLocaleString()}$</span>
+      <span className="text-[13px] text-[#1a1a1a]">{inkassa ? `${inkassa.toLocaleString()}$` : "0$"}</span>
 
       {/* Hajm */}
-      <span className="text-[13px] text-[#A3A3A3]">{hajm.toFixed(0)} m²</span>
+      <span className="text-[13px] text-[#1a1a1a]">{hajm ? `${hajm.toFixed(0)} m²` : "0 m²"}</span>
 
       {/* Foyda */}
-      <span className="text-[13px] text-[#47B13C]">+{foyda.toFixed(2)}$</span>
+      <span className="text-[13px] text-[#47B13C]">{foyda ? `+${foyda.toLocaleString()}$` : "0$"}</span>
 
       {/* Chegirma */}
-      <span className="text-[13px] text-[#EC6724]">-{Math.abs(chegirma).toFixed(2)}$</span>
+      <span className="text-[13px] text-[#EC6724]">{chegirma ? `-${Math.abs(chegirma).toLocaleString()}$` : "0$"}</span>
 
       {/* Action */}
-      <RowAction item={item} />
-    </div>
+      <RowAction item={item} showConfirmBtn={rowStatus.showConfirmBtn} />
+    </ListRow>
   );
 }
 
-function RowAction({ item }: { item: TKassareportData }) {
+function RowAction({ item, showConfirmBtn }: { item: TKassareportData; showConfirmBtn: boolean }) {
   const { meUser } = useMeStore();
   const queryClient = useQueryClient();
 
@@ -276,15 +313,17 @@ function RowAction({ item }: { item: TKassareportData }) {
     },
   });
 
-  const showConfirm =
+  // Tasdiqlash buttonni ko'rsatish: rowStatus.showConfirmBtn + role tekshiruvi
+  const canConfirm = showConfirmBtn && (
     item?.status === "closed" ||
     item?.status === "closed_by_d" ||
     (meUser?.position?.role == 10 && item?.isMManagerConfirmed) ||
-    (meUser?.position?.role == 9 && item?.isAccountantConfirmed);
+    (meUser?.position?.role == 9 && item?.isAccountantConfirmed)
+  );
 
   return (
     <div className="flex items-center justify-end gap-[4px]" onClick={(e) => e.stopPropagation()}>
-      {showConfirm && (
+      {canConfirm && (
         <button
           onClick={() => confirm()}
           disabled={isConfirming}

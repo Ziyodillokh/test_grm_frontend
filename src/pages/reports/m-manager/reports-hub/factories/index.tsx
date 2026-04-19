@@ -2,6 +2,7 @@ import { useState } from "react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { useQueryClient } from "@tanstack/react-query";
 import { DataTable } from "@/components/ui/data-table";
 import {
@@ -22,6 +23,7 @@ import { FactoryReportItem } from "./type";
 
 export default function FactoryReportPage() {
   const navigate = useNavigate();
+  const push = useBreadcrumbStore((s) => s.push);
   const queryClient = useQueryClient();
   const { year } = useYear();
   const [search] = useQueryState("search");
@@ -121,9 +123,11 @@ export default function FactoryReportPage() {
         data={flatData}
         isLoading={isLoading}
         isRowClickble={false}
-        onRowClick={(row) =>
-          navigate(`/m-manager/reports-hub/factories/${row.id}`)
-        }
+        onRowClick={(row) => {
+          const path = `/m-manager/reports-hub/factories/${row.id}`;
+          push(row.title || "Detail", path);
+          navigate(path);
+        }}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage ?? false}
         isFetchingNextPage={isFetchingNextPage}

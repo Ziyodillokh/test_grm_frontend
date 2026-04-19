@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Sun, LogOut } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth-store";
@@ -14,8 +14,10 @@ export default function Header() {
   const { meUser, removeUserMe } = useMeStore();
   const { removeToken } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const breadcrumbItems = useBreadcrumbStore((s) => s.items);
   const goBack = useBreadcrumbStore((s) => s.goBack);
+  const goTo = useBreadcrumbStore((s) => s.goTo);
   const activeMenuLink = useBreadcrumbStore((s) => s.activeMenuLink);
 
   // Hozirgi sahifa menu ma'lumotlari — activeMenuLink asosida
@@ -27,12 +29,33 @@ export default function Header() {
   // Breadcrumb — store dan olinadi
   // items[0] = root (menu nomi), items[1+] = ichki sahifalar
   const hasBreadcrumb = breadcrumbItems.length > 1;
-  const isDeepRoute = hasBreadcrumb;
+
+  // URL menu linkdan chuqurroq bo'lsa — ichki sahifa (refresh qilganda ham ishlaydi)
+  const isDeepByUrl =
+    activeMenuLink && location.pathname !== activeMenuLink &&
+    location.pathname.startsWith(activeMenuLink);
+
+  const isDeepRoute = hasBreadcrumb || isDeepByUrl;
 
   const handleLogout = () => {
     removeToken();
     removeUserMe();
     window.location.replace("/login");
+  };
+
+  const handleBack = () => {
+    if (hasBreadcrumb) {
+      // Store'da breadcrumb bor — uni pop qilish
+      const prev = goBack();
+      if (prev?.path) {
+        navigate(prev.path);
+      } else {
+        navigate(-1);
+      }
+    } else {
+      // Store'da breadcrumb yo'q (refresh bo'lgan) — parent URL ga qaytish
+      navigate(-1);
+    }
   };
 
   return (
@@ -86,47 +109,54 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Col 6-16: Breadcrumb */}
+      {/* Col 5-15: Breadcrumb */}
       <div
-        style={{ gridColumn: "5 / 16" }}
+        style={{ gridColumn: "5 / 15" }}
         className="flex items-center gap-[12px] h-full"
       >
-        {isDeepRoute && hasBreadcrumb ? (
+        {isDeepRoute ? (
           <>
             {/* Back arrow */}
-            <button
-              onClick={() => {
-                const prev = goBack();
-                if (prev?.path) {
-                  navigate(prev.path);
-                } else {
-                  navigate(-1);
-                }
-              }}
-              className="shrink-0"
-            >
+            <button onClick={handleBack} className="shrink-0">
               <ArrowLeft className="w-[32px] h-[32px] text-[#1a1a1a]" />
             </button>
 
-            {/* Oldingi sahifalar — opacity 0.4 */}
-            {breadcrumbItems.slice(0, -1).map((item, i) => (
-              <div key={i} className="flex items-center gap-[12px]">
-                {i > 0 && (
-                  <span className="w-[6px] h-[6px] rounded-full bg-[#1a1a1a] opacity-40 shrink-0" />
-                )}
-                <span className="text-[28px] font-normal text-[#1a1a1a] opacity-40 whitespace-nowrap">
-                  {item.label}
+            {hasBreadcrumb ? (
+              <>
+                {/* Oldingi sahifalar — opacity 0.4, clickable */}
+                {breadcrumbItems.slice(0, -1).map((item, i) => (
+                  <div key={i} className="flex items-center gap-[12px]">
+                    {i > 0 && (
+                      <span className="w-[6px] h-[6px] rounded-full bg-[#1a1a1a] opacity-40 shrink-0" />
+                    )}
+                    <span
+                      className="text-[28px] font-medium text-[#1a1a1a] opacity-40 whitespace-nowrap cursor-pointer hover:opacity-70 transition-opacity"
+                      onClick={() => {
+                        const target = goTo(i);
+                        if (target?.path) navigate(target.path);
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Ajratuvchi nuqta */}
+                <span className="w-[6px] h-[6px] rounded-full bg-[#1a1a1a] opacity-40 shrink-0" />
+
+                {/* Hozirgi sahifa — active */}
+                <span className="text-[28px] font-medium text-[#1a1a1a] whitespace-nowrap">
+                  {breadcrumbItems[breadcrumbItems.length - 1].label}
                 </span>
-              </div>
-            ))}
-
-            {/* Ajratuvchi nuqta */}
-            <span className="w-[6px] h-[6px] rounded-full bg-[#1a1a1a] opacity-40 shrink-0" />
-
-            {/* Hozirgi sahifa — active */}
-            <span className="text-[28px] font-normal text-[#1a1a1a] whitespace-nowrap">
-              {breadcrumbItems[breadcrumbItems.length - 1].label}
-            </span>
+              </>
+            ) : (
+              <>
+                {/* Refresh bo'lganda — faqat root nomi (opacity 0.4) + hozirgi sahifa nomi */}
+                <span className="text-[28px] font-medium text-[#1a1a1a] opacity-40 whitespace-nowrap">
+                  {breadcrumbItems[0]?.label || currentMenu?.text || ""}
+                </span>
+              </>
+            )}
           </>
         ) : (
           <>
@@ -137,7 +167,7 @@ export default function Header() {
               </div>
             )}
             {/* Sahifa nomi */}
-            <span className="text-[28px] font-normal text-[#1a1a1a]">
+            <span className="text-[28px] font-medium text-[#1a1a1a]">
               {breadcrumbItems[0]?.label || currentMenu?.text || ""}
             </span>
           </>

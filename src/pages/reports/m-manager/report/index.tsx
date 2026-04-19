@@ -667,7 +667,7 @@ export default function ReportPage() {
             className="mb-[10px] shrink-0 px-[12px]"
             style={{ display: "grid", gridTemplateColumns: myCashflowGridTemplate, gap: "16px" }}
           >
-            {myCashflowLabels.map((label, i) => (
+            {myCashflowLabels.map((label: any, i: any) => (
               <span key={i} className={`text-[13px] text-[#A3A3A3] ${label.center ? "text-center" : ""} ${(label as any).right ? "text-right" : ""}`}>{label.text}</span>
             ))}
           </div>
@@ -687,8 +687,8 @@ export default function ReportPage() {
                 <MyCashflowRow
                   key={item?.id || i}
                   item={item}
-                  onEdit={(cf) => setEditCashflowId(String(cf.id))}
-                  onDelete={(cf) => {
+                  onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
+                  onDelete={(cf: any) => {
                     api.delete(apiRoutes.cashflow + "/" + cf.id).then(() => {
                       toast.success("O'chirildi");
                       queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });

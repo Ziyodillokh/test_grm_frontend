@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
+import { ListRow } from "@/components/ui/list-row";
 import {
   ChevronRight,
   CalendarDays,
@@ -14,6 +14,7 @@ import {
   Handshake,
   CreditCard,
 } from "lucide-react";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 const reports = [
   {
@@ -24,7 +25,7 @@ const reports = [
   },
   {
     title: "Qoldiq Hisoboti",
-    description: "O'zi norm faqat qaysi muddada qanchaligi ko'rinishi kerak",
+    description: "Mahsulotlar qoldig'i bo'yicha hisobot",
     link: "/m-manager/reports-hub/inventory",
     icon: Package,
   },
@@ -86,31 +87,26 @@ const reports = [
 
 export default function MManagerReportsHubPage() {
   const navigate = useNavigate();
+  const push = useBreadcrumbStore((s) => s.push);
 
   return (
-    <div className="p-4 space-y-3">
-      <h2 className="text-xl font-semibold mb-4">Hisobotlar</h2>
+    <div className="py-2 space-y-[4px]">
       {reports.map((report) => (
-        <Card
+        <ListRow
           key={report.link}
-          className="cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() => navigate(report.link)}
+          className="group flex items-center gap-[24px]"
+          onClick={() => {
+            push(report.title, report.link);
+            navigate(report.link);
+          }}
         >
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted">
-                <report.icon className="w-5 h-5 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="font-medium text-[15px]">{report.title}</p>
-                <p className="text-sm text-muted-foreground">
-                  {report.description}
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          <report.icon className="w-[28px] h-[28px] text-[#1a1a1a] shrink-0" strokeWidth={1.5} />
+          <div className="flex-1 min-w-0">
+            <p className="text-[17px] font-normal text-[#1a1a1a]">{report.title}</p>
+            <p className="text-[13px] text-[#a3a3a3] mt-[2px]">{report.description}</p>
           </div>
-        </Card>
+          <ChevronRight className="w-[24px] h-[24px] text-[#a3a3a3] group-hover:text-[#1a1a1a] shrink-0 transition-colors" strokeWidth={1.5} />
+        </ListRow>
       ))}
     </div>
   );

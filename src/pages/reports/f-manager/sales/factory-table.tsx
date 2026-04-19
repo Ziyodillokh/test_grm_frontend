@@ -3,8 +3,9 @@ import { FactoryColumns, ModelColumns } from "./columns";
 import SalesFilter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useSalesFilial, useSalesDealer, useSalesInternet, useSalesPartiya } from "./queries";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useYear } from "@/store/year-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 /**
  * Level 2 drill-down.
@@ -14,6 +15,8 @@ import { useYear } from "@/store/year-store";
 export default function FactoryTable() {
   const { year } = useYear();
   const navigate = useNavigate();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const { tabType, entityId, countryId } = useParams();
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
 
@@ -54,7 +57,11 @@ export default function FactoryTable() {
           isLoading={isLoading}
           isRowClickble={false}
           isNumberble
-          onRowClick={(item: any) => navigate(`${item.id}`)}
+          onRowClick={(item: any) => {
+            const path = `${location.pathname}/${item.id}`;
+            push(item.name || item.title || "Detail", path);
+            navigate(`${item.id}`);
+          }}
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage ?? false}
           isFetchingNextPage={isFetchingNextPage}

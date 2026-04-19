@@ -3,10 +3,12 @@ import { DataTable } from "@/components/ui/data-table";
 import formatPrice from "@/utils/formatPrice";
 import { useDebtClients } from "./queries";
 import { clientColumns } from "./columns";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function ClientDebtClients() {
   const navigate = useNavigate();
   const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const { filialId } = useParams();
   const { data, isLoading } = useDebtClients(filialId);
 
@@ -20,13 +22,6 @@ export default function ClientDebtClients() {
   return (
     <div>
       <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
-        <button
-          onClick={() => navigate(basePath)}
-          className="text-muted-foreground hover:text-foreground text-sm"
-        >
-          Qarz Hisoboti
-        </button>
-        <span className="text-muted-foreground">/</span>
         <p className="text-[16px] font-medium">Qarzdor Clientlar</p>
       </div>
 
@@ -56,9 +51,11 @@ export default function ClientDebtClients() {
         data={items}
         isLoading={isLoading}
         isRowClickble={false}
-        onRowClick={(row: any) =>
-          navigate(`${basePath}/${filialId}/${row.id}`)
-        }
+        onRowClick={(row: any) => {
+          const path = `${basePath}/${filialId}/${row.id}`;
+          push(row.firstName || row.name || "Mijoz", path);
+          navigate(path);
+        }}
       />
     </div>
   );

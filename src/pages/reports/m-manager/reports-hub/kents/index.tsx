@@ -1,6 +1,7 @@
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
 import { DataTable } from "@/components/ui/data-table";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { useYear } from "@/store/year-store";
 import { useKentReport } from "./queries";
 import { KentColumns } from "./columns";
@@ -8,6 +9,7 @@ import KentFilter from "./filter";
 
 export default function KentReportPage() {
   const navigate = useNavigate();
+  const push = useBreadcrumbStore((s) => s.push);
   const { year } = useYear();
   const [month] = useQueryState(
     "month",
@@ -49,9 +51,11 @@ export default function KentReportPage() {
         data={flatData}
         isLoading={isLoading}
         isRowClickble={true}
-        onRowClick={(row) =>
-          navigate(`/m-manager/reports-hub/clients/${row.id}`)
-        }
+        onRowClick={(row) => {
+          const path = `/m-manager/reports-hub/clients/${row.id}`;
+          push(row.fullName || "Detail", path);
+          navigate(path);
+        }}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage ?? false}
         isFetchingNextPage={isFetchingNextPage}
