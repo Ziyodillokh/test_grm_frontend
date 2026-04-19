@@ -1,6 +1,7 @@
 import {
   DefinedInitialDataInfiniteOptions,
   useInfiniteQuery,
+  useQuery,
 } from "@tanstack/react-query";
 
 import { getAllData } from "@/service/apiHelpers";
@@ -64,6 +65,17 @@ const useDataFetch = ({ options, queries, role }: ITransfers) =>
       }
     },
     initialPageParam: 1,
+  });
+
+export const useSearchFilials = (search: string | undefined) =>
+  useQuery({
+    queryKey: [apiRoutes.productSearchFilials, search],
+    queryFn: () =>
+      getAllData<{ id: string; title: string; count: number }[], { search: string }>(
+        apiRoutes.productSearchFilials,
+        { search: search! }
+      ),
+    enabled: !!search,
   });
 
 export default useDataFetch;

@@ -20,7 +20,7 @@ import { minio_img_url } from "@/constants";
 import debounce from "@/utils/debounce";
 import CarpetCard from "@/components/cards/carpet-card";
 
-import useDataFetch, { useCollectionDataFetch } from "./queries";
+import useDataFetch, { useCollectionDataFetch, useSearchFilials } from "./queries";
 import { ProductsData, CollectionData } from "../type";
 
 const productGridTemplate = "2fr 1fr 70px 70px 1fr 50px 60px 70px 1fr";
@@ -43,7 +43,7 @@ const collectionLabels = ["Kolleksiya", "Hajm", "Miqdor", "Narx"];
 export default function Page() {
   const [limit] = useQueryState("limit", parseAsInteger.withDefault(10));
   const [page] = useQueryState("page", parseAsInteger.withDefault(1));
-  const [filial] = useQueryState("filial");
+  const [filial, setFilial] = useQueryState("filial");
   const [search, setSearch] = useQueryState("search", parseAsString);
   const [card, setCard] = useQueryState("card", parseAsString.withDefault("list"));
   const [collection, _setCollection] = useQueryState(
@@ -52,10 +52,13 @@ export default function Page() {
   );
   const { meUser } = useMeStore();
 
-  const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(!!search);
   const [filterOpen, setFilterOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Product data fetch
+  const activeSearch = collection === "product" ? search || undefined : undefined;
+  const activeFilialId = filial || meUser?.filial?.id || undefined;
   const {
     data: productsData,
     isLoading: isProductsLoading,
@@ -66,8 +69,8 @@ export default function Page() {
     queries: {
       limit,
       page,
-      search: collection === "product" ? search || undefined : undefined,
-      filialId: filial || meUser?.filial?.id || undefined,
+      search: activeSearch,
+      filialId: activeFilialId,
     },
     role: meUser?.position?.role,
   });
@@ -111,6 +114,9 @@ export default function Page() {
 
   const isProductView = collection === "product";
   const isListView = card === "list";
+
+  // Search natijasi bo'lgan filiallar ro'yxati (backend dan)
+  const { data: searchFilials } = useSearchFilials(activeSearch);
 
   // Excel export
   const [excelPending, setExcelPending] = useState(false);
@@ -216,6 +222,7 @@ export default function Page() {
               />
             </svg>
             <Input
+              ref={searchInputRef}
               autoFocus
               defaultValue={search || ""}
               onChange={debounce(
@@ -230,7 +237,9 @@ export default function Page() {
             <X
               className="w-[16px] h-[16px] cursor-pointer text-[#A3A3A3] hover:text-[#1A1A1A]"
               onClick={() => {
+                if (searchInputRef.current) searchInputRef.current.value = "";
                 setSearch(null);
+                setFilial(null);
                 setShowSearch(false);
               }}
             />
@@ -458,6 +467,28 @@ export default function Page() {
               </span>
             ))}
           </div>
+
+          {/* Search natijasi bo'lgan filiallar */}
+          {activeSearch && searchFilials && searchFilials.length > 0 && (
+            <div className="flex items-center gap-[8px] mb-[10px] shrink-0 flex-wrap">
+              {searchFilials.map((f: { id: string; title: string; count: number }) => {
+                const isActive = activeFilialId === f.id;
+                return (
+                  <button
+                    key={f.id}
+                    onClick={() => setFilial(isActive && f.id !== meUser?.filial?.id ? null : f.id)}
+                    className={`text-[12px] px-[10px] py-[4px] rounded-full border transition-colors ${
+                      isActive
+                        ? "bg-[#1a1a1a] text-white border-[#1a1a1a]"
+                        : "bg-white text-[#1a1a1a] border-border hover:bg-gray-50"
+                    }`}
+                  >
+                    {f.title} ({f.count})
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Product rows */}
           <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
