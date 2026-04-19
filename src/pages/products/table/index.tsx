@@ -408,10 +408,10 @@ export default function Page() {
                 {displayTotals.count?.toLocaleString()} ta
               </span>
               <span className="text-[14px] font-medium text-[#1a1a1a]">
-                {displayTotals.kv?.toFixed(1)} m²
+                {displayTotals.kv?.toFixed(2)} m²
               </span>
               <span className="text-[14px] font-medium text-[#0078D4]">
-                ${displayTotals.sum?.toLocaleString()}
+                ${displayTotals.sum?.toFixed(2)}
               </span>
             </>
           ) : (
@@ -420,7 +420,7 @@ export default function Page() {
                 {(collectionMeta?.totalItems || collections.length).toLocaleString()} ta
               </span>
               <span className="text-[14px] font-medium text-[#1a1a1a]">
-                {collectionTotals.totalKv.toFixed(1)} m²
+                {collectionTotals.totalKv.toFixed(2)} m²
               </span>
               <span className="text-[14px] font-medium text-[#1a1a1a]">
                 {collectionTotals.totalCount.toLocaleString()} dona
