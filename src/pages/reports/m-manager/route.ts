@@ -10,6 +10,9 @@ import FoctoryTable from "./remaider/factory-table";
 import CollectionTable from "./remaider/collection-table";
 import ModelTable from "./remaider/model-table";
 import SizeTable from "./remaider/size-table";
+import PartiyaCollectionTable from "./remaider/partiya-collection-table";
+import PartiyaModelTable from "./remaider/partiya-model-table";
+import PartiyaSizeTable from "./remaider/partiya-size-table";
 import PageOrginal from "../report-orginal";
 import GeneralReportDetail from "../report-orginal/detail-page";
 
@@ -30,6 +33,25 @@ const Route = [
     Element: InventoryPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
+
+  // Partiya drill-down
+  {
+    url: "/m-manager/remaider-partiya/:partiyaId",
+    Element: PartiyaCollectionTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/remaider-partiya/:partiyaId/:collectionId",
+    Element: PartiyaModelTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/remaider-partiya/:partiyaId/:collectionId/:modelId",
+    Element: PartiyaSizeTable,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+
+  // Country drill-down
   {
     url: "/m-manager/report-remaider/:countryId",
     Element: FoctoryTable,
@@ -37,20 +59,20 @@ const Route = [
   },
   {
     url: "/m-manager/report-remaider/:countryId/:factoryId",
-    Element:CollectionTable,
+    Element: CollectionTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
     url: "/m-manager/report-remaider/:countryId/:factoryId/:collectionId",
-    Element:ModelTable,
+    Element: ModelTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
     url: "/m-manager/report-remaider/:countryId/:factoryId/:collectionId/:modelId",
-    Element:SizeTable,
+    Element: SizeTable,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  
+
   {
     url: "/m-manager/d-manager/report-monthly/:id/info",
     Element: PageDealerKassaReport,

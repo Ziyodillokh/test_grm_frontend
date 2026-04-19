@@ -2,7 +2,7 @@ import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ListRow } from "@/components/ui/list-row";
 import { parseAsString, useQueryState } from "nuqs";
-import { X, Loader, MoreVertical, Plus } from "lucide-react";
+import { X, Loader, MoreVertical, Plus, Lock, CheckCircle } from "lucide-react";
 import qs from "qs";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -28,6 +28,7 @@ import FilterSelect from "@/components/filters-ui/filter-select";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { useDataCashflow } from "@/pages/cashier/report/queries";
 import { useOpenKassa } from "@/pages/report/table/queries";
+import { useKassaReportSingle } from "@/pages/reports/m-manager/filial-report-finance/queries";
 import { apiRoutes } from "@/service/apiRoutes";
 import { getAllData, AddData, PatchData, UpdatePatchData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
@@ -50,6 +51,7 @@ const tipFilter: Record<string, string> = {
   discount: "discount",
   navar: "markup",
   debt: "debt",
+  saldo: "cashflow",
 };
 const typeFilter: Record<string, string> = {
   income: "Приход",
@@ -68,7 +70,7 @@ const cashflowLabels = [
   { text: "" },
 ];
 
-export default function FManagerCurrent() {
+export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string } = {}) {
   const { meUser } = useMeStore();
   const queryClient = useQueryClient();
   const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
@@ -90,12 +92,20 @@ export default function FManagerCurrent() {
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
 
-  // F-Manager o'z kassasi
-  const { data: reportData } = useOpenKassa({
-    id: meUser?.filial?.id,
+  // F-Manager o'z kassasi (faqat kassaIdProp bo'lmaganda)
+  const { data: openKassaData } = useOpenKassa({
+    id: kassaIdProp ? undefined : meUser?.filial?.id,
   });
 
-  const kassaId = reportData?.id || id || "";
+  // Kassa by ID (faqat kassaIdProp bo'lganda — oylik hisobotdan kelganda)
+  const { data: kassaByIdData } = useKassaReportSingle({
+    id: kassaIdProp,
+    enabled: Boolean(kassaIdProp),
+  });
+
+  const reportData = kassaIdProp ? kassaByIdData : openKassaData;
+  const kassaId = kassaIdProp || reportData?.id || id || "";
+  const kassaStatus = (reportData as any)?.status;
 
   // Sellers
   const { data: sellersData } = useData({
@@ -153,6 +163,17 @@ export default function FManagerCurrent() {
       ct.slug !== "balance"
   );
 
+  // Oyni yopish (warning status)
+  const { mutate: closeKassa, isPending: closePending } = useMutation({
+    mutationFn: () => PatchData(apiRoutes.kassaClose, { ids: [kassaId] }),
+    onSuccess: () => {
+      toast.success("Kassa muvaffaqiyatli yopildi");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.openKassa] });
+    },
+    onError: () => toast.error("Kassani yopishda xatolik"),
+  });
+
   // Excel export
   const { mutate: exportExcel, isPending: excelPending } = useMutation({
     mutationFn: async () => {
@@ -193,7 +214,7 @@ export default function FManagerCurrent() {
           sortSingle === "Все"
             ? typeFilter[tip as string]
             : sortSingle || typeFilter[tip as string],
-        cashflowSlug: tip === "collection" ? "cash_collection" : undefined,
+        cashflowSlug: tip === "collection" ? "cash_collection" : tip === "saldo" ? "balance" : undefined,
         status: cashflowStatus,
         search: search || undefined,
         sellerId: sellerId || undefined,
@@ -359,17 +380,40 @@ export default function FManagerCurrent() {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Kirim qo'shish */}
-        <Button onClick={() => openDialog("parish")} className="h-[42px] bg-[#47B13C] hover:bg-[#3da032] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
-          <Plus className="w-[16px] h-[16px] mr-[4px]" />
-          Kirim
-        </Button>
-
-        {/* Chiqim qo'shish */}
-        <Button onClick={() => openDialog("flow")} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
-          <Plus className="w-[16px] h-[16px] mr-[4px]" />
-          Chiqim
-        </Button>
+        {/* Status-based actions */}
+        {(!kassaStatus || kassaStatus === "open" || kassaStatus === "warning") && (
+          <>
+            {kassaStatus === "warning" ? (
+              <Button onClick={() => closeKassa()} disabled={closePending} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
+                {closePending ? <Loader className="w-4 h-4 mr-1 animate-spin" /> : <Lock className="w-4 h-4 mr-[4px]" />}
+                Oyni yopish
+              </Button>
+            ) : (
+              <>
+                <Button onClick={() => openDialog("parish")} className="h-[42px] bg-[#47B13C] hover:bg-[#3da032] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
+                  <Plus className="w-[16px] h-[16px] mr-[4px]" />
+                  Kirim
+                </Button>
+                <Button onClick={() => openDialog("flow")} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
+                  <Plus className="w-[16px] h-[16px] mr-[4px]" />
+                  Chiqim
+                </Button>
+              </>
+            )}
+          </>
+        )}
+        {(kassaStatus === "closed" || kassaStatus === "closed_by_d") && (
+          <div className="flex items-center gap-2 bg-[#FFA91E]/10 text-[#FFA91E] rounded-[8px] px-4 h-[42px] text-[14px] font-medium">
+            <Lock className="w-4 h-4" />
+            Yopilgan
+          </div>
+        )}
+        {kassaStatus === "accepted" && (
+          <div className="flex items-center gap-2 bg-[#47B13C]/10 text-[#47B13C] rounded-[8px] px-4 h-[42px] text-[14px] font-medium">
+            <CheckCircle className="w-4 h-4" />
+            Tasdiqlangan
+          </div>
+        )}
       </div>
 
       {/* Yashil card + 8 ta metrika */}
@@ -377,9 +421,11 @@ export default function FManagerCurrent() {
         data={reportTotalsData}
         filteredTotals={filteredTotals}
         hasActiveFilter={hasActiveFilter}
+        activeFilter={tip}
         onCardClick={handleCardClick}
         onIncomeClick={() => setTip(tip === "income" ? null : "income")}
         onExpenseClick={() => setTip(tip === "expense" ? null : "expense")}
+        onSaldoClick={() => setTip(tip === "saldo" ? null : "saldo")}
         onGreenCardClick={() => setTip(null)}
       />
 

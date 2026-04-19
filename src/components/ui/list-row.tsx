@@ -6,6 +6,7 @@ interface ListRowProps {
   className?: string;
   gridTemplate?: string;
   gridGap?: string;
+  minHeight?: number;
 }
 
 export function ListRow({
@@ -14,6 +15,7 @@ export function ListRow({
   className,
   gridTemplate,
   gridGap = "8px",
+  minHeight = 74,
 }: ListRowProps) {
   return (
     <div
@@ -24,7 +26,7 @@ export function ListRow({
         className
       )}
       style={{
-        minHeight: 74,
+        minHeight,
         ...(gridTemplate
           ? {
               display: "grid",

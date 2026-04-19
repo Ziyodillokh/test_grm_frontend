@@ -3,18 +3,15 @@ import { Loader } from "lucide-react";
 import Filter from "./filter";
 import { parseAsString, useQueryState } from "nuqs";
 import { useFilialSnapshot } from "./queries";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
-import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 const gridTemplate = "1fr 80px 120px 120px 100px";
-const columnLabels = ["Davlat", "Soni", "Hajm", "Summa", "Foyda"];
+const columnLabels = ["O'lcham", "Soni", "Hajm", "Summa", "Foyda"];
 
-export default function CountryTable() {
+export default function PartiyaSizeTable() {
   const { meUser } = useMeStore();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const push = useBreadcrumbStore((s) => s.push);
+  const { partiyaId, collectionId, modelId } = useParams();
   const [date] = useQueryState("date", parseAsString.withDefault(""));
   const [filialId] = useQueryState("filialId", parseAsString.withDefault(""));
   const [search] = useQueryState("search", parseAsString);
@@ -28,7 +25,10 @@ export default function CountryTable() {
         filialId: resolvedFilialId,
         date: date || undefined,
         search: search || undefined,
-        groupBy: "country",
+        groupBy: "size",
+        partiyaId,
+        collectionId,
+        modelId,
       },
     });
 
@@ -65,16 +65,11 @@ export default function CountryTable() {
               gridTemplate={gridTemplate}
               className="pl-[20px]"
               minHeight={60}
-              onClick={() => {
-                const path = `${location.pathname}/${item.id}`;
-                push(item.title || "Zavod", path);
-                navigate(path);
-              }}
             >
-              <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title || item?.country?.title}</span>
-              <span className="text-[13px] text-[#1a1a1a]">{(item.count || item.totalCount || 0).toLocaleString()} ta</span>
-              <span className="text-[13px] text-[#1a1a1a]">{(item.kv || item.totalKv || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²</span>
-              <span className="text-[13px] text-[#1a1a1a]">{(item.sum || item.totalPrice || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title?.split("x").map((v: string) => Math.round(parseFloat(v) * 100)).join("x")}</span>
+              <span className="text-[13px] text-[#1a1a1a]">{(item.count || 0).toLocaleString()} ta</span>
+              <span className="text-[13px] text-[#1a1a1a]">{(item.kv || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²</span>
+              <span className="text-[13px] text-[#1a1a1a]">{(item.sum || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $</span>
               <span className="text-[13px] text-[#47B13C]">+{(item.profit || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $</span>
             </ListRow>
           ))

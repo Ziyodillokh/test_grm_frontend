@@ -11,6 +11,8 @@ interface ReportTotalsProps {
   onCardClick?: (filterValue: string) => void;
   onIncomeClick?: () => void;
   onExpenseClick?: () => void;
+  onSaldoClick?: () => void;
+  showDebtLabel?: boolean;
 }
 
 const metricCards = [
@@ -35,7 +37,7 @@ const filteredTotalsMap: Record<string, string> = {
   totalDiscount: "totalDiscount",
 };
 
-export default function ReportTotals({ data, filteredTotals, hasActiveFilter, onGreenCardClick, activeFilter, onCardClick, onIncomeClick, onExpenseClick }: ReportTotalsProps) {
+export default function ReportTotals({ data, filteredTotals, hasActiveFilter, onGreenCardClick, activeFilter, onCardClick, onIncomeClick, onExpenseClick, onSaldoClick, showDebtLabel }: ReportTotalsProps) {
   const { meUser } = useMeStore();
   const role = meUser?.position?.role;
 
@@ -52,7 +54,8 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
     mainSum = data?.accountantSum || data?.accauntantSum || 0;
     saldo = data?.accountantSaldo || 0;
   } else {
-    mainSum = data?.totalSale || 0;
+    mainSum = data?.totalSale || data?.sale || 0;
+    saldo = showDebtLabel ? (data?.debt_sum || 0) : (data?.in_hand ?? data?.managerSaldo ?? 0);
   }
 
   return (
@@ -82,8 +85,11 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
               <span>${rasxod.toLocaleString()}</span>
             </div>
           </div>
-          <div className="text-[15px] opacity-50">
-            Saldo balans — ${saldo.toLocaleString()}
+          <div
+            className={`text-[15px] opacity-50 ${onSaldoClick ? "cursor-pointer hover:opacity-80" : ""} ${activeFilter === "saldo" ? "opacity-100 underline" : ""}`}
+            onClick={(e) => { e.stopPropagation(); onSaldoClick?.(); }}
+          >
+            {showDebtLabel ? "Qoldiq qarzlar" : "Saldo balans"} — ${saldo.toLocaleString()}
           </div>
           <svg className="absolute right-[10px] bottom-[20px] opacity-70" width="92" height="60" viewBox="0 0 61 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path opacity="0.3" d="M6.72032 23.7873L0.368164 30.6778V40H60.3677V2.64208L55.5589 5.65377C53.8525 6.72247 52.4565 8.22039 51.5105 9.99777C48.9524 14.804 43.3749 17.1583 38.1467 15.6386L35.4451 14.8534C34.0685 14.4533 32.9121 13.5137 32.2385 12.2482C29.9493 7.94705 23.5607 8.73988 22.3922 13.4702L20.8222 19.8261C19.9904 23.1934 16.1106 24.7635 13.1711 22.9226C11.0929 21.621 8.38237 21.9844 6.72032 23.7873Z" fill="url(#paint0_linear_green)"/>

@@ -75,6 +75,7 @@ export interface TQuery {
   factoryId?: string;
   collectionId?: string;
   modelId?: string;
+  partiyaId?: string;
   limit?: number;
   page?: number;
   year?: number;
