@@ -19,6 +19,7 @@ import { useYear } from "@/store/year-store";
 import { useDealerKassaDetail } from "@/pages/reports/d-manager/report/queries";
 import formatPrice from "@/utils/formatPrice";
 import debounce from "@/utils/debounce";
+import ReportTotalsBar from "@/components/report-totals-bar";
 
 const yearsArray = Array.from({ length: 5 }, (_, i) => {
   const y = new Date().getFullYear() - i;
@@ -164,19 +165,11 @@ export default function DealerDetailPage() {
           </SheetContent>
         </Sheet>
 
-        {/* Totals */}
-        <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
-          <span className="text-[13px] text-[#A3A3A3]">{dealer?.title || ""}</span>
-          <span className="text-[14px] font-medium text-[#FF6600]">
-            {formatPrice(totals?.period_owed || 0)} $
-          </span>
-          <span className="text-[14px] font-medium text-[#47B13C]">
-            {formatPrice(totals?.period_given || 0)} $
-          </span>
-          <span className="text-[14px] font-bold text-[#1a1a1a]">
-            {formatPrice(dealer?.balance || 0)} $
-          </span>
-        </div>
+        <ReportTotalsBar items={[
+          { label: dealer?.title, value: totals?.period_owed || 0, color: "#FF6600" },
+          { value: totals?.period_given || 0, color: "#47B13C" },
+          { value: dealer?.balance || 0, color: "#1a1a1a" },
+        ]} />
       </div>
 
       {/* Column labels */}

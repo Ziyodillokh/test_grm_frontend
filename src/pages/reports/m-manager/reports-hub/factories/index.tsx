@@ -71,7 +71,7 @@ export default function FactoryReportPage() {
               <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title}</span>
               <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.owed || 0)} $</span>
               <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
-              <span className="text-[13px] font-bold text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
             </ListRow>
           ))
         )}

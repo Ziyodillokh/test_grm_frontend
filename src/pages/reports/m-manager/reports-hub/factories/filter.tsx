@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import debounce from "@/utils/debounce";
 import { MonthsArray } from "@/consts";
-import formatPrice from "@/utils/formatPrice";
+import ReportTotalsBar from "@/components/report-totals-bar";
 import { FactoryReportTotals } from "./type";
 
 const yearsArray = Array.from({ length: 5 }, (_, i) => {
@@ -118,19 +118,11 @@ export default function FactoryFilter({
         </SheetContent>
       </Sheet>
 
-      {/* Totals */}
-      <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
-        <span className="text-[13px] text-[#A3A3A3]">Umumiy:</span>
-        <span className="text-[14px] font-medium text-[#FF6600]">
-          {formatPrice(totals?.total_owed || 0)} $
-        </span>
-        <span className="text-[14px] font-medium text-[#47B13C]">
-          {formatPrice(totals?.total_given || 0)} $
-        </span>
-        <span className="text-[14px] font-bold text-[#1a1a1a]">
-          {formatPrice(totals?.total_debt || 0)} $
-        </span>
-      </div>
+      <ReportTotalsBar items={[
+        { label: "Umumiy:", value: totals?.total_owed || 0, color: "#FF6600" },
+        { value: totals?.total_given || 0, color: "#47B13C" },
+        { value: totals?.total_debt || 0, color: "#1a1a1a" },
+      ]} />
     </div>
   );
 }
