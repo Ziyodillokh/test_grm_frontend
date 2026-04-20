@@ -1,137 +1,81 @@
-import { useState } from "react";
-import { parseAsInteger, useQueryState } from "nuqs";
-import { useNavigate } from "react-router-dom";
-import { MoreHorizontal } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { parseAsString, useQueryState } from "nuqs";
+import { Loader } from "lucide-react";
+import { ListRow } from "@/components/ui/list-row";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
-import { useQueryClient } from "@tanstack/react-query";
-import { DataTable } from "@/components/ui/data-table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import ShadcnSelect from "@/components/Select";
-import { useYear } from "@/store/year-store";
-import { apiRoutes } from "@/service/apiRoutes";
-import api from "@/service/fetchInstance";
-import { useFactoryReport, useFactoryNotReportEnabled } from "./queries";
-import { FactoryColumns } from "./columns";
+import formatPrice from "@/utils/formatPrice";
+
 import FactoryFilter from "./filter";
-import { FactoryReportItem } from "./type";
+import { useFactoryReport } from "./queries";
+
+const gridTemplate = "40px 1fr 120px 120px 120px";
+const columnLabels = ["№", "Nomi", "Umumiy qarzi", "To'langani", "Qoldig'i"];
 
 export default function FactoryReportPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const push = useBreadcrumbStore((s) => s.push);
-  const queryClient = useQueryClient();
-  const { year } = useYear();
-  const [search] = useQueryState("search");
-  const [limit] = useQueryState("limit", parseAsInteger.withDefault(20));
-  const [addFactoryId, setAddFactoryId] = useState<string | undefined>();
+  const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
+  const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
+  const [search] = useQueryState("search", parseAsString);
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useFactoryReport({
-      queries: {
-        year,
-        search: search || undefined,
-        limit,
-      },
-    });
+  const year = Number(yearFilter);
 
-  const { data: notEnabledFactories } = useFactoryNotReportEnabled();
+  const basePath = location.pathname.includes("/d-manager/")
+    ? "/d-manager/reports-hub/factories"
+    : "/m-manager/reports-hub/factories";
 
-  const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const { data, isLoading } = useFactoryReport({
+    queries: {
+      year,
+      search: search || undefined,
+      limit: 100,
+    },
+  });
+
+  const items = data?.pages?.flatMap((page) => page?.items || []) || [];
   const totals = data?.pages?.[0]?.totals;
 
-  const handleExport = () => {
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-    window.open(
-      `${baseUrl}/factory/report/excel?year=${year}`,
-      "_blank"
-    );
-  };
-
-  const handleToggleReport = async (factoryId: string) => {
-    await api.patch(`/factory/${factoryId}/toggle-report`);
-    queryClient.invalidateQueries({ queryKey: [apiRoutes.factoryDebtReport] });
-    queryClient.invalidateQueries({
-      queryKey: [apiRoutes.factoryNotReportEnabled],
-    });
-  };
-
-  const handleAddFactory = async (factoryId: string | undefined) => {
-    if (!factoryId) return;
-    setAddFactoryId(undefined);
-    await handleToggleReport(factoryId);
-  };
-
-  const columnsWithActions = [
-    ...FactoryColumns,
-    {
-      id: "actions",
-      cell: ({ row }: { row: { original: FactoryReportItem } }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggleReport(row.original.id);
-              }}
-              className="text-red-600"
-            >
-              Olib tashlash
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ];
-
-  const factoryOptions =
-    (notEnabledFactories as any[])?.map((f: any) => ({
-      value: f.id,
-      label: f.title,
-    })) || [];
-
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
-        <div className="w-[280px]">
-          <ShadcnSelect
-            value={addFactoryId}
-            options={factoryOptions}
-            placeholder="Zavod qo'shish..."
-            onChange={handleAddFactory}
-          />
-        </div>
+    <div className="flex flex-col h-full">
+      <FactoryFilter totals={totals} />
+
+      <div
+        className="mb-[10px] shrink-0 px-[12px]"
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+      >
+        {columnLabels.map((label, i) => (
+          <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
+        ))}
       </div>
 
-      <FactoryFilter
-        totals={totals}
-        showExport={true}
-        onExport={handleExport}
-      />
-
-      <DataTable
-        columns={columnsWithActions}
-        data={flatData}
-        isLoading={isLoading}
-        isRowClickble={false}
-        onRowClick={(row) => {
-          const path = `/m-manager/reports-hub/factories/${row.id}`;
-          push(row.title || "Detail", path);
-          navigate(path);
-        }}
-        fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage ?? false}
-        isFetchingNextPage={isFetchingNextPage}
-      />
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[200px]">
+            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+          </div>
+        ) : (
+          items.map((item: any, i: number) => (
+            <ListRow
+              key={item.id || i}
+              gridTemplate={gridTemplate}
+              className="pl-[12px]"
+              minHeight={60}
+              onClick={() => {
+                const path = `${basePath}/${item.id}?month=${month}&year=${year}`;
+                push(item.title || "Zavod", `${basePath}/${item.id}`);
+                navigate(path);
+              }}
+            >
+              <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title}</span>
+              <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.owed || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
+              <span className="text-[13px] font-bold text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
+            </ListRow>
+          ))
+        )}
+      </div>
     </div>
   );
 }
