@@ -28,7 +28,7 @@ export default function UserFilter() {
 
   const { data: filialData } = usefilialWarehouseFetch({
     queries: { limit: 50 },
-    enabled: isManager,
+    options: { enabled: isManager } as any,
   });
   const filialOptions =
     filialData?.pages?.[0]?.items?.map((e: any) => ({
