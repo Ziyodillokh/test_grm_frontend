@@ -13,11 +13,10 @@ export const useDealerReport = ({
   enabled = true,
 }: IDealerReportQuery) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.dealer, "report", queries],
+    queryKey: [apiRoutes.dealerReport, queries],
     queryFn: ({ pageParam = 1 }) =>
-      getAllData<DealerReportResponse, DealerReportQuery>(apiRoutes.filial, {
+      getAllData<DealerReportResponse, DealerReportQuery>(apiRoutes.dealerReport, {
         ...queries,
-        type: "dealer",
         page: pageParam as number,
         limit: queries?.limit || 50,
       }),

@@ -151,6 +151,7 @@ export const apiRoutes = {
   customs: '/bojxona',
   customsReport: '/bojxona/report',
   customsReportExcel: '/bojxona/report/excel',
+  dealerReport: '/reports/dealer-report',
   dealerKassaDetail: '/reports/dealer',
   packageTransferCancel: '/package-transfer',
   packageTransferReturn: '/package-transfer',
