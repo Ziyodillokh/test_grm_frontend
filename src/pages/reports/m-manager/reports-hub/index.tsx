@@ -38,7 +38,7 @@ const reports = [
   {
     title: "Kentlar Hisoboti",
     description: "Mijozlar qarzdorligi",
-    link: "/m-manager/reports-hub/clients",
+    link: "/m-manager/reports-hub/kents",
     icon: Users,
   },
   {

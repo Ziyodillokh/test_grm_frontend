@@ -418,7 +418,13 @@ export const DataMenu = {
       id: 32,
       icons: () => RefreshCcwIcon(),
       link: "/transfers",
-      text: "Transfer",
+      text: "Transferlar",
+    },
+    {
+      id: 33,
+      icons: () => PartiesIcons(),
+      link: "/parties",
+      text: "Partiyalar",
     },
     {
       id: 3,
