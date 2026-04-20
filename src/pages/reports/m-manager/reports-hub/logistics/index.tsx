@@ -1,125 +1,79 @@
-import { useState } from "react";
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Loader, Plus } from "lucide-react";
+import { parseAsString, useQueryState } from "nuqs";
+import { Loader } from "lucide-react";
+import { ListRow } from "@/components/ui/list-row";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
-import { DataTable } from "@/components/ui/data-table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useYear } from "@/store/year-store";
-import { apiRoutes } from "@/service/apiRoutes";
-import api from "@/service/fetchInstance";
-import { useLogisticsReport } from "./queries";
-import { LogisticsColumns } from "./columns";
+import formatPrice from "@/utils/formatPrice";
+
 import LogisticsFilter from "./filter";
+import { useLogisticsReport } from "./queries";
+
+const gridTemplate = "40px 1fr 120px 120px 120px 120px 120px";
+const columnLabels = ["№", "Nomi", "Umumiy qarzi", "To'langani", "Qoldig'i", "Davriy qarzi", "Davriy to'langan"];
 
 export default function LogisticsReportPage() {
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
-  const queryClient = useQueryClient();
-  const { year } = useYear();
-  const [month] = useQueryState(
-    "month",
-    parseAsString.withDefault(String(new Date().getMonth() + 1))
-  );
-  const [search] = useQueryState("search");
-  const [limit] = useQueryState("limit", parseAsInteger.withDefault(20));
+  const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
+  const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
+  const [search] = useQueryState("search", parseAsString);
 
-  const [newTitle, setNewTitle] = useState("");
+  const year = Number(yearFilter);
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useLogisticsReport({
-      queries: {
-        year,
-        month: Number(month),
-        search: search || undefined,
-        limit,
-      },
-    });
-
-  const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
-  const totals = data?.pages?.[0]?.totals;
-
-  const { mutate: createLogistics, isPending: isCreating } = useMutation({
-    mutationFn: (title: string) =>
-      api.post(apiRoutes.logistics, { title }),
-    onSuccess: () => {
-      toast.success("Logistika kompaniya qo'shildi");
-      setNewTitle("");
-      queryClient.invalidateQueries({
-        queryKey: [apiRoutes.logisticsReport],
-      });
-    },
-    onError: () => {
-      toast.error("Xatolik yuz berdi");
+  const { data, isLoading } = useLogisticsReport({
+    queries: {
+      year,
+      month: Number(month),
+      search: search || undefined,
+      limit: 100,
     },
   });
 
-  const handleCreate = () => {
-    const title = newTitle.trim();
-    if (!title) {
-      toast.error("Nomini kiriting");
-      return;
-    }
-    createLogistics(title);
-  };
-
-  const handleExport = () => {
-    const baseUrl = import.meta.env.VITE_BASE_URL;
-    window.open(
-      `${baseUrl}/logistics/report/excel?year=${year}&month=${month}`,
-      "_blank"
-    );
-  };
+  const items = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const totals = data?.pages?.[0]?.totals;
 
   return (
-    <div className="h-full overflow-y-auto">
-      <LogisticsFilter
-        totals={totals}
-        showExport={true}
-        onExport={handleExport}
-      />
+    <div className="flex flex-col h-full">
+      <LogisticsFilter totals={totals} />
 
-      {/* Add logistics input */}
-      <div className="flex items-center gap-2 p-3 bg-sidebar border-b border-border">
-        <Input
-          placeholder="Logistika kompaniya nomi..."
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-          className="max-w-[300px] h-9"
-        />
-        <Button
-          onClick={handleCreate}
-          disabled={isCreating || !newTitle.trim()}
-          size="sm"
-          className="h-9"
-        >
-          {isCreating ? (
-            <Loader className="h-4 w-4 animate-spin" />
-          ) : (
-            <Plus className="h-4 w-4" />
-          )}
-          Qo'shish
-        </Button>
+      <div
+        className="mb-[10px] shrink-0 px-[12px]"
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+      >
+        {columnLabels.map((label, i) => (
+          <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
+        ))}
       </div>
 
-      <DataTable
-        columns={LogisticsColumns}
-        data={flatData}
-        isLoading={isLoading}
-        isRowClickble={true}
-        onRowClick={(row) => {
-          const path = `/m-manager/reports-hub/logistics/${row.id}`;
-          push(row.title || "Detail", path);
-          navigate(path);
-        }}
-        fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage ?? false}
-        isFetchingNextPage={isFetchingNextPage}
-      />
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[200px]">
+            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+          </div>
+        ) : (
+          items.map((item: any, i: number) => (
+            <ListRow
+              key={item.id || i}
+              gridTemplate={gridTemplate}
+              className="pl-[12px]"
+              minHeight={60}
+              onClick={() => {
+                const path = `/m-manager/reports-hub/logistics/${item.id}?month=${month}&year=${year}`;
+                push(item.title || "Logistika", `/m-manager/reports-hub/logistics/${item.id}`);
+                navigate(path);
+              }}
+            >
+              <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title}</span>
+              <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.owed || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
+              <span className="text-[13px] text-[#FF6600]">{formatPrice(item.period_income || 0)} $</span>
+              <span className="text-[13px] text-[#47B13C]">{formatPrice(item.period_expense || 0)} $</span>
+            </ListRow>
+          ))
+        )}
+      </div>
     </div>
   );
 }
