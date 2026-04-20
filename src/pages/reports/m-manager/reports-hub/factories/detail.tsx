@@ -15,20 +15,23 @@ import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { ListRow } from "@/components/ui/list-row";
 import { MonthsArray } from "@/consts";
+import { useMeStore } from "@/store/me-store";
 import { useFactoryDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
 import debounce from "@/utils/debounce";
+import TebleAvatar from "@/components/teble-avatar";
 
 const yearsArray = Array.from({ length: 5 }, (_, i) => {
   const y = new Date().getFullYear() - i;
   return { label: String(y), value: String(y) };
 });
 
-const gridTemplate = "80px 120px 120px 1fr 40px";
-const columnLabels = ["Summa", "Turi", "Sana", "Ma'lumotlar", ""];
+const gridTemplate = "90px 60px 120px 120px 1fr 40px";
+const columnLabels = ["Summa", "", "Turi", "Sana", "Ma'lumotlar", ""];
 
 export default function FactoryDetailPage() {
   const { factoryId } = useParams();
+  const { meUser } = useMeStore();
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
   const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
   const [search, setSearch] = useQueryState("search", parseAsString);
@@ -152,10 +155,10 @@ export default function FactoryDetailPage() {
         {/* Totals */}
         <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
           <span className="text-[13px] text-[#A3A3A3]">{factory?.title || ""}</span>
-          <span className="text-[14px] font-medium text-[#FF6600]">
+          <span className="text-[14px] font-medium text-[#3ABC49]">
             {formatPrice(totals?.period_owed || 0)} $
           </span>
-          <span className="text-[14px] font-medium text-[#47B13C]">
+          <span className="text-[14px] font-medium text-[#EF5C12]">
             {formatPrice(totals?.period_given || 0)} $
           </span>
           <span className="text-[14px] font-bold text-[#1a1a1a]">
@@ -186,6 +189,18 @@ export default function FactoryDetailPage() {
             const isExpanded = expandedRows.has(item.id);
             const hasCollections = isPartiya && item.collections && item.collections.length > 0;
 
+            // Partiya = kirim (green) — we received goods, became indebted
+            // Payment = chiqim (red) — we paid, debt reduced
+            const typeColor = isPartiya ? "#3ABC49" : "#EF5C12";
+
+            // Avatar: partiya = M-manager, payment = who_paid
+            const avatarName = isPartiya
+              ? (meUser?.firstName || "M")
+              : (item.who_paid?.split(" ")?.[0] || "?");
+            const avatarUrl = isPartiya
+              ? meUser?.avatar?.path
+              : undefined;
+
             return (
               <div key={item.id}>
                 <ListRow
@@ -198,16 +213,26 @@ export default function FactoryDetailPage() {
                 >
                   {/* Summa */}
                   <div className="text-right">
-                    <span className={`text-[15px] font-medium ${isPartiya ? "text-[#FF6600]" : "text-[#1a1a1a]"}`}>
-                      {isPartiya ? "-" : "+"} {formatPrice(item.total_cost || 0)}
+                    <span className={`text-[15px] font-medium ${isPartiya ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+                      {isPartiya ? "+" : "-"} {formatPrice(item.total_cost || 0)}
                     </span>
+                  </div>
+
+                  {/* Avatar */}
+                  <div className="flex items-center justify-center">
+                    <TebleAvatar
+                      size={42}
+                      name={avatarName}
+                      url={avatarUrl}
+                      status="success"
+                    />
                   </div>
 
                   {/* Turi */}
                   <div className="flex items-center gap-[6px]">
                     <span
                       className="w-[6px] h-[6px] rounded-full shrink-0"
-                      style={{ backgroundColor: isPartiya ? "#FF6600" : "#3ABC49" }}
+                      style={{ backgroundColor: typeColor }}
                     />
                     <span className="text-[13px] font-medium text-[#1a1a1a]">
                       {isPartiya ? "Partiya" : "To'lov"}
@@ -229,7 +254,12 @@ export default function FactoryDetailPage() {
                         ) : null}
                       </>
                     ) : (
-                      <>{item.comment || "—"}</>
+                      <>
+                        {item.comment || "—"}
+                        {item.who_paid && (
+                          <span className="text-[#a3a3a3] ml-2">({item.who_paid})</span>
+                        )}
+                      </>
                     )}
                   </span>
 
@@ -255,10 +285,11 @@ export default function FactoryDetailPage() {
                         style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "16px", alignItems: "center" }}
                       >
                         <div className="text-right">
-                          <span className="text-[13px] font-medium text-[#FF6600]">
+                          <span className="text-[13px] font-medium text-[#1a1a1a]">
                             {formatPrice(col.total_cost)} $
                           </span>
                         </div>
+                        <div />
                         <div />
                         <div />
                         <div className="text-[13px] text-[#1a1a1a] flex items-center gap-[12px]">
