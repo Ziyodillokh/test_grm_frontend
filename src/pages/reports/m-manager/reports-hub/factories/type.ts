@@ -5,10 +5,13 @@ export interface FactoryReportItem {
   owed: number;
   given: number;
   totalDebt: number;
+  period_owed: number;
+  period_given: number;
 }
 
 export interface FactoryReportQuery {
   year?: number;
+  month?: number;
   search?: string;
   page?: number;
   limit?: number;

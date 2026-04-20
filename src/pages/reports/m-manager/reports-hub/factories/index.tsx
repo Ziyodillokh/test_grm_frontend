@@ -8,8 +8,8 @@ import formatPrice from "@/utils/formatPrice";
 import FactoryFilter from "./filter";
 import { useFactoryReport } from "./queries";
 
-const gridTemplate = "40px 1fr 120px 120px 120px";
-const columnLabels = ["№", "Nomi", "Umumiy qarzi", "To'langani", "Qoldig'i"];
+const gridTemplate = "40px 1fr 120px 120px 120px 120px 120px";
+const columnLabels = ["№", "Nomi", "Umumiy qarzi", "To'langani", "Qoldig'i", "Davriy qarzi", "Davriy to'langan"];
 
 export default function FactoryReportPage() {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export default function FactoryReportPage() {
   const { data, isLoading } = useFactoryReport({
     queries: {
       year,
+      month: Number(month),
       search: search || undefined,
       limit: 100,
     },
@@ -72,6 +73,8 @@ export default function FactoryReportPage() {
               <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.owed || 0)} $</span>
               <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
+              <span className="text-[13px] text-[#FF6600]">{formatPrice(item.period_owed || 0)} $</span>
+              <span className="text-[13px] text-[#47B13C]">{formatPrice(item.period_given || 0)} $</span>
             </ListRow>
           ))
         )}
