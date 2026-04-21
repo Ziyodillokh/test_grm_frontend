@@ -458,28 +458,10 @@ export const DataMenu = {
       text: "Hisobotlar",
     },
     {
-      id: 2,
-      icons: () => UfoBottom(),
-      link: "/dealer",
-      text: "Дилеры",
-    },
-    {
       id: 3,
       icons: () => PersonsIcons(),
       link: "/user",
       text: "Сотрудники",
-    },
-    {
-      id: 37,
-      icons: () => ClientsIcon(),
-      link: "/debt",
-      text: "Кенты",
-    },
-    {
-      id: 3,
-      icons: () => PriceIcons({}),
-      link: "/price",
-      text: "Цени и скидки",
     },
     {
       id: 50,
