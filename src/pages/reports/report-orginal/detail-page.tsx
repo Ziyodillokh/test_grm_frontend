@@ -1,4 +1,4 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { getMonth } from "date-fns";
 import { Loader } from "lucide-react";
@@ -37,7 +37,6 @@ const filialGridTemplate = "40px 1fr 130px";
 
 export default function ReportDetailPage() {
   const { type } = useParams<{ type: string }>();
-  const location = useLocation();
   const { meUser } = useMeStore();
   const { year } = useYear();
   const [month] = useQueryState(
