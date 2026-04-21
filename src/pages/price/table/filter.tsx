@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import debounce from "@/utils/debounce";
 
-export default function PriceFilter({ children }: { children?: React.ReactNode }) {
+export default function PriceFilter({ children, hideTabs }: { children?: React.ReactNode; hideTabs?: boolean }) {
   const navigate = useNavigate();
   const pathName = useLocation().pathname;
 
@@ -68,24 +68,26 @@ export default function PriceFilter({ children }: { children?: React.ReactNode }
       </button>
 
       {/* Tabs */}
-      <div className="flex items-center gap-[2px] bg-white rounded-sm px-[4px] h-[42px]">
-        <Button
-          variant="ghost"
-          size="sm"
-          className={`h-[34px] rounded-sm text-[13px] ${pathName === "/price" ? "bg-[#F5F5F5] font-medium" : ""}`}
-          onClick={() => navigate("/price")}
-        >
-          Narxlar
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={`h-[34px] rounded-sm text-[13px] ${pathName === "/discount" ? "bg-[#F5F5F5] font-medium" : ""}`}
-          onClick={() => navigate("/discount")}
-        >
-          Chegirmalar
-        </Button>
-      </div>
+      {!hideTabs && (
+        <div className="flex items-center gap-[2px] bg-white rounded-sm px-[4px] h-[42px]">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`h-[34px] rounded-sm text-[13px] ${pathName === "/price" ? "bg-[#F5F5F5] font-medium" : ""}`}
+            onClick={() => navigate("/price")}
+          >
+            Narxlar
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`h-[34px] rounded-sm text-[13px] ${pathName === "/discount" ? "bg-[#F5F5F5] font-medium" : ""}`}
+            onClick={() => navigate("/discount")}
+          >
+            Chegirmalar
+          </Button>
+        </div>
+      )}
 
       {children}
     </div>

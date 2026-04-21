@@ -9,10 +9,12 @@ import { FilialReportData, ProductQuery } from "../type";
 interface IData {
   options?: DefinedInitialDataOptions<TResponse<FilialReportData>>;
   queries?: ProductQuery;
+  enabled?: boolean;
 }
-const useDataFetch = ({ options, queries }: IData) =>
+const useDataFetch = ({ options, queries, enabled = true }: IData) =>
   useQuery({
     ...options,
+    enabled,
     queryKey: [apiRoutes.filialReport, queries],
     queryFn: () =>
       getAllData<TResponse<FilialReportData>, ProductQuery>(apiRoutes.filialReport, queries),

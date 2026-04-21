@@ -28,7 +28,6 @@ import {
   TagIcon,
   UsersIcon,
   BooksIcon,
-  PieChartIcon,
 } from "./sidebar-icons";
 
 // {
@@ -108,12 +107,6 @@ export const DataMenu = {
       icons: () => BooksIcon(),
       link: "/data-library",
       text: "Markaziy ma'lumotlar",
-    },
-    {
-      id: 9,
-      icons: () => PieChartIcon(),
-      link: "/monitoring",
-      text: "Monitoring",
     },
   ],
   5: [
@@ -450,12 +443,6 @@ export const DataMenu = {
       link: "/data-library",
       text: "Markaziy ma'lumotlar",
     },
-    {
-      id: 7,
-      icons: () => PieChartIcon(),
-      link: "/monitoring",
-      text: "Monitoring",
-    },
   ],
   10: [
     {
@@ -505,7 +492,7 @@ export const DataMenu = {
     {
       id: 1,
       icons: () => HomeIcons(),
-      link: "/monitoring", // This should point to the monitoring dashboard
+      link: "/dashboard",
       text: "Мониторинг",
     },
     {

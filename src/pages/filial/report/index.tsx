@@ -15,13 +15,15 @@ export default function SingleReportPage() {
   const [,setReportStatus] = useQueryState("reportStatus");
   const { id } = useParams();
   const {meUser} = useMeStore()
+  const filialId = id === "my-filial" ? meUser?.filial?.id : id || undefined;
   const { data, isLoading } = useDataFetch({
     queries: {
       limit,
       page,
       search: search || undefined,
-      filialId: id == "my-filial" ?meUser?.filial?.id:id || undefined,
+      filialId,
     },
+    enabled: !!filialId,
   });
 
   return (

@@ -231,19 +231,19 @@ export function Conent() {
     <>
       {/* Toolbar — FilterSelects + Excel */}
       <div className="flex items-center gap-[4px] mb-[10px] shrink-0">
-        <FilterSelect
-          placeholder="Barchasi"
-          disabled={isFManager}
-          className="h-[42px] bg-white rounded-sm min-w-[160px]"
-          options={[
-            { value: "clear", label: "Barchasi" },
-            { value: "#dealers", label: "Diller" },
-            ...filialOption,
-          ]}
-          name="filial"
-          defaultValue={isFManager ? meUser?.filial?.id : undefined}
-          icons={FilialIcon}
-        />
+        {!isFManager && (
+          <FilterSelect
+            placeholder="Barchasi"
+            className="h-[42px] bg-white rounded-sm min-w-[160px]"
+            options={[
+              { value: "clear", label: "Barchasi" },
+              { value: "#dealers", label: "Diller" },
+              ...filialOption,
+            ]}
+            name="filial"
+            icons={FilialIcon}
+          />
+        )}
         <FilterSelect
           placeholder="Oy tanlang"
           className="h-[42px] bg-white rounded-sm min-w-[140px]"

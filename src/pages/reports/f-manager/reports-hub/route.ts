@@ -14,12 +14,12 @@ import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
 import SizeTable from "../remaider/size-table";
-import SalesPage from "../sales";
-import SalesCountryTable from "../sales/country-table";
-import SalesFactoryTable from "../sales/factory-table";
-import SalesCollectionTable from "../sales/collection-table";
-import SalesModelTable from "../sales/model-table";
-import SalesSizeTable from "../sales/size-table";
+import SalesPage from "../../m-manager/sales";
+import SalesCountryTable from "../../m-manager/sales/country-table";
+import SalesFactoryTable from "../../m-manager/sales/factory-table";
+import SalesCollectionTable from "../../m-manager/sales/collection-table";
+import SalesModelTable from "../../m-manager/sales/model-table";
+import SalesSizeTable from "../../m-manager/sales/size-table";
 
 const Route = [
   {

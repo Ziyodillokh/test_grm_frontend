@@ -1,11 +1,3 @@
-import Page from ".";
-
-const Route = [
-  {
-    url: "/monitoring",
-    Element: Page,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-];
+const Route: { url: string; Element: React.ComponentType; meta: { isAuth: boolean; role: Set<string> } }[] = [];
 
 export default Route;

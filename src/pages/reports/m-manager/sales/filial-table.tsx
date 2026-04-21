@@ -67,9 +67,16 @@ export default function FilialTable() {
               className="pl-[20px]"
               minHeight={60}
               onClick={() => {
-                const path = `${location.pathname}/filial/${item.id}`;
-                push(item.title || "Davlat", path);
-                navigate(path);
+                if (autoFilialId) {
+                  // F-manager: already showing countries, skip to factory level
+                  const path = `${location.pathname}/filial/${autoFilialId}/${item.id}`;
+                  push(item.title || "Zavod", path);
+                  navigate(path);
+                } else {
+                  const path = `${location.pathname}/filial/${item.id}`;
+                  push(item.title || "Davlat", path);
+                  navigate(path);
+                }
               }}
             >
               <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title}</span>
