@@ -13,13 +13,93 @@ import { FilialReportData } from "../type";
 import { useMeStore } from "@/store/me-store";
 import { useState } from "react";
 
+function StatusCell({ row }: { row: { original: FilialReportData } }) {
+  const { meUser } = useMeStore();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [status, setStatus] = useState<string>(row.original.status);
+
+  const StatusText = {
+    open: "Отправить на подтверждение",
+    accepted: "В ожидании...",
+    closed: "Принято",
+  };
+
+  const StatusMManaerText = {
+    open: "Принимается",
+    accepted: "Принять переучёт",
+    closed: "Принято",
+  };
+
+  if (status === "Accepted" && meUser?.position?.role !== 4) {
+    return (
+      <p
+        onClick={(e) => {
+          e.stopPropagation();
+          UpdatePatchData("product/close-report", id || "", {})
+            .then(() => {
+              navigate(`/filial/${id}/info`);
+              toast.success("Переучёт Принять");
+              setStatus("closed");
+            })
+            .catch(() => toast.error("что-то пошло не так"));
+        }}
+        className="px-4 py-3 rounded-[1000px] inline-block text-[#F0F0E5] bg-[#89A143]"
+      >
+        Принять
+      </p>
+    );
+  }
+
+  return (
+    <p className="px-4 py-3 rounded-[1000px] inline-block border-border border">
+      {status
+        ? meUser?.position?.role === 4
+          ? StatusText[status?.toLowerCase() as keyof typeof StatusText]
+          : StatusMManaerText[status?.toLowerCase() as keyof typeof StatusMManaerText]
+        : ""}
+    </p>
+  );
+}
+
+function ActionsCell({ row }: { row: { original: FilialReportData } }) {
+  const queryClient = useQueryClient();
+
+  if (row.original.status !== "Accepted") return null;
+
+  return (
+    <TableAction
+      id=""
+      url=""
+      ShowPreview={false}
+      ShowDelete={false}
+      ShowUpdate={false}
+    >
+      <DropdownMenuItem
+        onClick={() => {
+          UpdatePatchData("product/reject-report", row.original?.id, {})
+            .then(() => {
+              toast.success("Переучёт Отменин");
+              queryClient.invalidateQueries({
+                queryKey: [apiRoutes.filialReport],
+              });
+            })
+            .catch(() => toast.error("что-то пошло не так"));
+        }}
+      >
+        Отменить
+      </DropdownMenuItem>
+    </TableAction>
+  );
+}
+
 export const Columns: ColumnDef<FilialReportData>[] = [
   {
     header: "Дата переучёта",
     cell: ({ row }) => {
       return (
         <>
-          <p >{format(row.original?.dateOne, "MM-dd-yyyy")} ~ {(row.original.status == "Accepted" || row.original.status == "Open") ? <p className="text-[#89A143]">Продолжается</p> : format(row.original?.dateTwo, "MM-dd-yyyy")}</p>
+          <p>{format(row.original?.dateOne, "MM-dd-yyyy")} ~ {(row.original.status == "Accepted" || row.original.status == "Open") ? <p className="text-[#89A143]">Продолжается</p> : format(row.original?.dateTwo, "MM-dd-yyyy")}</p>
         </>
       );
     },
@@ -42,87 +122,15 @@ export const Columns: ColumnDef<FilialReportData>[] = [
       return <p>{row.original?.cost}$</p>;
     },
   },
-
   {
     header: "Статус пратии",
-    cell: ({ row }) => {
-
-      const StatusText = {
-        open: "Отправить на подтверждение",
-        accepted: "В ожидании...",
-        closed: "Принято",
-      };
-
-      const StatusMManaerText = {
-        open: "Принимается",
-        accepted: "Принять переучёт",
-        closed: "Принято",
-      };
-      const { meUser } = useMeStore()
-      const [status, setStatus] = useState<string>(row.original.status)
-      if (status == "Accepted" && meUser?.position?.role != 4) {
-        const navigate = useNavigate();
-        const { id } = useParams();
-        return (
-          <p
-            onClick={(e) => {
-              e.stopPropagation()
-              UpdatePatchData("product/close-report", id || "", {})
-                .then(() => {
-                  navigate(`/filial/${id}/info`);
-                  toast.success("Переучёт Принять");
-                  setStatus("closed")
-                })
-                .catch(() => toast.error("что-то пошло не так"));
-            }}
-            className="px-4 py-3 rounded-[1000px] inline-block text-[#F0F0E5] bg-[#89A143]"
-          >
-            Принять
-
-          </p>
-        );
-      } else {
-        return (
-          <p className="px-4 py-3 rounded-[1000px] inline-block  border-border border">
-            {status ? meUser?.position?.role == 4 ? StatusText[status?.toLowerCase() as unknown as keyof typeof StatusText] : StatusMManaerText[status?.toLowerCase() as unknown as keyof typeof StatusMManaerText] : ""}
-          </p>
-        );
-      }
-    },
+    cell: ({ row }) => <StatusCell row={row} />,
   },
   {
     id: "actions",
     enableHiding: true,
     header: () => <div className="text-right">{"actions"}</div>,
     size: 50,
-    cell: ({ row }) => {
-      if (row.original.status == "Accepted") {
-        const queryClient = useQueryClient();
-        return (
-          <TableAction
-            id=""
-            url=""
-            ShowPreview={false}
-            ShowDelete={false}
-            ShowUpdate={false}
-          >
-            <DropdownMenuItem
-              onClick={() => {
-                UpdatePatchData("product/reject-report", row.original?.id, {})
-                  .then(() => {
-                    toast.success("Переучёт Отменин");
-                    queryClient.invalidateQueries({
-                      queryKey: [apiRoutes.filialReport],
-                    });
-                  })
-                  .catch(() => toast.error("что-то пошло не так"));
-              }}
-            >
-              Отменить
-            </DropdownMenuItem>
-          </TableAction>
-        );
-      }
-    },
+    cell: ({ row }) => <ActionsCell row={row} />,
   },
 ];
