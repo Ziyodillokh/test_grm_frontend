@@ -64,7 +64,7 @@ export default function Dashboard() {
         <Cards setOpen={setOpen} leftData={leftData} />
         <div className="w-full mt-[27px] ">
           <Filter />
-          <div onClick={() => setOpen('Продажа')} className="text-white cursor-pointer flex items-center rounded-xl gap-3 bg-[#333333] my-2.5 p-4 pl-6">
+          <div onClick={() => setOpen('Продажа')} className="text-white cursor-pointer flex items-center rounded-sm gap-3 bg-[#333333] my-2.5 p-4 pl-6">
             <p className="text-[24px] mr-auto">Текущий месяц</p>
             <p className="text-[24px] opacity-50">{formatNumber(data?.totals?.total_kv || 0)} м²</p>
             <p className="text-[24px]">{formatNumber(data?.totals?.total_sum || 0)} $</p>

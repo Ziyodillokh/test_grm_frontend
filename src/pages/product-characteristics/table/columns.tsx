@@ -98,7 +98,7 @@ export const ProductCharacteristicColumns: ColumnDef<ProductCharacteristic>[] = 
       return (
         <p
           onClick={handleAction}
-          className={`cursor-pointer inline-block py-[6px] text-[12px] px-[10px] rounded-[4px] ${isEditing
+          className={`cursor-pointer inline-block py-[6px] text-[12px] px-[10px] rounded-sm ${isEditing
             ? "bg-primary text-primary-foreground"
             : "bg-secondary text-secondary-foreground"
             } ${isPending ? "opacity-50 pointer-events-none" : ""}`}

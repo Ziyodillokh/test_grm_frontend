@@ -17,7 +17,7 @@ export default function Content({ data }: { data: TData[] }) {
             style={{ backgroundColor: item?.color }}
             className={`
           ${item?.color == "none" ? "border-border border text-primary" : `text-white `} 
-          w-full  mb-2 p-5 rounded-[12px]
+          w-full  mb-2 p-5 rounded-sm
           ${data?.indexOf(item) % 2 === 0 ? "-rotate-1" : "rotate-1"}
           `}
           >

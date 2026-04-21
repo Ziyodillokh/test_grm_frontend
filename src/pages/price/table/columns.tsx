@@ -43,7 +43,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
         <>
           <DropdownMenu>
             <DropdownMenuTrigger disabled asChild>
-              <p className="p-1  opacity-50 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-[5px]">
+              <p className="p-1  opacity-50 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-sm">
                 Акция
                 {/* <ChevronDown width={20} /> */}
               </p>
@@ -55,7 +55,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-        // <p className="p-1  px-2.5 text-primary font-medium text-[14px] border border-border rounded-[5px]">
+        // <p className="p-1  px-2.5 text-primary font-medium text-[14px] border border-border rounded-sm">
         //   Акция
         // </p>
       );
@@ -68,7 +68,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
         <>
           <DropdownMenu>
             <DropdownMenuTrigger disabled asChild>
-              <p className="p-1   opacity-50 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-[5px]">
+              <p className="p-1   opacity-50 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-sm">
                 Бонусы
                 {/* <ChevronDown width={20} /> */}
               </p>
@@ -80,7 +80,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-        // <p className="p-1  px-2.5 text-primary font-medium text-[14px] border border-border rounded-[5px]">
+        // <p className="p-1  px-2.5 text-primary font-medium text-[14px] border border-border rounded-sm">
         //   Бонусы
         // </p>
       );
@@ -93,7 +93,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
         <>
           <DropdownMenu>
             <DropdownMenuTrigger disabled asChild>
-              <p className="p-1    opacity-50 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-[5px]">
+              <p className="p-1    opacity-50 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-sm">
                 Промокоды
                 {/* <ChevronDown width={20} /> */}
               </p>
@@ -105,7 +105,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-        // <p className="p-1  px-2.5 text-primary font-medium text-[14px] border border-border rounded-[5px]">
+        // <p className="p-1  px-2.5 text-primary font-medium text-[14px] border border-border rounded-sm">
         //   Промокоды
         // </p>
       );
@@ -122,7 +122,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <p className="p-1 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-[5px]">
+            <p className="p-1 px-2.5 flex justify-between items-center text-primary font-medium text-[14px] border border-border rounded-sm">
               Скидка <ChevronDown width={20} />
             </p>
           </DropdownMenuTrigger>
@@ -157,7 +157,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
         <div className="relative max-w-[90px]">
           <Input
             disabled={editId != row?.original?.id}
-            className={`border-border bg-card border rounded-[5px] `}
+            className={`border-border bg-card border rounded-sm `}
             defaultValue={row?.original?.collection_prices?.[0]?.comingPrice}
             placeholder="0"
             type="number"
@@ -188,7 +188,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
         <div className="relative max-w-[90px]">
           <Input
             disabled={editId != row?.original?.id}
-            className={`border-border bg-card border rounded-[5px] `}
+            className={`border-border bg-card border rounded-sm `}
             defaultValue={row?.original?.collection_prices?.[0]?.priceMeter}
             placeholder="0"
             type="number"
@@ -218,7 +218,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
         <div className="relative max-w-[90px]">
           <Input
             disabled={editId != row?.original?.id}
-            className={`border-border bg-card border rounded-[5px] `}
+            className={`border-border bg-card border rounded-sm `}
             defaultValue={row?.original?.collection_prices?.[0]?.secondPrice}
             placeholder="0"
             type="number"
@@ -238,7 +238,7 @@ export const getColumns = (role?: number): ColumnDef<ProductsData>[] => [
     cell: ({ row }) => {
       const [editId, seEditId] = useQueryState("editId");
       return (
-        <p onClick={() => seEditId(editId == row?.original?.id ? null : row?.original?.id)} className={`${editId == row?.original?.id ? "bg-primary text-background" : "bg-background "}  inline-block  py-[6px]  text-[12px] px-[10px] rounded-[4px]`}>
+        <p onClick={() => seEditId(editId == row?.original?.id ? null : row?.original?.id)} className={`${editId == row?.original?.id ? "bg-primary text-background" : "bg-background "}  inline-block  py-[6px]  text-[12px] px-[10px] rounded-sm`}>
           {editId == row?.original?.id ? "сохранить" : "изменить"}
         </p>
       )

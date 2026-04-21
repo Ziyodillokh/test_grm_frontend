@@ -67,7 +67,7 @@ export const paymentColumns = (flatDataFilial: TData[]): ColumnDef<TransferData>
             <p className="ml-8 ">{group?.split('-')?.[1]} шт</p>
             <p >{Number(group?.split('-')?.[2] || 0)?.toFixed(2)} м²</p>
             <p className="ml-auto opacity-40">{group?.split('-')?.[3]} </p>
-            {type == "In" && <Button onClick={() => mutate()} disabled={isPending} variant={"outline"} className="border ml-2 rounded-lg py-[6px] px-[12px] h-[26px] text-[12px] border-[#89A143] text-[#89A143]  ">Принять все </Button>}
+            {type == "In" && <Button onClick={() => mutate()} disabled={isPending} variant={"outline"} className="border ml-2 rounded-sm py-[6px] px-[12px] h-[26px] text-[12px] border-[#89A143] text-[#89A143]  ">Принять все </Button>}
           </div>;
         }
         return <p>{row?.original?.number}</p>;

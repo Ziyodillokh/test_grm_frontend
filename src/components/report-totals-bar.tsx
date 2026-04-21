@@ -12,7 +12,7 @@ interface ReportTotalsBarProps {
 
 export default function ReportTotalsBar({ items }: ReportTotalsBarProps) {
   return (
-    <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
+    <div className="ml-auto flex items-center gap-[16px] bg-white rounded-sm px-[16px] h-[42px]">
       {items.map((item, i) => (
         <span
           key={i}

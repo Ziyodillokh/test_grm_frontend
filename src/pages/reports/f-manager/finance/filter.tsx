@@ -42,7 +42,7 @@ export default function Filters({
         <Button
           onClick={() => mutate()}
           disabled={isPending}
-          className="h-full  rounded-xl  hover:bg-[#525248]  ml-auto    w-[165px]  "
+          className="h-full  rounded-sm  hover:bg-[#525248]  ml-auto    w-[165px]  "
         >
           {isPending ? <Loader2 /> : <X />}
           Закрыть кассу

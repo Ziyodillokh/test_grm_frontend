@@ -43,7 +43,7 @@ export default function Menu() {
           <div
             key={item.link}
             onClick={() => handleClick(item)}
-            className={`flex items-center py-[12px] rounded-[8px] cursor-pointer transition-colors ${
+            className={`flex items-center py-[12px] rounded-sm cursor-pointer transition-colors ${
               active ? "bg-white" : ""
             }`}
             style={{ paddingLeft: 0, paddingRight: "16px" }}

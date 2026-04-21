@@ -39,12 +39,12 @@ export default function PlanSellers({
             <div className="flex gap-1 px-5 my-4">
                 <div
                     onClick={() => setFilialId(null)}
-                    className="bg-primary cursor-pointer p-5 w-[120px] rounded-2xl flex items-center gap-2 text-white"
+                    className="bg-primary cursor-pointer p-5 w-[120px] rounded-sm flex items-center gap-2 text-white"
                 >
                     <ChevronLeft />
                     <p>назад</p>
                 </div>
-                <div className="bg-card px-5 rounded-2xl flex items-center justify-center font-bold text-lg min-w-[200px]">
+                <div className="bg-card px-5 rounded-sm flex items-center justify-center font-bold text-lg min-w-[200px]">
                     {filialName}
                 </div>
             </div>

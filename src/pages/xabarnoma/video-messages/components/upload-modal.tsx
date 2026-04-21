@@ -101,7 +101,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
         <div className="p-6 pt-4 space-y-4">
           <div
             onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${dragActive ? "border-[#0078D4] bg-[#0078D4]/5" : "border-gray-200 bg-[#F0F7FF]"}`}
+            className={`border-2 border-dashed rounded-sm p-8 text-center transition-colors ${dragActive ? "border-[#0078D4] bg-[#0078D4]/5" : "border-gray-200 bg-[#F0F7FF]"}`}
           >
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-[#0078D4]/10 flex items-center justify-center">
@@ -128,7 +128,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-[#1A1A1A]">Lavozim</label>
             <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="w-full h-10 rounded-lg"><SelectValue placeholder="Lavozimni tanlang" /></SelectTrigger>
+              <SelectTrigger className="w-full h-10 rounded-sm"><SelectValue placeholder="Lavozimni tanlang" /></SelectTrigger>
               <SelectContent>
                 {ROLE_OPTIONS.map((opt) => (<SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>))}
               </SelectContent>
@@ -138,7 +138,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-[#1A1A1A]">Foydalanuvchi (ixtiyoriy)</label>
             <Select value={userId} onValueChange={setUserId} disabled={!role}>
-              <SelectTrigger className="w-full h-10 rounded-lg">
+              <SelectTrigger className="w-full h-10 rounded-sm">
                 <SelectValue placeholder={usersLoading ? "Yuklanmoqda..." : !role ? "Avval lavozimni tanlang" : "Barchasi (tanlash shart emas)"} />
               </SelectTrigger>
               <SelectContent>
@@ -151,7 +151,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
           <button
             onClick={handleSubmit}
             disabled={!selectedFile || !role || isSubmitting}
-            className="w-full h-11 rounded-xl bg-[#0078D4] text-white font-medium text-sm hover:bg-[#006CBF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="w-full h-11 rounded-sm bg-[#0078D4] text-white font-medium text-sm hover:bg-[#006CBF] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {isSubmitting ? (<><Loader2 className="w-4 h-4 animate-spin" />Yuklanmoqda...</>) : "+ Yuborish"}
           </button>

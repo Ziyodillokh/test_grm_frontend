@@ -1,44 +1,51 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
+import { getMonth } from "date-fns";
+import { Loader } from "lucide-react";
+
+import { ListRow } from "@/components/ui/list-row";
+import { CashflowRow, cashflowGridTemplate, cashflowLabels } from "@/components/cashflow-row";
+import ReportToolbar from "@/components/report-toolbar";
 import { useYear } from "@/store/year-store";
 import { useMeStore } from "@/store/me-store";
 import formatPrice from "@/utils/formatPrice";
-import { useReportDetail } from "./queries";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import { getMonth } from "date-fns";
 
-// Drill-in type -> sarlavha mapping
+import { useReportDetail } from "./queries";
+
 const TITLES: Record<string, string> = {
   naqd_kassa: "Naqd kassa",
-  terminal: "Terminal",
+  terminal: "Terminal va o'tkazma",
   inkassatsiya: "Inkassatsiya",
-  dealer_cash: "Diller Naqd",
-  dealer_terminal: "Diller perechesleniya",
+  dealer_cash: "Diller naqd",
+  dealer_terminal: "Diller o'tkazma",
   kelgan_qarz: "Kelgan qarzlar",
-  opening_balance: "O'tgan pul",
-  boss_income: "Boss prixod",
-  boss_expense: "Boss rasxod",
-  kent_income: "Kent prixod",
-  kent_expense: "Kent rasxod",
-  extra_income: "Qo'shimcha prixodlar",
-  business_expense: "Biznes rasxod",
-  factory: "Taminotchi (Pastavchik)",
-  logistics: "Logistika",
-  tamojniy: "Bojxona (tamojniy)",
-  navar_expense: "Navar Rasxod",
+  opening_balance: "Oydan o'tgan pul",
+  boss_income: "Bossdan kirim",
+  kent_income: "Kentdan kirim",
+  extra_income: "Boshqa kirimlar",
+  business_expense: "Biznes xarajatlari",
+  boss_expense: "Bossdan chiqim",
+  kent_expense: "Kentga chiqim",
+  factory: "Taminotchiga to'lov",
+  logistics: "Logistika xarajatlari",
+  tamojniy: "Bojxona xarajatlari",
+  navar_expense: "Ustama(navar)dan xarajat",
+  return_orders: "Qaytgan tovarlar",
 };
 
+const filialGridTemplate = "40px 1fr 130px";
+
 export default function ReportDetailPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { type } = useParams<{ type: string }>();
+  const location = useLocation();
   const { meUser } = useMeStore();
   const { year } = useYear();
   const [month] = useQueryState(
     "month",
-    parseAsString.withDefault(getMonth(new Date()) + 1 + "")
+    parseAsString.withDefault(String(getMonth(new Date()) + 1))
   );
   const [filial] = useQueryState("filial");
+  const [tip] = useQueryState("tip", parseAsString);
 
   const isFManager = meUser?.position?.role == 4;
   const detailFilialId = isFManager
@@ -53,6 +60,7 @@ export default function ReportDetailPage() {
       month: +month || undefined,
       year,
       filialId: detailFilialId,
+      tip: tip || undefined,
     },
     !!type
   );
@@ -60,132 +68,87 @@ export default function ReportDetailPage() {
   const items = data?.items || [];
   const title = TITLES[type || ""] || type || "";
 
-  // Terminal turi — filiallar ro'yxati
   const isTerminalType = type === "terminal";
-  // Inkassatsiya turi — kassa ro'yxati
   const isInkassatsiya = type === "inkassatsiya";
+  const isFilialList = isTerminalType || isInkassatsiya;
 
-  // Orqaga qaytish — /general sahifasiga
-  const basePath = location.pathname.replace(`/detail/${type}`, "");
-
-  // Jami summa
   const totalSum = items.reduce((acc: number, item: any) => {
     return acc + Number(item.price || item.plasticSum || 0);
   }, 0);
 
   return (
-    <div>
-      {/* Header */}
-      <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
-        <button
-          onClick={() => navigate(basePath + (location.search || ""))}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Umumiy Hisobot
-        </button>
-        <span className="text-muted-foreground">/</span>
-        <p className="text-[16px] font-medium">{title}</p>
-        <div className="ml-auto text-sm text-muted-foreground">
-          {items.length} ta yozuv &middot;{" "}
-          <span className="font-medium text-foreground">
-            ${formatPrice(totalSum)}
-          </span>
-        </div>
-      </div>
+    <div className="flex flex-col h-full">
+      <ReportToolbar
+        beforeIcons={
+          <div className="flex items-center bg-white rounded-sm px-[12px] h-[42px]">
+            <span className="text-[14px] font-medium text-[#1a1a1a]">
+              {title}
+            </span>
+          </div>
+        }
+        totalsItems={[
+          { label: "Jami:", value: totalSum, color: "#1a1a1a" },
+        ]}
+      />
 
-      {/* Table */}
-      <div className="p-4">
+      {/* Column labels */}
+      {!isFilialList && (
+        <div
+          className="mb-[10px] shrink-0 px-[12px]"
+          style={{ display: "grid", gridTemplateColumns: cashflowGridTemplate, gap: "16px" }}
+        >
+          {cashflowLabels.map((label, i) => (
+            <span
+              key={i}
+              className={`text-[13px] text-[#A3A3A3] ${label.right ? "text-right" : ""} ${label.center ? "text-center" : ""}`}
+            >
+              {label.text}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {isFilialList && (
+        <div
+          className="mb-[10px] shrink-0 px-[12px]"
+          style={{ display: "grid", gridTemplateColumns: filialGridTemplate, gap: "8px" }}
+        >
+          <span className="text-[13px] text-[#A3A3A3]">#</span>
+          <span className="text-[13px] text-[#A3A3A3]">Filial</span>
+          <span className="text-[13px] text-[#A3A3A3] text-right">Summa</span>
+        </div>
+      )}
+
+      {/* List */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+          <div className="flex items-center justify-center h-[200px]">
+            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
           </div>
         ) : items.length === 0 ? (
-          <p className="text-center text-muted-foreground py-20">
-            Ma'lumot topilmadi
-          </p>
-        ) : isTerminalType ? (
-          // Terminal: filiallar ro'yxati + plasticSum
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50 text-left">
-                  <th className="py-3 px-4 font-medium text-muted-foreground w-12">#</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground">Filial</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground text-right">Summa</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item: any, i: number) => (
-                  <tr key={item.filialId || i} className="border-b last:border-0">
-                    <td className="py-3 px-4 text-muted-foreground">{i + 1}</td>
-                    <td className="py-3 px-4">{item.filialTitle}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      ${formatPrice(Number(item.plasticSum || 0))}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex items-center justify-center h-[200px]">
+            <span className="text-[13px] text-[#a3a3a3]">Ma'lumot topilmadi</span>
           </div>
-        ) : isInkassatsiya ? (
-          // Inkassatsiya: kassa ro'yxati
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50 text-left">
-                  <th className="py-3 px-4 font-medium text-muted-foreground w-12">#</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground">Filial</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground text-right">Summa</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item: any, i: number) => (
-                  <tr key={item.id || i} className="border-b last:border-0">
-                    <td className="py-3 px-4 text-muted-foreground">{i + 1}</td>
-                    <td className="py-3 px-4">{item.filialTitle}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      ${formatPrice(Number(item.price || 0))}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        ) : isFilialList ? (
+          items.map((item: any, i: number) => (
+            <ListRow
+              key={item.filialId || item.id || i}
+              gridTemplate={filialGridTemplate}
+              minHeight={52}
+            >
+              <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">
+                {item.filialTitle}
+              </span>
+              <span className="text-[13px] font-medium text-[#1a1a1a] text-right">
+                {formatPrice(Number(item.plasticSum || item.price || 0))} $
+              </span>
+            </ListRow>
+          ))
         ) : (
-          // Cashflow ro'yxati
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-muted/50 text-left">
-                  <th className="py-3 px-4 font-medium text-muted-foreground w-12">#</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground">Izoh</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground">Yaratgan</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground">Filial</th>
-                  <th className="py-3 px-4 font-medium text-muted-foreground text-right">Summa</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item: any, i: number) => (
-                  <tr key={item.id || i} className="border-b last:border-0">
-                    <td className="py-3 px-4 text-muted-foreground">{i + 1}</td>
-                    <td className="py-3 px-4 max-w-[250px] truncate">
-                      {item.comment || "-"}
-                    </td>
-                    <td className="py-3 px-4">
-                      {item.createdBy
-                        ? `${item.createdBy.firstName || ""} ${item.createdBy.lastName || ""}`.trim()
-                        : "-"}
-                    </td>
-                    <td className="py-3 px-4">{item.filial?.title || "-"}</td>
-                    <td className="py-3 px-4 text-right font-medium">
-                      ${formatPrice(Number(item.price || 0))}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          items.map((item: any, i: number) => (
+            <CashflowRow key={item.id || i} item={item} />
+          ))
         )}
       </div>
     </div>

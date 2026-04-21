@@ -15,7 +15,7 @@ export const Columns: ColumnDef<TData>[] = [
           return (
             <div className="flex items-center ">
                 <div
-                  className={`w-10 h-10 rounded-2xl flex items-center justify-center ${!item?.isDebt ? "bg-[#E7F6E7] text-white" : "bg-[#FFEBE0] text-white"}`}
+                  className={`w-10 h-10 rounded-sm flex items-center justify-center ${!item?.isDebt ? "bg-[#E7F6E7] text-white" : "bg-[#FFEBE0] text-white"}`}
                   >
                 <SquareArrowOutDownLeft className={`h-6 w-6  ${!item?.isDebt ?  "text-[#85D188]" : "text-[#D76B43] "}`} />
                 </div>
@@ -114,7 +114,7 @@ export const DealerColumns: ColumnDef<TransferItem>[] = [
         return (
           <div className="flex items-center ">
               <div
-                className={`w-10 h-10 rounded-2xl flex items-center justify-center ${ "bg-[#FFEBE0] text-white"}`}
+                className={`w-10 h-10 rounded-sm flex items-center justify-center ${ "bg-[#FFEBE0] text-white"}`}
                 >
               <SquareArrowOutDownLeft className={`h-6 w-6  ${ "text-[#D76B43] "}`} />
               </div>

@@ -44,7 +44,7 @@ export default function BarcodeQenerat() {
         </Button>
       </div>
       <div ref={printRef} className="p-[30px] max-w-[500px] text-center mx-auto barcode-label">
-        <div className="bg-white rounded-1 px-11 py-[24px]  text-center">
+        <div className="bg-white rounded-sm px-11 py-[24px]  text-center">
           <h4 className="font-bold text-[24px] ">
             {WatchValue?.collection?.label}
           </h4>

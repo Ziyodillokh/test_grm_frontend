@@ -29,6 +29,7 @@ type DetailQuery = {
   month?: number;
   year?: number;
   filialId?: string;
+  tip?: string;
 };
 
 export const useReportDetail = (query: DetailQuery, enabled: boolean) =>

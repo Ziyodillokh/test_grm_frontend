@@ -101,7 +101,7 @@ export default function TrasferDealerSinglePage() {
     <div className="grid grid-cols-12 gap-2 h-full">
       <div className="col-span-2  max-h-[calc(100vh-100px)] scrollCastom flex gap-2">
         <div className={`w-full h-full  `}>
-          <div className="w-full flex h-[64px] items-center justify-between  border-solid  p-[21.22px] rounded-lg bg-sidebar">
+          <div className="w-full flex h-[64px] items-center justify-between  border-solid  p-[21.22px] rounded-sm bg-sidebar">
             <h4 className="text-[14px] font-semibold  text-foreground">
               Дилеры
             </h4>
@@ -114,7 +114,7 @@ export default function TrasferDealerSinglePage() {
                 <button
                   key={e?.id}
                   onClick={() => onSelectFilial(e)}
-                  className={`${filial === e.id ? "bg-sidebar" : ""} rounded-lg group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar px-3  py-2.5`}
+                  className={`${filial === e.id ? "bg-sidebar" : ""} rounded-sm group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar px-3  py-2.5`}
                 >
                   {e.title}
                 </button>
@@ -124,7 +124,7 @@ export default function TrasferDealerSinglePage() {
       </div>
       <div className="col-span-10">
         {pkg && (
-          <div className="flex items-center gap-4 mb-2 px-4 py-3 bg-sidebar rounded-lg">
+          <div className="flex items-center gap-4 mb-2 px-4 py-3 bg-sidebar rounded-sm">
             <h3 className="text-sm font-semibold">{pkg.title || "Пакет"}</h3>
             <ActionBadge status={statusMap[pkg.status] || pkg.status} />
             <div className="flex gap-4 ml-auto text-sm text-muted-foreground">

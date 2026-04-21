@@ -155,7 +155,7 @@ export default function CarpetCashierCard({
 
   return (
       <label
-        className={`w-full flex   gap-4 relative p-1 rounded-[12px]  ${isDebt ?"bg-sidebar":"bg-sidebar" } ${className && className}`}
+        className={`w-full flex   gap-4 relative p-1 rounded-sm  ${isDebt ?"bg-sidebar":"bg-sidebar" } ${className && className}`}
       >
         <Checkbox
           onCheckedChange={onCheckedChange}
@@ -163,7 +163,7 @@ export default function CarpetCashierCard({
         />
             <p className="text-[14] absolute bottom-2 left-3  ">{index + 1}</p>
         <img
-          className="object-cover min-w-[120px] rounded-[12px] h-full"
+          className="object-cover min-w-[120px] rounded-sm h-full"
           style={{ aspectRatio: "0.72/1" }}
           src={img}
           width={120}

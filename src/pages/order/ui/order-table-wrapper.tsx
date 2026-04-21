@@ -11,7 +11,7 @@ export default function OrderTableWrapper({
   return (
     <div
       className={clsx(
-        "w-full bg-card rounded-md",
+        "w-full bg-card rounded-sm",
         className
       )}
     >

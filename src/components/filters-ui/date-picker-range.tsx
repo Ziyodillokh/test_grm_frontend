@@ -48,7 +48,7 @@ export function DateRangePicker({
             <Button
               variant={"outline"}
               className={cn(
-                "w-full justify-start  text-left bg-card pl-8 hover:bg-card rounded-xl h-[62px] border-0 font-normal",
+                "w-full justify-start  text-left bg-card pl-8 hover:bg-card rounded-sm h-[62px] border-0 font-normal",
                 !fromDate && "text-muted-foreground"
               )}
             >
@@ -64,7 +64,7 @@ export function DateRangePicker({
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              className="rounded-xl"
+              className="rounded-sm"
               //  captionLayout="dropdown"
               selected={fromDate || undefined}
               onSelect={(date) => (date ? setFromDate(date) : "")}
@@ -89,7 +89,7 @@ export function DateRangePicker({
             <Button
               variant={"outline"}
               className={cn(
-                "w-full justify-start text-left border-0  pl-8 rounded-xl hover:bg-white bg-white h-[62px] font-normal",
+                "w-full justify-start text-left border-0  pl-8 rounded-sm hover:bg-white bg-white h-[62px] font-normal",
                 !toDate && "text-muted-foreground"
               )}
             >
@@ -104,7 +104,7 @@ export function DateRangePicker({
             <Calendar
               mode="single"
               //  captionLayout="dropdown"
-              className="rounded-xl"
+              className="rounded-sm"
               defaultMonth={defaultMonth}
               selected={toDate || undefined}
               onSelect={(date) => (date ? setToDate(date) : "")}

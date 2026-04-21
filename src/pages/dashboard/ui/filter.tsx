@@ -48,7 +48,7 @@ export default function Filter() {
           className="w-[170px]  px-2 h-[62px]  "
         />
         <ShadcnSelect
-          className={` border-none bg-card rounded-xl px-4  w-[170px]  px-2 h-[62px]  `}
+          className={` border-none bg-card rounded-sm px-4  w-[170px]  px-2 h-[62px]  `}
           value={String(year)}
           defaultValue={String(year)}
           options={Years?.map((e) => ({

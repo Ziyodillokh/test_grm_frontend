@@ -53,7 +53,7 @@ export default function NotificationsPage() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#0078D4] flex items-center justify-center">
+        <div className="w-10 h-10 rounded-sm bg-[#0078D4] flex items-center justify-center">
           <Bell className="w-5 h-5 text-white" />
         </div>
         <h1 className="text-2xl font-bold text-[#1A1A1A]">Xabarnoma</h1>
@@ -62,7 +62,7 @@ export default function NotificationsPage() {
       {/* Top Widgets */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Create Notification Card */}
-        <div className="bg-[#0078D4] rounded-2xl p-5 text-white relative overflow-hidden">
+        <div className="bg-[#0078D4] rounded-sm p-5 text-white relative overflow-hidden">
           <div className="relative z-10">
             <p className="text-xs uppercase tracking-wider opacity-80 mb-1">
               XABARNOMA YARATISH
@@ -82,7 +82,7 @@ export default function NotificationsPage() {
         </div>
 
         {/* Monitoring Widget */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100">
+        <div className="bg-white rounded-sm p-5 border border-gray-100">
           <div className="flex items-center gap-2 mb-3">
             <Activity className="w-5 h-5 text-[#47B13C]" />
             <span className="text-sm font-medium text-[#999]">Monitoring</span>
@@ -104,7 +104,7 @@ export default function NotificationsPage() {
         </div>
 
         {/* Refresh Widget */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100">
+        <div className="bg-white rounded-sm p-5 border border-gray-100">
           <div className="flex items-center gap-2 mb-3">
             <RefreshCw className="w-5 h-5 text-[#0078D4]" />
             <span className="text-sm font-medium text-[#999]">
@@ -126,10 +126,10 @@ export default function NotificationsPage() {
           <div
             key={item.id}
             onClick={() => navigate(item.path)}
-            className="bg-white rounded-2xl p-4 border border-gray-100 flex items-center justify-between cursor-pointer hover:border-[#0078D4]/30 hover:shadow-sm transition-all"
+            className="bg-white rounded-sm p-4 border border-gray-100 flex items-center justify-between cursor-pointer hover:border-[#0078D4]/30 hover:shadow-sm transition-all"
           >
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-sm bg-gray-50 flex items-center justify-center">
                 <item.icon className="w-5 h-5 text-[#1A1A1A]" />
               </div>
               <div>

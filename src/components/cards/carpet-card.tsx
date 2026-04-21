@@ -59,7 +59,7 @@ export default function CarpetCard({
   // const navigate = useNavigate();
   return (
     <div
-      className={`w-full relative bg-sidebar border-border   max-h-[500px] rounded-lg border ${className && className}`}
+      className={`w-full relative bg-sidebar border-border   max-h-[500px] rounded-sm border ${className && className}`}
     >
       <div className="flex border-b border-border ">
         <p className="p-2 w-full text-[12px] text-primary text-center border-border border-r">
@@ -76,17 +76,17 @@ export default function CarpetCard({
         // onClick={() => navigate(`/carpet/${id}`)}
         className="w-full relative "
       >
-        <p className="bg-sidebar text-primary font-bold rounded-md absolute left-0.5 top-0.5 p-1">
+        <p className="bg-sidebar text-primary font-bold rounded-sm absolute left-0.5 top-0.5 p-1">
           {colaction}
         </p>
         <img
-          className="w-full  rounded-b-lg"
+          className="w-full  rounded-b-sm"
           style={{ aspectRatio: "0.67/1" }}
           src={img?.path ? minio_img_url + img?.path : "/images/default.svg"}
         />
 
         <div className="bottom-1 px-1.5  flex items-streech  gap-2  absolute">
-          <p className="flex gap-2 items-center bg-card rounded-md  px-1.5  py-1">
+          <p className="flex gap-2 items-center bg-card rounded-sm  px-1.5  py-1">
             {shape === "Rulo" && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@ export default function CarpetCard({
             {shape === "Circle" && <Circle className="text-primary w-4" />}
             {shape}
           </p>
-          <p className="text-primary  bg-card left-0.5  px-1.5 py-1 rounded-md ">{color}</p>
+          <p className="text-primary  bg-card left-0.5  px-1.5 py-1 rounded-sm ">{color}</p>
         </div>
       </div>
 

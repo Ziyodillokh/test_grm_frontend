@@ -29,7 +29,7 @@ export default function OpenAI() {
         </div>
       </div>
       {active && (
-        <div className="absolute bottom-8  left-30 bg-card rounded-[12px] border w-[835px] h-[700px] overflow-hidden shadow-[0px_34px_44px_0px_rgba(65,55,23,0.06)] ">
+        <div className="absolute bottom-8  left-30 bg-card rounded-sm border w-[835px] h-[700px] overflow-hidden shadow-[0px_34px_44px_0px_rgba(65,55,23,0.06)] ">
           <Content />
         </div>
       )}

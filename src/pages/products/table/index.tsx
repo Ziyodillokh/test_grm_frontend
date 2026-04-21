@@ -200,7 +200,7 @@ export default function Page() {
       <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
         {/* Search */}
         {showSearch ? (
-          <div className="flex items-center gap-[4px] bg-white rounded-[8px] px-[10px] h-[42px]">
+          <div className="flex items-center gap-[4px] bg-white rounded-sm px-[10px] h-[42px]">
             <svg
               width="18"
               height="18"
@@ -249,7 +249,7 @@ export default function Page() {
         ) : (
           <button
             onClick={() => setShowSearch(true)}
-            className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
+            className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
           >
             <svg
               width="18"
@@ -277,7 +277,7 @@ export default function Page() {
         )}
 
         {/* Sort */}
-        <button className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+        <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
           <svg
             width="18"
             height="18"
@@ -312,7 +312,7 @@ export default function Page() {
         {/* Filter */}
         <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
           <SheetTrigger asChild>
-            <button className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+            <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
               <svg
                 width="18"
                 height="18"
@@ -375,7 +375,7 @@ export default function Page() {
         <button
           onClick={handleExcelExport}
           disabled={excelPending}
-          className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           {excelPending ? (
             <Loader className="w-[18px] h-[18px] animate-spin text-[#1A1A1A]" />
@@ -403,7 +403,7 @@ export default function Page() {
         </button>
 
         {/* Totals */}
-        <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
+        <div className="ml-auto flex items-center gap-[16px] bg-white rounded-sm px-[16px] h-[42px]">
           <span className="text-[13px] text-[#A3A3A3]">Umumiy:</span>
           {isProductView ? (
             <>
@@ -437,13 +437,13 @@ export default function Page() {
           <div className="flex items-center gap-[4px] ml-[4px]">
             <button
               onClick={() => setCard("list")}
-              className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 transition-colors"
+              className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 transition-colors"
             >
               <LayoutList className={`w-[18px] h-[18px] ${isListView ? "text-[#0078D4]" : "text-[#1a1a1a] opacity-50"}`} />
             </button>
             <button
               onClick={() => setCard("card")}
-              className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 transition-colors"
+              className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 transition-colors"
             >
               <LayoutGrid className={`w-[18px] h-[18px] ${!isListView ? "text-[#0078D4]" : "text-[#1a1a1a] opacity-50"}`} />
             </button>
@@ -633,7 +633,7 @@ function ProductRow({ item }: { item: ProductsData }) {
   const filialName = item.filial?.title || "—";
 
   return (
-    <div className="h-[80px] px-[10px] py-[8px] bg-white rounded-[8px] shrink-0 flex items-center gap-[16px]">
+    <div className="h-[80px] px-[10px] py-[8px] bg-white rounded-sm shrink-0 flex items-center gap-[16px]">
       {/* Rasm */}
       <div className="w-[40px] h-[64px] overflow-hidden bg-[#F5F5F5] shrink-0">
         {imgPath ? (
@@ -720,7 +720,7 @@ function FilialFilterSelect() {
     <select
       value={filial || ""}
       onChange={(e) => setFilial(e.target.value || null)}
-      className="w-full h-[40px] px-[12px] bg-input border border-border rounded-[8px] text-[14px] outline-none"
+      className="w-full h-[40px] px-[12px] bg-input border border-border rounded-sm text-[14px] outline-none"
     >
       {!meUser?.filial?.id && <option value="">Barchasi</option>}
       {data?.map((f) => (

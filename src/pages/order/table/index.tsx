@@ -25,7 +25,7 @@ export default function Page() {
       <DataTable
         isRowClickble
         isLoading={isLoading}
-        borderClass="rounded-md"
+        borderClass="rounded-sm"
         columns={FilialColumns}
         data={flatData ?? []}
         fetchNextPage={fetchNextPage}

@@ -34,7 +34,7 @@ const Controls: React.FC<ControlsProps> = ({
       </div>
       <Button 
         onClick={onGenerate}
-        className="py-6 px-8 w-[346px] bg-[#5D5D53] text-white rounded-[2px]"
+        className="py-6 px-8 w-[346px] bg-[#5D5D53] text-white rounded-sm"
         disabled={!!totalItems}
       >
         {isGenerating ? (

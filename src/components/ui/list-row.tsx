@@ -20,7 +20,7 @@ export function ListRow({
   return (
     <div
       className={cn(
-        "items-center bg-white rounded-[8px] shrink-0 transition-colors",
+        "items-center bg-white rounded-sm shrink-0 transition-colors",
         onClick && "cursor-pointer hover:bg-gray-50",
         gridTemplate ? "px-[12px]" : "px-[24px]",
         className

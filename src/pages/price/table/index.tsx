@@ -85,7 +85,7 @@ export default function Page() {
                 <div className="relative">
                   <Input
                     disabled={!isEditing}
-                    className="h-[32px] text-[13px] pr-[20px] border-border bg-card rounded-[6px]"
+                    className="h-[32px] text-[13px] pr-[20px] border-border bg-card rounded-sm"
                     defaultValue={prices?.priceMeter}
                     placeholder="0"
                     type="number"
@@ -99,7 +99,7 @@ export default function Page() {
                 {/* Tahrir / Saqlash */}
                 <button
                   onClick={() => isEditing ? handleSave(item.id) : setEditId(item.id)}
-                  className={`h-[32px] px-[10px] rounded-[6px] text-[12px] ${
+                  className={`h-[32px] px-[10px] rounded-sm text-[12px] ${
                     isEditing
                       ? "bg-[#0078D4] text-white"
                       : "bg-[#F5F5F5] text-[#1a1a1a]"

@@ -1,11 +1,9 @@
-import { FileOutput, Store } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { useMeStore } from "@/store/me-store";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import useDataFetch from "@/pages/filial/table/queries";
 import { useQueryState } from "nuqs";
-import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
+import ReportToolbar from "@/components/report-toolbar";
 
 export default function Filters() {
   const { meUser } = useMeStore();
@@ -20,52 +18,48 @@ export default function Filters() {
     })) || [];
 
   return (
-    <div className="bg-sidebar border-border border-b  px-[20px] h-[64px] items-center  flex   ">
-      {meUser?.position.role === 4 && (
-        <p className="text-[#272727] text-[20px]">Касса магазина</p>
-      )}
-      {meUser?.position?.role == 10 || (meUser?.position?.role == 9 && !id) ? (
+    <ReportToolbar
+      filterContent={
         <>
-          <FilterSelect
-            placeholder="все"
-            className="w-[200px] h-[65px] border-border border-r"
-            options={[{ value: "clear", label: "все" }, ...filialOption]}
-            name="filial"
-            icons={ <Store /> }
-          />
-          <FilterSelect
-              className="w-[200px]  h-[65px] ml-2  border-border border-r"
-            placeholder="Тип операции"
-            options={[
-              { value: "clear", label: "Все" },
-              { value: "income", label: "Приход" },// Приход cashflow
-              { value: "expense", label: "Расход" },// Расход cashflow
-              { value: "sale", label: "Продажа" },// Приход order
-              { value: "return", label: "Возврат" },// Расход order
-              { value: "collection", label: "Inkassa" },// cashflowSlug => Инкассация
-            ]} 
-            name="tip"
-          />
-            <DateRangePicker
-              fromPlaceholder={`от`}
-              toPlaceholder={`до`}
-            />
-        </>   
-      ) : (
-        ""
-      )}
-      <Button
-        className="h-full  border-y-0 w-[140px]  ml-auto"
-        variant={"outline"}
-      >
-        <FileOutput /> Экспорт
-      </Button>
-      {/* <Button
-        className="h-full border-l-0 bg-primary hover:bg-[#525248] hover:text-accent text-accent border-y-0 w-[165px]  "
-        variant={"outline"}
-      >
-        <X /> Закрыть кассу
-      </Button> */}
-    </div>
+          {(meUser?.position?.role == 10 || (meUser?.position?.role == 9 && !id)) && (
+            <>
+              <div>
+                <p className="text-[13px] text-muted-foreground mb-1">Filial</p>
+                <FilterSelect
+                  placeholder="Hammasi"
+                  className="w-full"
+                  options={[{ value: "clear", label: "Hammasi" }, ...filialOption]}
+                  name="filial"
+                />
+              </div>
+              <div>
+                <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
+                <FilterSelect
+                  className="w-full"
+                  placeholder="Hammasi"
+                  options={[
+                    { value: "clear", label: "Hammasi" },
+                    { value: "income", label: "Kirim" },
+                    { value: "expense", label: "Chiqim" },
+                    { value: "sale", label: "Sotuv" },
+                    { value: "return", label: "Qaytarish" },
+                    { value: "collection", label: "Inkassa" },
+                  ]}
+                  name="tip"
+                />
+              </div>
+            </>
+          )}
+          {meUser?.position.role === 4 && (
+            <div className="flex items-center bg-white rounded-sm px-[12px] h-[42px]">
+              <span className="text-[14px] font-medium text-[#1a1a1a]">Kassa</span>
+            </div>
+          )}
+          <Button variant="outline" className="w-full mt-2">
+            Tozalash
+          </Button>
+        </>
+      }
+    />
   );
 }

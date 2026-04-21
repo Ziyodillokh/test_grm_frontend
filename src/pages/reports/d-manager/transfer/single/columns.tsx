@@ -232,7 +232,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
                     key={f.id}
                     type="button"
                     onClick={() => setSelectedFilialId(f.id)}
-                    className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm text-left transition-colors ${
+                    className={`flex items-center gap-2 rounded-sm border px-3 py-2 text-sm text-left transition-colors ${
                       selectedFilialId === f.id
                         ? "border-primary bg-primary/10 font-medium"
                         : "border-border hover:bg-muted"

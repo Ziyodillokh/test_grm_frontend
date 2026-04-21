@@ -294,7 +294,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
       <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
         {/* Search */}
         {showSearch ? (
-          <div className="flex items-center gap-[4px] bg-white rounded-[8px] px-[10px] h-[42px]">
+          <div className="flex items-center gap-[4px] bg-white rounded-sm px-[10px] h-[42px]">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -311,7 +311,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
             <X className="w-[16px] h-[16px] cursor-pointer text-[#A3A3A3] hover:text-[#1A1A1A]" onClick={() => { setSearch(null); setShowSearch(false); }} />
           </div>
         ) : (
-          <button onClick={() => setShowSearch(true)} className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+          <button onClick={() => setShowSearch(true)} className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -320,7 +320,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
         )}
 
         {/* Sort */}
-        <button className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+        <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask_sort_fm" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
               <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -335,7 +335,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
         {/* Filter */}
         <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
           <SheetTrigger asChild>
-            <button className={`w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors ${hasActiveFilter ? "ring-2 ring-[#0078D4]" : ""}`}>
+            <button className={`w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors ${hasActiveFilter ? "ring-2 ring-[#0078D4]" : ""}`}>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke={hasActiveFilter ? "#0078D4" : "#1A1A1A"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -364,7 +364,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
         </Sheet>
 
         {/* Excel */}
-        <button onClick={() => exportExcel()} disabled={excelPending} className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50">
+        <button onClick={() => exportExcel()} disabled={excelPending} className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50">
           {excelPending ? (
             <Loader className="w-[18px] h-[18px] animate-spin text-[#1A1A1A]" />
           ) : (
@@ -384,17 +384,17 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
         {(!kassaStatus || kassaStatus === "open" || kassaStatus === "warning") && (
           <>
             {kassaStatus === "warning" ? (
-              <Button onClick={() => closeKassa()} disabled={closePending} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
+              <Button onClick={() => closeKassa()} disabled={closePending} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-sm px-[16px] text-[13px] font-medium">
                 {closePending ? <Loader className="w-4 h-4 mr-1 animate-spin" /> : <Lock className="w-4 h-4 mr-[4px]" />}
                 Oyni yopish
               </Button>
             ) : (
               <>
-                <Button onClick={() => openDialog("parish")} className="h-[42px] bg-[#47B13C] hover:bg-[#3da032] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
+                <Button onClick={() => openDialog("parish")} className="h-[42px] bg-[#47B13C] hover:bg-[#3da032] text-white rounded-sm px-[16px] text-[13px] font-medium">
                   <Plus className="w-[16px] h-[16px] mr-[4px]" />
                   Kirim
                 </Button>
-                <Button onClick={() => openDialog("flow")} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-[8px] px-[16px] text-[13px] font-medium">
+                <Button onClick={() => openDialog("flow")} className="h-[42px] bg-[#EF5C12] hover:bg-[#d4500f] text-white rounded-sm px-[16px] text-[13px] font-medium">
                   <Plus className="w-[16px] h-[16px] mr-[4px]" />
                   Chiqim
                 </Button>
@@ -403,13 +403,13 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
           </>
         )}
         {(kassaStatus === "closed" || kassaStatus === "closed_by_d") && (
-          <div className="flex items-center gap-2 bg-[#FFA91E]/10 text-[#FFA91E] rounded-[8px] px-4 h-[42px] text-[14px] font-medium">
+          <div className="flex items-center gap-2 bg-[#FFA91E]/10 text-[#FFA91E] rounded-sm px-4 h-[42px] text-[14px] font-medium">
             <Lock className="w-4 h-4" />
             Yopilgan
           </div>
         )}
         {kassaStatus === "accepted" && (
-          <div className="flex items-center gap-2 bg-[#47B13C]/10 text-[#47B13C] rounded-[8px] px-4 h-[42px] text-[14px] font-medium">
+          <div className="flex items-center gap-2 bg-[#47B13C]/10 text-[#47B13C] rounded-sm px-4 h-[42px] text-[14px] font-medium">
             <CheckCircle className="w-4 h-4" />
             Tasdiqlangan
           </div>
@@ -466,8 +466,8 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
 
       {/* Add Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="costomModal min-w-[494px] p-1 gap-0 rounded-[10px]">
-          <div className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[35px] ${dialogType === "parish" ? "bg-[#47B13C]" : "bg-[#EF5C12]"} text-white`}>
+        <DialogContent className="costomModal min-w-[494px] p-1 gap-0 rounded-sm">
+          <div className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[35px] ${dialogType === "parish" ? "bg-[#47B13C]" : "bg-[#EF5C12]"} text-white`}>
             {dialogType === "parish" ? "Kirim qo'shish" : "Chiqim qo'shish"}
           </div>
           <div className="flex gap-1">
@@ -479,7 +479,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
                   <div
                     key={ct.id}
                     onClick={() => setSelectedCategory(ct.id)}
-                    className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-[7px] text-center cursor-pointer ${
+                    className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-sm text-center cursor-pointer ${
                       selectedCategory === ct.id ? (dialogType === "parish" ? "ring-2 ring-[#47B13C]" : "ring-2 ring-[#EF5C12]") : ""
                     }`}
                   >
@@ -489,18 +489,18 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
               )}
             </div>
             <div className="w-full">
-              <div className="flex pl-2 items-center bg-input rounded-[7px] h-[90px]">
-                <Input placeholder="0.00" value={amount} type="number" min={0} onChange={(e) => setAmount(e.target.value)} className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-[7px] bg-transparent px-0" />
+              <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
+                <Input placeholder="0.00" value={amount} type="number" min={0} onChange={(e) => setAmount(e.target.value)} className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0" />
                 <div className="text-4xl text-[#5D5D53] mx-4">$</div>
               </div>
-              <Input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]" />
-              <Textarea placeholder="Izoh" value={comment} onChange={(e) => setComment(e.target.value)} className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5" />
+              <Input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]" />
+              <Textarea placeholder="Izoh" value={comment} onChange={(e) => setComment(e.target.value)} className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5" />
             </div>
           </div>
           <Button
             onClick={handleSubmit}
             disabled={addPending || !selectedCategory || !amount}
-            className={`p-5 rounded-[7px] mt-1 ${dialogType === "parish" ? "bg-[#47B13C]" : "bg-[#EF5C12]"} text-white`}
+            className={`p-5 rounded-sm mt-1 ${dialogType === "parish" ? "bg-[#47B13C]" : "bg-[#EF5C12]"} text-white`}
           >
             {addPending ? (
               <span className="flex items-center gap-2"><Spinner className="h-4 w-4" />Qo'shilmoqda...</span>

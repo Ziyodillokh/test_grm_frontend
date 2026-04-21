@@ -95,9 +95,9 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="costomModal min-w-[494px] p-1 gap-0 rounded-[10px]">
+      <DialogContent className="costomModal min-w-[494px] p-1 gap-0 rounded-sm">
         <div
-          className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[35px] ${headerColor} text-white`}
+          className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[35px] ${headerColor} text-white`}
         >
           Tahrirlash
         </div>
@@ -108,7 +108,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
               <div
                 key={ct.id}
                 onClick={() => setSelectedType(ct.id)}
-                className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-[7px] text-center cursor-pointer ${
+                className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-sm text-center cursor-pointer ${
                   selectedType === ct.id
                     ? isIncome
                       ? "ring-2 ring-[#89A143]"
@@ -124,14 +124,14 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
           </div>
 
           <div className="w-full">
-            <div className="flex pl-2 items-center bg-input rounded-[7px] h-[90px]">
+            <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
               <Input
                 placeholder="0.00"
                 value={price}
                 type="number"
                 min={0}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-[7px] bg-transparent px-0"
+                className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0"
               />
               <div className="text-4xl text-[#5D5D53] mx-4">$</div>
             </div>
@@ -139,13 +139,13 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
               type="datetime-local"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full border-none h-[50px] mt-0.5 text-[14px] bg-input font-semibold rounded-[7px] px-3"
+              className="w-full border-none h-[50px] mt-0.5 text-[14px] bg-input font-semibold rounded-sm px-3"
             />
             <Textarea
               placeholder="Izoh"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[70px] text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5"
+              className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[70px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5"
             />
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
         <Button
           onClick={handleSubmit}
           disabled={isPending || !price}
-          className={`p-5 rounded-[7px] mt-1 ${headerColor} text-white`}
+          className={`p-5 rounded-sm mt-1 ${headerColor} text-white`}
         >
           {isPending ? (
             <span className="flex items-center gap-2">

@@ -43,7 +43,7 @@ export default function Pricecheck({ selected }: { selected: IData[] }) {
           <p className="text-primary font-bold text-[28px] mt-0.5 mb-[27px] ml-2">
             {price} $
           </p>
-          <div className="bg-card flex items-center  rounded-xl text-primary justify-between px-[13px] py-[14px] mb-[1px]">
+          <div className="bg-card flex items-center  rounded-sm text-primary justify-between px-[13px] py-[14px] mb-[1px]">
             <p className="text-[14px] font-semibold ">Cкидка:</p>
             <p className="text-[22px] font-semibold">- {discountSum}$</p>
           </div>
@@ -57,7 +57,7 @@ export default function Pricecheck({ selected }: { selected: IData[] }) {
            <Button
           // onClick={AccepedFunt}
           // disabled
-          className="w-full rounded-xl h-[50px] bg-card  hover:bg-card mb-2 mt-auto text-primary text-[16px] font-semibold "
+          className="w-full rounded-sm h-[50px] bg-card  hover:bg-card mb-2 mt-auto text-primary text-[16px] font-semibold "
         >
           Распечатать чек
         </Button>

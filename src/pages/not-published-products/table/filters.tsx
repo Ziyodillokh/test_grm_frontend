@@ -35,7 +35,7 @@ const {meUser} = useMeStore()
       <Button
       onClick={()=>exelMudate()}
       disabled={exelPending}
-        className="h-full border-0 bg-card rounded-xl hover:bg-card w-[140px]  ml-auto"
+        className="h-full border-0 bg-card rounded-sm hover:bg-card w-[140px]  ml-auto"
         variant={"outline"}
       >
        {exelPending? <Loader className="animate-spin"/>:<FileOutput />}   Экспорт

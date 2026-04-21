@@ -98,7 +98,7 @@ export default function Page() {
               </span>
 
               {/* Lavozim */}
-              <span className="text-[11px] text-[#0078D4] bg-[#F0F7FF] px-[8px] py-[2px] rounded-[20px] self-center w-fit">
+              <span className="text-[11px] text-[#0078D4] bg-[#F0F7FF] px-[8px] py-[2px] rounded-sm self-center w-fit">
                 {item.position?.title}
               </span>
 
@@ -130,7 +130,7 @@ export default function Page() {
               <div className="absolute right-[4px] top-1/2 -translate-y-1/2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="h-[32px] w-[32px] rounded-[6px] flex items-center justify-center hover:bg-[#F5F5F5]">
+                    <button className="h-[32px] w-[32px] rounded-sm flex items-center justify-center hover:bg-[#F5F5F5]">
                       <MoreVertical className="w-[16px] h-[16px] text-[#a3a3a3]" />
                     </button>
                   </DropdownMenuTrigger>

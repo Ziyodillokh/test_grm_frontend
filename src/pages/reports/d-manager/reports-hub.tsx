@@ -31,7 +31,7 @@ export default function DManagerReportsHubPage() {
         >
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted">
+              <div className="flex items-center justify-center w-10 h-10 rounded-sm bg-muted">
                 <report.icon className="w-5 h-5 text-muted-foreground" />
               </div>
               <div>

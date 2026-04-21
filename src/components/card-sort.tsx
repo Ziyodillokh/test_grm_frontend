@@ -143,7 +143,7 @@ export default function CardSort({
             setType("Приход");
             setDialogOpen(true);
           }}
-          className="border-border   border p-4 rounded-4xl"
+          className="border-border   border p-4 rounded-sm"
         >
           <Plus
             size={20}
@@ -199,7 +199,7 @@ export default function CardSort({
             setType("Расход");
             setDialogOpen(true);
           }}
-          className="border-border   border p-4 rounded-4xl"
+          className="border-border   border p-4 rounded-sm"
         >
           <Plus
             size={20}
@@ -367,10 +367,10 @@ export default function CardSort({
   return (
     <>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <div className="flex rounded-t-xl overflow-hidden  bg-card">
+        <div className="flex rounded-t-sm overflow-hidden  bg-card">
           <div
             onClick={() => setSortType(null)}
-            className=" bg-sidebar/20 cursor-pointer rounded-tl-xl p-5 w-full border border-t border-r max-w-[399px]"
+            className=" bg-sidebar/20 cursor-pointer rounded-tl-sm p-5 w-full border border-t border-r max-w-[399px]"
           >
             <div className="flex items-center">
               <DollarSign size={54} />
@@ -440,7 +440,7 @@ export default function CardSort({
               <div
                 key={e.title}
                 onClick={() => setSortType(e.value)}
-                className={`${sorttype == e.value ? "bg-primary text-background" : "bg-sidebar/20  text-primary"} ${index == 3 ? "rounded-tr-xl" : ""}  border-t border-r border-border cursor-pointer px-4 py-5`}
+                className={`${sorttype == e.value ? "bg-primary text-background" : "bg-sidebar/20  text-primary"} ${index == 3 ? "rounded-tr-sm" : ""}  border-t border-r border-border cursor-pointer px-4 py-5`}
               >
                 <div className="flex justify-between items-center">
                   <p className="text-[12px] mb-0.5 flex items">{e.title}</p>
@@ -462,9 +462,9 @@ export default function CardSort({
           </div>
         </div>
 
-        <DialogContent className="sm:max-w-[640px]  costomModal rounded-[12px] px-4 pb-4">
+        <DialogContent className="sm:max-w-[640px]  costomModal rounded-sm px-4 pb-4">
           <div
-            className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[45px]  ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+            className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[45px]  ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
           >
             {type === "Приход" ? "Добавление прихода" : "Добавление расхода"}
           </div>
@@ -503,7 +503,7 @@ export default function CardSort({
                         setIsCustomsSelectble(false);
                       }
                     }}
-                    className={`${cashflow_type === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
+                    className={`${cashflow_type === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-sm text-center cursor-pointer`}
                   >
                     <img
                       src={minio_img_url + item.icon?.path}
@@ -535,7 +535,7 @@ export default function CardSort({
                   onChange={(value) => {
                     setFilial(value || "");
                   }}
-                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                 />
               )}
 
@@ -552,7 +552,7 @@ export default function CardSort({
                   onChange={(value) => {
                     setDebtId(value);
                   }}
-                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                 />
               )}
 
@@ -569,7 +569,7 @@ export default function CardSort({
                   onChange={(value) => {
                     setFactoryId(value);
                   }}
-                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                 />
               )}
 
@@ -586,7 +586,7 @@ export default function CardSort({
                   onChange={(value) => {
                     setLogisticsId(value);
                   }}
-                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                 />
               )}
 
@@ -603,7 +603,7 @@ export default function CardSort({
                   onChange={(value) => {
                     setCustomsId(value);
                   }}
-                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                  className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                 />
               )}
               <Input
@@ -611,26 +611,26 @@ export default function CardSort({
                 onChange={(e) => setPrice(Number(e.target.value))}
                 type="number"
                 placeholder="0.00"
-                className="w-full border-none h-[90px] placeholder:text-[32px] mt-0.5 !text-[32px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                className="w-full border-none h-[90px] placeholder:text-[32px] mt-0.5 !text-[32px] font-semibold rounded-sm px-[17px] py-[26px]"
               />
               <Input
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 type="datetime-local"
-                className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
+                className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]"
               />
               <Textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Комментария"
-                className="w-full border-none focus:border-none outline-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5"
+                className="w-full border-none focus:border-none outline-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5"
               />
             </div>
           </div>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`p-5 py-6 rounded-[7px] ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white ${isSubmitting ? "opacity-70" : ""}`}
+            className={`p-5 py-6 rounded-sm ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white ${isSubmitting ? "opacity-70" : ""}`}
           >
             {isSubmitting
               ? "Добавление..."

@@ -1,43 +1,54 @@
-import FilterSelect from "@/components/filters-ui/filter-select";
 import { getMonth } from "date-fns";
-import { Store } from "lucide-react";
-import useDataFetch from "@/pages/filial/table/queries";
-import { useMeStore } from "@/store/me-store";
-
+import { Button } from "@/components/ui/button";
+import FilterSelect from "@/components/filters-ui/filter-select";
 import { MonthsArray } from "@/consts";
+import { useMeStore } from "@/store/me-store";
+import useDataFetch from "@/pages/filial/table/queries";
+import ReportToolbar from "@/components/report-toolbar";
 
-export default function Filters() {
+export default function Filter() {
+  const { meUser } = useMeStore();
+
   const { data } = useDataFetch({
     queries: { type: "filial", limit: 50 },
   });
-  const filialOption =
-    data?.pages[0]?.items?.map((e) => ({
+  const filialOptions =
+    data?.pages?.[0]?.items?.map((e: any) => ({
       label: e?.name,
       value: e?.id,
     })) || [];
-  const { meUser } = useMeStore()
-  return (
-    <div className="  px-[20px] h-[64px] items-center  flex gap-2 mb-2  ">
-      <p className="text-[#272727] text-[20px] mr-auto">Отчёт по сотрудикам </p>
-      {meUser?.position?.role != 4 && <FilterSelect
-        placeholder="все"
-        defaultValue="clear"
-        className="w-[200px] h-[62px]  pl-4  "
-        options={[{ value: "clear", label: "Все филиалы" }, ...filialOption]}
-        name="filial"
-        icons={
-          <>
-            <Store />
-          </>
-        }
-      />}
-      <FilterSelect
-        options={MonthsArray}
-        defaultValue={getMonth(new Date()) + 1 + ""}
-        name="month"
-        className="w-[160px] px-2 h-[62px]  "
-      />
 
-    </div>
+  return (
+    <ReportToolbar
+      filterContent={
+        <>
+          {meUser?.position?.role != 4 && (
+            <div>
+              <p className="text-[13px] text-muted-foreground mb-1">Filial</p>
+              <FilterSelect
+                placeholder="Barcha filiallar"
+                defaultValue="clear"
+                className="w-full"
+                options={[{ value: "clear", label: "Barcha filiallar" }, ...filialOptions]}
+                name="filial"
+              />
+            </div>
+          )}
+          <div>
+            <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+            <FilterSelect
+              placeholder="Oy tanlang"
+              className="w-full"
+              options={MonthsArray}
+              name="month"
+              defaultValue={String(getMonth(new Date()) + 1)}
+            />
+          </div>
+          <Button variant="outline" className="w-full mt-2">
+            Tozalash
+          </Button>
+        </>
+      }
+    />
   );
 }

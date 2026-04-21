@@ -163,7 +163,7 @@ export const Columns: ColumnDef<TData>[] = [
       return meUser?.position?.role == 10 || meUser?.position?.role == 9 ? (
         <div>
           <Button
-            className={`bg-[#E6E6D9] border-0  rounded-[5px] p-[14px] h-10 `}
+            className={`bg-[#E6E6D9] border-0  rounded-sm p-[14px] h-10 `}
             variant={"outline"}
           >
             {item?.filial?.name}

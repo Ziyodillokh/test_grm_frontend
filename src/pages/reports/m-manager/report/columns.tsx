@@ -149,7 +149,7 @@ export const Columns: ColumnDef<TData>[] = [
       return (
         item?.filial?.name ?
           <Button
-            className={`bg-[#E6E6D9] border-0  rounded-[5px] p-[14px] h-10 `}
+            className={`bg-[#E6E6D9] border-0  rounded-sm p-[14px] h-10 `}
             variant={"outline"}
           >
             {item?.filial?.name}
@@ -208,7 +208,7 @@ export const Columns: ColumnDef<TData>[] = [
           {canEdit && (
             <button
               onClick={() => setEditCashflowId(String(item.id))}
-              className="px-[6px] text-start text-sm rounded-md py-[4px] flex items-center gap-2 w-full hover:bg-accent"
+              className="px-[6px] text-start text-sm rounded-sm py-[4px] flex items-center gap-2 w-full hover:bg-accent"
             >
               <Pencil className="h-4 w-4" />
               Tahrirlash

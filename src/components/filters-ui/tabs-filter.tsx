@@ -50,7 +50,7 @@ export default function TabsFilter() {
       {data?.data?.map((e) => (
         <p
           key={e?.id}
-          className={` rounded-lg px-4 py-2.5 text-nowrap cursor-pointer ${filial === e?.id
+          className={` rounded-sm px-4 py-2.5 text-nowrap cursor-pointer ${filial === e?.id
             ? "bg-primary text-sidebar"
             : "bg-card "
             }`}

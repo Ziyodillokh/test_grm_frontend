@@ -315,7 +315,7 @@ export default function ReportPage() {
           <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
             {/* Search */}
             {showSearch ? (
-              <div className="flex items-center gap-[4px] bg-white rounded-[8px] px-[10px] h-[42px]">
+              <div className="flex items-center gap-[4px] bg-white rounded-sm px-[10px] h-[42px]">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -337,7 +337,7 @@ export default function ReportPage() {
             ) : (
               <button
                 onClick={() => setShowSearch(true)}
-                className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
+                className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -347,7 +347,7 @@ export default function ReportPage() {
             )}
 
             {/* Sort */}
-            <button className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+            <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <mask id="mask_sort_rp" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
                   <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -362,7 +362,7 @@ export default function ReportPage() {
             {/* Filter */}
             <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
               <SheetTrigger asChild>
-                <button className={`w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors ${hasActiveFilter ? "ring-2 ring-[#0078D4]" : ""}`}>
+                <button className={`w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors ${hasActiveFilter ? "ring-2 ring-[#0078D4]" : ""}`}>
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke={hasActiveFilter ? "#0078D4" : "#1A1A1A"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -407,7 +407,7 @@ export default function ReportPage() {
             <button
               onClick={() => exportExcel()}
               disabled={excelPending}
-              className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
               {excelPending ? (
                 <Loader className="w-[18px] h-[18px] animate-spin text-[#1A1A1A]" />
@@ -425,17 +425,17 @@ export default function ReportPage() {
             <div className="flex-1" />
 
             {/* Kirim / Chiqim buttons */}
-            <Button onClick={() => openCfDialog("Приход")} className="bg-[#47B13C] hover:bg-[#3da032] text-white px-5 h-[42px] rounded-[8px] text-[14px]">
+            <Button onClick={() => openCfDialog("Приход")} className="bg-[#47B13C] hover:bg-[#3da032] text-white px-5 h-[42px] rounded-sm text-[14px]">
               <Plus size={16} className="mr-1" /> Kirim qo'shish
             </Button>
-            <Button onClick={() => openCfDialog("Расход")} className="bg-[#E38157] hover:bg-[#D27047] text-white px-5 h-[42px] rounded-[8px] text-[14px]">
+            <Button onClick={() => openCfDialog("Расход")} className="bg-[#E38157] hover:bg-[#D27047] text-white px-5 h-[42px] rounded-sm text-[14px]">
               <Plus size={16} className="mr-1" /> Chiqim qo'shish
             </Button>
           </div>
 
           <div className="flex gap-[4px] mb-[12px]">
             {/* Yashil card */}
-            <div className="bg-[#47B13C] text-white rounded-[8px] p-5 min-w-[260px] h-[150px] w-[30%] shrink-0 flex flex-col justify-between relative overflow-hidden">
+            <div className="bg-[#47B13C] text-white rounded-sm p-5 min-w-[260px] h-[150px] w-[30%] shrink-0 flex flex-col justify-between relative overflow-hidden">
               <p className="text-[28px] font-medium">
                 ${(meUser?.position?.role == 9
                   ? myCashFlowReports?.managerSum || 0
@@ -471,7 +471,7 @@ export default function ReportPage() {
             </div>
 
             {/* Biznesga umumiy kirim */}
-            <div className="flex-1 bg-white rounded-[8px] p-5 h-[150px] flex flex-col justify-between">
+            <div className="flex-1 bg-white rounded-sm p-5 h-[150px] flex flex-col justify-between">
               <div className="flex items-center gap-[10px]">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -489,7 +489,7 @@ export default function ReportPage() {
             </div>
 
             {/* Biznesdan umumiy chiqim */}
-            <div className="flex-1 bg-white rounded-[8px] p-5 h-[150px] flex flex-col justify-between">
+            <div className="flex-1 bg-white rounded-sm p-5 h-[150px] flex flex-col justify-between">
               <div className="flex items-center gap-[10px]">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -509,8 +509,8 @@ export default function ReportPage() {
 
           {/* Cashflow create dialog */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogContent className="sm:max-w-[640px] costomModal rounded-[12px] px-4 pb-4">
-              <div className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[45px] ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}>
+            <DialogContent className="sm:max-w-[640px] costomModal rounded-sm px-4 pb-4">
+              <div className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[45px] ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}>
                 {dialogType === "Приход" ? "Kirim qo'shish" : "Chiqim qo'shish"}
               </div>
               <div className="grid grid-cols-2 gap-1">
@@ -555,7 +555,7 @@ export default function ReportPage() {
                           setCustomsId(undefined);
                         }
                       }}
-                      className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-[7px] text-center cursor-pointer`}
+                      className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-sm text-center cursor-pointer`}
                     >
                       <img
                         src={minio_img_url + (typeof item.icon === 'object' ? (item.icon as any)?.path : item.icon)}
@@ -579,7 +579,7 @@ export default function ReportPage() {
                       onChange={(value) => {
                         setDebtId(value);
                       }}
-                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                     />
                   )}
                   {isFactorySelected && (
@@ -595,7 +595,7 @@ export default function ReportPage() {
                       onChange={(value) => {
                         setFactoryId(value);
                       }}
-                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                     />
                   )}
                   {isLogisticsSelected && (
@@ -611,7 +611,7 @@ export default function ReportPage() {
                       onChange={(value) => {
                         setLogisticsId(value);
                       }}
-                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                     />
                   )}
                   {isCustomsSelected && (
@@ -627,7 +627,7 @@ export default function ReportPage() {
                       onChange={(value) => {
                         setCustomsId(value);
                       }}
-                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                     />
                   )}
                   <Input
@@ -635,26 +635,26 @@ export default function ReportPage() {
                     onChange={(e) => setPrice(Number(e.target.value))}
                     type="number"
                     placeholder="0.00"
-                    className="w-full border-none h-[90px] placeholder:text-[32px] mt-0.5 !text-[32px] font-semibold rounded-[7px] px-[17px] py-[26px]"
+                    className="w-full border-none h-[90px] placeholder:text-[32px] mt-0.5 !text-[32px] font-semibold rounded-sm px-[17px] py-[26px]"
                   />
                   <Input
                     value={cfDate}
                     onChange={(e) => setCfDate(e.target.value)}
                     type="datetime-local"
-                    className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
+                    className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]"
                   />
                   <Textarea
                     value={cfComment}
                     onChange={(e) => setCfComment(e.target.value)}
                     placeholder="Izoh"
-                    className="w-full border-none focus:border-none outline-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5"
+                    className="w-full border-none focus:border-none outline-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5"
                   />
                 </div>
               </div>
               <Button
                 onClick={handleCfSubmit}
                 disabled={isSubmitting}
-                className={`p-5 py-6 rounded-[7px] ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+                className={`p-5 py-6 rounded-sm ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
               >
                 {isSubmitting ? <Spinner className="h-4 w-4 mr-2" /> : null}
                 {isSubmitting ? "Qo'shilmoqda..." : `${dialogType === "Приход" ? "Kirimga" : "Chiqimga"} qo'shish`}

@@ -117,7 +117,7 @@ export default function KassaToolbar({
       <div className="flex items-center gap-1">
         {/* Search */}
         {showSearch ? (
-          <div className="flex items-center gap-1 bg-card rounded-lg px-3 h-10">
+          <div className="flex items-center gap-1 bg-card rounded-sm px-3 h-10">
             <Search className="w-4 h-4 text-muted-foreground" />
             <Input
               autoFocus
@@ -140,7 +140,7 @@ export default function KassaToolbar({
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-lg"
+            className="rounded-sm"
             onClick={() => setShowSearch(true)}
           >
             <Search className="w-5 h-5" />
@@ -153,7 +153,7 @@ export default function KassaToolbar({
             <Button
               variant="ghost"
               size="icon"
-              className={`rounded-lg ${hasActiveFilter ? "text-[#89A143]" : ""}`}
+              className={`rounded-sm ${hasActiveFilter ? "text-[#89A143]" : ""}`}
             >
               <SlidersHorizontal className="w-5 h-5" />
             </Button>
@@ -225,7 +225,7 @@ export default function KassaToolbar({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-lg"
+          className="rounded-sm"
           onClick={() => exportExcel()}
           disabled={excelPending}
         >
@@ -242,14 +242,14 @@ export default function KassaToolbar({
         <div className="flex items-center gap-2">
           <Button
             onClick={onAddIncome}
-            className="bg-[#48B533] hover:bg-[#3da02b] text-white rounded-lg px-5 py-2.5 text-[14px] font-medium"
+            className="bg-[#48B533] hover:bg-[#3da02b] text-white rounded-sm px-5 py-2.5 text-[14px] font-medium"
           >
             <Plus className="w-4 h-4 mr-1" />
             Kirim qo'shish
           </Button>
           <Button
             onClick={onAddExpense}
-            className="bg-[#E38157] hover:bg-[#d0724a] text-white rounded-lg px-5 py-2.5 text-[14px] font-medium"
+            className="bg-[#E38157] hover:bg-[#d0724a] text-white rounded-sm px-5 py-2.5 text-[14px] font-medium"
           >
             <Plus className="w-4 h-4 mr-1" />
             Chiqim qo'shish

@@ -1,24 +1,32 @@
 import { useParams } from "react-router-dom";
-import { parseAsInteger, useQueryState } from "nuqs";
-import { DataTable } from "@/components/ui/data-table";
+import { parseAsString, useQueryState } from "nuqs";
+import { Loader } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import FilterSelect from "@/components/filters-ui/filter-select";
+import { ListRow } from "@/components/ui/list-row";
 import formatPrice from "@/utils/formatPrice";
+import { MonthsArray } from "@/consts";
 import { useDebtOrders } from "./queries";
-import { orderColumns } from "./columns";
+import ReportToolbar from "@/components/report-toolbar";
 
-const currentYear = new Date().getFullYear();
+const yearsArray = Array.from({ length: 3 }, (_, i) => {
+  const y = new Date().getFullYear() - i;
+  return { label: String(y), value: String(y) };
+});
+
+const gridTemplate = "40px 1fr 100px 80px 60px 80px 120px 140px 100px";
+const columnLabels = ["№", "Kolleksiya", "Model", "Razmer", "Soni", "m²", "Narx", "Sotuvchi", "Sana"];
 
 export default function ClientDebtOrders() {
   const { clientId } = useParams();
-  const [year, setYear] = useQueryState(
-    "year",
-    parseAsInteger.withDefault(currentYear)
-  );
-  const [month, setMonth] = useQueryState("month", parseAsInteger);
+  const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
+  const [month] = useQueryState("month", parseAsString);
 
+  const year = Number(yearFilter);
 
   const { data, isLoading } = useDebtOrders(clientId, {
     year,
-    month: month || undefined,
+    month: month ? Number(month) : undefined,
     page: 1,
     limit: 100,
   });
@@ -26,91 +34,96 @@ export default function ClientDebtOrders() {
   const items = data?.items || [];
   const client = data?.client || {};
 
-  const totalKv = items.reduce(
-    (acc: number, o: any) => acc + Number(o.kv || 0),
-    0
-  );
-  const totalPrice = items.reduce(
-    (acc: number, o: any) => acc + Number(o.price || 0),
-    0
-  );
-
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="bg-sidebar border-border border-b h-[64px] flex items-center px-4 gap-3">
-        <p className="text-[16px] font-medium">
-          {client.fullName || "Client"}
-        </p>
-      </div>
-
-      {client.id && (
-        <div className="flex gap-4 px-4 py-3">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Qarz:</span>
-            <span className="text-[#FF6600] font-semibold">
-              {formatPrice(client.owed || 0)} $
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Qaytarilgan:</span>
-            <span className="text-[#89A143] font-semibold">
-              {formatPrice(client.given || 0)} $
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Qoldiq:</span>
-            <span className="font-bold">
-              {formatPrice(client.balance || 0)} $
-            </span>
-          </div>
-          {client.phone && (
-            <div className="flex items-center gap-2 text-sm ml-auto">
-              <span className="text-muted-foreground">{client.phone}</span>
+    <div className="flex flex-col h-full">
+      <ReportToolbar
+        totalsItems={client.id ? [
+          { label: (client.fullName || "") + ":", value: client.owed || 0, color: "#FF6600" },
+          { value: client.given || 0, color: "#47B13C" },
+          { value: client.balance || 0, color: "#1a1a1a" },
+        ] : undefined}
+        filterContent={
+          <>
+            <div>
+              <p className="text-[13px] text-muted-foreground mb-1">Yil</p>
+              <FilterSelect
+                placeholder="Yil tanlang"
+                className="w-full"
+                options={yearsArray}
+                name="year"
+                defaultValue={String(new Date().getFullYear())}
+              />
             </div>
-          )}
-        </div>
-      )}
+            <div>
+              <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+              <FilterSelect
+                placeholder="Barcha oylar"
+                className="w-full"
+                options={[{ label: "Hammasi", value: "clear" }, ...MonthsArray]}
+                name="month"
+                defaultValue="clear"
+              />
+            </div>
+            <Button variant="outline" className="w-full mt-2">
+              Tozalash
+            </Button>
+          </>
+        }
+      />
 
-      <div className="flex items-center gap-3 px-4 py-2">
-        <select
-          className="border rounded-md px-3 py-1.5 text-sm bg-background"
-          value={year}
-          onChange={(e) => setYear(+e.target.value)}
-        >
-          {[currentYear, currentYear - 1, currentYear - 2].map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-        <select
-          className="border rounded-md px-3 py-1.5 text-sm bg-background"
-          value={month || ""}
-          onChange={(e) => setMonth(e.target.value ? +e.target.value : null)}
-        >
-          <option value="">Barcha oylar</option>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i + 1} value={i + 1}>
-              {new Date(2000, i).toLocaleString("uz-UZ", { month: "long" })}
-            </option>
-          ))}
-        </select>
-
-        <div className="ml-auto flex gap-4 text-sm text-muted-foreground">
-          <span>{items.length} ta order</span>
-          <span>{totalKv.toFixed(2)} m²</span>
-          <span className="font-medium text-foreground">
-            {formatPrice(totalPrice)} $
-          </span>
-        </div>
+      {/* Column labels */}
+      <div
+        className="mb-[10px] shrink-0 px-[12px]"
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+      >
+        {columnLabels.map((label, i) => (
+          <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
+        ))}
       </div>
 
-      <DataTable
-        columns={orderColumns}
-        data={items}
-        isLoading={isLoading}
-        isRowClickble={false}
-      />
+      {/* List */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[200px]">
+            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+          </div>
+        ) : (
+          items.map((item: any, i: number) => (
+            <ListRow
+              key={item.id || i}
+              gridTemplate={gridTemplate}
+              className="pl-[12px]"
+              minHeight={56}
+            >
+              <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">
+                {item.product?.bar_code?.collection?.title || "—"}
+              </span>
+              <span className="text-[13px] text-[#1a1a1a]">
+                {item.product?.bar_code?.model?.title || "—"}
+              </span>
+              <span className="text-[13px] text-[#1a1a1a]">
+                {item.product?.bar_code?.size?.title || "—"}
+              </span>
+              <span className="text-[13px] text-[#1a1a1a]">
+                {item.x || 1}
+              </span>
+              <span className="text-[13px] text-[#1a1a1a]">
+                {Number(item.kv || 0).toFixed(2)}
+              </span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">
+                {formatPrice(item.price || 0)} $
+              </span>
+              <span className="text-[13px] text-[#a3a3a3]">
+                {item.seller?.firstName || ""} {item.seller?.lastName || ""}
+              </span>
+              <span className="text-[13px] text-[#a3a3a3]">
+                {item.date ? new Date(item.date).toLocaleDateString("ru-RU") : "—"}
+              </span>
+            </ListRow>
+          ))
+        )}
+      </div>
     </div>
   );
 }

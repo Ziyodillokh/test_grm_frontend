@@ -31,7 +31,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
     <tbody
       data-slot="table-body"
       // className={cn("[&_tr:last-child]:border-0", className)}
-      className={`w-full  rounded-[3px] border border-border ${className && className}`}
+      className={`w-full  rounded-sm border border-border ${className && className}`}
       {...props}
     />
   );

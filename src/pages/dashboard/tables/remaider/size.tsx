@@ -47,7 +47,7 @@ const Sizes = data?.pages?.flatMap((page) => page?.items || []) || [];
               name: "model",
             })
           }
-          className="bg-primary cursor-pointer p-4 w-[120px] rounded-2xl flex items-center gap-2 text-white"
+          className="bg-primary cursor-pointer p-4 w-[120px] rounded-sm flex items-center gap-2 text-white"
         >
           <ChevronLeft />
           <p>назад</p>

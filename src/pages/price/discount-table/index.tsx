@@ -37,7 +37,7 @@ export default function DiscountTablePage() {
       <PriceFilter>
         <button
           onClick={() => setId("new")}
-          className="ml-auto h-[42px] px-[16px] rounded-[8px] bg-[#0078D4] text-white text-[13px] font-medium hover:bg-[#006CBE] transition-colors shrink-0"
+          className="ml-auto h-[42px] px-[16px] rounded-sm bg-[#0078D4] text-white text-[13px] font-medium hover:bg-[#006CBE] transition-colors shrink-0"
         >
           + Qo'shish
         </button>
@@ -69,13 +69,13 @@ export default function DiscountTablePage() {
               <span className="text-[13px] text-[#F59E0B] font-medium">-{item.discountPercentage}%</span>
               <button
                 onClick={() => setId(item.id)}
-                className="h-[32px] px-[10px] rounded-[6px] text-[12px] bg-[#F5F5F5] text-[#1a1a1a]"
+                className="h-[32px] px-[10px] rounded-sm text-[12px] bg-[#F5F5F5] text-[#1a1a1a]"
               >
                 Tahrir
               </button>
               <button
                 onClick={() => deleteDiscount(item.id)}
-                className="h-[32px] w-[32px] rounded-[6px] flex items-center justify-center bg-[#FEF2F2] text-[#EF4444] hover:bg-[#FEE2E2]"
+                className="h-[32px] w-[32px] rounded-sm flex items-center justify-center bg-[#FEF2F2] text-[#EF4444] hover:bg-[#FEE2E2]"
               >
                 <Trash2 className="w-[14px] h-[14px]" />
               </button>

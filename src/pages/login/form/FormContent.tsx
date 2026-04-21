@@ -165,7 +165,7 @@ export default function LoginFormContent({
             >
               {/* Ob-havo */}
               <div className="flex items-center gap-[12px]">
-                <div className="w-[60px] h-[60px] bg-white rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-[60px] h-[60px] bg-white rounded-sm flex items-center justify-center shrink-0">
                   <WeatherIcon />
                 </div>
                 <div>
@@ -177,7 +177,7 @@ export default function LoginFormContent({
               </div>
               {/* Server indikatori */}
               <div className="flex items-center gap-[12px]">
-                <div className="w-[60px] h-[60px] bg-white rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-[60px] h-[60px] bg-white rounded-sm flex items-center justify-center shrink-0">
                   <div className="relative">
                     <span className="text-[22px] font-bold text-[#272727]">
                       28
@@ -225,7 +225,7 @@ export default function LoginFormContent({
                 name="login"
                 type="password"
                 placeholder="PIN-ko'dni kiriting"
-                classNameInput="h-[44px] pl-[44px] pr-[16px] text-[15px] bg-white border border-[#e0e0e0] rounded-lg"
+                classNameInput="h-[44px] pl-[44px] pr-[16px] text-[15px] bg-white border border-[#e0e0e0] rounded-sm"
                 className="mb-0"
                 handleKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -252,7 +252,7 @@ export default function LoginFormContent({
         >
           {/* Carousel — 4:3 aspect ratio */}
           <div
-            className="w-full shrink-0 rounded-2xl overflow-hidden relative bg-[#1a1a1a]"
+            className="w-full shrink-0 rounded-sm overflow-hidden relative bg-[#1a1a1a]"
             style={{ aspectRatio: "5 / 3" }}
           >
             <Carousel
@@ -286,7 +286,7 @@ export default function LoginFormContent({
           </div>
 
           {/* Yangi Xabarlar — qolgan joy, ichki scroll */}
-          <div className="mt-[16px] flex-1 min-h-0 bg-white rounded-2xl p-[32px] flex flex-col">
+          <div className="mt-[16px] flex-1 min-h-0 bg-white rounded-sm p-[32px] flex flex-col">
             <div className="flex items-center gap-2 mb-[16px] shrink-0 pl-[16px]">
               <span className="text-[16px]">🔔</span>
               <span className="text-[15px] font-normal text-[#272727]">
@@ -314,7 +314,7 @@ export default function LoginFormContent({
                         {item.desc}
                       </p>
                     </div>
-                    <button className="w-[40px] h-[40px] rounded-[8px] bg-[#E8F4FD] flex items-center justify-center shrink-0">
+                    <button className="w-[40px] h-[40px] rounded-sm bg-[#E8F4FD] flex items-center justify-center shrink-0">
                       <Eye className="w-4 h-4 text-[#4A9FE5]" />
                     </button>
                   </div>

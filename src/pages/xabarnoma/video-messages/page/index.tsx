@@ -110,7 +110,7 @@ export default function VideoMessagesPage() {
       {/* Top Widgets */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Video Murojaat Card */}
-        <div className="bg-[#0078D4] rounded-2xl p-5 text-white relative overflow-hidden">
+        <div className="bg-[#0078D4] rounded-sm p-5 text-white relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
               <Video className="w-5 h-5" />
@@ -136,7 +136,7 @@ export default function VideoMessagesPage() {
         </div>
 
         {/* Monitoring Widget */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100">
+        <div className="bg-white rounded-sm p-5 border border-gray-100">
           <div className="flex items-center gap-2 mb-3">
             <Activity className="w-5 h-5 text-[#47B13C]" />
             <span className="text-sm font-medium text-[#999]">Monitoring</span>
@@ -152,7 +152,7 @@ export default function VideoMessagesPage() {
         </div>
 
         {/* Refresh Widget */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100">
+        <div className="bg-white rounded-sm p-5 border border-gray-100">
           <div className="flex items-center gap-2 mb-3">
             <RefreshCw className="w-5 h-5 text-[#0078D4]" />
             <span className="text-sm font-medium text-[#999]">
@@ -200,7 +200,7 @@ export default function VideoMessagesPage() {
                   setSelectedVideo(video);
                   setIsPlaying(false);
                 }}
-                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                className={`flex items-center gap-3 p-3 rounded-sm cursor-pointer transition-all ${
                   activeVideo?.id === video.id
                     ? "bg-[#0078D4]/5 border border-[#0078D4]/20"
                     : "bg-white border border-gray-100 hover:border-gray-200"
@@ -236,7 +236,7 @@ export default function VideoMessagesPage() {
                 {/* Menu */}
                 <button
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-1 hover:bg-gray-100 rounded-sm transition-colors"
                 >
                   <MoreVertical className="w-4 h-4 text-[#999]" />
                 </button>
@@ -247,7 +247,7 @@ export default function VideoMessagesPage() {
           {/* Player */}
           <div className="lg:col-span-2 space-y-4">
             {activeVideo && (
-              <div className="bg-[#1A1A1A] rounded-2xl aspect-video relative overflow-hidden">
+              <div className="bg-[#1A1A1A] rounded-sm aspect-video relative overflow-hidden">
                 <video
                   ref={videoRef}
                   key={activeVideo.id}

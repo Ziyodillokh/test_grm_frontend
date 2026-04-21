@@ -39,11 +39,11 @@ export default function Filters() {
     <div className="w-full flex gap-3  h-[50px] ">
        <FilterSelect
         options={Sort}
-        className="max-w-[426px] bg-primary text-[#E6E6D9] rounded-xl px-2  w-full text-[20px]"
+        className="max-w-[426px] bg-primary text-[#E6E6D9] rounded-sm px-2  w-full text-[20px]"
         classNameValue="bg-red-200"
         placeholder="Все операции"
-        classNameContainer="bg-primary rounded-[12px] text-[#E6E6D9]"
-        classNameItem=" bg-primery rounded-[9px] hover:bg-[#5D5D53CC] p-4 text-[20px]"
+        classNameContainer="bg-primary rounded-sm text-[#E6E6D9]"
+        classNameItem=" bg-primery rounded-sm hover:bg-[#5D5D53CC] p-4 text-[20px]"
         defaultValue="all"
         name="sort"
         icons
@@ -56,7 +56,7 @@ export default function Filters() {
             value: l.id,
           })) || []),
         ]}
-        className=" w-[220px]  rounded-xl px-2 bg-card"
+        className=" w-[220px]  rounded-sm px-2 bg-card"
         placeholder="Выберите продавца"
         name="sellerId"
       />

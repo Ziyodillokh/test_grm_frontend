@@ -27,7 +27,7 @@ const QRCodePreview: React.FC<QRCodePreviewProps> = ({
     
     return (
         <div className='flex min-w-[420px] flex-col items-center justify-around h-full sticky top-0 z-10 border-r-2'>
-            <div className="flex items-center justify-center rounded-[32px] bg-white w-[270px] h-[270px]">
+            <div className="flex items-center justify-center rounded-sm bg-white w-[270px] h-[270px]">
                 <div className="w-[190px] h-[190px] flex items-center justify-center">
                     <QRCodeSVG
                         value={qrValue}

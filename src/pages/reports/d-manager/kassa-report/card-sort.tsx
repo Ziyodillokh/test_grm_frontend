@@ -54,7 +54,7 @@ export default function CardSort({SortData}:{SortData?:TKassareportData}) {
       ),
       button: (
         <div
-          className="bg-card p-4 rounded-4xl"
+          className="bg-card p-4 rounded-sm"
         >
           <Plus size={20} color="#5d5d53" className="opacity-100" />
         </div>

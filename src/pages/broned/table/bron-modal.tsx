@@ -49,7 +49,7 @@ export default function BronModal() {
           {data?.items?.map((item) => (
             <div
               key={item?.id}
-              className=" flex items-center mb-1 pl-3 justify-between  p-2 w-full rounded-lg bg-white "
+              className=" flex items-center mb-1 pl-3 justify-between  p-2 w-full rounded-sm bg-white "
             >
               <div>
                 <p className="text-[18px] text-primary">
@@ -60,7 +60,7 @@ export default function BronModal() {
                 </p>
               </div>
               <div
-                className={` hover:bg-accent-foregroundcursor-pointer rounded-[10px] w-[50px] h-[50px] flex justify-center border relative  border-border items-center `}
+                className={` hover:bg-accent-foregroundcursor-pointer rounded-sm w-[50px] h-[50px] flex justify-center border relative  border-border items-center `}
               >
                 {item?.is_transfer ? (
                   <RefreshCcw
@@ -77,7 +77,7 @@ export default function BronModal() {
             </div>
           ))}
         </div>
-        <Button onClick={()=>mutate()} disabled={isPending} className="text-center rounded-xl py-[22px]">
+        <Button onClick={()=>mutate()} disabled={isPending} className="text-center rounded-sm py-[22px]">
          {isPending ? <Loader/>:""} Снять брон
 
         </Button>

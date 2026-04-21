@@ -64,7 +64,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
       button: (
         <div
           onClick={() => setType("Приход")}
-          className="bg-card p-4 rounded-4xl"
+          className="bg-card p-4 rounded-sm"
         >
           <Plus size={20} color="#5d5d53" className="opacity-100" />
         </div>
@@ -83,7 +83,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
       button: (
         <div
           onClick={() => setType("Расход")}
-          className="bg-card p-4 rounded-4xl"
+          className="bg-card p-4 rounded-sm"
         >
           <Plus size={20} color="#5d5d53" className="opacity-100" />
         </div>
@@ -188,15 +188,15 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
         </div>
       </div>
 
-      <DialogContent className="costomModal border-0 gap-[0px] min-w-[494px] p-1 rounded-[10px]">
+      <DialogContent className="costomModal border-0 gap-[0px] min-w-[494px] p-1 rounded-sm">
         <div
-          className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[48px]  ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+          className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[48px]  ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
         >
           {type === "Приход" ? "Добавление прихода" : "Добавление  задолжность"}
         </div>
         <div className={ type === "Приход" ?`grid grid-cols-2 gap-1`:''}>
           <div className="w-full">
-            <div className="flex pl-2 items-center bg-input rounded-[7px] h-[90px]">
+            <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
               <Input
                 placeholder="0.00"
                 value={price || undefined}
@@ -207,27 +207,27 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
                     setPrice(Number(value));
                 }
                 }
-                className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-[7px] bg-transparent px-0"
+                className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0"
               />
               <div className="text-4xl text-[#5D5D53] mx-4">$</div>
             </div>
-           { type === "Приход" ? <div className="text-center mt-1 w-full bg-input p-1  rounded-[7px]">
+           { type === "Приход" ? <div className="text-center mt-1 w-full bg-input p-1  rounded-sm">
               <div className="flex items-center justify-center mt-[18px] mb-2">
                 <Banknote />
               </div>
-              <div className="flex cursor-pointer relative rounded-[5px] p-0.5 items-center bg-primary">
+              <div className="flex cursor-pointer relative rounded-sm p-0.5 items-center bg-primary">
                 <div
-                  className={`${typePay == "cash" ? " left-0.5 " : "left-[120px] "} transition-all duration-300 ease-in-out w-[118px] absolute rounded-[3px] top-0.5 h-[31px] bg-input`}
+                  className={`${typePay == "cash" ? " left-0.5 " : "left-[120px] "} transition-all duration-300 ease-in-out w-[118px] absolute rounded-sm top-0.5 h-[31px] bg-input`}
                 ></div>
                 <p
                   onClick={() => setTypePay("cash")}
-                  className={`${typePay == "cash" ? "text-primary" : "text-input "} text-[13px] p-[6px]  transition-all duration-300 ease-in-out z-10 w-full text-center rounded-[3px]  font-medium`}
+                  className={`${typePay == "cash" ? "text-primary" : "text-input "} text-[13px] p-[6px]  transition-all duration-300 ease-in-out z-10 w-full text-center rounded-sm  font-medium`}
                 >
                   Наличий
                 </p>
                 <p
                   onClick={() => setTypePay("online")}
-                  className={`${typePay == "online" ? "text-primary " : "text-input "} text-[13px] p-[6px] transition-all duration-300 ease-in-out  z-10   w-full text-center rounded-[3px]  font-medium`}
+                  className={`${typePay == "online" ? "text-primary " : "text-input "} text-[13px] p-[6px] transition-all duration-300 ease-in-out  z-10   w-full text-center rounded-sm  font-medium`}
                 >
                   Онлайн
                 </p>
@@ -238,14 +238,14 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
             placeholder="Комментария"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className={`${type === "Приход" ? " h-full":""} w-full border-none focus:border-none outline-none mt-0.5  text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5`}
+            className={`${type === "Приход" ? " h-full":""} w-full border-none focus:border-none outline-none mt-0.5  text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5`}
           />
         </div>
         <Button
           onClick={handleSubmit}
           disabled={loading}
           type="submit"
-          className={`p-5 mt-[6px]   rounded-[7px] h-[50px] ${type === "Приход" ? "bg-[#89A143] hover:bg-[#799132]" : "bg-[#E38157] hover:bg-[#D27047]"} text-white ${false ? "opacity-70" : ""}`}
+          className={`p-5 mt-[6px]   rounded-sm h-[50px] ${type === "Приход" ? "bg-[#89A143] hover:bg-[#799132]" : "bg-[#E38157] hover:bg-[#D27047]"} text-white ${false ? "opacity-70" : ""}`}
         >
           {loading
             ? "Добавление..."

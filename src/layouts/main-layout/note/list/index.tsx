@@ -47,7 +47,7 @@ export default function NotePage() {
         className="w-5 h-5"
       />
       {active && (
-        <div className="absolute bottom-8 py-[14px] px-5 left-16  z-1000 bg-card rounded-[12px] border w-[380px]  max-h-[600px] ">
+        <div className="absolute bottom-8 py-[14px] px-5 left-16  z-1000 bg-card rounded-sm border w-[380px]  max-h-[600px] ">
           <Content data={flatData} />
         </div>
       )}

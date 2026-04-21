@@ -34,7 +34,7 @@ export default function Pricecheck({disabled,id}:{disabled?:boolean,id:string}) 
       <Button 
         onClick={()=>mutate()}
         disabled={isPending || disabled}
-        className="w-full py-10.5 p-10 bg-primary rounded-xl  text-background text-[22px] font-semibold">
+        className="w-full py-10.5 p-10 bg-primary rounded-sm  text-background text-[22px] font-semibold">
           Закрыть кассу
         </Button>
       </div>

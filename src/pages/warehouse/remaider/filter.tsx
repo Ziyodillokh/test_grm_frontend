@@ -18,7 +18,7 @@ export default function Filters({
   return (
     <div className=" h-[64px] items-center  flex  gap-2 mb-2  ">
       
-       <div className=" text-nowrap p-5 flex gap-4 items-center  h-full bg-card rounded-xl">
+       <div className=" text-nowrap p-5 flex gap-4 items-center  h-full bg-card rounded-sm">
             <p className="text-[14px] text-foreground">{totalCount} шт</p>
             <p className="text-[14px] text-foreground">{totalKv}  м²</p>
             <p className="text-[14px] text-foreground">{totalPrice} $</p>

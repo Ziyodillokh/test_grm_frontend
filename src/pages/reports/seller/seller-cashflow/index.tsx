@@ -2,26 +2,29 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { format, getMonth } from "date-fns";
-import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
-
+import { ChevronDown, ChevronRight, Loader } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import FilterSelect from "@/components/filters-ui/filter-select";
+import { ListRow } from "@/components/ui/list-row";
+import { MonthsArray } from "@/consts";
 import { useYear } from "@/store/year-store";
 import formatPrice from "@/utils/formatPrice";
-import { MonthsArray } from "@/consts";
 import TebleAvatar from "@/components/teble-avatar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import ReportToolbar from "@/components/report-toolbar";
 
 import { useSellerDailyReport } from "./queries";
+
+const yearsArray = Array.from({ length: 5 }, (_, i) => {
+  const y = new Date().getFullYear() - i;
+  return { label: String(y), value: String(y) };
+});
+
+const gridTemplate = "110px 80px 100px 1fr 120px 120px 120px 30px";
 
 export default function PageSellerCashFlow() {
   const { id } = useParams();
   const { year } = useYear();
-  const [month, setMonth] = useQueryState(
+  const [month] = useQueryState(
     "month",
     parseAsString.withDefault(String(getMonth(new Date()) + 1))
   );
@@ -35,223 +38,187 @@ export default function PageSellerCashFlow() {
   const seller = data?.seller;
   const days = data?.days || [];
 
-  const stats = [
-    { label: "Sotuv", value: `${formatPrice(totals?.earn || 0)}$`, color: "text-[#89A143]" },
-    { label: "Soni", value: `${totals?.count || 0} sht` },
-    { label: "Hajm", value: `${totals?.kv || 0} m²` },
-    { label: "Skidka", value: `${formatPrice(totals?.discount || 0)}$`, color: "text-[#E38157]" },
-  ];
-
   return (
-    <div className="p-4">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => window.history.back()} className="p-2 hover:bg-muted rounded-lg">
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-
-        <div className="flex items-center gap-3">
-          {seller?.avatar && (
-            <TebleAvatar
-              status="none"
-              name={seller.firstName}
-              url={seller.avatar.path}
-              size={40}
-            />
-          )}
-          <div>
-            <p className="text-[18px] font-semibold">
+    <div className="flex flex-col h-full">
+      <ReportToolbar
+        beforeIcons={
+          <div className="flex items-center gap-[8px] bg-white rounded-sm px-[12px] h-[42px]">
+            {seller?.avatar && (
+              <TebleAvatar
+                status="none"
+                name={seller.firstName}
+                url={seller.avatar.path}
+                size={32}
+              />
+            )}
+            <span className="text-[14px] font-medium text-[#1a1a1a]">
               {seller?.firstName || userName?.split(" ")[0]} {seller?.lastName || userName?.split(" ")[1]}
-            </p>
+            </span>
           </div>
-        </div>
+        }
+        totalsItems={[
+          { label: "Sotuv:", value: totals?.earn || 0, color: "#47B13C" },
+          { label: "Skidka:", value: totals?.discount || 0, color: "#FF6600" },
+          { label: "Terminal:", value: totals?.plastic || 0, color: "#58A0C6" },
+        ]}
+        filterContent={
+          <>
+            <div>
+              <p className="text-[13px] text-muted-foreground mb-1">Yil</p>
+              <FilterSelect
+                placeholder="Yil tanlang"
+                className="w-full"
+                options={yearsArray}
+                name="year"
+                defaultValue={String(new Date().getFullYear())}
+              />
+            </div>
+            <div>
+              <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+              <FilterSelect
+                placeholder="Oy tanlang"
+                className="w-full"
+                options={MonthsArray}
+                name="month"
+                defaultValue={String(getMonth(new Date()) + 1)}
+              />
+            </div>
+            <Button variant="outline" className="w-full mt-2">
+              Tozalash
+            </Button>
+          </>
+        }
+      />
 
-        <div className="ml-auto">
-          <Select value={month || ""} onValueChange={(v) => setMonth(v)}>
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Oy tanlang" />
-            </SelectTrigger>
-            <SelectContent>
-              {MonthsArray.map((m) => (
-                <SelectItem key={m.value} value={m.value}>
-                  {m.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* Stats cards */}
-      <div className="grid grid-cols-4 gap-3 mb-4">
-        {stats.map((s) => (
-          <div key={s.label} className="bg-card rounded-xl p-4">
-            <p className="text-[12px] text-muted-foreground mb-1">{s.label}</p>
-            <p className={`text-[18px] font-bold ${s.color || ""}`}>{s.value}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Planka progress */}
+      {/* Plan progress */}
       {(plan?.planPrice ?? 0) > 0 && (
-        <div className="bg-card rounded-xl p-4 mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[14px] text-muted-foreground">
-              Planka: <span className="font-semibold text-foreground">{formatPrice(plan?.planPrice || 0)}$</span>
-            </p>
-            <p className={`text-[14px] font-bold ${(plan?.progress || 0) >= 100 ? "text-[#89A143]" : "text-[#E38157]"}`}>
-              {plan?.progress || 0}%
-            </p>
-          </div>
-          <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+        <div className="flex items-center gap-[12px] bg-white rounded-sm px-[16px] h-[42px] shrink-0 mb-[10px]">
+          <span className="text-[13px] text-[#a3a3a3]">Planka:</span>
+          <span className="text-[14px] font-medium">{formatPrice(plan?.planPrice || 0)} $</span>
+          <div className="flex-1 h-[6px] bg-[#f0f0f0] rounded-full overflow-hidden max-w-[200px]">
             <div
-              className={`h-full rounded-full transition-all ${(plan?.progress || 0) >= 100 ? "bg-[#89A143]" : "bg-[#E38157]"}`}
+              className={`h-full rounded-full ${(plan?.progress || 0) >= 100 ? "bg-[#47B13C]" : "bg-[#FF6600]"}`}
               style={{ width: `${Math.min(plan?.progress || 0, 100)}%` }}
             />
           </div>
-          <div className="flex items-center justify-between mt-1">
-            <p className="text-[12px] text-muted-foreground">
-              {formatPrice(totals?.earn || 0)}$ / {formatPrice(plan?.planPrice || 0)}$
-            </p>
-          </div>
+          <span className={`text-[13px] font-medium ${(plan?.progress || 0) >= 100 ? "text-[#47B13C]" : "text-[#FF6600]"}`}>
+            {plan?.progress || 0}%
+          </span>
         </div>
       )}
 
-      {/* Daily table */}
-      <div className="bg-card rounded-xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center px-4 py-3 border-b text-[12px] font-medium text-muted-foreground bg-muted/30">
-          <span className="w-[110px]">Kun</span>
-          <span className="w-[90px] text-center">Soni</span>
-          <span className="w-[110px] text-center">Hajm</span>
-          <span className="flex-1 text-right pr-4">Sotuv</span>
-          <span className="w-[130px] text-right pr-4">Skidka</span>
-          <span className="w-[130px] text-right pr-4">Terminal</span>
-          <span className="w-[24px]"></span>
-        </div>
+      {/* Column labels */}
+      <div
+        className="mb-[10px] shrink-0 px-[12px]"
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+      >
+        <span className="text-[13px] text-[#A3A3A3]">Kun</span>
+        <span className="text-[13px] text-[#A3A3A3]">Soni</span>
+        <span className="text-[13px] text-[#A3A3A3]">Hajm</span>
+        <span className="text-[13px] text-[#A3A3A3]"></span>
+        <span className="text-[13px] text-[#A3A3A3]">Sotuv</span>
+        <span className="text-[13px] text-[#A3A3A3]">Skidka</span>
+        <span className="text-[13px] text-[#A3A3A3]">Terminal</span>
+        <span></span>
+      </div>
 
+      {/* Days list */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground">
-            Yuklanmoqda...
+          <div className="flex items-center justify-center h-[200px]">
+            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
           </div>
         ) : days.length === 0 ? (
-          <div className="p-8 text-center text-muted-foreground">
-            Ma'lumot topilmadi
+          <div className="flex items-center justify-center h-[200px]">
+            <span className="text-[13px] text-[#a3a3a3]">Ma'lumot topilmadi</span>
           </div>
         ) : (
-          <>
-            {days.map((day) => {
-              const isExpanded = expandedDate === day.date;
-              return (
-                <div key={day.date}>
-                  {/* Kun qatori */}
-                  <div
-                    className="flex items-center px-4 py-3 border-b text-[14px] cursor-pointer hover:bg-muted/30 transition-colors"
-                    onClick={() => setExpandedDate(isExpanded ? null : day.date)}
-                  >
-                    <span className="w-[110px]">{format(new Date(day.date), "dd.MM.yyyy")}</span>
-                    <span className="w-[90px] text-center">{day.count}</span>
-                    <span className="w-[110px] text-center">{day.kv} m²</span>
-                    <span className="flex-1 text-right pr-4 text-[#89A143] font-semibold">
-                      {formatPrice(day.earn)}$
-                    </span>
-                    <span className="w-[130px] text-right pr-4 text-[#E38157]">
-                      {formatPrice(day.discount)}$
-                    </span>
-                    <span className="w-[130px] text-right pr-4 text-[#58A0C6]">
-                      {formatPrice(day.plastic)}$
-                    </span>
-                    <span className="w-[24px] flex justify-end">
-                      {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </span>
+          days.map((day) => {
+            const isExpanded = expandedDate === day.date;
+            return (
+              <div key={day.date}>
+                <ListRow
+                  gridTemplate={gridTemplate}
+                  className="pl-[12px] cursor-pointer"
+                  minHeight={52}
+                  onClick={() => setExpandedDate(isExpanded ? null : day.date)}
+                >
+                  <span className="text-[13px] font-medium text-[#1a1a1a]">
+                    {format(new Date(day.date), "dd.MM.yyyy")}
+                  </span>
+                  <span className="text-[13px] text-[#1a1a1a]">{day.count}</span>
+                  <span className="text-[13px] text-[#1a1a1a]">{day.kv} m²</span>
+                  <span></span>
+                  <span className="text-[13px] font-medium text-[#47B13C]">
+                    {formatPrice(day.earn)} $
+                  </span>
+                  <span className="text-[13px] text-[#FF6600]">
+                    {formatPrice(day.discount)} $
+                  </span>
+                  <span className="text-[13px] text-[#58A0C6]">
+                    {formatPrice(day.plastic)} $
+                  </span>
+                  <div className="flex items-center justify-center">
+                    {isExpanded ? (
+                      <ChevronDown className="w-4 h-4 text-[#a3a3a3]" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-[#a3a3a3]" />
+                    )}
                   </div>
+                </ListRow>
 
-                  {/* Orderlar (ochilsa) */}
-                  {isExpanded && day.orders && day.orders.length > 0 && (
-                    <div className="bg-muted/20 border-b">
-                      <div className="flex items-center px-4 py-2 text-[11px] font-medium text-muted-foreground border-b border-border/50">
-                        <span className="w-[80px]">Vaqt</span>
-                        <span className="flex-1">Mahsulot</span>
-                        <span className="w-[60px] text-center">Hajm</span>
-                        <span className="w-[110px] text-right pr-4">Sotuv</span>
-                        <span className="w-[110px] text-right pr-4">Skidka</span>
-                        <span className="w-[110px] text-right pr-4">Terminal</span>
-                        <span className="w-[24px]"></span>
+                {/* Expanded orders */}
+                {isExpanded && day.orders && day.orders.length > 0 && (
+                  <div className="flex flex-col gap-[2px] ml-[12px]">
+                    {day.orders.map((order) => (
+                      <div
+                        key={order.id}
+                        className="bg-[#f5f5f5] rounded-sm px-[12px] py-[10px]"
+                        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px", alignItems: "center" }}
+                      >
+                        <span className="text-[12px] text-[#a3a3a3]">
+                          {format(new Date(order.date), "HH:mm")}
+                        </span>
+                        <span className="text-[12px] text-[#a3a3a3]">{order.x || 1}</span>
+                        <span className="text-[12px] text-[#a3a3a3]">{order.kv} m²</span>
+                        <span className="text-[12px] text-[#1a1a1a]">
+                          {order.collection || "—"}
+                          {order.size && <span className="text-[#a3a3a3] ml-1">· {order.size}</span>}
+                        </span>
+                        <span className="text-[12px] font-medium text-[#47B13C]">
+                          {formatPrice(order.price)} $
+                        </span>
+                        <span className="text-[12px] text-[#FF6600]">
+                          {order.discountSum > 0 ? `${formatPrice(order.discountSum)} $` : "—"}
+                        </span>
+                        <span className="text-[12px] text-[#58A0C6]">
+                          {order.plasticSum > 0 ? `${formatPrice(order.plasticSum)} $` : "—"}
+                        </span>
+                        <span></span>
                       </div>
-                      {day.orders.map((order) => (
-                        <div
-                          key={order.id}
-                          className="flex items-center px-4 py-2.5 text-[13px] border-b border-border/30 last:border-b-0"
-                        >
-                          <span className="w-[80px] text-muted-foreground">
-                            {format(new Date(order.date), "HH:mm")}
-                          </span>
-                          <span className="flex-1 flex flex-wrap items-center gap-1">
-                            {order.collection && (
-                              <span className="font-medium">{order.collection}</span>
-                            )}
-                            {order.size && (
-                              <span className="text-muted-foreground">
-                                · {order.size}
-                              </span>
-                            )}
-                            {order.color && (
-                              <span className="text-muted-foreground">
-                                · {order.color}
-                              </span>
-                            )}
-                            {order.shape && (
-                              <span className="text-muted-foreground">
-                                · {order.shape}
-                              </span>
-                            )}
-                          </span>
-                          <span className="w-[60px] text-center text-muted-foreground">
-                            {order.kv} m²
-                          </span>
-                          <span className="w-[110px] text-right pr-4 text-[#89A143] font-medium">
-                            {formatPrice(order.price)}$
-                          </span>
-                          <span className="w-[110px] text-right pr-4 text-[#E38157]">
-                            {order.discountSum > 0
-                              ? `${formatPrice(order.discountSum)}$`
-                              : "-"}
-                          </span>
-                          <span className="w-[110px] text-right pr-4 text-[#58A0C6]">
-                            {order.plasticSum > 0
-                              ? `${formatPrice(order.plasticSum)}$`
-                              : "-"}
-                          </span>
-                          <span className="w-[24px]"></span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
 
-            {/* JAMI */}
-            <div className="flex items-center px-4 py-3 bg-muted/50 text-[14px] font-semibold">
-              <span className="w-[110px]">JAMI</span>
-              <span className="w-[90px] text-center">{totals?.count}</span>
-              <span className="w-[110px] text-center">{totals?.kv} m²</span>
-              <span className="flex-1 text-right pr-4 text-[#89A143]">
-                {formatPrice(totals?.earn || 0)}$
-              </span>
-              <span className="w-[130px] text-right pr-4 text-[#E38157]">
-                {formatPrice(totals?.discount || 0)}$
-              </span>
-              <span className="w-[130px] text-right pr-4 text-[#58A0C6]">
-                {formatPrice(totals?.plastic || 0)}$
-              </span>
-              <span className="w-[24px]"></span>
-            </div>
-          </>
+        {/* JAMI footer */}
+        {!isLoading && days.length > 0 && (
+          <div
+            className="bg-white rounded-sm px-[12px] py-[14px] mt-[4px] shrink-0"
+            style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px", alignItems: "center" }}
+          >
+            <span className="text-[13px] font-bold text-[#1a1a1a]">JAMI</span>
+            <span className="text-[13px] font-bold text-[#1a1a1a]">{totals?.count}</span>
+            <span className="text-[13px] font-bold text-[#1a1a1a]">{totals?.kv} m²</span>
+            <span></span>
+            <span className="text-[13px] font-bold text-[#47B13C]">{formatPrice(totals?.earn || 0)} $</span>
+            <span className="text-[13px] font-bold text-[#FF6600]">{formatPrice(totals?.discount || 0)} $</span>
+            <span className="text-[13px] font-bold text-[#58A0C6]">{formatPrice(totals?.plastic || 0)} $</span>
+            <span></span>
+          </div>
         )}
       </div>
     </div>

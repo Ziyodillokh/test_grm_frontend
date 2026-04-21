@@ -77,7 +77,7 @@ export default function Filters({
     <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
       {/* Search */}
       {showSearch ? (
-        <div className="flex items-center gap-[4px] bg-white rounded-[8px] px-[10px] h-[42px]">
+        <div className="flex items-center gap-[4px] bg-white rounded-sm px-[10px] h-[42px]">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -104,7 +104,7 @@ export default function Filters({
       ) : (
         <button
           onClick={() => setShowSearch(true)}
-          className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
+          className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -114,7 +114,7 @@ export default function Filters({
       )}
 
       {/* Sort */}
-      <button className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+      <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <mask id="mask_sort_inv" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
             <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -129,7 +129,7 @@ export default function Filters({
       {/* Filter */}
       <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
         <SheetTrigger asChild>
-          <button className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+          <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -177,7 +177,7 @@ export default function Filters({
                 type="date"
                 value={date || ""}
                 onChange={(e) => setDate(e.target.value || null)}
-                className="w-full h-[42px] px-3 rounded-[8px] bg-white border border-border text-[14px]"
+                className="w-full h-[42px] px-3 rounded-sm bg-white border border-border text-[14px]"
               />
             </div>
 
@@ -192,7 +192,7 @@ export default function Filters({
       <button
         onClick={handleExcelExport}
         disabled={excelPending}
-        className="w-[42px] h-[42px] rounded-[8px] bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
+        className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
       >
         {excelPending ? (
           <Loader className="w-[18px] h-[18px] animate-spin text-[#1A1A1A]" />
@@ -211,7 +211,7 @@ export default function Filters({
       </button>
 
       {/* Totals — o'ngda */}
-      <div className="ml-auto flex items-center gap-[16px] bg-white rounded-[8px] px-[16px] h-[42px]">
+      <div className="ml-auto flex items-center gap-[16px] bg-white rounded-sm px-[16px] h-[42px]">
         <span className="text-[13px] text-[#A3A3A3]">Umumiy:</span>
         <span className="text-[14px] font-medium text-[#1a1a1a]">
           {totalCount?.toLocaleString()} ta

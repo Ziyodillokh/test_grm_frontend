@@ -93,13 +93,13 @@ export default function ItemsLeft({ data, items }: { data?: TData; items?: IOrde
           Адресс доставки
         </p>
         <div className="row-start w-full grid grid-cols-2 gap-[5px] px-3 mb-3 ">
-          <p className="p-[9px]  text-[12px]  px-[11px] border-border border rounded-md">
+          <p className="p-[9px]  text-[12px]  px-[11px] border-border border rounded-sm">
             {data?.city || "-"}
           </p>
-          <p className="p-[9px]  text-[12px]  px-[11px]   border-border border rounded-md">
+          <p className="p-[9px]  text-[12px]  px-[11px]   border-border border rounded-sm">
             {data?.district || "-"}
           </p>
-          <p className="p-[9px] col-span-2 text-[12px]  px-[11px] w-full  border-border border rounded-md">
+          <p className="p-[9px] col-span-2 text-[12px]  px-[11px] w-full  border-border border rounded-sm">
             {data?.full_address || "-"}
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function ItemsLeft({ data, items }: { data?: TData; items?: IOrde
           Комментария для курьера
         </p>
         <div className="px-3">
-          <p className="p-[9px] text-[12px] px-[11px] w-full border-border border rounded-md">
+          <p className="p-[9px] text-[12px] px-[11px] w-full border-border border rounded-sm">
             {data?.delivery_comment || "-"}
           </p>
         </div>
@@ -115,10 +115,10 @@ export default function ItemsLeft({ data, items }: { data?: TData; items?: IOrde
           Дата доставки:
         </p>
         <div className="px-3 pb-3 gap-1 grid row-start w-full  grid-cols-3">
-          <p className="p-[9px] flex  items-center gap-1 text-[12px] col-span-2 px-[11px] w-full border-border border rounded-md">
+          <p className="p-[9px] flex  items-center gap-1 text-[12px] col-span-2 px-[11px] w-full border-border border rounded-sm">
             <Calendar className="w-[10px]" /> {data?.startDate ? new Date(data.startDate).toLocaleDateString() : "-"}
           </p>
-          <p className="p-[9px] text-nowrap flex items-center gap-1  text-[12px] px-[11px] w-full border-border border rounded-md">
+          <p className="p-[9px] text-nowrap flex items-center gap-1  text-[12px] px-[11px] w-full border-border border rounded-sm">
             <Clock className="w-[10px]" /> {data?.startDate ? new Date(data.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}
           </p>
         </div>

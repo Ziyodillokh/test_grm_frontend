@@ -9,8 +9,8 @@ export default function Kassa({
   setOpen: (value: string) => void
 }) {
   return (
-    <div className="border border-border bg-white rounded-xl mt-2.5">
-      <div onClick={()=>setOpen('Маруф касса')} className="hover:bg-[#F9F9F9] border-border   m-1 rounded-xl p-[25px]">
+    <div className="border border-border bg-white rounded-sm mt-2.5">
+      <div onClick={()=>setOpen('Маруф касса')} className="hover:bg-[#F9F9F9] border-border   m-1 rounded-sm p-[25px]">
         <div className="flex items-center mb-2 gap-2 ">
           <p className="mr-auto text-[17px] text-[#333333]">Маруф касса</p>
           <p className=" text-[17px] opacity-30 text-[#333333]">Расход</p>
@@ -20,7 +20,7 @@ export default function Kassa({
         <p className="text-[24px] mt-2">{data?.manager?.income} $</p> 
       </div>
       <div className=" w-full h-[1px] bg-border"></div>
-      <div onClick={()=>setOpen('Мукаддас касса')} className="hover:bg-[#F9F9F9] m-1 rounded-xl p-[25px]">
+      <div onClick={()=>setOpen('Мукаддас касса')} className="hover:bg-[#F9F9F9] m-1 rounded-sm p-[25px]">
         <div className="flex items-center mb-2 gap-2 ">
           <p className="mr-auto text-[17px] text-[#333333]">Мукаддас касса</p>
           <p className=" text-[17px] opacity-30 text-[#333333]">Расход</p>

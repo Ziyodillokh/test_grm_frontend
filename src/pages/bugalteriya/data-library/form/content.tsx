@@ -262,7 +262,7 @@ export default function FormContent({ isPending }: { isPending: boolean }) {
           ) : (
             <Button
               disabled={!title}
-              className={`${title ? "bg-[#89A143] tecx-white hover:bg-[#89A143]" : "bg-sidebar"} w-[30px] absolute top-2.5 right-0.5 flex items-center justify-center cursor-pointer h-[30px] rounded-[2px]   text-border`}
+              className={`${title ? "bg-[#89A143] tecx-white hover:bg-[#89A143]" : "bg-sidebar"} w-[30px] absolute top-2.5 right-0.5 flex items-center justify-center cursor-pointer h-[30px] rounded-sm   text-border`}
             >
               <Check />
             </Button>

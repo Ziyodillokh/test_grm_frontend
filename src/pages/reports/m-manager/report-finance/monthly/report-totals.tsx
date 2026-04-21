@@ -63,7 +63,7 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
       <div className="flex gap-[4px] flex-col lg:flex-row">
         {/* Yashil card */}
         <div
-          className="bg-[#47B13C] text-white rounded-[8px] p-5 min-w-[260px] h-[150px] w-[30%] shrink-0 cursor-pointer hover:bg-[#3da032] transition-colors flex flex-col justify-between relative overflow-hidden"
+          className="bg-[#47B13C] text-white rounded-sm p-5 min-w-[260px] h-[150px] w-[30%] shrink-0 cursor-pointer hover:bg-[#3da032] transition-colors flex flex-col justify-between relative overflow-hidden"
           onClick={onGreenCardClick}
         >
           <p className="text-[28px] font-medium">
@@ -118,7 +118,7 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
               <div
                 key={card.key}
                 onClick={() => onCardClick?.(card.filterValue)}
-                className={`rounded-[8px] p-[10px] flex flex-col justify-between cursor-pointer transition-colors ${
+                className={`rounded-sm p-[10px] flex flex-col justify-between cursor-pointer transition-colors ${
                   isFirst
                     ? isActive ? "bg-[#005a9e] text-white" : "bg-[#0078D4] text-white"
                     : isActive ? "bg-[#e8e8e8]" : "bg-white"

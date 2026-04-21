@@ -48,13 +48,13 @@ export function ThemeSwitcherDock({
       <div
         className={cn(
           "relative flex flex-col items-center gap-2 mt-2 p-2",
-          "rounded-2xl  bg-card backdrop-blur shadow-lg",
+          "rounded-sm  bg-card backdrop-blur shadow-lg",
           className
         )}
       >
         <div
           className={cn(
-            "absolute left-2 right-2 h-12 rounded-xl bg-[#F5F5F5]",
+            "absolute left-2 right-2 h-12 rounded-sm bg-[#F5F5F5]",
             "transition-transform duration-300 ease-out"
           )}
           style={{
@@ -70,7 +70,7 @@ export function ThemeSwitcherDock({
               size="icon"
               onClick={() => setActive(item.key)}
               className={cn(
-                "relative z-10 h-12 w-12 rounded-xl bg-white hover:bg-white border-0  border-none",
+                "relative z-10 h-12 w-12 rounded-sm bg-white hover:bg-white border-0  border-none",
                 "transition-all duration-200",
                 selected
                   ? "text-foreground bg-[#F5F5F5]"
@@ -87,7 +87,7 @@ export function ThemeSwitcherDock({
               </span>
 
               {selected && (
-                <span className="absolute inset-0 rounded-xl ring-1 ring-foreground/10" />
+                <span className="absolute inset-0 rounded-sm ring-1 ring-foreground/10" />
               )}
             </Button>
           );

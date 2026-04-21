@@ -50,7 +50,7 @@ export default function Filters() {
       />
   
       {(meUser?.position.role === 9  || meUser?.position.role === 5  )  && ( 
-        <Button onClick={() => setId("new")} className="h-full  rounded-xl  ml-auto ">
+        <Button onClick={() => setId("new")} className="h-full  rounded-sm  ml-auto ">
           <Plus size={24} /> Добавить Партия
         </Button>
       )}

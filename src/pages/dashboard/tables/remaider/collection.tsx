@@ -47,7 +47,7 @@ export default function CollectionTable({
               name: "factory",
             })
           }
-          className="bg-primary cursor-pointer p-4 w-[150px] rounded-2xl flex items-center gap-2 text-white"
+          className="bg-primary cursor-pointer p-4 w-[150px] rounded-sm flex items-center gap-2 text-white"
         >
           <ChevronLeft />
           <p>назад</p>

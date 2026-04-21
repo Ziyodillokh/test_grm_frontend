@@ -82,7 +82,7 @@ export default function Items() {
                 options={statusOptions}
                 disabled={isPending}
                 placeholder="Выберите статус"
-                className={` h-[64px] rounded-[8px] w-full  border-none ${getStatusColor(orderData?.order_status)}`}
+                className={` h-[64px] rounded-sm w-full  border-none ${getStatusColor(orderData?.order_status)}`}
                 classNameValue="text-current"
               />
             </div>
@@ -123,7 +123,7 @@ export default function Items() {
                       ? minio_img_url + item?.product?.imgUrl?.path
                       : "/images/default.svg"
                   }
-                  className="w-[90px] h-[142px] object-cover rounded-md"
+                  className="w-[90px] h-[142px] object-cover rounded-sm"
                 />
                 {[
                   item?.product?.collection?.title || "-",
@@ -157,7 +157,7 @@ export default function Items() {
                     {item?.filials?.map((filial: any) => (
                       <p
                         key={filial.id}
-                        className="text-[#212121] border-border bg-card border-[1px] border-solid  px-[5px] py-[2px] rounded-[3px]  mb-3 text-[12px] leading-[14px]"
+                        className="text-[#212121] border-border bg-card border-[1px] border-solid  px-[5px] py-[2px] rounded-sm  mb-3 text-[12px] leading-[14px]"
                       >
                         {filial.name}: {filial.count} та
                       </p>

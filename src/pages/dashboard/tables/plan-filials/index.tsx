@@ -50,7 +50,7 @@ const EditablePriceInput = ({ item, year }: { item: TData; year: string | number
   };
 
   return (
-    <div className="flex items-center gap-2 border rounded-md px-3 py-2 w-[200px] justify-between bg-white h-[45px]">
+    <div className="flex items-center gap-2 border rounded-sm px-3 py-2 w-[200px] justify-between bg-white h-[45px]">
       {isEditable ? (
         <Input
           autoFocus
@@ -157,7 +157,7 @@ export default function PlanYears() {
                   <div className="flex gap-4 items-center">
                     <EditablePriceInput item={item} year={year || 2026} />
 
-                    <div className="border rounded-md px-3 py-2 w-[200px] bg-white text-gray-700 h-[45px] flex items-center">
+                    <div className="border rounded-sm px-3 py-2 w-[200px] bg-white text-gray-700 h-[45px] flex items-center">
                       <span className="font-bold text-[#89A143] text-lg">
                         {new Intl.NumberFormat("ru-RU")
                           .format(Number(item.earn || 0))

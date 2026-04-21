@@ -126,9 +126,9 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
         </p>
       </div>
 
-      <div className="w-full max-w-[610px] max-h-[700px] mx-auto bg-white rounded-2xl m-[20px] ">
+      <div className="w-full max-w-[610px] max-h-[700px] mx-auto bg-white rounded-sm m-[20px] ">
         <div className=" max-h-[600px]  scrollCastom ">
-          <div className="bg-[#F9F9F9] rounded-2xl m-2">
+          <div className="bg-[#F9F9F9] rounded-sm m-2">
             <RowUI
               title={"Savdo naqd"}
               price={StatucData?.savdoNarxi || 0}
@@ -151,7 +151,7 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
               isbordereble={false}
             />
           </div>
-          <div className="bg-[#85D188]/10 rounded-2xl m-2">
+          <div className="bg-[#85D188]/10 rounded-sm m-2">
             <RowUI
               title={"Inkassatsiya"}
               price={StatucData?.inkasatsiya || 0}
@@ -198,7 +198,7 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
               kv={item?.totalKv || 0}
             />
           ))} */}
-          <div className="bg-[#D76B43]/7 rounded-2xl m-2">
+          <div className="bg-[#D76B43]/7 rounded-sm m-2">
             <RowUI
               title={"Qarzga sotilgan"}
               price={StatucData?.qarzgaSotilganNarx || 0}
@@ -296,7 +296,7 @@ export const Conent = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="flex items-center justify-center border-border border-t mt-auto p-3">
           <Button
             disabled={month !== getMonth(new Date()) + 1 + ""}
-            className="w-full rounded-md max-w-[610px] bg-[#272727]"
+            className="w-full rounded-sm max-w-[610px] bg-[#272727]"
           >
             Добавить
           </Button>

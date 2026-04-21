@@ -229,7 +229,7 @@ export default function Page() {
         {/* Total card */}
         <div
           onClick={() => handleCardClick("")}
-          className="bg-[#48B533] text-white rounded-xl p-5 min-w-[280px] cursor-pointer"
+          className="bg-[#48B533] text-white rounded-sm p-5 min-w-[280px] cursor-pointer"
         >
           <p className="text-[32px] font-bold leading-tight">
             ${formatNumber(reportData?.in_hand || 0)}
@@ -275,7 +275,7 @@ export default function Page() {
               <div
                 key={card.label}
                 onClick={() => handleCardClick(filterVal)}
-                className={`rounded-xl px-4 py-3 cursor-pointer transition-colors ${
+                className={`rounded-sm px-4 py-3 cursor-pointer transition-colors ${
                   card.orange
                     ? isActive
                       ? "bg-[#c46d3f] text-white"
@@ -316,9 +316,9 @@ export default function Page() {
 
       {/* Add Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="costomModal min-w-[494px] p-1 gap-0 rounded-[10px]">
+        <DialogContent className="costomModal min-w-[494px] p-1 gap-0 rounded-sm">
           <div
-            className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-[7px] w-1/2 -mt-[35px] ${
+            className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[35px] ${
               dialogType === "parish" ? "bg-[#89A143]" : "bg-[#E38157]"
             } text-white`}
           >
@@ -336,7 +336,7 @@ export default function Page() {
                   <div
                     key={ct.id}
                     onClick={() => setSelectedCategory(ct.id)}
-                    className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-[7px] text-center cursor-pointer ${
+                    className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-sm text-center cursor-pointer ${
                       selectedCategory === ct.id
                         ? dialogType === "parish"
                           ? "ring-2 ring-[#89A143]"
@@ -353,14 +353,14 @@ export default function Page() {
             </div>
 
             <div className="w-full">
-              <div className="flex pl-2 items-center bg-input rounded-[7px] h-[90px]">
+              <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
                 <Input
                   placeholder="0.00"
                   value={amount}
                   type="number"
                   min={0}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-[7px] bg-transparent px-0"
+                  className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0"
                 />
                 <div className="text-4xl text-[#5D5D53] mx-4">$</div>
               </div>
@@ -369,14 +369,14 @@ export default function Page() {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 type="datetime-local"
-                className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-[7px] px-[17px] py-[10px]"
+                className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]"
               />
 
               <Textarea
                 placeholder="Izoh"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-[7px] px-2 py-2.5"
+                className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5"
               />
             </div>
           </div>
@@ -384,7 +384,7 @@ export default function Page() {
           <Button
             onClick={handleSubmit}
             disabled={isPending || !selectedCategory || !amount}
-            className={`p-5 rounded-[7px] mt-1 ${
+            className={`p-5 rounded-sm mt-1 ${
               dialogType === "parish" ? "bg-[#89A143]" : "bg-[#E38157]"
             } text-white`}
           >

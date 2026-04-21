@@ -84,11 +84,11 @@ export default function RightConent({ printRef }: RightContentProps) {
           }}
         >
           <SelectTrigger
-            className={`outline-none active:border-none w-full p-0 pr-2 border-none bg-white rounded-lg `}
+            className={`outline-none active:border-none w-full p-0 pr-2 border-none bg-white rounded-sm `}
           >
             <div
               // onClick={() => mutate()}
-              className="flex cursor-pointer text-nowrap items-center py-[13px] px-[23px] rounded-lg bg-white text-[16px] font-normal gap-2"
+              className="flex cursor-pointer text-nowrap items-center py-[13px] px-[23px] rounded-sm bg-white text-[16px] font-normal gap-2"
             >
               <FileInput size={20} />  Excel
             </div>
@@ -115,7 +115,7 @@ export default function RightConent({ printRef }: RightContentProps) {
         </Select>
         <div
           onClick={() => handlePrint()}
-          className="flex  cursor-pointer items-center p-2 px-5 rounded-lg bg-white text-[16px] font-normal gap-1"
+          className="flex  cursor-pointer items-center p-2 px-5 rounded-sm bg-white text-[16px] font-normal gap-1"
         >
           <Printer size={20} />
         </div>
@@ -128,7 +128,7 @@ export default function RightConent({ printRef }: RightContentProps) {
         {Years?.map((item) => (
           <p
             onClick={() => setYear(item)}
-            className={`${year == item ? "bg-card" : ""} w-full text-[#272727] cursor-pointer rounded-lg text-[16px] font-medium px-[26px] py-[12px]  `}
+            className={`${year == item ? "bg-card" : ""} w-full text-[#272727] cursor-pointer rounded-sm text-[16px] font-medium px-[26px] py-[12px]  `}
           >
             {item}-yil hisoboti
           </p>

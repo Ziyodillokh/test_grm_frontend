@@ -14,7 +14,7 @@ export default function CheckList({
 }: ICheckList) {
   const { meUser } = useMeStore();
   return (
-    <div className="w-full rounded-xl  h-[300px]  scrollCastom bg-card p-5 mb-[25px]">
+    <div className="w-full rounded-sm  h-[300px]  scrollCastom bg-card p-5 mb-[25px]">
       <h3 className="text-center text-primary font-bold text-[18px]">
         {meUser?.filial?.name}
       </h3>

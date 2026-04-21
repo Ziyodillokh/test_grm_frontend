@@ -18,7 +18,7 @@ export const Columns: ColumnDef<TData>[] = [
       const item = row.original;
       return (
         <div
-          className={`w-10 h-10 rounded-2xl flex items-center justify-center ${item.type === "Приход" ? "bg-[#85D188] text-white" : "bg-[#FFACAC] text-white"}`}
+          className={`w-10 h-10 rounded-sm flex items-center justify-center ${item.type === "Приход" ? "bg-[#85D188] text-white" : "bg-[#FFACAC] text-white"}`}
         >
           {item?.type === "Приход" ? (
             <SquareArrowOutDownLeft className="h-5 w-5 " />

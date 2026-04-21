@@ -11,7 +11,7 @@ export default function SearchInput({ className }: { className?: string }) {
   const { t } = useTranslation();
   return (
     <div
-      className={`${className && className} flex bg-card  rounded-xl items-center px-4 gap-[15px]`}
+      className={`${className && className} flex bg-card  rounded-sm items-center px-4 gap-[15px]`}
     >
       <Search size={20} />
       <Input

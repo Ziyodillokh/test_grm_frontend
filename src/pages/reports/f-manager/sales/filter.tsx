@@ -21,7 +21,7 @@ export default function SalesFilter({
 }) {
   return (
     <div className="h-[64px] items-center flex gap-2 mb-2">
-      <div className="text-nowrap p-5 flex gap-4 items-center h-full mr-auto bg-card rounded-xl">
+      <div className="text-nowrap p-5 flex gap-4 items-center h-full mr-auto bg-card rounded-sm">
         <p className="text-[14px] text-foreground">{totalCount} шт</p>
         <p className="text-[14px] text-foreground">{totalKv?.toFixed(2)} м²</p>
         <p className="text-[14px] text-foreground">{totalSum?.toFixed(2)} $</p>

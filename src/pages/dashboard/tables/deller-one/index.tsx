@@ -35,7 +35,7 @@ export default function DilerOneTable({dellerFilial,setDellerFilial}:{dellerFili
     <>
  
  <div className="flex gap-1 px-5  my-4">
-      <div onClick={()=>setDellerFilial(null)} className="bg-primary cursor-pointer p-5 w-[120px] rounded-2xl flex items-center gap-2 text-white">
+      <div onClick={()=>setDellerFilial(null)} className="bg-primary cursor-pointer p-5 w-[120px] rounded-sm flex items-center gap-2 text-white">
         <ChevronLeft/>
         <p>назад</p>
       </div>
