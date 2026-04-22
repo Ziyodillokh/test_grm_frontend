@@ -426,6 +426,12 @@ export const DataMenu = {
       text: "Ishchilar boshqaruvi",
     },
     {
+      id: 7,
+      icons: () => ReportBottom({}),
+      link: "/m-manager/reports-hub/re-inventory",
+      text: "Qayta ro'yxat",
+    },
+    {
       id: 6,
       icons: () => BooksIcon(),
       link: "/data-library",
