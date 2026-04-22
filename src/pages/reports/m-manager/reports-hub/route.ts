@@ -21,6 +21,9 @@ import PageSellerCashFlow from "../../seller/seller-cashflow";
 import PageOrginal from "../../report-orginal";
 import GeneralReportDetail from "../../report-orginal/detail-page";
 import InventoryPage from "../remaider/index";
+import ReInventoryFilialsPage from "./re-inventory";
+import ReInventoryDetailPage from "./re-inventory/detail";
+import ReInventoryReportDetailPage from "./re-inventory/report-detail";
 import FoctoryTable from "../remaider/factory-table";
 import CollectionTable from "../remaider/collection-table";
 import ModelTable from "../remaider/model-table";
@@ -227,6 +230,22 @@ const Route = [
   {
     url: "/m-manager/reports-hub/bojxona/:customsId/info",
     Element: CustomsDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  // Qayta ro'yxat (re-inventory)
+  {
+    url: "/m-manager/reports-hub/re-inventory",
+    Element: ReInventoryFilialsPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/re-inventory/:filialId",
+    Element: ReInventoryDetailPage,
+    meta: { isAuth: true, role: new Set(["admin"]) },
+  },
+  {
+    url: "/m-manager/reports-hub/re-inventory/:filialId/:reportId",
+    Element: ReInventoryReportDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];

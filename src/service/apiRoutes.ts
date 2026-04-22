@@ -40,6 +40,7 @@ export const apiRoutes = {
   dealer: "/filial/dealer",
   filialMakeReport: "/filial/maker-report",
   filialReport: "/filial-report",
+  filialReportAllFilials: "/filial-report/all-filials",
   qrBase: "/qr-base",
   qrBaseInternet: "/qr-base/internet-shop",
   cashflow: "/cashflow",

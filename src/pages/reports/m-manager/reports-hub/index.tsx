@@ -13,6 +13,7 @@ import {
   FileText,
   Handshake,
   CreditCard,
+  ClipboardList,
 } from "lucide-react";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
@@ -82,6 +83,12 @@ const reports = [
     description: "Oylik jarayonlar umumiy ko'rinishi",
     link: "/m-manager/reports-hub/general",
     icon: FileText,
+  },
+  {
+    title: "Qayta ro'yxat",
+    description: "Filial va skladlarning pereuchot ma'lumotlari",
+    link: "/m-manager/reports-hub/re-inventory",
+    icon: ClipboardList,
   },
 ];
 
