@@ -38,6 +38,8 @@ export interface TKassareportData {
   confirmationStatus?: string;
   isAccountantConfirmed?: boolean;
   isMManagerConfirmed?: boolean;
+  isManagerRejected?: boolean;
+  isAccountantRejected?: boolean;
   filialType?: string;
   filial?: any;
   report?: any;

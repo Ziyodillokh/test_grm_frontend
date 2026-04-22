@@ -194,19 +194,7 @@ export const DataMenu = {
       id: 2,
       icons: () => ReportBottom({}),
       link: "/d-manager/reports-hub",
-      text: "Отчеты",
-      // items: [
-      // {
-      //   id: 22,
-      //   link: "/d-manager/reports",
-      //   text: "Отчёт",
-      // },
-      // {
-      //   id: 23,
-      //   link: "/d-manager/report-monthly",
-      //   text: "Ежемесячный отчет",
-      // },
-      // ],
+      text: "Hisobotlar",
     },
     {
       id: 14,

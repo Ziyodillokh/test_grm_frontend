@@ -20,6 +20,8 @@ export default function MainLayout() {
       const role = meUser?.position?.role;
       if (role === 4) {
         navigate("/f-manager/kassa");
+      } else if (role === 6) {
+        navigate("/d-manager/reports-hub");
       } else if (role === 9 || role === 10) {
         navigate("/m-manager/current-month");
       } else {
