@@ -93,14 +93,31 @@ function ActionsCell({ row }: { row: { original: FilialReportData } }) {
   );
 }
 
+const safeFormat = (d: any, fmt: string) => {
+  if (!d) return "—";
+  try {
+    return format(new Date(d), fmt);
+  } catch {
+    return "—";
+  }
+};
+
 export const Columns: ColumnDef<FilialReportData>[] = [
   {
     header: "Дата переучёта",
     cell: ({ row }) => {
+      const status = row.original?.status;
+      const isOngoing = status === "Accepted" || status === "Open" || status === "Closed";
       return (
-        <>
-          <p>{format(row.original?.dateOne, "MM-dd-yyyy")} ~ {(row.original.status == "Accepted" || row.original.status == "Open") ? <p className="text-[#89A143]">Продолжается</p> : format(row.original?.dateTwo, "MM-dd-yyyy")}</p>
-        </>
+        <div className="flex items-center gap-1">
+          <span>{safeFormat(row.original?.dateOne, "dd-MM-yyyy")}</span>
+          <span>~</span>
+          {isOngoing ? (
+            <span className="text-[#89A143]">Продолжается</span>
+          ) : (
+            <span>{safeFormat(row.original?.dateTwo, "dd-MM-yyyy")}</span>
+          )}
+        </div>
       );
     },
   },

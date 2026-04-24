@@ -54,7 +54,7 @@ export default function ReInventoryFilialsPage() {
           </div>
         ) : (
           items.map((item, i) => {
-            const st = statusMap[item.lastReportStatus || ""] || { label: "—", color: "#A3A3A3" };
+            const st = statusMap[(item.lastReportStatus || "").toLowerCase()] || { label: "—", color: "#A3A3A3" };
             return (
               <ListRow
                 key={item.id}

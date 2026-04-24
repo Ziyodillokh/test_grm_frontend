@@ -92,7 +92,7 @@ export default function ReInventoryDetailPage() {
           </div>
         ) : (
           items.map((item, i) => {
-            const st = statusMap[item.status || ""] || { label: "—", color: "#A3A3A3" };
+            const st = statusMap[(item.status || "").toLowerCase()] || { label: "—", color: "#A3A3A3" };
             const dateStr = item.date
               ? format(new Date(item.date), "dd.MM.yyyy")
               : "���";

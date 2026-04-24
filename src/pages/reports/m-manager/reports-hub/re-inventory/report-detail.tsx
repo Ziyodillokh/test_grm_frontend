@@ -108,7 +108,7 @@ export default function ReInventoryReportDetailPage() {
 
   const items: any[] = data?.pages?.flatMap((page: any) => page?.items || []) || [];
   const totals = totalsData as any;
-  const reportStatus = report?.status;
+  const reportStatus = (report?.status || "").toLowerCase();
   const isOpen = reportStatus === "open";
   const isClosed = reportStatus === "closed";
   const filialId = report?.filial?.id;
