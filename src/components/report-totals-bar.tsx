@@ -4,6 +4,7 @@ export interface TotalItem {
   label?: string;
   value: number;
   color: string;
+  suffix?: string;
 }
 
 interface ReportTotalsBarProps {
@@ -22,7 +23,7 @@ export default function ReportTotalsBar({ items }: ReportTotalsBarProps) {
           {item.label && (
             <span className="text-[13px] text-[#A3A3A3] mr-[4px]">{item.label}</span>
           )}
-          {formatPrice(item.value || 0)} $
+          {formatPrice(item.value || 0)} {item.suffix ?? "$"}
         </span>
       ))}
     </div>

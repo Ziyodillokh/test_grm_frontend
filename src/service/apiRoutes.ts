@@ -120,6 +120,7 @@ export const apiRoutes = {
   reportsMonthlyV2: "/reports/monthly/v2",
   reportsMonthlyV2Detail: "/reports/monthly/v2-detail",
   reportsTotal: '/reports/total',
+  reInventory: '/re-inventory',
   reInventoryGetByFilialReport: '/re-inventory/get-by/filial-report',
   reInventoryGetByFilialReportTotals: '/re-inventory/get-by/filial-report/totals',
   reInventoryProcess: '/re-inventory/process',
