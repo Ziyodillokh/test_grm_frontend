@@ -1,5 +1,5 @@
 
-import ItemsPage from "../filial/re-register/table";
+import FManagerPereuchotDetailPage from "../filial/re-register/detail-page";
 import SingleReportPage from "../filial/report";
 import CollectionTable from "./remaider/collection-table";
 import CountryTable from "./remaider/county-table";
@@ -54,7 +54,7 @@ const Route = [
   },
   {
     url: "/warehouse/:filialId/info/:filialReportId/info",
-    Element: ItemsPage,
+    Element: FManagerPereuchotDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];

@@ -1,4 +1,4 @@
-import ItemsPage from "./re-register/table";
+import FManagerPereuchotDetailPage from "./re-register/detail-page";
 import SingleReportPage from "./report";
 import Page from "./table";
 
@@ -20,7 +20,7 @@ const Route = [
   },
   {
     url: "/filial/:filialId/info/:filialReportId/info",
-    Element: ItemsPage,
+    Element: FManagerPereuchotDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
 ];

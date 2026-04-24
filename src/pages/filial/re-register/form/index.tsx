@@ -160,7 +160,7 @@ const ActionPageQrCode = () => {
   return (
     <FormProvider {...form}>
       <form
-        className="w-1/3 h-full"
+        className="w-full h-full"
         onKeyDown={(e) => {
           if (e.key === "Enter") e.preventDefault();
         }}

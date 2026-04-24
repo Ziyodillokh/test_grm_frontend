@@ -100,7 +100,7 @@ export const DataMenu = {
       id: 7,
       icons: () => ReportBottom({}),
       link: "/filial/my-filial/info",
-      text: "Pereuchot",
+      text: "Qayta ro'yxat",
     },
     {
       id: 8,
@@ -275,7 +275,7 @@ export const DataMenu = {
       id: 23,
       icons: () => ClientsIcon(),
       link: "/filial/my-filial/info",
-      text: "переучет",
+      text: "Qayta ro'yxat",
     },
   ],
   8: [
