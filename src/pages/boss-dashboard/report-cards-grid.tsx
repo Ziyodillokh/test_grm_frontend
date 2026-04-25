@@ -36,7 +36,7 @@ export default function ReportCardsGrid({
   // Right grid har doim umumiy ma'lumot ko'rsatadi (filialId va month yo'q, faqat year)
   const generalFilter = { year: filter.year };
 
-  const { data: monthlyData, isLoading: monthlyLoading } = useCurrentMonthOverview(generalFilter);
+  const { isLoading: monthlyLoading } = useCurrentMonthOverview(generalFilter);
   const { data: dealerData, isLoading: dealerLoading } = useDealerCardTotals(generalFilter);
   const { data: factoryData, isLoading: factoryLoading } = useFactoryCardTotals(generalFilter);
   const { data: logisticsData, isLoading: logisticsLoading } = useLogisticsCardTotals(generalFilter);
