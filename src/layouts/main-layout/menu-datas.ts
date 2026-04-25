@@ -516,62 +516,22 @@ export const DataMenu = {
   ],
   12: [
     {
-      id: 2,
-      icons: () => ReportBottom({}),
-      link: "/m-manager/report",
-      text: "Отчеты",
-      items: [
-        {
-          id: 22,
-          link: "/m-manager/reports",
-          text: "Кассовый учёт",
-        },
-        {
-          id: 23,
-          link: "/m-manager/report-finance",
-          text: "Финансовый учёт",
-        },
-        {
-          id: 24,
-          link: "/m-manager/report-remaider",
-          text: "Отчет об остатке",
-        },
-        {
-          id: 25,
-          link: "/m-manager/report-seller",
-          text: "Отчёт по сотрудикам",
-        },
-        {
-          id: 26,
-          link: "/m-manager/report-orginal",
-          text: "Хисобот",
-        },
-
-      ],
+      id: 0,
+      icons: () => DeviceAnalyticsIcon(),
+      link: "/boss/dashboard",
+      text: "Dashboard",
     },
     {
       id: 33,
       icons: () => PartiesIcons(),
       link: "/parties",
-      text: "Партии",
-    },
-    {
-      id: 4,
-      icons: () => UfoBottom(),
-      link: "/dealer",
-      text: "Дилеры",
-    },
-    {
-      id: 2,
-      icons: () => ProductIcons(),
-      link: "/products",
-      text: "Продукты в продаже",
+      text: "Partiyalar",
     },
     {
       id: 42,
-      icons: () => PriceIcons({}),
+      icons: () => TagIcon(),
       link: "/price",
-      text: "Цени и скидки",
+      text: "Narxlar",
     },
     {
       id: 50,

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader, Plus } from "lucide-react";
+import { Loader, MoreHorizontal, Pencil, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { ListRow } from "@/components/ui/list-row";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -13,6 +13,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
 import ReportToolbar from "@/components/report-toolbar";
@@ -25,6 +31,7 @@ import {
   useFilialReportOne,
   useCloseFilialReport,
 } from "@/pages/reports/m-manager/reports-hub/re-inventory/queries";
+import EditProductDialog from "@/pages/reports/m-manager/reports-hub/re-inventory/edit-product-dialog";
 import ActionPageQrCode from "./form";
 
 const tabs = [
@@ -40,7 +47,9 @@ const defaultGridTemplate = "40px 1fr 1fr 70px 70px 140px 150px";
 const defaultColumnLabels = ["№", "Kolleksiya", "Model / O'lcham / Rang", "Soni", "Hajmi", "Partiya", "Shtrix kod"];
 
 const inventoryGridTemplate = "40px 1fr 1fr 100px 140px 150px";
+const inventoryGridTemplateEditable = "40px 1fr 1fr 100px 140px 150px 40px";
 const inventoryColumnLabels = ["№", "Kolleksiya", "Model / O'lcham / Rang", "Tekshirilgan", "Partiya", "Shtrix kod"];
+const inventoryColumnLabelsEditable = [...inventoryColumnLabels, ""];
 
 function formatPartiya(product: any, partiya: any): string {
   if (product?.partiya_title) return product.partiya_title;
@@ -60,6 +69,12 @@ export default function FManagerPereuchotDetailPage() {
   const [activeTab, setActiveTab] = useState<string | undefined>("переучет");
   const [scanOpen, setScanOpen] = useState(false);
   const [statusConfirm, setStatusConfirm] = useState<"close" | null>(null);
+  const [editState, setEditState] = useState<{
+    reInventoryId: string;
+    currentValue: number;
+    title?: string;
+    isMetric?: boolean;
+  } | null>(null);
 
   const { data: report } = useFilialReportOne({ reportId, enabled: !!reportId });
   const { data: totalsData } = useReInventoryTotals({
@@ -82,8 +97,14 @@ export default function FManagerPereuchotDetailPage() {
   const isOpen = reportStatus === "open";
 
   const isInvTab = isInventoryTab(activeTab);
-  const gridTemplate = isInvTab ? inventoryGridTemplate : defaultGridTemplate;
-  const columnLabels = isInvTab ? inventoryColumnLabels : defaultColumnLabels;
+  const canEdit = isInvTab && isOpen; // Qayta ro'yxat tabi + OPEN status
+
+  const gridTemplate = isInvTab
+    ? (canEdit ? inventoryGridTemplateEditable : inventoryGridTemplate)
+    : defaultGridTemplate;
+  const columnLabels = isInvTab
+    ? (canEdit ? inventoryColumnLabelsEditable : inventoryColumnLabels)
+    : defaultColumnLabels;
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: [apiRoutes.reInventoryGetByFilialReport] });
@@ -255,6 +276,34 @@ export default function FManagerPereuchotDetailPage() {
                   </span>
                   <span className="text-[13px] text-[#a3a3a3]">{partiyaStr}</span>
                   <span className="text-[13px] text-[#a3a3a3]">{barcode}</span>
+
+                  {canEdit && (
+                    <div className="flex items-center justify-center">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="h-[28px] w-[28px] flex items-center justify-center rounded-sm hover:bg-[#f5f5f5]">
+                            <MoreHorizontal className="w-[16px] h-[16px] text-[#a3a3a3]" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() =>
+                              setEditState({
+                                reInventoryId: item.id,
+                                currentValue: checkCount,
+                                title: `${collectionTitle} — ${modelRowText}`,
+                                isMetric,
+                              })
+                            }
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <Pencil className="w-4 h-4" />
+                            <span className="text-[13px]">Tahrirlash</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  )}
                 </ListRow>
               );
             }
@@ -290,6 +339,18 @@ export default function FManagerPereuchotDetailPage() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Edit dialog */}
+      {editState && (
+        <EditProductDialog
+          open={!!editState}
+          onOpenChange={(o) => { if (!o) setEditState(null); }}
+          reInventoryId={editState.reInventoryId}
+          currentValue={editState.currentValue}
+          title={editState.title}
+          isMetric={editState.isMetric}
+        />
+      )}
 
       {/* Tasdiqlashga yuborish confirmation */}
       <Dialog open={!!statusConfirm} onOpenChange={(o) => { if (!o) setStatusConfirm(null); }}>

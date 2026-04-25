@@ -1,8 +1,50 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Bot, DollarSign, Sun } from "lucide-react";
+import { format } from "date-fns";
 import { useMeStore } from "@/store/me-store";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { DataMenu } from "./menu-datas";
+
+function BossSidebarWidgets() {
+  const today = format(new Date(), "dd MMM yyyy");
+  return (
+    <div className="flex flex-col gap-[8px] mt-auto pb-[20px]">
+      {/* Si tahlil */}
+      <div className="flex items-center gap-[12px]">
+        <div className="w-[52px] h-[52px] rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0">
+          <Bot className="w-[26px] h-[26px] text-white" strokeWidth={1.5} />
+        </div>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[17px] font-medium text-[#1a1a1a]">Si tahlil</span>
+          <span className="text-[13px] font-normal text-[#1a1a1a]">Sun'iy intellekt tahlili</span>
+        </div>
+      </div>
+
+      {/* Currency */}
+      <div className="flex items-center gap-[12px]">
+        <div className="w-[52px] h-[52px] rounded-full bg-[#fd0] flex items-center justify-center shrink-0">
+          <DollarSign className="w-[24px] h-[24px] text-[#1a1a1a]" strokeWidth={2} />
+        </div>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[17px] font-medium text-[#1a1a1a]">1$ ~ 12 110 uzs</span>
+          <span className="text-[13px] font-normal text-[#1a1a1a]">Markaziy Bank {today}</span>
+        </div>
+      </div>
+
+      {/* Weather */}
+      <div className="flex items-center gap-[12px]">
+        <div className="w-[52px] h-[52px] rounded-full bg-white flex items-center justify-center shrink-0">
+          <Sun className="w-[28px] h-[28px] text-[#1a1a1a]" strokeWidth={1.5} />
+        </div>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[17px] font-medium text-[#1a1a1a]">+4 ℃</span>
+          <span className="text-[13px] font-normal text-[#1a1a1a]">Quyoshli kun</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -12,6 +54,7 @@ export default function Menu() {
   const setMenu = useBreadcrumbStore((s) => s.setMenu);
 
   const role = meUser?.position?.role;
+  const isBoss = role === 12;
   const menuItems =
     DataMenu[(role || "admin") as keyof typeof DataMenu] || [];
 
@@ -36,7 +79,7 @@ export default function Menu() {
   };
 
   return (
-    <nav className="flex flex-col gap-0 w-fit">
+    <nav className="flex flex-col gap-0 w-fit h-full">
       {menuItems.map((item) => {
         const active = isActive(item.link);
         return (
@@ -66,6 +109,8 @@ export default function Menu() {
           </div>
         );
       })}
+
+      {isBoss && <BossSidebarWidgets />}
     </nav>
   );
 }

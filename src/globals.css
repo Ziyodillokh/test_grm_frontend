@@ -133,7 +133,7 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* Layout grid — responsive 4:10 → 4:12 */
+/* Layout grid — responsive 4:11 → 4:12 */
 .layout-grid {
   display: grid;
   grid-template-columns: repeat(16, 1fr);
@@ -144,7 +144,7 @@ input::-webkit-inner-spin-button {
   grid-column: 1 / 5;
 }
 .layout-content {
-  grid-column: 5 / 15;
+  grid-column: 5 / 16;
 }
 @media (max-width: 1440px) {
   .layout-content {

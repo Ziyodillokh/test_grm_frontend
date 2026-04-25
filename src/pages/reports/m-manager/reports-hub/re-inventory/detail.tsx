@@ -35,39 +35,33 @@ export default function ReInventoryDetailPage() {
 
   const items: FilialReportItem[] = data?.pages?.flatMap((page: any) => page?.items || []) || [];
 
-  const hasActiveReport = items.some(
-    (it) => ["open", "closed", "rejected"].includes((it.status || "").toLowerCase()),
-  );
-
   const { mutate: openReport, isPending: opening } = useOpenFilialReport();
 
   const handleOpenPereuchot = () => {
     if (!filialId) return;
     openReport(filialId, {
       onSuccess: () => {
-        toast.success("Qayta ro'yxat ochildi");
+        toast.success("Qayta ro'yxat boshlandi");
         queryClient.invalidateQueries({ queryKey: [apiRoutes.filialReport, filialId] });
       },
       onError: (err: any) => {
-        toast.error(err?.response?.data?.message || "Qayta ro'yxatni ochib bo'lmadi");
+        toast.error(err?.response?.data?.message || "Qayta ro'yxatni boshlab bo'lmadi");
       },
     });
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Toolbar: Pereuchot ochish */}
+    <div className="flex flex-col h-full p-4">
+      {/* Toolbar: Qayta ro'yxatni boshlash */}
       <div className="mb-[10px] flex items-center">
-        {!hasActiveReport && (
-          <button
-            onClick={handleOpenPereuchot}
-            disabled={opening}
-            className="ml-auto h-[34px] px-[14px] rounded-sm bg-[#3ABC49] text-white text-[13px] font-medium flex items-center gap-[4px] hover:bg-[#33a942] transition-colors disabled:opacity-50"
-          >
-            {opening ? <Loader className="w-[16px] h-[16px] animate-spin" /> : <Plus className="w-[16px] h-[16px]" />}
-            Qayta ro'yxat ochish
-          </button>
-        )}
+        <button
+          onClick={handleOpenPereuchot}
+          disabled={opening}
+          className="ml-auto h-[34px] px-[14px] rounded-sm bg-[#3ABC49] text-white text-[13px] font-medium flex items-center gap-[4px] hover:bg-[#33a942] transition-colors disabled:opacity-50"
+        >
+          {opening ? <Loader className="w-[16px] h-[16px] animate-spin" /> : <Plus className="w-[16px] h-[16px]" />}
+          Qayta ro'yxatni boshlash
+        </button>
       </div>
 
       {/* Column labels */}
