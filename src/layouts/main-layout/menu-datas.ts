@@ -18,7 +18,6 @@ import {
   ReportBottom,
   StatementIcon,
   TransferIcons,
-  UfoBottom,
 } from "../../components/icons";
 import {
   DeviceAnalyticsIcon,
