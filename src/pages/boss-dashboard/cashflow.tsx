@@ -111,10 +111,11 @@ export default function BossCashflowPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-[#f5f7f9] scrollCastom">
-      <div className="grid grid-cols-1 lg:grid-cols-11 gap-x-[20px]">
-        {/* Filter row (col-span-11) */}
-        <div className="lg:col-span-11 flex items-center gap-[8px] mb-[20px]">
+    <div className="h-full flex flex-col bg-[#f5f7f9]">
+      {/* Fixed top: filter + saldo + labels */}
+      <div className="shrink-0">
+        {/* Filter row */}
+        <div className="flex items-center gap-[8px] mb-[20px]">
           {/* Tip — cashflow types */}
           <Popover>
             <PopoverTrigger asChild>
@@ -209,9 +210,9 @@ export default function BossCashflowPage() {
           </button>
         </div>
 
-        {/* Saldo card — col-span-5 */}
-        <div className="lg:col-span-5 mb-[28px]">
-          <div className="bg-white h-[62px] rounded-[8px] flex items-center justify-between px-[24px]">
+        {/* Saldo card — col-span-5 of 11-col grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-11 gap-x-[20px] mb-[28px]">
+          <div className="lg:col-span-5 bg-white h-[62px] rounded-[8px] flex items-center justify-between px-[24px]">
             <div className="flex items-baseline gap-[12px]">
               <span className="text-[13px] text-[#1a1a1a]">Saldo:</span>
               <span className="text-[17px] text-[#1a1a1a]">
@@ -247,12 +248,9 @@ export default function BossCashflowPage() {
           </div>
         </div>
 
-        {/* Spacer to push list to next row */}
-        <div className="lg:col-span-6" />
-
-        {/* Column labels — col-span-11 */}
+        {/* Column labels — fixed */}
         <div
-          className="lg:col-span-11 mb-[10px] px-[26px]"
+          className="px-[26px]"
           style={{ display: "grid", gridTemplateColumns: ROW_GRID, gap: "8px" }}
         >
           <span className="text-[13px] text-[#a3a3a3] text-right">Summa</span>
@@ -261,9 +259,11 @@ export default function BossCashflowPage() {
           <span className="text-[13px] text-[#a3a3a3]">Sana</span>
           <span className="text-[13px] text-[#a3a3a3]">Malumotlar</span>
         </div>
+      </div>
 
-        {/* List — col-span-11 */}
-        <div className="lg:col-span-11 flex flex-col gap-[4px] pb-[40px]">
+      {/* Scrollable list — labeldan 10px past */}
+      <div className="flex-1 min-h-0 overflow-y-auto scrollCastom mt-[10px]">
+        <div className="flex flex-col gap-[4px] pb-[40px]">
           {isLoading && items.length === 0 ? (
             <div className="flex items-center justify-center py-[40px]">
               <Loader className="w-[24px] h-[24px] animate-spin text-[#A3A3A3]" />

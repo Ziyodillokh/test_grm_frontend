@@ -424,13 +424,17 @@ export default function ReportPage() {
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* Kirim / Chiqim buttons */}
-            <Button onClick={() => openCfDialog("Приход")} className="bg-[#47B13C] hover:bg-[#3da032] text-white px-5 h-[42px] rounded-sm text-[14px]">
-              <Plus size={16} className="mr-1" /> Kirim qo'shish
-            </Button>
-            <Button onClick={() => openCfDialog("Расход")} className="bg-[#E38157] hover:bg-[#D27047] text-white px-5 h-[42px] rounded-sm text-[14px]">
-              <Plus size={16} className="mr-1" /> Chiqim qo'shish
-            </Button>
+            {/* Kirim / Chiqim buttons — Boss uchun hide */}
+            {meUser?.position?.role != 12 && (
+              <>
+                <Button onClick={() => openCfDialog("Приход")} className="bg-[#47B13C] hover:bg-[#3da032] text-white px-5 h-[42px] rounded-sm text-[14px]">
+                  <Plus size={16} className="mr-1" /> Kirim qo'shish
+                </Button>
+                <Button onClick={() => openCfDialog("Расход")} className="bg-[#E38157] hover:bg-[#D27047] text-white px-5 h-[42px] rounded-sm text-[14px]">
+                  <Plus size={16} className="mr-1" /> Chiqim qo'shish
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="flex gap-[4px] mb-[12px]">

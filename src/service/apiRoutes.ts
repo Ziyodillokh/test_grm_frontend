@@ -79,6 +79,7 @@ export const apiRoutes = {
   transferAccept: "/transfer/accept",
   transferDealer: '/transfer/dealer',
   clientDebtTotal: '/client/debt/total',
+  clientDebtSummary: '/client/debt/summary',
   clientDebtsByFilial: '/client/debts/by-filial',
   clientDebtReportFilials: '/client/debt-report/filials',
   clientDebtReportClients: '/client/debt-report/filials',

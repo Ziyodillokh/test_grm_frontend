@@ -109,6 +109,7 @@ export default function BossDashboard() {
             filter={generalFilter}
             inventoryData={inventoryData}
             isInventoryLoading={inventoryLoading}
+            yearlyData={yearlyData}
           />
         </div>
       </div>

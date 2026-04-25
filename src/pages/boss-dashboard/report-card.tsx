@@ -33,37 +33,41 @@ export default function ReportCard({
         onClick={handleClick}
         className="relative w-full h-[160px] rounded-[8px] bg-[#0078d4] text-white overflow-hidden text-left hover:brightness-110 transition cursor-pointer"
       >
-        {/* Mini chart background */}
-        <svg
-          className="absolute right-0 bottom-0 opacity-50"
-          width="182"
-          height="86"
-          viewBox="0 0 182 86"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden
-        >
-          <path
-            d="M0 70 L22 50 L48 60 L74 30 L100 45 L130 18 L160 32 L182 14 L182 86 L0 86 Z"
-            fill="rgba(255,255,255,0.15)"
-          />
-          <path
-            d="M0 70 L22 50 L48 60 L74 30 L100 45 L130 18 L160 32 L182 14"
-            stroke="rgba(255,255,255,0.7)"
-            strokeWidth="2"
-            fill="none"
-          />
-        </svg>
+        {/* Stack: Moliya → 12px → Savdo → 5px → Foyda */}
+        <div className="absolute left-[30px] top-[30px] flex flex-col items-start pointer-events-none">
+          <p className="text-[13px] font-normal text-white">{title}</p>
+          <p className="mt-[12px] text-[17px] font-normal text-white whitespace-nowrap">
+            {isLoading ? "—" : positive}
+          </p>
+          <p className="mt-[5px] text-[13px] text-[#2fe8ff] whitespace-nowrap">
+            {isLoading ? "" : negative}
+          </p>
+        </div>
 
-        <p className="absolute left-[30px] top-[30px] text-[13px] font-normal">
-          {title}
-        </p>
-        <p className="absolute left-[30px] top-[91px] text-[17px] text-white font-normal">
-          {isLoading ? "—" : positive}
-        </p>
-        <p className="absolute left-[30px] top-[114px] text-[11px] text-[#2fe8ff]">
-          {isLoading ? "" : negative}
-        </p>
+        {/* Mini chart — pastki o'ng burchakka taqalgan, yumshoq tl radius */}
+        <div className="absolute right-0 bottom-0 w-[150px] h-[70px] rounded-tl-[14px] overflow-hidden opacity-70 pointer-events-none">
+          <svg
+            width="150"
+            height="70"
+            viewBox="0 0 150 70"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <path
+              d="M0 52 C 18 42, 28 50, 40 38 S 65 24, 80 32 S 108 16, 125 24 S 144 8, 150 10 L 150 70 L 0 70 Z"
+              fill="rgba(255,255,255,0.18)"
+            />
+            <path
+              d="M0 52 C 18 42, 28 50, 40 38 S 65 24, 80 32 S 108 16, 125 24 S 144 8, 150 10"
+              stroke="rgba(255,255,255,0.85)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
+        </div>
       </button>
     );
   }

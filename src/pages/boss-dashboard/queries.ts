@@ -118,12 +118,15 @@ export const useKentsCardTotals = (queries: BossDashboardFilter, enabled = true)
     enabled,
   });
 
-// Qarz (client debt) card
-export const useClientDebtTotal = (filialId?: string, enabled = true) =>
+// Qarz (client debt) card — yillik qaytarilgan + qoldiq qarz
+export const useClientDebtSummary = (year?: number | string, enabled = true) =>
   useQuery({
-    queryKey: [apiRoutes.clientDebtTotal, filialId],
+    queryKey: [apiRoutes.clientDebtSummary, year],
     queryFn: () =>
-      getAllData<any, any>(apiRoutes.clientDebtTotal, filialId ? { filial_id: filialId } : {}),
+      getAllData<{ totalDebt: number; totalReturned: number }, { year?: number }>(
+        apiRoutes.clientDebtSummary,
+        { year: year ? Number(year) : undefined }
+      ),
     enabled,
   });
 
