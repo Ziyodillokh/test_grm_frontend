@@ -1,7 +1,6 @@
 import formatPrice from "@/utils/formatPrice";
 import ReportCard from "./report-card";
 import {
-  useCurrentMonthOverview,
   useDealerCardTotals,
   useFactoryCardTotals,
   useLogisticsCardTotals,
@@ -36,7 +35,6 @@ export default function ReportCardsGrid({
   // Right grid har doim umumiy ma'lumot ko'rsatadi (filialId va month yo'q, faqat year)
   const generalFilter = { year: filter.year };
 
-  const { isLoading: monthlyLoading } = useCurrentMonthOverview(generalFilter);
   const { data: dealerData, isLoading: dealerLoading } = useDealerCardTotals(generalFilter);
   const { data: factoryData, isLoading: factoryLoading } = useFactoryCardTotals(generalFilter);
   const { data: logisticsData, isLoading: logisticsLoading } = useLogisticsCardTotals(generalFilter);
@@ -66,7 +64,7 @@ export default function ReportCardsGrid({
         }
         variant="primary"
         navigateTo="/m-manager/reports-hub/monthly"
-        isLoading={!yearlyData && monthlyLoading}
+        isLoading={!yearlyData}
       />
       <ReportCard
         title="Qoldiq"
