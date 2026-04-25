@@ -130,7 +130,7 @@ export default function Page() {
               <div className="absolute right-[4px] top-1/2 -translate-y-1/2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="h-[32px] w-[32px] rounded-sm flex items-center justify-center hover:bg-[#F5F5F5]">
+                    <button className="h-[32px] w-[32px] rounded-sm flex items-center justify-center hover:bg-[#f5f7f9]">
                       <MoreVertical className="w-[16px] h-[16px] text-[#a3a3a3]" />
                     </button>
                   </DropdownMenuTrigger>

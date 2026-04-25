@@ -56,7 +56,7 @@ export default function Cards({ leftData, setOpen }: { leftData: ReportsHomePage
           price={`${leftData?.filial_plan_totals?.details?.currentTotalSell} $`}
           price2={`${Number(leftData?.filial_plan_totals?.percent)} %`}
         >
-          <Progress classNameIndicator="bg-[#AFE9B1] " className="bg-[#F3F3F3] rotate-[-90deg] -ml-9 w-[80px]  my-15  rounded-none" value={Number(leftData?.filial_plan_totals?.percent) > 100 ? 100 : Number(leftData?.filial_plan_totals?.percent)} />
+          <Progress classNameIndicator="bg-[#AFE9B1] " className="bg-[#f5f7f9] rotate-[-90deg] -ml-9 w-[80px]  my-15  rounded-none" value={Number(leftData?.filial_plan_totals?.percent) > 100 ? 100 : Number(leftData?.filial_plan_totals?.percent)} />
 
         </DashboardCard>
         <DashboardCard
@@ -66,7 +66,7 @@ export default function Cards({ leftData, setOpen }: { leftData: ReportsHomePage
           price={`${leftData?.user_plan_totals?.dailyCollected} $`}
           price2={`${leftData?.user_plan_totals?.gapPercent} %`}
         >
-          <Progress classNameIndicator="bg-[#FF9C8B] h-full " className="bg-[#F3F3F3]  rotate-[-90deg] w-[80px]  -ml-9 my-15 rounded-none" value={Number(leftData?.user_plan_totals?.gapPercent)} />
+          <Progress classNameIndicator="bg-[#FF9C8B] h-full " className="bg-[#f5f7f9]  rotate-[-90deg] w-[80px]  -ml-9 my-15 rounded-none" value={Number(leftData?.user_plan_totals?.gapPercent)} />
 
         </DashboardCard>
       </div>

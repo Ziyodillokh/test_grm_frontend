@@ -173,7 +173,7 @@ export default function PageSellerCashFlow() {
                     {day.orders.map((order) => (
                       <div
                         key={order.id}
-                        className="bg-[#f5f5f5] rounded-sm px-[12px] py-[10px]"
+                        className="bg-[#f5f7f9] rounded-sm px-[12px] py-[10px]"
                         style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px", alignItems: "center" }}
                       >
                         <span className="text-[12px] text-[#a3a3a3]">

@@ -264,7 +264,7 @@ export default function DealerDetailPage() {
                     {item.collections.map((col: any, idx: number) => (
                       <div
                         key={`${item.id}-col-${idx}`}
-                        className="bg-[#f5f5f5] rounded-sm px-[12px] py-[10px]"
+                        className="bg-[#f5f7f9] rounded-sm px-[12px] py-[10px]"
                         style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "16px", alignItems: "center" }}
                       >
                         <div className="text-right">

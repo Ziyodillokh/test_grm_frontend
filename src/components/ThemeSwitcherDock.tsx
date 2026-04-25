@@ -54,7 +54,7 @@ export function ThemeSwitcherDock({
       >
         <div
           className={cn(
-            "absolute left-2 right-2 h-12 rounded-sm bg-[#F5F5F5]",
+            "absolute left-2 right-2 h-12 rounded-sm bg-[#f5f7f9]",
             "transition-transform duration-300 ease-out"
           )}
           style={{
@@ -73,7 +73,7 @@ export function ThemeSwitcherDock({
                 "relative z-10 h-12 w-12 rounded-sm bg-white hover:bg-white border-0  border-none",
                 "transition-all duration-200",
                 selected
-                  ? "text-foreground bg-[#F5F5F5]"
+                  ? "text-foreground bg-[#f5f7f9]"
                   : "text-muted-foreground hover:text-foreground " 
               )}
             >

@@ -67,7 +67,7 @@ export default function LoginFormContent({
   const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#f5f5f5] overflow-hidden">
+    <div className="h-screen w-screen flex flex-col bg-[#f5f7f9] overflow-hidden">
       {/* Header — 90px, 16-column grid */}
       <header
         className="h-[90px] shrink-0 bg-white border-b border-[#e8e8e8]"

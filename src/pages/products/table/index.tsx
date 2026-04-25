@@ -635,7 +635,7 @@ function ProductRow({ item }: { item: ProductsData }) {
   return (
     <div className="h-[80px] px-[10px] py-[8px] bg-white rounded-sm shrink-0 flex items-center gap-[16px]">
       {/* Rasm */}
-      <div className="w-[40px] h-[64px] overflow-hidden bg-[#F5F5F5] shrink-0">
+      <div className="w-[40px] h-[64px] overflow-hidden bg-[#f5f7f9] shrink-0">
         {imgPath ? (
           <img
             src={minio_img_url + imgPath}

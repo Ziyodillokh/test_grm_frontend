@@ -31,7 +31,7 @@ export default function MainLayout() {
   }, [token, meUser]);
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#f5f5f5] overflow-hidden">
+    <div className="h-screen w-screen flex flex-col bg-[#f5f7f9] overflow-hidden">
       {/* Header — 90px, 16-column grid */}
       <Header />
 

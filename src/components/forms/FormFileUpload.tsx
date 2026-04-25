@@ -116,7 +116,7 @@ export default function FormFileUpload({
             </div>
           ) : (
             <label
-              className={`flex items-center justify-center aspect-[2/3] text-center p-auto w-full cursor-pointer p-[21px] bg-[#F5F5F5] rounded-sm mt-1.5`}
+              className={`flex items-center justify-center aspect-[2/3] text-center p-auto w-full cursor-pointer p-[21px] bg-[#f5f7f9] rounded-sm mt-1.5`}
             >
               <div className="text-center">
                 {loadingFile ? (

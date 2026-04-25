@@ -113,7 +113,7 @@ export default function AddProductDialog({ open, onOpenChange, filialId }: Props
           )}
 
           {qrBase?.id && (
-            <div className="bg-[#f5f5f5] rounded-sm p-[10px] flex flex-col gap-[4px]">
+            <div className="bg-[#f5f7f9] rounded-sm p-[10px] flex flex-col gap-[4px]">
               <div className="text-[13px] font-medium text-[#1a1a1a]">
                 {qrBase.collection?.title || "—"}
               </div>

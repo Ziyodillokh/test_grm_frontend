@@ -69,7 +69,7 @@ export default function DiscountTablePage() {
               <span className="text-[13px] text-[#F59E0B] font-medium">-{item.discountPercentage}%</span>
               <button
                 onClick={() => setId(item.id)}
-                className="h-[32px] px-[10px] rounded-sm text-[12px] bg-[#F5F5F5] text-[#1a1a1a]"
+                className="h-[32px] px-[10px] rounded-sm text-[12px] bg-[#f5f7f9] text-[#1a1a1a]"
               >
                 Tahrir
               </button>

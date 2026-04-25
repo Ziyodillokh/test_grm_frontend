@@ -73,7 +73,7 @@ export default function PriceFilter({ children, hideTabs }: { children?: React.R
           <Button
             variant="ghost"
             size="sm"
-            className={`h-[34px] rounded-sm text-[13px] ${pathName === "/price" ? "bg-[#F5F5F5] font-medium" : ""}`}
+            className={`h-[34px] rounded-sm text-[13px] ${pathName === "/price" ? "bg-[#f5f7f9] font-medium" : ""}`}
             onClick={() => navigate("/price")}
           >
             Narxlar
@@ -81,7 +81,7 @@ export default function PriceFilter({ children, hideTabs }: { children?: React.R
           <Button
             variant="ghost"
             size="sm"
-            className={`h-[34px] rounded-sm text-[13px] ${pathName === "/discount" ? "bg-[#F5F5F5] font-medium" : ""}`}
+            className={`h-[34px] rounded-sm text-[13px] ${pathName === "/discount" ? "bg-[#f5f7f9] font-medium" : ""}`}
             onClick={() => navigate("/discount")}
           >
             Chegirmalar

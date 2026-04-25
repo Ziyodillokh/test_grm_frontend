@@ -1,11 +1,13 @@
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { RefreshCw } from "lucide-react";
 import formatPrice from "@/utils/formatPrice";
+import { useYear } from "@/store/year-store";
 import FilterRow from "./filter-row";
 import CurrentMonthCard from "./current-month-card";
 import ReportCardsGrid from "./report-cards-grid";
 import { GraphIcon } from "./icons";
 import {
+  useMonthlyV2,
   useCurrentMonthOverview,
   useYearlyTotal,
   useFilialsList,
@@ -13,47 +15,50 @@ import {
 import { useReportsHomePageCurrentLeft } from "@/pages/dashboard/queries";
 
 export default function BossDashboard() {
-  const [filialId] = useQueryState("filialId", parseAsString);
+  // URL state — Umumiy Hisobot bilan bir xil keylar (filial, month)
+  const [filial] = useQueryState("filial", parseAsString);
   const [month] = useQueryState("month", parseAsInteger.withDefault(new Date().getMonth() + 1));
-  const [year] = useQueryState("year", parseAsInteger.withDefault(new Date().getFullYear()));
+  // Year — Zustand store (Umumiy Hisobot bilan shared)
+  const { year } = useYear();
 
-  // Filter LEFT section uchun (Joriy oy + Foyda/Xarajat/Qaytgan + kassa) — filialId, month, year
+  // LEFT — filterlar bilan (filial+month+year)
   const leftFilter = {
-    filialId: filialId === "#dealers" ? undefined : filialId || undefined,
+    filialId: filial === "#dealers" ? "#dealers" : filial || undefined,
     month,
     year,
   };
 
-  // RIGHT 9 cards — faqat year filterini qabul qiladi (filialId va month ta'sir qilmaydi)
+  // RIGHT — faqat year filteri (umumiy ma'lumot)
   const generalFilter = { year } as const;
 
-  const { data: currentMonthData, isLoading: currentMonthLoading } = useCurrentMonthOverview(leftFilter);
+  // Asosiy data — monthly/v2 (Umumiy Hisobot bilan bir xil)
+  const { data: leftData, isLoading: leftLoading } = useMonthlyV2(leftFilter);
+
+  // Yearly balance (top right)
   const { data: yearlyData } = useYearlyTotal(year);
-  const { data: leftData, isLoading: leftLoading } = useReportsHomePageCurrentLeft({
+
+  // Inventory ("Qoldiq" card uchun)
+  const { data: inventoryData, isLoading: inventoryLoading } = useReportsHomePageCurrentLeft({
     queries: { year },
     enabled: true,
   });
 
+  // Manager/Accountant kassa progress uchun — eski endpoint
+  const { data: kassaData } = useCurrentMonthOverview(leftFilter);
+
+  // Filiallar
   const { data: filialsResp } = useFilialsList();
   const filials: any[] = filialsResp?.items || filialsResp || [];
   const selectedFilialName =
-    filialId === "#dealers"
+    filial === "#dealers"
       ? "Dillerlar"
-      : filials.find((f) => f.id === filialId)?.title || filials.find((f) => f.id === filialId)?.name;
+      : filials.find((f) => f.id === filial)?.title || filials.find((f) => f.id === filial)?.name;
 
   const yearlyTotal = yearlyData?.totalSale ?? yearlyData?.totalSum;
   const yearlyProfit = yearlyData?.netProfitTotalSum ?? yearlyData?.additionalProfitTotalSum;
 
   return (
     <div className="h-full overflow-y-auto bg-[#f5f7f9] scrollCastom">
-      {/*
-        Inner grid (11 cols, mapping to outer cols 5-15):
-        - Top bar: col-span-7 (cols 5-11)
-        - Filter:  col-span-7 (cols 5-11)
-        - Left:    col-span-5 (cols 5-9)
-        - Right:   col-span-6 (cols 10-15) — pr-[15px]
-        Mobile/tablet: stacks to 1 col
-      */}
       <div className="grid grid-cols-1 lg:grid-cols-11 gap-x-[16px]">
         {/* Top row: balance + refresh */}
         <div className="lg:col-span-7 flex items-center gap-[24px] flex-wrap">
@@ -80,7 +85,7 @@ export default function BossDashboard() {
           </button>
         </div>
 
-        {/* Filter row — 30px below top bar, 20px above Joriy oy */}
+        {/* Filter row */}
         <div className="lg:col-span-7 mt-[30px] mb-[20px]">
           <FilterRow />
         </div>
@@ -88,21 +93,22 @@ export default function BossDashboard() {
         {/* Left section */}
         <div className="lg:col-span-5">
           <CurrentMonthCard
-            data={currentMonthData}
-            isLoading={currentMonthLoading}
+            data={leftData}
+            kassaData={kassaData}
+            isLoading={leftLoading}
             filialName={selectedFilialName}
             month={month}
             year={year}
-            filialId={filialId}
+            filial={filial}
           />
         </div>
 
-        {/* Right section — 9 cards (col 10-15, padding-left 15px). Filter ishlatilmaydi — har doim umumiy ma'lumot */}
+        {/* Right section — 9 cards */}
         <div className="lg:col-span-6 lg:pl-[15px]">
           <ReportCardsGrid
             filter={generalFilter}
-            inventoryData={leftData}
-            isInventoryLoading={leftLoading}
+            inventoryData={inventoryData}
+            isInventoryLoading={inventoryLoading}
           />
         </div>
       </div>

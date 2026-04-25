@@ -16,7 +16,7 @@ export default function Kassa({
           <p className=" text-[17px] opacity-30 text-[#333333]">Расход</p>
           <p className=" text-[17px] text-[#333333]">{data?.manager?.expense} $</p>
         </div>
-        <Progress  classNameIndicator="bg-[#FEDDCA]" className="bg-[#F3F3F3] rounded-none" value={((data?.manager?.expense ||0) >=(data?.manager?.income ||0) ?100: (data?.manager?.expense||0)/(data?.manager?.income||0)*100) } />
+        <Progress  classNameIndicator="bg-[#FEDDCA]" className="bg-[#f5f7f9] rounded-none" value={((data?.manager?.expense ||0) >=(data?.manager?.income ||0) ?100: (data?.manager?.expense||0)/(data?.manager?.income||0)*100) } />
         <p className="text-[24px] mt-2">{data?.manager?.income} $</p> 
       </div>
       <div className=" w-full h-[1px] bg-border"></div>
@@ -26,7 +26,7 @@ export default function Kassa({
           <p className=" text-[17px] opacity-30 text-[#333333]">Расход</p>
           <p className=" text-[17px] text-[#333333]">{data?.accountant?.expense} $</p>
         </div>
-        <Progress classNameIndicator="bg-[#B8F2FD] " className="bg-[#F3F3F3] rounded-none" value={((data?.accountant?.expense ||0) >=(data?.accountant?.income ||0) ?100: (data?.accountant?.expense||0)/(data?.accountant?.income||0)*100) } />
+        <Progress classNameIndicator="bg-[#B8F2FD] " className="bg-[#f5f7f9] rounded-none" value={((data?.accountant?.expense ||0) >=(data?.accountant?.income ||0) ?100: (data?.accountant?.expense||0)/(data?.accountant?.income||0)*100) } />
         <p className="text-[24px] mt-2">{data?.accountant?.income} $</p>
       </div>
     </div>

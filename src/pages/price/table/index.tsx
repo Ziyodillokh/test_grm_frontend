@@ -131,7 +131,7 @@ export default function Page() {
                       className={`h-[32px] px-[10px] rounded-sm text-[12px] ${
                         isEditing
                           ? "bg-[#0078D4] text-white"
-                          : "bg-[#F5F5F5] text-[#1a1a1a]"
+                          : "bg-[#f5f7f9] text-[#1a1a1a]"
                       }`}
                     >
                       {isEditing ? "Saqlash" : "Tahrir"}

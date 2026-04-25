@@ -281,7 +281,7 @@ export default function FManagerPereuchotDetailPage() {
                     <div className="flex items-center justify-center">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="h-[28px] w-[28px] flex items-center justify-center rounded-sm hover:bg-[#f5f5f5]">
+                          <button className="h-[28px] w-[28px] flex items-center justify-center rounded-sm hover:bg-[#f5f7f9]">
                             <MoreHorizontal className="w-[16px] h-[16px] text-[#a3a3a3]" />
                           </button>
                         </DropdownMenuTrigger>
