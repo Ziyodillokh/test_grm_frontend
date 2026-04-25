@@ -171,3 +171,23 @@ export const useCashflowTypesForBoss = () =>
     queryKey: ["/cashflow-types/by/managers", "boss-cashflow"],
     queryFn: () => getAllData<any[], any>("/cashflow-types/by/managers/both", {}),
   });
+
+// Filtersiz totals — saldo card uchun (filter saldo'ga ta'sir qilmaydi)
+export const useBossCashflowTotals = (params: {
+  createdByRole?: number;
+  reportMonth?: number;
+  reportYear?: number;
+  enabled?: boolean;
+}) =>
+  useQuery({
+    queryKey: [apiRoutes.cashflow, "boss-totals", params],
+    queryFn: () =>
+      getAllData<any, any>(apiRoutes.cashflow, {
+        createdByRole: params.createdByRole,
+        reportMonth: params.reportMonth,
+        reportYear: params.reportYear,
+        page: 1,
+        limit: 1,
+      }),
+    enabled: params.enabled !== false && params.createdByRole !== undefined,
+  });

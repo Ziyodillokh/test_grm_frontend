@@ -14,7 +14,7 @@ import { ArrowUpRedIcon } from "@/components/icons/arrow-up-red-icon";
 import TebleAvatar from "@/components/teble-avatar";
 import { apiRoutes } from "@/service/apiRoutes";
 
-import { useBossCashflowList, useCashflowTypesForBoss } from "./queries";
+import { useBossCashflowList, useBossCashflowTotals, useCashflowTypesForBoss } from "./queries";
 
 const MONTHS = [
   "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
@@ -61,9 +61,17 @@ export default function BossCashflowPage() {
     });
 
   const items = data?.pages?.flatMap((p) => p?.items || []) || [];
-  const totals = data?.pages?.[0]?.totals;
-  const totalIncome = Number(totals?.totalIncome || 0);
-  const totalExpense = Number(totals?.totalExpense || 0);
+
+  // Saldo va kirim/chiqim totallari — filterga ta'sir etmaydigan, faqat
+  // role + reportMonth + reportYear bo'yicha
+  const { data: totalsData } = useBossCashflowTotals({
+    createdByRole,
+    reportMonth: month,
+    reportYear: year,
+  });
+  const baseTotals = totalsData?.totals;
+  const totalIncome = Number(baseTotals?.totalIncome || 0);
+  const totalExpense = Number(baseTotals?.totalExpense || 0);
   const saldo = totalIncome - totalExpense;
 
   // Infinite scroll
@@ -207,7 +215,7 @@ export default function BossCashflowPage() {
             <div className="flex items-baseline gap-[12px]">
               <span className="text-[13px] text-[#1a1a1a]">Saldo:</span>
               <span className="text-[17px] text-[#1a1a1a]">
-                {isLoading && !data ? "—" : `${formatPrice(saldo)} $`}
+                {!totalsData ? "—" : `${formatPrice(saldo)} $`}
               </span>
             </div>
             <div className="flex items-center gap-[12px]">
@@ -220,7 +228,7 @@ export default function BossCashflowPage() {
               >
                 <ArrowDownGreenIcon className="w-[18px] h-[18px]" />
                 <span className="text-[15px] text-[#1a1a1a]">
-                  {isLoading && !data ? "—" : `$${formatPrice(totalIncome)}`}
+                  {!totalsData ? "—" : `$${formatPrice(totalIncome)}`}
                 </span>
               </button>
               <button
@@ -232,7 +240,7 @@ export default function BossCashflowPage() {
               >
                 <ArrowUpRedIcon className="w-[18px] h-[18px]" />
                 <span className="text-[15px] text-[#1a1a1a]">
-                  {isLoading && !data ? "—" : `$${formatPrice(totalExpense)}`}
+                  {!totalsData ? "—" : `$${formatPrice(totalExpense)}`}
                 </span>
               </button>
             </div>
