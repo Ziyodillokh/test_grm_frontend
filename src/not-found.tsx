@@ -10,7 +10,7 @@ export default function NotFound() {
       <div className="w-full text-center">
         <h4 className="text-7xl font-extrabold">404</h4>
         <p className="text-gray-400 text-lg my-5">{t("notFoundText")}</p>
-        <Button className="mx-auto" onClick={() => navigate("/dashboard")} size={"lg"}>
+        <Button className="mx-auto" onClick={() => navigate("/")} size={"lg"}>
           {t("goDashboard")}
         </Button>
       </div>

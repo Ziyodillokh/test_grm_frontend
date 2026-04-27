@@ -159,7 +159,7 @@ export default function ItemsPage() {
       {/* Column labels */}
       {type === "collection" ? (
         <div
-          className="shrink-0 px-[32px] mb-[10px]"
+          className="shrink-0 px-[12px]"
           style={{ display: "grid", gridTemplateColumns: COLLECTION_GRID, gap: "8px" }}
         >
           <span className="text-[13px] text-[#A3A3A3]">No</span>
@@ -173,7 +173,7 @@ export default function ItemsPage() {
         </div>
       ) : (
         <div
-          className="shrink-0 px-[32px] mb-[10px]"
+          className="shrink-0 px-[12px]"
           style={{ display: "grid", gridTemplateColumns: GRID, gap: "8px" }}
         >
           <span className="text-[13px] text-[#A3A3A3]">No</span>
@@ -190,7 +190,7 @@ export default function ItemsPage() {
       )}
 
       {/* List */}
-      <div className="flex-1 min-h-0 overflow-y-auto scrollCastom px-[20px] pb-[20px]">
+      <div className="flex-1 min-h-0 overflow-y-auto scrollCastom pb-[20px]">
         <div className="flex flex-col gap-[4px]">
           {isLoading && flatData.length === 0 ? (
             <div className="flex items-center justify-center py-[40px]">

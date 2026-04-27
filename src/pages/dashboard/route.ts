@@ -1,11 +1,11 @@
-import Dashboard from ".";
+import CurrentMonthReport from "./current-month-report";
 import DashboardKassaDetail from "./kassa-detail";
 import FManagerCurrent from "./f-manager-current";
 
 const Route = [
   {
     url: "/m-manager/current-month",
-    Element: Dashboard,
+    Element: CurrentMonthReport,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {

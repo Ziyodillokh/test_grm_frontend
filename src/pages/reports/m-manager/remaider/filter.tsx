@@ -138,7 +138,7 @@ export default function Filters({
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[12px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
+          className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
         >
           <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">Filter</p>
           <div className="flex flex-col gap-[10px]">

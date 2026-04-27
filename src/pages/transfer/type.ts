@@ -68,6 +68,7 @@ export type TransferQuery = {
   startDate?:Date;
   endDate?:Date;
   progress?:object;
+  year?: number;
 };
 
 export type TTransferCategory = {

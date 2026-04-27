@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Sun, LogOut } from "lucide-react";
+import { ArrowLeft, Sun } from "lucide-react";
 
-import { useAuthStore } from "@/store/auth-store";
 import { useMeStore } from "@/store/me-store";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
@@ -11,8 +10,7 @@ import { minio_img_url } from "@/constants";
 import { BellRingingIcon } from "@/components/icons";
 
 export default function Header() {
-  const { meUser, removeUserMe } = useMeStore();
-  const { removeToken } = useAuthStore();
+  const { meUser } = useMeStore();
   const navigate = useNavigate();
   const location = useLocation();
   const breadcrumbItems = useBreadcrumbStore((s) => s.items);
@@ -36,12 +34,6 @@ export default function Header() {
     location.pathname.startsWith(activeMenuLink);
 
   const isDeepRoute = hasBreadcrumb || isDeepByUrl;
-
-  const handleLogout = () => {
-    removeToken();
-    removeUserMe();
-    window.location.replace("/login");
-  };
 
   const handleBack = () => {
     if (hasBreadcrumb) {
@@ -104,9 +96,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Col 5-15: Breadcrumb */}
+      {/* Col 5-16: Breadcrumb */}
       <div
-        style={{ gridColumn: "5 / 15" }}
+        style={{ gridColumn: "5 / 17" }}
         className="flex items-center gap-[12px] h-full"
       >
         {isDeepRoute ? (
@@ -169,19 +161,6 @@ export default function Header() {
         )}
       </div>
 
-      {/* Col 16: Logout */}
-      <div
-        style={{ gridColumn: "16 / 17" }}
-        className="flex items-center justify-end h-full"
-      >
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-[8px] opacity-40 hover:opacity-100 transition-opacity"
-        >
-          <span className="text-[15px] font-medium text-[#272727] cursor-pointer">Chiqish</span>
-          <LogOut className="w-[18px] h-[18px] text-[#272727]" />
-        </button>
-      </div>
     </header>
   );
 }

@@ -441,12 +441,6 @@ export const DataMenu = {
   ],
   11: [
     {
-      id: 1,
-      icons: () => HomeIcons(),
-      link: "/dashboard",
-      text: "Мониторинг",
-    },
-    {
       id: 2,
       icons: () => StatementIcon(),
       link: "/statement",
@@ -509,16 +503,18 @@ export const DataMenu = {
       text: "Narxlar",
     },
     {
-      id: 45,
-      icons: () => SiTahlilIcon(),
-      link: "/si-tahlil",
-      text: "Si Tahlil",
-    },
-    {
       id: 50,
       icons: () => BellRingingIcon(),
       link: "/xabarnoma",
       text: "Xabarnomalar",
+    },
+    // Si Tahlil — sidebar pastki widget orqali ko'rsatiladi, lekin
+    // header header lookup uchun ro'yxatga kerak (rendering filtrlanadi)
+    {
+      id: 99,
+      icons: () => SiTahlilIcon(),
+      link: "/si-tahlil",
+      text: "Si tahlil",
     },
   ]
 };

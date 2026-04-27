@@ -7,24 +7,30 @@ import NotFound from "@/not-found";
 import LoginForm from "@/pages/login/form";
 import { useMeStore } from "@/store/me-store";
 
-// Rol bo'yicha default sahifa
+// Rol bo'yicha default sahifa — meUser yangilansa qayta render bo'ladi
 function RoleHome() {
-  const role = useMeStore.getState().meUser?.position?.role;
+  const meUser = useMeStore((s) => s.meUser);
+  const role = meUser?.position?.role;
   switch (role) {
     case 12: // Boss
       return <Navigate to="/boss/dashboard" replace />;
     case 9: // M-manager
-      return <Navigate to="/m-manager/reports-hub" replace />;
     case 10: // Hisobchi
-      return <Navigate to="/m-manager/reports-hub" replace />;
+      return <Navigate to="/m-manager/current-month" replace />;
     case 7: // W-manager (Skladchi)
       return <Navigate to="/products" replace />;
     case 4: // F-manager
-      return <Navigate to="/f-manager/kassa" replace />;
     case 8: // I-manager
       return <Navigate to="/f-manager/kassa" replace />;
+    case 11: // HR
+      return <Navigate to="/statement" replace />;
+    case 5: // Dealer
+      return <Navigate to="/products" replace />;
+    case 6: // D-manager
+      return <Navigate to="/d-manager/reports-hub" replace />;
     default:
-      return <Navigate to="/dashboard" replace />;
+      // meUser hali load bo'lmagan bo'lishi mumkin — login sahifasiga qaytarmaymiz, kutamiz
+      return null;
   }
 }
 

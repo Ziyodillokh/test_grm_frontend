@@ -17,6 +17,8 @@ interface DateRangePickerProps {
   toPlaceholder?: string;
   className?: string;
   defaultMonth?: Date;
+  /** "default" — old style (62px, left icon). "filter" — 44px, right icon, blue placeholder, white bg, border-bottom only */
+  variant?: "default" | "filter";
 }
 
 export function DateRangePicker({
@@ -24,7 +26,9 @@ export function DateRangePicker({
   toPlaceholder,
   className,
   defaultMonth,
+  variant = "default",
 }: DateRangePickerProps) {
+  const isFilter = variant === "filter";
   const { t } = useTranslation();
   const [fromDate, setFromDate] = useQueryState<Date>("startDate", {
     parse: (value) =>
@@ -38,24 +42,31 @@ export function DateRangePicker({
         ? new Date(value)
         : new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   });
+  // Filter variant: 44px height, right icon, blue placeholder, white bg, border-bottom only
+  const triggerClass = isFilter
+    ? "w-full justify-start text-left bg-white hover:bg-white rounded-none h-[44px] border-0 border-b border-[#e7ebf0] font-normal pl-3 pr-9"
+    : "w-full justify-start text-left bg-card pl-8 hover:bg-card rounded-sm h-[62px] border-0 font-normal";
+
+  const placeholderClass = isFilter ? "text-[#0078d4]" : "";
+  const iconClass = isFilter
+    ? "absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 cursor-pointer text-[#1a1a1a] hover:text-foreground"
+    : "absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 cursor-pointer text-muted-foreground hover:text-foreground";
+
   return (
     <div
-      className={`flex flex-col items-center  max-w-[290px] w-full sm:flex-row gap-2 ${className && className}`}
+      className={`flex items-center max-w-full w-full ${isFilter ? "flex-row gap-[20px]" : "flex-col sm:flex-row gap-2"} ${className && className}`}
     >
-      <div className="flex-1 relative ">
+      <div className="flex-1 relative w-full">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
-              className={cn(
-                "w-full justify-start  text-left bg-card pl-8 hover:bg-card rounded-sm h-[62px] border-0 font-normal",
-                !fromDate && "text-muted-foreground"
-              )}
+              className={cn(triggerClass, !fromDate && "text-muted-foreground")}
             >
               {fromDate ? (
                 format(fromDate, "dd, LLL, y")
               ) : (
-                <span>
+                <span className={placeholderClass}>
                   {fromPlaceholder ? t(fromPlaceholder) : t("From date")}
                 </span>
               )}
@@ -65,7 +76,6 @@ export function DateRangePicker({
             <Calendar
               mode="single"
               className="rounded-sm"
-              //  captionLayout="dropdown"
               selected={fromDate || undefined}
               onSelect={(date) => (date ? setFromDate(date) : "")}
               defaultMonth={defaultMonth}
@@ -74,36 +84,31 @@ export function DateRangePicker({
           </PopoverContent>
         </Popover>
         {fromDate ? (
-          <X
-            onClick={() => setFromDate(null)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 cursor-pointer text-muted-foreground hover:text-foreground"
-          />
+          <X onClick={() => setFromDate(null)} className={iconClass} />
         ) : (
-          <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 cursor-pointer text-muted-foreground hover:text-foreground" />
+          <CalendarIcon className={iconClass} />
         )}
       </div>
 
-      <div className="flex-1  relative">
+      <div className="flex-1 relative w-full">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
-              className={cn(
-                "w-full justify-start text-left border-0  pl-8 rounded-sm hover:bg-white bg-white h-[62px] font-normal",
-                !toDate && "text-muted-foreground"
-              )}
+              className={cn(triggerClass, !toDate && "text-muted-foreground")}
             >
               {toDate ? (
                 format(toDate, "dd, LLL, y")
               ) : (
-                <span>{toPlaceholder ? t(toPlaceholder) : t("To date")}</span>
+                <span className={placeholderClass}>
+                  {toPlaceholder ? t(toPlaceholder) : t("To date")}
+                </span>
               )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              //  captionLayout="dropdown"
               className="rounded-sm"
               defaultMonth={defaultMonth}
               selected={toDate || undefined}
@@ -114,12 +119,9 @@ export function DateRangePicker({
         </Popover>
 
         {toDate ? (
-          <X
-            onClick={() =>  setToDate(null)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 cursor-pointer text-muted-foreground hover:text-foreground"
-          />
+          <X onClick={() => setToDate(null)} className={iconClass} />
         ) : (
-          <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 cursor-pointer text-muted-foreground hover:text-foreground" />
+          <CalendarIcon className={iconClass} />
         )}
       </div>
     </div>

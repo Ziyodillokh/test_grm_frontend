@@ -88,13 +88,13 @@ export default function Page() {
   return (
     <div className="h-full flex flex-col">
       {/* Toolbar (sticky top) */}
-      <div className="shrink-0 px-[20px]">
+      <div className="shrink-0">
         <Filters />
       </div>
 
-      {/* Column labels */}
+      {/* Column labels — ListRow bilan bir xil padding (px-[12px]) */}
       <div
-        className="shrink-0 px-[32px] mb-[10px]"
+        className="shrink-0 px-[12px]"
         style={{ display: "grid", gridTemplateColumns: GRID, gap: "8px" }}
       >
         <span className="text-[13px] text-[#A3A3A3]">№</span>
@@ -110,7 +110,7 @@ export default function Page() {
       </div>
 
       {/* List */}
-      <div className="flex-1 min-h-0 overflow-y-auto scrollCastom px-[20px] pb-[20px]">
+      <div className="flex-1 min-h-0 overflow-y-auto scrollCastom pb-[20px]">
         <div className="flex flex-col gap-[4px]">
           {isLoading && flatData.length === 0 ? (
             <div className="flex items-center justify-center py-[40px]">

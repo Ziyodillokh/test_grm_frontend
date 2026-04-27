@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { parseAsString, useQueryState } from "nuqs";
-import { X, Loader } from "lucide-react";
+import { X, Loader, Eraser } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { PrimaryButton } from "@/components/ui/primary-button";
 import ReportTotalsBar, { TotalItem } from "@/components/report-totals-bar";
 import debounce from "@/utils/debounce";
 
@@ -18,6 +19,10 @@ interface ReportToolbarProps {
   sortContent?: React.ReactNode;
   /** Filter active bo'lsa tugma yonida ko'k aylana ko'rinadi */
   hasActiveFilter?: boolean;
+  /** Filter active bo'lsa popover ichida "Tozalash" button ko'rsatadi va shu callback chaqiriladi */
+  onClearFilters?: () => void;
+  /** Toolbar iconlaridan 30px o'ngda inline ko'rinadigan elementlar (masalan filial selektorlar) */
+  inlineControls?: React.ReactNode;
 }
 
 export default function ReportToolbar({
@@ -29,6 +34,8 @@ export default function ReportToolbar({
   actions,
   sortContent,
   hasActiveFilter,
+  onClearFilters,
+  inlineControls,
 }: ReportToolbarProps) {
   const [search, setSearch] = useQueryState("search", parseAsString);
   const [showSearch, setShowSearch] = useState(!!search);
@@ -36,7 +43,7 @@ export default function ReportToolbar({
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
+    <div className="flex items-center gap-[4px] shrink-0 pt-0 px-0 pb-[20px]">
       {beforeIcons}
 
       {/* Search */}
@@ -68,7 +75,7 @@ export default function ReportToolbar({
       ) : (
         <button
           onClick={() => setShowSearch(true)}
-          className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
+          className="w-[42px] h-[42px] rounded-sm bg-transparent flex items-center justify-center shrink-0 hover:bg-white/50 transition-colors"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -81,7 +88,7 @@ export default function ReportToolbar({
       {sortContent ? (
         <Popover>
           <PopoverTrigger asChild>
-            <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+            <button className="w-[42px] h-[42px] rounded-sm bg-transparent flex items-center justify-center shrink-0 hover:bg-white/50 transition-colors">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <mask id="mask_sort_rt" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
                   <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -95,13 +102,13 @@ export default function ReportToolbar({
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="w-[330px] p-[8px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[12px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)]"
+            className="w-[330px] p-[8px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)]"
           >
             {sortContent}
           </PopoverContent>
         </Popover>
       ) : (
-        <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+        <button className="w-[42px] h-[42px] rounded-sm bg-transparent flex items-center justify-center shrink-0 hover:bg-white/50 transition-colors">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask_sort_rt" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
               <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -114,36 +121,68 @@ export default function ReportToolbar({
         </button>
       )}
 
-      {/* Filter — popup, icon yonida chiqadi */}
-      {filterContent && (
-        <Popover open={filterOpen} onOpenChange={setFilterOpen}>
-          <PopoverTrigger asChild>
-            <button className="relative w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {hasActiveFilter && (
-                <span className="absolute top-[8px] right-[8px] w-[6px] h-[6px] rounded-full bg-[#0078D4]" />
-              )}
-            </button>
-          </PopoverTrigger>
+      {/* Filter — icon doim ko'rinadi, popup faqat filterContent berilganida chiqadi */}
+      <Popover open={filterOpen} onOpenChange={(o) => filterContent && setFilterOpen(o)}>
+        <PopoverTrigger asChild>
+          <button
+            className={`relative w-[42px] h-[42px] rounded-sm flex items-center justify-center shrink-0 transition-colors ${
+              hasActiveFilter ? "bg-white hover:bg-white" : "bg-transparent hover:bg-white/50"
+            }`}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {hasActiveFilter && (
+              <span className="absolute top-[5px] right-[5px] w-[6px] h-[6px] rounded-full bg-[#e5484d]" />
+            )}
+          </button>
+        </PopoverTrigger>
+        {filterContent && (
           <PopoverContent
             align="start"
-            className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[12px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
+            sideOffset={8}
+            className="w-[580px] p-0 bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40] overflow-hidden"
           >
-            <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">
-              Filter
-            </p>
-            <div className="flex flex-col gap-[10px]">{filterContent}</div>
+            {/* Header: filter icon + "Filter" + X close */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-[8px] py-[10px] pl-[12px]">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17.5 3.33301H2.5M10.8333 13.333H6.66667M9.16667 16.6663H12.5M5 6.66634H16.6667M3.33333 9.99967H13.3333" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-[15px] font-medium text-[#1a1a1a] leading-none">Filter</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFilterOpen(false)}
+                className="py-[10px] pr-[12px] pl-[12px] flex items-center justify-center"
+                aria-label="Yopish"
+              >
+                <X className="w-[20px] h-[20px] text-[#1a1a1a]" strokeWidth={1.4} />
+              </button>
+            </div>
+            {/* Divider */}
+            <div className="h-[1px] bg-[#e7ebf0]" />
+            {/* Body — 20px gap below line, 40px horizontal padding, 2-col grid (input 240px) */}
+            <div className="pt-[20px] px-[40px] pb-[20px] grid grid-cols-2 gap-x-[20px] gap-y-[16px]">
+              {filterContent}
+              {/* Filterni tozalash button — faqat filter active bo'lganda */}
+              {hasActiveFilter && onClearFilters && (
+                <div className="col-span-2 flex justify-start">
+                  <PrimaryButton onClick={onClearFilters} icon={<Eraser />}>
+                    Filterni tozalash
+                  </PrimaryButton>
+                </div>
+              )}
+            </div>
           </PopoverContent>
-        </Popover>
-      )}
+        )}
+      </Popover>
 
       {/* Excel */}
       <button
         onClick={onExport}
         disabled={excelPending}
-        className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50"
+        className="w-[42px] h-[42px] rounded-sm bg-transparent flex items-center justify-center shrink-0 hover:bg-white/50 transition-colors disabled:opacity-50"
       >
         {excelPending ? (
           <Loader className="w-[18px] h-[18px] animate-spin text-[#1A1A1A]" />
@@ -160,6 +199,11 @@ export default function ReportToolbar({
           </svg>
         )}
       </button>
+
+      {/* Inline controls — toolbar iconlaridan 30px o'ngda (filial pickers va h.k.) */}
+      {inlineControls && (
+        <div className="ml-[30px] flex items-center gap-[15px]">{inlineControls}</div>
+      )}
 
       {/* Totals */}
       {totalsItems && <ReportTotalsBar items={totalsItems} />}

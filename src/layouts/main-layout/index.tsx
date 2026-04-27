@@ -1,34 +1,20 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import { useAuthStore } from "@/store/auth-store";
-import { useMeStore } from "@/store/me-store";
 
 import Header from "./header";
 import Menu from "./menu";
 
 export default function MainLayout() {
   const { token } = useAuthStore();
-  const pathname = useLocation();
-  const navigate = useNavigate();
-  const { meUser } = useMeStore();
 
   useEffect(() => {
     if (!token) {
       window.location.replace("/login");
-    } else if (pathname.pathname == "/") {
-      const role = meUser?.position?.role;
-      if (role === 4) {
-        navigate("/f-manager/kassa");
-      } else if (role === 6) {
-        navigate("/d-manager/reports-hub");
-      } else if (role === 9 || role === 10) {
-        navigate("/m-manager/current-month");
-      } else {
-        navigate("/dashboard");
-      }
     }
-  }, [token, meUser]);
+    // `/` navigatsiyasi router ichidagi RoleHome komponenti tomonidan boshqariladi
+  }, [token]);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#f5f7f9] overflow-hidden">

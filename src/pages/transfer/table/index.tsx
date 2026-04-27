@@ -1,294 +1,247 @@
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { useEffect, useMemo, useRef } from "react";
+import { parseAsString, useQueryState } from "nuqs";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { Loader, RefreshCcw } from "lucide-react";
 
-import { DataTable } from "@/components/ui/data-table";
-import useDataFetch from "@/pages/deller/table/queries";
+import ReportToolbar from "@/components/report-toolbar";
+import { FilialSelect } from "@/components/filters-ui/filial-select";
+import { TabsPill } from "@/components/ui/tabs-pill";
+import RefreshRequestButton from "@/components/refresh-request-button";
 import { useMeStore } from "@/store/me-store";
+import { useYear } from "@/store/year-store";
+import { getAllData } from "@/service/apiHelpers";
+import { apiRoutes } from "@/service/apiRoutes";
 
-import { collactionColumns, paymentColumns } from "./columns";
-import Filters from "./filters";
 import useTransfers from "./queries";
 import { TransferData } from "../type";
-import { TData } from "@/pages/deller/type";
 
-const buildFlatList = (data: TransferData[]) => {
-  const result = [];
-  let lastDate = null;
-  let counter = 0;
+type Direction = "in" | "out";
 
-  for (const item of data) {
-    const group = item.group;
-    if (group !== lastDate) {
-      result.push({ type: 'header', transferer: item?.transferer, courier: item?.courier, group: group });
-      lastDate = group;
-      counter = 0;
-    }
-    counter++;
-    result.push({
-      ...item,
-      number: counter, // add number field
-    });
-  }
+const yearsList = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
-  return result;
-};
+interface GroupedTransfer {
+  group: string;
+  date: string;
+  transferer: TransferData["transferer"];
+  courier: TransferData["courier"];
+  fromTitle: string | null;
+  toTitle: string | null;
+  items: TransferData[];
+}
 
 export default function Page() {
   const { meUser } = useMeStore();
-  const [limit] = useQueryState("limit", parseAsInteger.withDefault(50));
-  const [page] = useQueryState("page", parseAsInteger.withDefault(1));
+  const role = meUser?.position?.role;
+  const isMM = role === 9;
 
-  const [search] = useQueryState("search")
-  const [progressStatus, setProgressStatus] = useQueryState("progress", parseAsString.withDefault('all'))
+  const { year, setYear } = useYear();
 
+  const [filialFrom, setFilialFrom] = useQueryState("filialFrom", parseAsString);
+  const [filialTo, setFilialTo] = useQueryState("filialTo", parseAsString);
+  const [direction, setDirection] = useQueryState<Direction>(
+    "direction",
+    {
+      parse: (v) => (v === "out" ? "out" : "in"),
+      serialize: (v) => v,
+    } as any
+  );
 
-  const [fromDate] = useQueryState<Date>("startDate", { parse: () => null });
-  const [toDate] = useQueryState<Date>("endDate", { parse: () => null });
-
-  const progestingInObj = {
-    all: {},
-    New: { 1: "Accepted", 2: "Rejected" },
-    Accepted: { 1: "Accepted_F", 2: "Rejected" },
-    Rejected: { 1: "Accepted_F", 2: "Accepted" },
-  }
-
-  const progestingOutObj = {
-    all: undefined,
-    InProgres: { 0: "Accepted", 1: "Accepted_F", 2: "Rejected" },
-    Accepted: { 0: "Processing", 1: "Accepted_F", 2: "Rejected" },
-    Rejected: { 0: "Processing", 1: "Accepted_F", 2: "Accepted" },
-  }
-  const { data: filialData } = useDataFetch({
-    queries: {
-      limit,
-      page,
-    },
+  // Filial ro'yxati — selektorlarda disable qilish va guruh title'lari uchun
+  const { data: filialsResp } = useQuery({
+    queryKey: [apiRoutes.filial, "transfers-filials"],
+    queryFn: () => getAllData<any, any>(apiRoutes.filial, { limit: 200, page: 1 }),
   });
+  const filials = filialsResp?.items || filialsResp || [];
 
-  const flatDataFilial =
-    filialData?.pages?.flatMap((page) => page?.items) || [];
-  const [filial, setFilial] = useQueryState(
-    "filial",
-    parseAsString.withDefault(
-      flatDataFilial?.filter((i) => i.type === "filial")?.[0]?.id || ""
-    )
-  );
-  const [filialTo, setFilialTo] = useQueryState(
-    "filialTo",
-    parseAsString.withDefault(
-      flatDataFilial?.filter((i) => i.type === "filial")?.[1]?.id || ""
-    )
-  );
-  const [type, setType] = useQueryState(
-    "type",
-    parseAsString.withDefault("In")
-  )
+  // Transferlarni shu yilga qarab olish
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useTransfers({
     queries: {
-      limit: 10,
+      limit: 50,
       page: 1,
-      from: meUser?.position.role === 9 ? filial : type == "In" ? filial : meUser?.filial?.id,
-      to: meUser?.position.role === 9 ? filialTo : type == "In" ? meUser?.filial?.id : filial,
-      startDate: fromDate || undefined,
-      endDate: toDate || undefined,
-      search: search || undefined,
-      /* @ts-ignore */
-      progress: type == "In" ? { 0: "Processing", ...progestingInObj?.[progressStatus] } : progestingOutObj?.[progressStatus]
+      year,
+      from: isMM ? filialFrom || undefined : direction === "in" ? filialFrom || undefined : meUser?.filial?.id,
+      to: isMM ? filialTo || undefined : direction === "in" ? meUser?.filial?.id : filialFrom || undefined,
     },
   });
 
-  const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+  const flatData: TransferData[] = data?.pages?.flatMap((p: any) => p?.items || []) || [];
 
-  const onSelectFilial = (data: TData) => {
-    setFilial(data?.id)
-    // setSearch(null)
-  }
+  // Sanasiga qarab guruhlash — eng oxirgi yuqorida
+  const groups: GroupedTransfer[] = useMemo(() => {
+    const map = new Map<string, GroupedTransfer>();
+    for (const item of flatData) {
+      const key = item.group || (item.date ? String(item.date) : item.id);
+      if (!map.has(key)) {
+        const fromId = (item as any)?.from?.id;
+        const toId = (item as any)?.to?.id;
+        const fromFilial = filials.find((f: any) => f.id === fromId);
+        const toFilial = filials.find((f: any) => f.id === toId);
+        map.set(key, {
+          group: key,
+          date: item.date ? String(item.date) : key,
+          transferer: item.transferer,
+          courier: item.courier,
+          fromTitle: fromFilial?.title || fromFilial?.name || null,
+          toTitle: toFilial?.title || toFilial?.name || null,
+          items: [],
+        });
+      }
+      map.get(key)!.items.push(item);
+    }
+    return Array.from(map.values()).sort((a, b) => {
+      const da = new Date(a.date).getTime() || 0;
+      const db = new Date(b.date).getTime() || 0;
+      return db - da;
+    });
+  }, [flatData, filials]);
+
+  // Infinite scroll
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || !hasNextPage || isFetchingNextPage) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) fetchNextPage();
+      },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
-    <div className="grid border border-border rounded-sm overflow-hidden grid-cols-12 h-full">
-      <div className="col-span-4    flex">
-        <div className={`w-full h-full border-r border-border `}>
-          <div className="w-full flex h-[64px] items-center justify-between border-border border-solid border-b p-[21.22px] bg-sidebar">
-            <h4 className="text-[14px] font-semibold text-foreground">
-              {meUser?.position.role === 9 ? "Из филиал" : "Филиалы"}
-            </h4>
-          </div>
-          <div className="h-[calc(100vh-140px)] scrollCastom">
-
-            {meUser?.position.role !== 6 && (
-              <div className="p-1 px-0 mx-3 border-b border-border  pb-5">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "filial")
-                  ?.filter((i) => i.id !== meUser?.filial?.id)
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={meUser?.position.role === 9 ? filialTo === e.id : false}
-                      onClick={() => onSelectFilial(e)}
-                      className={`${filial === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
-              </div>
-            )}
-            {meUser?.position.role !== 6 && (
-              <div className="p-1 px-0 mx-3 border-b border-border">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "market")
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={meUser?.position.role === 9 ? filialTo === e.id : false}
-                      onClick={() => onSelectFilial(e)}
-                      className={`${filial === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
-              </div>
-            )}
-            {meUser?.position.role != 8 ? <div
-              className={`p-3 px-0 mx-3 ${meUser?.position.role !== 6 && "border-b border-border"} `}
-            >
-              {flatDataFilial
-                ?.filter((i) => i.type === "dealer")
-                .map((e) => (
+    <div className="h-full flex flex-col">
+      {/* Toolbar */}
+      <div className="shrink-0">
+        <ReportToolbar
+          hasActiveFilter={year !== new Date().getFullYear()}
+          onClearFilters={() => setYear(new Date().getFullYear())}
+          filterContent={
+            <div className="col-span-2">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px] mb-[6px]">Yil</p>
+              <div className="flex gap-[8px] flex-wrap">
+                {yearsList.map((y) => (
                   <button
-                    key={e?.id}
-                    disabled={filialTo === e.id}
-                    onClick={() => onSelectFilial(e)}
-                    className={`${filial === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
+                    key={y}
+                    type="button"
+                    onClick={() => setYear(y)}
+                    className={`h-[36px] px-[14px] rounded-[6px] text-[13px] font-medium transition-colors ${
+                      year === y
+                        ? "bg-[#0078d4] text-white"
+                        : "bg-white text-[#1a1a1a] border border-[#e7ebf0] hover:bg-[#f5f7f9]"
+                    }`}
                   >
-                    {e.title}
+                    {y}
                   </button>
                 ))}
-            </div> : ""}
-            {meUser?.position.role !== 6 && (
-              <div className="p-3 px-0 mx-3 ">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "warehouse")
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={filialTo === e.id}
-                      onClick={() => onSelectFilial(e)}
-                      className={`${filial === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
               </div>
-            )}
-          </div>
-        </div>
-        {meUser?.position.role === 9 ? (
-          <div className={`w-full h-full border-r border-border `}>
-            <div className="w-full flex h-[64px] items-center justify-between border-border border-solid border-b p-[21.22px] bg-sidebar">
-              <h4 className="text-[14px] font-semibold text-foreground">
-                В филиал
-              </h4>
             </div>
-            <div className="max-h-[calc(100vh-140px)] scrollCastom">
+          }
+          inlineControls={
+            <>
+              <FilialSelect
+                placeholder="...dan"
+                value={filialFrom}
+                onChange={setFilialFrom}
+                filials={filials}
+                disabledIds={filialTo ? [filialTo] : []}
+                showAllOption
+                icon={<img src="/icons/arrow-bar-to-left.svg" alt="" className="w-[16px] h-[16px]" />}
+              />
+              {isMM && (
+                <FilialSelect
+                  placeholder="...ga"
+                  value={filialTo}
+                  onChange={setFilialTo}
+                  filials={filials}
+                  disabledIds={filialFrom ? [filialFrom] : []}
+                  showAllOption
+                  icon={<img src="/icons/arrow-bar-to-left.svg" alt="" className="w-[16px] h-[16px]" />}
+                />
+              )}
+            </>
+          }
+        />
+      </div>
 
-              <div className="p-1 px-0 mx-3 border-b border-border pb-1">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "filial")
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={filial === e.id}
-                      onClick={() => setFilialTo(e?.id)}
-                      className={`${filialTo === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
-              </div>
-              <div className="p-1 px-0 mx-3 border-b border-border">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "market")
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={filial === e.id}
-                      onClick={() => setFilialTo(e?.id)}
-                      className={`${filialTo === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
-              </div>
-              <div className="p-1 px-0 mx-3 border-b border-border">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "dealer")
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={filial === e.id}
-                      onClick={() => setFilialTo(e?.id)}
-                      className={`${filialTo === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
-              </div>
-              <div className="p-3 px-0 mx-3 ">
-                {flatDataFilial
-                  ?.filter((i) => i.type === "warehouse")
-                  .map((e) => (
-                    <button
-                      key={e?.id}
-                      disabled={filial === e.id}
-                      onClick={() => setFilialTo(e?.id)}
-                      className={`${filialTo === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                    >
-                      {e.title}
-                    </button>
-                  ))}
-              </div>
-            </div>
+      {/* Tab/Monitoring qatori */}
+      <div className="shrink-0 pb-[20px] flex items-center gap-[40px]">
+        {!isMM && (
+          <TabsPill
+            tabs={[
+              { value: "in", label: "Kiruvchi" },
+              { value: "out", label: "Chiquvchi" },
+            ]}
+            value={direction || "in"}
+            onChange={setDirection}
+          />
+        )}
+        <RefreshRequestButton
+          title="Monitoring"
+          subtitle="Filial kesimida"
+          icon={<img src="/icons/device-analytics.svg" alt="" className="w-[36px] h-[36px]" />}
+        />
+        <RefreshRequestButton />
+      </div>
+
+      {/* Transfer guruhlari */}
+      <div className="flex-1 min-h-0 overflow-y-auto scrollCastom pb-[20px]">
+        {isLoading && groups.length === 0 ? (
+          <div className="flex items-center justify-center py-[40px]">
+            <Loader className="w-[24px] h-[24px] animate-spin text-[#A3A3A3]" />
+          </div>
+        ) : groups.length === 0 ? (
+          <div className="flex items-center justify-center py-[40px] bg-white rounded-sm">
+            <span className="text-[13px] text-[#A3A3A3]">Ma'lumot topilmadi</span>
           </div>
         ) : (
-          <div className={`w-full h-full border-r border-border `}>
-            <div className="w-full flex h-[64px] items-center justify-between border-border border-solid border-b p-[21.22px] bg-sidebar">
-              <h4 className="text-[14px] font-semibold text-foreground">
-                Статус транзакции
-              </h4>
-            </div>
-            <div className="p-3 px-0 mx-3 max-h-[calc(100vh-140px)] scrollCastom">
-              {[
-                { id: "In", name: "Входящие" },
-                { id: "Out", name: "Отправленные" },
-                // { id: "New", name: "Новые" },
-              ].map((e) => (
-                <button
-                  key={e?.id}
-                  disabled={filial === e.id}
-                  onClick={() => {
-                    setType(e?.id)
-                    setProgressStatus('all')
-                  }}
-                  className={`${type === e.id ? "bg-sidebar" : ""} group text-foreground flex items-center justify-between  mb-1 text-[14px]  w-full hover:bg-sidebar rounded-sm px-3  py-1`}
-                >
-                  {e.name}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-col gap-[16px]">
+            {groups.map((g) => (
+              <div key={g.group} className="bg-white rounded-[6px] overflow-hidden">
+                {/* Guruh header */}
+                <div className="flex items-center gap-[12px] px-[16px] py-[12px] bg-[#f5f7f9] border-b border-[#e7ebf0]">
+                  <span className="text-[13px] font-medium text-[#1a1a1a]">
+                    {g.fromTitle || "—"}
+                  </span>
+                  <RefreshCcw className="w-[14px] h-[14px] text-[#1a1a1a] opacity-60" />
+                  <span className="text-[13px] font-medium text-[#1a1a1a]">
+                    {g.toTitle || "—"}
+                  </span>
+                  <span className="text-[13px] text-[#1a1a1a] opacity-60 ml-[16px]">
+                    {g.items.length} ta
+                  </span>
+                  <span className="text-[13px] text-[#1a1a1a] opacity-60 ml-auto">
+                    {g.date ? format(new Date(g.date), "dd.MM.yyyy HH:mm") : ""}
+                  </span>
+                </div>
+                {/* Transferlar ro'yxati */}
+                <div className="flex flex-col">
+                  {g.items.map((t, idx) => (
+                    <div
+                      key={t.id}
+                      className="flex items-center gap-[12px] px-[16px] py-[10px] border-b border-[#f5f7f9] last:border-b-0"
+                    >
+                      <span className="text-[13px] text-[#A3A3A3] w-[24px]">{idx + 1}</span>
+                      <span className="text-[14px] text-[#1a1a1a] flex-1 truncate">
+                        {(t as any)?.product?.bar_code?.collection?.title || "—"}
+                      </span>
+                      <span className="text-[14px] text-[#1a1a1a]">{t.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div ref={sentinelRef} className="h-[1px]" />
+            {isFetchingNextPage && (
+              <div className="flex items-center justify-center py-[12px]">
+                <Loader className="w-[18px] h-[18px] animate-spin text-[#A3A3A3]" />
+              </div>
+            )}
           </div>
         )}
       </div>
-      <div className="col-span-8">
-        <Filters />
-        <DataTable
-          isLoading={isLoading}
-          className="max-h-[calc(100vh-140px)] scrollCastom"
-          columns={meUser?.position.role == 6 ? collactionColumns : paymentColumns(flatDataFilial)}
-          data={meUser?.position.role == 6 ? [{ id: 1 }, { id: 1 }] as unknown as TransferData[] : buildFlatList(flatData) as unknown as TransferData[]}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage ?? false}
-          ischeckble={false}
-          isFetchingNextPage={isFetchingNextPage}
-        />
-      </div>
-    </div >
+    </div>
   );
 }

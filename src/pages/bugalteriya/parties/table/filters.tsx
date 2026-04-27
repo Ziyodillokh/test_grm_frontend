@@ -16,22 +16,44 @@ export default function Filters() {
   const [factory, setFactory] = useState<TSelectOption | null>(null);
   const [partiyaNumber, setpartiyaNumber] = useState<TSelectOption | null>(null);
 
+  const [countryQ, setCountryQ] = useQueryState("country");
+  const [factoryQ, setFactoryQ] = useQueryState("factory");
+  const [partiyaQ, setPartiyaQ] = useQueryState("partiya-number");
+  const [startDateQ, setStartDateQ] = useQueryState("startDate");
+  const [endDateQ, setEndDateQ] = useQueryState("endDate");
+
   const role = meUser?.position?.role;
-  const canAdd = role === 9 || role === 5 || role === 12;
+  const canAdd = role === 9 || role === 5;
+
+  const hasActiveFilter = !!(countryQ || factoryQ || partiyaQ || startDateQ || endDateQ);
+
+  const handleClear = () => {
+    setCountry(null);
+    setFactory(null);
+    setpartiyaNumber(null);
+    setCountryQ(null);
+    setFactoryQ(null);
+    setPartiyaQ(null);
+    setStartDateQ(null);
+    setEndDateQ(null);
+  };
 
   return (
     <ReportToolbar
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={handleClear}
       filterContent={
-        <div className="flex flex-col gap-3">
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Sana oralig'i</p>
-            <DateRangePicker fromPlaceholder="от" toPlaceholder="до" className="max-w-full" />
+        <>
+          {/* Davr — col-span-2: label tepada, 2 ta date input pastida side-by-side */}
+          <div className="flex flex-col gap-[6px] col-span-2">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Davr</p>
+            <DateRangePicker variant="filter" fromPlaceholder="...dan" toPlaceholder="...gacha" />
           </div>
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Страна</p>
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Davlat</p>
             <FilterComboboxDemoInput
-              className="w-full h-[42px]"
-              placeholder="Страна"
+              className="w-[240px] h-[44px] bg-white border-0 border-b border-[#e7ebf0] rounded-none"
+              placeholder="Davlat"
               fetchUrl="/country"
               name="country"
               setValue={setCountry}
@@ -39,11 +61,11 @@ export default function Filters() {
               fieldNames={{ label: "title", value: "id" }}
             />
           </div>
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Поставщик</p>
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Taminotchi</p>
             <FilterComboboxDemoInput
-              className="w-full h-[42px]"
-              placeholder="Поставщик"
+              className="w-[240px] h-[44px] bg-white border-0 border-b border-[#e7ebf0] rounded-none"
+              placeholder="Taminotchi"
               fetchUrl="/factory"
               name="factory"
               setValue={setFactory}
@@ -51,11 +73,11 @@ export default function Filters() {
               fieldNames={{ label: "title", value: "id" }}
             />
           </div>
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Партия</p>
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Partiya</p>
             <FilterComboboxDemoInput
-              className="w-full h-[42px]"
-              placeholder="Партия"
+              className="w-[240px] h-[44px] bg-white border-0 border-b border-[#e7ebf0] rounded-none"
+              placeholder="Partiya"
               name="partiya-number"
               fetchUrl="/partiya-number"
               setValue={setpartiyaNumber}
@@ -63,7 +85,7 @@ export default function Filters() {
               fieldNames={{ label: "title", value: "id" }}
             />
           </div>
-        </div>
+        </>
       }
       actions={
         canAdd ? (

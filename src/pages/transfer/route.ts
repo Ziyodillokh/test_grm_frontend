@@ -5,12 +5,12 @@ const Route = [
   {
     url: "/transfers",
     Element: Page,
-    meta: { isAuth: true, role: new Set(["admin"]) },
+    meta: { isAuth: true, role: new Set(["admin", "4", "7", "9"]) },
   },
   {
     url: "/transfers/:id/to/:uuid",
     Element: SinglePage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
+    meta: { isAuth: true, role: new Set(["admin", "4", "7", "9"]) },
   },
 ];
 
