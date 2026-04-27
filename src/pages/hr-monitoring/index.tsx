@@ -2,6 +2,7 @@
 import { FileOutput, Plus } from "lucide-react";
 // import { parseAsInteger, useQueryState } from "nuqs";
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
 import CardSort from "@/components/card-sort";
 import { Button } from "@/components/ui/button";
@@ -17,11 +18,20 @@ import {
 import { MonitoringColumns } from "./columns";
 import { mockEmployees, mockFilials, monitoringTypes } from "./mock-data";
 import { useMonitoringItems } from "./queries";
+import { useMeStore } from "@/store/me-store";
 
 export default function MonitoringDashboard() {
+  const { meUser } = useMeStore();
   const [employeeId, setEmployeeId] = useState<string | undefined>(undefined);
   const [filialId, setFilialId] = useState<string | undefined>(undefined);
   const [type, setType] = useState<string | undefined>(undefined);
+
+  // Boss yoki M-manager bu eski sahifani ko'rmasligi kerak — rolega mos sahifaga redirect
+  const role = meUser?.position?.role;
+  if (role === 12) return <Navigate to="/boss/dashboard" replace />;
+  if (role === 9) return <Navigate to="/m-manager/reports-hub" replace />;
+  if (role === 7) return <Navigate to="/products" replace />;
+  if (role === 4) return <Navigate to="/f-manager/kassa" replace />;
   
   
   const { data: monitoringData, isLoading } = useMonitoringItems({

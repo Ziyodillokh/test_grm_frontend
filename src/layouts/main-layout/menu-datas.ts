@@ -28,6 +28,7 @@ import {
   UsersIcon,
   BooksIcon,
 } from "./sidebar-icons";
+import { SiTahlilIcon } from "@/components/icons/si-tahlil-icon";
 
 // {
 //   OTHER = 0,
@@ -203,78 +204,53 @@ export const DataMenu = {
     },
   ],
   7: [
-    // {
-    //   id: 1,
-    //   icons: () => ReportBottom({}),
-    //   link: "/warehouse-report",
-    //   text: "Отчет об остатке",
-    // },
+    {
+      id: 1,
+      icons: () => ProductIcons(),
+      link: "/products",
+      text: "Mahsulot",
+    },
     {
       id: 2,
-      icons: () => PartiesIcons(),
-      link: "/parties",
-      text: "Партии",
+      icons: () => TransferIcons(),
+      link: "/transfers",
+      text: "Transfer",
     },
     {
       id: 3,
-      icons: () => TransferIcons(),
-      link: "/transfers",
-      text: "Трансферы",
+      icons: () => PartiesIcons(),
+      link: "/parties",
+      text: "Partiya",
     },
     {
       id: 4,
-      icons: () => ProductIcons(),
-      link: "/products",
-      text: "Продукты ",
+      icons: () => BronedIcons(),
+      link: "/broned",
+      text: "Bronlar",
     },
     {
       id: 5,
-      icons: () => BronedIcons(),
-      link: "/broned",
-      text: "broned",
+      icons: () => PersonsIcons(),
+      link: "/user",
+      text: "Ishchilar",
     },
     {
       id: 6,
-      icons: () => HikVision(),
-      link: "/hik-vision",
-      text: "Hik Vision",
+      icons: () => PriceIcons({}),
+      link: "/price",
+      text: "Narxlar",
     },
     {
       id: 7,
-      icons: () => PersonsIcons(),
-      link: "/user",
-      text: "user",
-    },
-    {
-      id: 8,
-      icons: () => PriceIcons({}),
-      link: "/price",
-      text: "Цени и скидки",
-    },
-    // {
-    //   id: 9,
-    //   icons: () => ProductsCheck(),
-    //   link: "/product-check",
-    //   text: "Проверка продукта",
-    // },
-    {
-      id: 10,
-      icons: () => QRCodeIcon(),
-      link: "/qrcode",
-      text: "Генерация QR-кодов",
-    },
-
-    {
-      id: 11,
-      icons: () => DataLibrary({}),
-      link: "/data-library",
-      text: "data-library",
-    },
-    {
-      id: 23,
       icons: () => ClientsIcon(),
       link: "/filial/my-filial/info",
       text: "Qayta ro'yxat",
+    },
+    {
+      id: 8,
+      icons: () => DataLibrary({}),
+      link: "/data-library",
+      text: "Markaziy malumotlar",
     },
   ],
   8: [
@@ -531,6 +507,12 @@ export const DataMenu = {
       icons: () => TagIcon(),
       link: "/price",
       text: "Narxlar",
+    },
+    {
+      id: 45,
+      icons: () => SiTahlilIcon(),
+      link: "/si-tahlil",
+      text: "Si Tahlil",
     },
     {
       id: 50,

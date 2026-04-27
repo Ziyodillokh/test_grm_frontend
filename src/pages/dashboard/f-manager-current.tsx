@@ -12,12 +12,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -333,35 +331,47 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
         </button>
 
         {/* Filter */}
-        <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-          <SheetTrigger asChild>
-            <button className={`w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors ${hasActiveFilter ? "ring-2 ring-[#0078D4]" : ""}`}>
+        <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+          <PopoverTrigger asChild>
+            <button className="relative w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke={hasActiveFilter ? "#0078D4" : "#1A1A1A"} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
+              {hasActiveFilter && (
+                <span className="absolute top-[8px] right-[8px] w-[6px] h-[6px] rounded-full bg-[#0078D4]" />
+              )}
             </button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[340px] p-4">
-            <SheetHeader><SheetTitle>Filter</SheetTitle></SheetHeader>
-            <div className="flex flex-col gap-4 mt-4">
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[12px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
+          >
+            <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">Filter</p>
+            <div className="flex flex-col gap-[10px]">
               <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Sotuvchi</p>
-                <FilterSelect name="sellerId" placeholder="Sotuvchi tanlang" className="w-full" options={[{ label: "Barchasi", value: "clear" }, ...sellers.map((s: any) => ({ label: `${s.firstName} ${s.lastName}`, value: s.id }))]} />
+                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Sotuvchi</p>
+                <div className="bg-white rounded-[8px]">
+                  <FilterSelect name="sellerId" placeholder="Sotuvchi tanlang" className="w-full" classNameContainer="z-[60]" options={[{ label: "Barchasi", value: "clear" }, ...sellers.map((s: any) => ({ label: `${s.firstName} ${s.lastName}`, value: s.id }))]} />
+                </div>
               </div>
               <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
-                <FilterSelect name="cashflowTypeId" placeholder="Turni tanlang" className="w-full" options={[{ label: "Barchasi", value: "clear" }, ...cashflowTypes.map((ct) => ({ label: ct.title, value: ct.id }))]} />
+                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Turi</p>
+                <div className="bg-white rounded-[8px]">
+                  <FilterSelect name="cashflowTypeId" placeholder="Turni tanlang" className="w-full" classNameContainer="z-[60]" options={[{ label: "Barchasi", value: "clear" }, ...cashflowTypes.map((ct) => ({ label: ct.title, value: ct.id }))]} />
+                </div>
               </div>
               <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Sana oralig'i</p>
-                <DateRangePicker fromPlaceholder="Dan" toPlaceholder="Gacha" className="max-w-full" />
+                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Sana oralig'i</p>
+                <div className="bg-white rounded-[8px]">
+                  <DateRangePicker fromPlaceholder="Dan" toPlaceholder="Gacha" className="max-w-full" />
+                </div>
               </div>
               {hasActiveFilter && (
                 <Button variant="outline" onClick={clearFilters} className="w-full mt-2">Tozalash</Button>
               )}
             </div>
-          </SheetContent>
-        </Sheet>
+          </PopoverContent>
+        </Popover>
 
         {/* Excel */}
         <button onClick={() => exportExcel()} disabled={excelPending} className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors disabled:opacity-50">

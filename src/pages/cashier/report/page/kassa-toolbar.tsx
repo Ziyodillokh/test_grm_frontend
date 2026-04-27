@@ -14,12 +14,10 @@ import qs from "qs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { apiRoutes } from "@/service/apiRoutes";
@@ -147,64 +145,78 @@ export default function KassaToolbar({
           </Button>
         )}
 
-        {/* Filter */}
-        <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-          <SheetTrigger asChild>
+        {/* Filter — popup */}
+        <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+          <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className={`rounded-sm ${hasActiveFilter ? "text-[#89A143]" : ""}`}
+              className="relative rounded-sm"
             >
               <SlidersHorizontal className="w-5 h-5" />
+              {hasActiveFilter && (
+                <span className="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-full bg-[#0078D4]" />
+              )}
             </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[340px] p-4">
-            <SheetHeader>
-              <SheetTitle>Filter</SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col gap-4 mt-4">
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[12px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
+          >
+            <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">
+              Filter
+            </p>
+            <div className="flex flex-col gap-[10px]">
               {/* Seller */}
               <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Sotuvchi</p>
-                <FilterSelect
-                  name="sellerId"
-                  placeholder="Sotuvchi tanlang"
-                  className="w-full"
-                  options={[
-                    { label: "Barchasi", value: "clear" },
-                    ...sellers.map((s: any) => ({
-                      label: `${s.firstName} ${s.lastName}`,
-                      value: s.id,
-                    })),
-                  ]}
-                />
+                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Sotuvchi</p>
+                <div className="bg-white rounded-[8px]">
+                  <FilterSelect
+                    name="sellerId"
+                    placeholder="Sotuvchi tanlang"
+                    className="w-full"
+                    classNameContainer="z-[60]"
+                    options={[
+                      { label: "Barchasi", value: "clear" },
+                      ...sellers.map((s: any) => ({
+                        label: `${s.firstName} ${s.lastName}`,
+                        value: s.id,
+                      })),
+                    ]}
+                  />
+                </div>
               </div>
 
               {/* Cashflow type */}
               <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
-                <FilterSelect
-                  name="cashflowTypeId"
-                  placeholder="Turni tanlang"
-                  className="w-full"
-                  options={[
-                    { label: "Barchasi", value: "clear" },
-                    ...cashflowTypes.map((ct) => ({
-                      label: ct.title,
-                      value: ct.id,
-                    })),
-                  ]}
-                />
+                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Turi</p>
+                <div className="bg-white rounded-[8px]">
+                  <FilterSelect
+                    name="cashflowTypeId"
+                    placeholder="Turni tanlang"
+                    className="w-full"
+                    classNameContainer="z-[60]"
+                    options={[
+                      { label: "Barchasi", value: "clear" },
+                      ...cashflowTypes.map((ct) => ({
+                        label: ct.title,
+                        value: ct.id,
+                      })),
+                    ]}
+                  />
+                </div>
               </div>
 
               {/* Date range */}
               <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Sana oralig'i</p>
-                <DateRangePicker
-                  fromPlaceholder="Dan"
-                  toPlaceholder="Gacha"
-                  className="max-w-full"
-                />
+                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Sana oralig'i</p>
+                <div className="bg-white rounded-[8px]">
+                  <DateRangePicker
+                    fromPlaceholder="Dan"
+                    toPlaceholder="Gacha"
+                    className="max-w-full"
+                  />
+                </div>
               </div>
 
               {/* Clear */}
@@ -212,14 +224,14 @@ export default function KassaToolbar({
                 <Button
                   variant="outline"
                   onClick={clearFilters}
-                  className="w-full mt-2"
+                  className="w-full mt-[4px] h-[38px] rounded-[8px]"
                 >
                   Tozalash
                 </Button>
               )}
             </div>
-          </SheetContent>
-        </Sheet>
+          </PopoverContent>
+        </Popover>
 
         {/* Excel */}
         <Button

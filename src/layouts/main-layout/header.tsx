@@ -99,7 +99,7 @@ export default function Header() {
             </AvatarFallback>
           </Avatar>
           <span className="text-[13px] font-medium text-[#272727] whitespace-nowrap">
-            {{ 4: "Fmenejer", 6: "Dmenejer", 9: "Menejer", 10: "Hisobchi", 12: "Boss", 8: "Smenejer" }[role as number] || "Profil"}
+            {{ 4: "F-menejer", 6: "D-menejer", 7: "Skladchi", 8: "I-menejer", 9: "Menejer", 10: "Hisobchi", 12: "Boss" }[role as number] || "Profil"}
           </span>
         </div>
       </div>

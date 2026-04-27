@@ -1,154 +1,244 @@
 import FormTextInput from "@/components/forms/FormTextInput";
-import Filters from "./filters";
 import BarcodeQenerat from "@/components/barcode-generat";
 import FormComboboxDemoInput from "@/components/forms/FormCombobox";
+import Filters from "./filters";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { parseAsString, useQueryState } from "nuqs";
 import { useMeStore } from "@/store/me-store";
+import { useEditPartiyaProductStore } from "@/store/edit-partiya-product-store";
+
+// Read-only field display (label tashqarida, qiymat ichida)
+function StaticField({ value, placeholder }: { value: string; placeholder: string }) {
+  return (
+    <div className="h-[40px] px-[12px] text-[14px] rounded-[4px] bg-[#f5f7f9] border border-border flex items-center text-[#1a1a1a]">
+      {value || <span className="text-[#999]">{placeholder}</span>}
+    </div>
+  );
+}
 
 export default function FormContent() {
   const { meUser } = useMeStore();
 
   const [editble] = useState<boolean>(true);
-  const [barcode, setBarCode] = useQueryState("barcode");
+  const [, setBarCode] = useQueryState("barcode");
   const { watch } = useFormContext();
   const isMetric = watch("isMetric");
   const [tip] = useQueryState(
     "tip",
-    parseAsString.withDefault((meUser?.position?.role == 7 ||meUser?.position.role == 4)? "переучет" : "new")
+    parseAsString.withDefault(
+      meuserIsW(meUser?.position?.role) ? "переучет" : "new"
+    )
   );
+
+  const inputCls = "h-[40px] px-[12px] text-[14px] rounded-[4px]";
+
+  const role = meUser?.position?.role;
+  const canSubmit =
+    (role === 9 && tip === "new") ||
+    role === 5 ||
+    ((role === 7 || role === 4) && tip === "переучет");
+
+  const editProduct = useEditPartiyaProductStore((s) => s.product);
+  const isEditing = !!editProduct;
+  const bc = editProduct?.bar_code;
+  const editIsMetric = bc?.isMetric;
+  const editTipLabel = editIsMetric ? "Метражный" : "Штучный";
 
   return (
-    <div className="w-full max-h-[calc(100vh-66px)] scrollCastom border-border border-r ">
-      <Filters />
-      <div className="grid row-start  px-[40px] py-[20px] gap-2 lg:grid-cols-2">
-        <FormTextInput
-          classNameInput="h-[28px] p-2"
-          name="code"
-          placeholder="code"
-          localChange={() => {
-            setBarCode("new");
-          }}
-          label="code"
-        />
+    <div className="w-full flex flex-col">
+      {!isEditing && <Filters />}
+      <div
+        className="w-full px-[20px] py-[16px]"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          columnGap: 8,
+          rowGap: 16,
+        }}
+      >
+        {isEditing ? (
+          <>
+            <div>
+              <StaticField value={bc?.code || ""} placeholder="Shtrix kod" />
+            </div>
+            <div>
+              <StaticField value={bc?.country?.title || ""} placeholder="Davlat" />
+            </div>
+            <div>
+              <StaticField
+                value={
+                  editProduct?.factory?.title ||
+                  (editProduct as any)?.bar_code?.factory?.title ||
+                  (editProduct as any)?.partiya?.factory?.title ||
+                  ""
+                }
+                placeholder="Taminotchi"
+              />
+            </div>
+            <div>
+              <StaticField
+                value={bc?.collection?.title || ""}
+                placeholder="Kolleksiya"
+              />
+            </div>
+            <div>
+              <StaticField value={bc?.model?.title || ""} placeholder="Model" />
+            </div>
+            <div>
+              <StaticField value={editTipLabel} placeholder="Tip" />
+            </div>
+            <div>
+              <StaticField value={bc?.size?.title || ""} placeholder="O'lcham" />
+            </div>
+            <div>
+              <StaticField value={bc?.shape?.title || ""} placeholder="Shakl" />
+            </div>
+            <div>
+              <StaticField value={bc?.color?.title || ""} placeholder="Rang" />
+            </div>
+            <div>
+              <StaticField value={bc?.style?.title || ""} placeholder="Uslub" />
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <FormTextInput
+                classNameInput={inputCls}
+                name="code"
+                placeholder="Shtrix kod"
+                localChange={() => {
+                  setBarCode("new");
+                }}
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/country"
+                classNameChild={inputCls}
+                name="country"
+                placeholder="Davlat"
+                disabled={true}
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/factory"
+                name="factory"
+                classNameChild={inputCls}
+                placeholder="Taminotchi"
+                disabled={true}
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/collection"
+                name="collection"
+                disabled={true}
+                classNameChild={inputCls}
+                placeholder="Kolleksiya"
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl={`/model`}
+                name="model"
+                disabled={true}
+                classNameChild={inputCls}
+                placeholder="Model"
+              />
+            </div>
+            <div>
+              <FormTextInput
+                classNameInput={inputCls}
+                name="isMetric"
+                placeholder="Tip"
+                disabled={true}
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/size"
+                name="size"
+                disabled={true}
+                classNameChild={inputCls}
+                placeholder="O'lcham"
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/shape"
+                name="shape"
+                disabled={true}
+                classNameChild={inputCls}
+                placeholder="Shakl"
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/color"
+                name="color"
+                classNameChild={inputCls}
+                placeholder="Rang"
+                disabled={true}
+              />
+            </div>
+            <div>
+              <FormComboboxDemoInput
+                fieldNames={{ value: "id", label: "title" }}
+                fetchUrl="/style"
+                name="style"
+                classNameChild={inputCls}
+                placeholder="Uslub"
+                disabled={true}
+              />
+            </div>
+          </>
+        )}
 
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/country"
-          classNameChild="h-[28px] p-2"
-          name="country"
-          placeholder="country"
-          label="country"
-          disabled={true}
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/factory"
-          name="factory"
-          classNameChild="h-[28px] p-2"
-          placeholder="factory"
-          label="factory"
-          disabled={true}
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/collection"
-          name="collection"
-          disabled={true}
-          classNameChild="h-[28px] p-2"
-          placeholder="collection"
-          label="collection"
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl={`/model`}
-          name="model"
-          disabled={true}
-          classNameChild="h-[28px] p-2"
-          placeholder="model"
-          label="model"
-        />
-        <FormTextInput
-          classNameInput="h-[28px] p-2"
-          name="isMetric"
-          placeholder="isMetric"
-          disabled={true}
-          label="isMetric"
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/shape"
-          name="shape"
-          disabled={true}
-          classNameChild="h-[28px] p-2"
-          placeholder="shape"
-          label="shape"
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/size"
-          name="size"
-          disabled={true}
-          classNameChild="h-[28px] p-2"
-          placeholder="size"
-          label="size"
-        />
-        <FormTextInput
-          type="number"
-          classNameInput="h-[28px] p-2"
-          name="count"
-          placeholder={isMetric == "Метражный" ? "Длина" : "count"}
-          disabled={!editble}
-          label={isMetric == "Метражный" ? "Длина" : "count"}
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/color"
-          name="color"
-          classNameChild="h-[28px] p-2"
-          placeholder="color"
-          disabled={true}
-          label="color"
-        />
-        <FormComboboxDemoInput
-          fieldNames={{ value: "id", label: "title" }}
-          fetchUrl="/style"
-          name="style"
-          classNameChild="h-[28px] p-2"
-          placeholder="style"
-          disabled={true}
-          label="style"
-        />
-      </div>
-      <div className="bg-sidebar border-y text-primary border-border  h-[44px]  flex  items-center justify-end  ">
-        {meUser?.position.role == 9 && tip != "излишки" ? (
-          <Button
-            className={`h-full w-1/2 text-primary justify-center font-[16px] gap-1.5  border-none`}
-            variant={"outline"}
-            disabled={barcode == "new" || barcode == undefined}
-          >
-            Изменить
-          </Button>
-        ) : (
-          ""
-        )}
-        {(meUser?.position.role == 9 && tip == "new") ||
-        meUser?.position.role === 5 ||
-        ((meUser?.position.role == 7 || meUser?.position.role == 4) && tip == "переучет") ? (
-          <Button
-            className={`h-full w-1/2 text-primary justify-center font-[16px] gap-1.5  border-none`}
-            variant={"outline"}
-            disabled={barcode != "new" && barcode != undefined}
-          >
-            Добавить
-          </Button>
-        ) : (
-          ""
+        <div>
+          <FormTextInput
+            type="number"
+            classNameInput={inputCls}
+            name="count"
+            placeholder={
+              (isEditing ? editIsMetric : isMetric == "Метражный")
+                ? "Uzunlik"
+                : "Miqdor"
+            }
+            disabled={!editble}
+          />
+        </div>
+        {canSubmit && (
+          <div>
+            <Button
+              type="submit"
+              className="w-full h-[40px] rounded-[4px] bg-[#1A1A1A] hover:bg-[#333] text-white text-[14px]"
+            >
+              Qo'shish
+            </Button>
+          </div>
         )}
       </div>
-      <BarcodeQenerat />
+
+      {!isEditing && (
+        <div className="px-[20px] py-[20px] border-t border-border">
+          <BarcodeQenerat />
+        </div>
+      )}
     </div>
   );
+}
+
+function meuserIsW(role: number | undefined): boolean {
+  return role === 7 || role === 4;
 }

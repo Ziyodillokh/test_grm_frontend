@@ -1,8 +1,5 @@
-import { FileCheck, FileOutput, Loader } from "lucide-react";
-import FilterSelect from "@/components/filters-ui/filter-select";
-import SearchInput from "@/components/filters-ui/search-input";
+import { Loader, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import FileExelUpload from "@/components/file-upload";
 import { useParams } from "react-router-dom";
 import { useMeStore } from "@/store/me-store";
 import { toast } from "sonner";
@@ -12,99 +9,180 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { useMemo } from "react";
 import { parseAsString, useQueryState } from "nuqs";
 
-export default function Filters({
-  partiyaStatus = "new",
-  check,
-}: {
+import ReportToolbar from "@/components/report-toolbar";
+import formatPrice from "@/utils/formatPrice";
+
+import { TReportData } from "../type";
+
+const SORT_OPTIONS = [
+  { value: "default", label: "Mahsulot kesimida" },
+  { value: "collection", label: "Kolleksiya kesimida" },
+];
+
+interface Props {
   partiyaStatus: string | undefined;
   check: boolean | undefined;
-}) {
+  totals?: TReportData;
+  onAdd?: () => void;
+}
+
+const DEFAULT_TIP_FOR_W = "переучет";
+const DEFAULT_TIP_FOR_M = "new";
+
+export default function Filters({ partiyaStatus = "new", check, totals, onAdd }: Props) {
   const { id } = useParams();
   const { meUser } = useMeStore();
   const queryClient = useQueryClient();
-  const [tip] = useQueryState("tip", parseAsString.withDefault((meUser?.position?.role ==7 || meUser?.position.role == 4) ? "переучет": "new"));
 
+  const role = meUser?.position?.role;
+  const isMManager = role === 9;
+  const isWManager = role === 7 || role === 4;
+
+  const defaultTip = isWManager ? DEFAULT_TIP_FOR_W : DEFAULT_TIP_FOR_M;
+  const [tip, setTip] = useQueryState("tip", parseAsString.withDefault(defaultTip));
+  const [type, setType] = useQueryState("type", parseAsString.withDefault("default"));
+
+  // Tab tartibi rolga qarab
+  const tabs = isWManager
+    ? [
+        { value: "переучет", label: "Qabul" },
+        { value: "new", label: "Ro'yxat" },
+        { value: "излишки", label: "Ortiqcha" },
+        { value: "дефицит", label: "Kamomad" },
+      ]
+    : [
+        { value: "new", label: "Ro'yxat" },
+        { value: "переучет", label: "Qabul" },
+        { value: "излишки", label: "Ortiqcha" },
+        { value: "дефицит", label: "Kamomad" },
+      ];
+
+  // +Qo'shish faqat: M-manager → Ro'yxat (new); W-manager → Qabul (переучет)
+  const showAdd =
+    (isMManager && tip === "new") || (isWManager && tip === "переучет");
+
+  // Status change button (mavjud logika saqlandi)
   const changeStatus = useMemo(() => {
-    if (partiyaStatus == "new" && meUser?.position?.role == 9) {
-      return "pending"; // pending by M-Manager(9)
-    } else if (partiyaStatus == "pending" && (meUser?.position?.role == 7 || meUser?.position?.role == 4)) {
-      return "closed"; // close by W-Manager(7) / F-Manager(4)
-    } else if (partiyaStatus == "closed" && meUser?.position?.role == 9) {
-      return "finished"; // finish after closing by M-Manager(9)
-    }
-  }, [partiyaStatus, meUser]);
+    if (partiyaStatus === "new" && isMManager) return "pending";
+    if (partiyaStatus === "pending" && isWManager) return "closed";
+    if (partiyaStatus === "closed" && isMManager) return "finished";
+    return undefined;
+  }, [partiyaStatus, isMManager, isWManager]);
 
-  const StatusText = {
-    new: "Отправить на приходование",
-    pending: "Принимается...",
-    close: "Закрыть Партие",
-    closed: "Закрыто",
+  const StatusText: Record<string, string> = {
+    new: "Qabulga yuborish",
+    pending: "Qabul jarayonida",
+    close: "Partiyani yopish",
+    closed: "Yopilgan",
   };
 
-  const { mutate,isPending } = useMutation({
-    mutationFn: async () => {
-      return await UpdatePatchData(
-        apiRoutes.partiesChanngeStatus,
-        id + "/" + changeStatus,
-        {}
-      );
-    },
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () =>
+      UpdatePatchData(apiRoutes.partiesChanngeStatus, id + "/" + changeStatus, {}),
     onSuccess: () => {
-      toast.success("Partiya closed");
+      toast.success("Holat yangilandi");
       queryClient.invalidateQueries({ queryKey: [apiRoutes.parties] });
     },
   });
+
+  // Status button — toolbarning o'ng tomonida, Umumiyning yonida
+  const statusButton = isWManager ? (
+    <Button
+      onClick={() => mutate()}
+      disabled={check || isPending}
+      variant={check ? "outline" : "default"}
+      className="h-[42px] rounded-sm"
+    >
+      {isPending ? <Loader className="animate-spin mr-1" size={16} /> : null}
+      {check ? "Yuborildi" : "Qabul tasdiqlash"}
+    </Button>
+  ) : (
+    <Button
+      onClick={() => mutate()}
+      disabled={!changeStatus || isPending}
+      variant={partiyaStatus === "new" || partiyaStatus === "closed" ? "default" : "outline"}
+      className="h-[42px] rounded-sm"
+    >
+      {isPending ? <Loader className="animate-spin mr-1" size={16} /> : null}
+      {StatusText[(check && partiyaStatus === "pending") ? "closed" : check ? "close" : (partiyaStatus || "new")]}
+    </Button>
+  );
+
+  const totalsLine = totals ? (
+    <div className="flex items-center bg-white rounded-sm px-[16px] h-[42px] gap-[8px]">
+      <span className="text-[13px] text-[#A3A3A3]">Umumiy:</span>
+      <span className="text-[14px] font-medium text-[#1A1A1A]">
+        {formatPrice(Number(totals.count || 0))} ta
+      </span>
+      <span className="text-[14px] font-medium text-[#1A1A1A]">
+        {formatPrice(Number(totals.volume || 0))} m²
+      </span>
+      <span className="text-[14px] font-medium text-[#1A1A1A]">
+        {formatPrice(Number(totals.total || 0))} $
+      </span>
+    </div>
+  ) : null;
+
   return (
-    <div className="bg-sidebar border-border border-b h-[64px]   flex  ">
-      <SearchInput className="border-border border-r" />
-      <FilterSelect
-        className="border-border max-w-[150px] w-full border-r"
-        options={[
-          { label: "Накладной", value: "new" },
-          { label: "Оприходован", value: "переучет" },
-          { label: "Розница", value: "излишки" }, //дефицит
-        ]}
-        defaultValue={(meUser?.position?.role ==7 || meUser?.position.role == 4) ? "переучет":"new"}
-        placeholder="Накладной"
-        name="tip"
+    <div className="px-[20px]">
+      {/* Toolbar — search, sort, excel + status + Umumiy */}
+      <ReportToolbar
+        actions={
+          <>
+            {statusButton}
+            {totalsLine}
+          </>
+        }
+        sortContent={
+          <div className="flex flex-col gap-[0px]">
+            {SORT_OPTIONS.map((opt) => {
+              const active = type === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => setType(opt.value)}
+                  className={`relative h-[50px] rounded-[8px] flex items-center px-[32px] text-[15px] font-medium text-[#1a1a1a] text-left transition ${
+                    active ? "bg-white" : "hover:bg-white/60"
+                  }`}
+                >
+                  {active && (
+                    <span className="absolute left-[16px] top-1/2 -translate-y-1/2 w-[4px] h-[24px] rounded-[8px] bg-[#0078d4]" />
+                  )}
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        }
       />
-      <FilterSelect
-        className="border-border max-w-[150px] w-full border-r"
-        options={[
-          { label: "Коллекция", value: "collection" },
-          { label: "Продукт", value: "default" },
-        ]}
-        defaultValue="default"
-        placeholder="Коллекция"
-        name="type"
-      />
-     { meUser?.position?.role == 9 && tip=="new" ? <FileExelUpload partiyaId={id || ""} />:""}
 
-      {(meUser?.position?.role == 7 || meUser?.position.role == 4) ? (
-        <Button
-          onClick={() => mutate()}
-          disabled={check || isPending}
-          variant={check? "outline":"default"}
-          className="h-full ml-auto  border-y-0  "
-        >
-          <FileCheck />
-          {check? "Отправлено": "Подтвердить оприходование"}
-        </Button>
-      ) : (
-        <Button
-          onClick={() => mutate()}
-          disabled={!changeStatus || isPending}
-          className="h-full ml-auto  border-y-0"
-          variant={(partiyaStatus == "new" || partiyaStatus == "closed")  ?"default": "outline"}
-        >
-        { isPending ? <Loader className="animate-spin"/> :  <FileOutput />}
+      {/* Tabs row: tabs (left) — +Qo'shish (right) */}
+      <div className="flex items-center gap-[8px] mb-[12px]">
+        <div className="flex items-center bg-white rounded-sm p-[4px] gap-[2px]">
+          {tabs.map((t) => (
+            <button
+              key={t.value}
+              onClick={() => setTip(t.value)}
+              className={`px-[16px] h-[34px] rounded-sm text-[13px] font-medium transition-colors ${
+                tip === t.value
+                  ? "bg-[#1A1A1A] text-white"
+                  : "text-[#1A1A1A] hover:bg-[#f5f7f9]"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-
-          {/* @ts-ignore */}
-          
-          { StatusText[(check && partiyaStatus == "pending") ? "closed" : check ? "close"  : partiyaStatus]}
-        </Button>
-      )}
+        {showAdd && (
+          <Button
+            onClick={onAdd}
+            className="h-[42px] rounded-sm bg-[#1A1A1A] hover:bg-[#333] text-white px-5 text-[14px] ml-auto"
+          >
+            <Plus size={16} className="mr-1" /> Qo'shish
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

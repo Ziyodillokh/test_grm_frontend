@@ -57,7 +57,11 @@ export default function BarcodeQenerat() {
               {WatchValue?.color?.label}
             </p>
           </div>
-          <BarcodeGenerator value={WatchValue?.code || ""} />
+          {WatchValue?.code ? (
+            <BarcodeGenerator value={WatchValue.code} />
+          ) : (
+            <p className="text-[13px] text-[#999] py-[20px]">Shtrix kod kiritilmagan</p>
+          )}
         </div>
       </div>
       <div className="bg-sidebar border-y text-primary border-border  h-[44px] flex">

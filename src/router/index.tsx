@@ -5,6 +5,28 @@ import MainLayout from "@/layouts/main-layout";
 import PublicLayout from "@/layouts/main-layout/PublicLayout";
 import NotFound from "@/not-found";
 import LoginForm from "@/pages/login/form";
+import { useMeStore } from "@/store/me-store";
+
+// Rol bo'yicha default sahifa
+function RoleHome() {
+  const role = useMeStore.getState().meUser?.position?.role;
+  switch (role) {
+    case 12: // Boss
+      return <Navigate to="/boss/dashboard" replace />;
+    case 9: // M-manager
+      return <Navigate to="/m-manager/reports-hub" replace />;
+    case 10: // Hisobchi
+      return <Navigate to="/m-manager/reports-hub" replace />;
+    case 7: // W-manager (Skladchi)
+      return <Navigate to="/products" replace />;
+    case 4: // F-manager
+      return <Navigate to="/f-manager/kassa" replace />;
+    case 8: // I-manager
+      return <Navigate to="/f-manager/kassa" replace />;
+    default:
+      return <Navigate to="/dashboard" replace />;
+  }
+}
 
 interface Imeta {
   role: Set<string>;
@@ -49,12 +71,13 @@ export function MyRoutes() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
+        <Route path="/" element={<RoleHome />} />
         {nestedRoutes(router)}
         <Route path="/*" element={<NotFound />} />
       </Route>
       <Route element={<PublicLayout />}>
         <Route path={"/login"} element={<LoginForm />} />
-        <Route path="/*" element={<Navigate to="/dashboard" />} />
+        <Route path="/*" element={<Navigate to="/" />} />
       </Route>
     </Routes>
   );

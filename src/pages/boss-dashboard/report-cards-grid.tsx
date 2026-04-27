@@ -130,6 +130,12 @@ export default function ReportCardsGrid({
         variant="danger"
         navigateTo="/m-manager/reports-hub/client-debt"
         isLoading={clientDebtLoading}
+        progressPercent={(() => {
+          const ret = Number(clientDebtData?.totalReturned || 0);
+          const debt = Number(clientDebtData?.totalDebt || 0);
+          const total = ret + debt;
+          return total > 0 ? (ret / total) * 100 : 0;
+        })()}
       />
     </div>
   );

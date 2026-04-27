@@ -8,6 +8,8 @@ interface ReportCardProps {
   variant?: "default" | "primary" | "danger";
   navigateTo: string;
   isLoading?: boolean;
+  /** Faqat "danger" variantda — qaytarilgan qarz progressi (0-100) */
+  progressPercent?: number;
 }
 
 export default function ReportCard({
@@ -17,6 +19,7 @@ export default function ReportCard({
   variant = "default",
   navigateTo,
   isLoading = false,
+  progressPercent = 0,
 }: ReportCardProps) {
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
@@ -73,15 +76,18 @@ export default function ReportCard({
   }
 
   if (variant === "danger") {
+    const pct = Math.max(0, Math.min(100, Number(progressPercent) || 0));
     return (
       <button
         onClick={handleClick}
         className="relative w-full h-[160px] rounded-[8px] bg-[#ff6527] text-white overflow-hidden text-left hover:brightness-110 transition cursor-pointer"
       >
-        {/* Two white indicator bars */}
-        <div className="absolute right-[30px] top-[30px] flex gap-[4px] items-end">
-          <div className="w-[8px] h-[80px] bg-white opacity-20" />
-          <div className="w-[8px] h-[41px] bg-white" />
+        {/* Vertikal progress: track (so'lg'in oq) + fill (yorqin oq) — pastki chizig'i Qoldiq qarz matni bilan tekislangan */}
+        <div className="absolute right-[30px] bottom-[24px] w-[8px] h-[80px] bg-white/20 overflow-hidden flex flex-col justify-end">
+          <div
+            className="w-full bg-white"
+            style={{ height: `${pct}%` }}
+          />
         </div>
 
         <p className="absolute left-[30px] top-[30px] text-[13px] font-normal">

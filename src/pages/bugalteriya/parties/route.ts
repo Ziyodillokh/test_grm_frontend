@@ -7,13 +7,13 @@ const Route = [
   {
     url: "/parties",
     Element: Page,
-    meta: { isAuth: true, role: new Set(["admin"]) },
+    meta: { isAuth: true, role: new Set(["admin", "9", "12"]) },
   },
-  
+
   {
     url: "/parties/:id/info",
     Element: ItemsPage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
+    meta: { isAuth: true, role: new Set(["admin", "9", "12"]) },
   },
 ];
 

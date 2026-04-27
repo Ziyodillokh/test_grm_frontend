@@ -5,12 +5,10 @@ import { Input } from "@/components/ui/input";
 import { useMeStore } from "@/store/me-store";
 import { apiRoutes } from "@/service/apiRoutes";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import debounce from "@/utils/debounce";
 
@@ -114,36 +112,42 @@ export default function Filters({
       </button>
 
       {/* Filter */}
-      <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-        <SheetTrigger asChild>
-          <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+      <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+        <PopoverTrigger asChild>
+          <button className="relative w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
+            {(!!search || !!date) && (
+              <span className="absolute top-[8px] right-[8px] w-[6px] h-[6px] rounded-full bg-[#0078D4]" />
+            )}
           </button>
-        </SheetTrigger>
-        <SheetContent side="right" className="w-[340px] p-4">
-          <SheetHeader>
-            <SheetTitle>Filter</SheetTitle>
-          </SheetHeader>
-          <div className="flex flex-col gap-4 mt-4">
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[12px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
+        >
+          <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">Filter</p>
+          <div className="flex flex-col gap-[10px]">
             {/* Sana */}
             <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Sana</p>
-              <input
-                type="date"
-                value={date || ""}
-                onChange={(e) => setDate(e.target.value || null)}
-                className="w-full h-[42px] px-3 rounded-sm bg-white border border-border text-[14px]"
-              />
+              <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Sana</p>
+              <div className="bg-white rounded-[8px]">
+                <input
+                  type="date"
+                  value={date || ""}
+                  onChange={(e) => setDate(e.target.value || null)}
+                  className="w-full h-[42px] px-3 rounded-[8px] bg-white border border-border text-[14px]"
+                />
+              </div>
             </div>
 
             <Button variant="outline" onClick={clearFilters} className="w-full mt-2">
               Tozalash
             </Button>
           </div>
-        </SheetContent>
-      </Sheet>
+        </PopoverContent>
+      </Popover>
 
       {/* Excel */}
       <button
