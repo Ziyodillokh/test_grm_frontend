@@ -42,9 +42,9 @@ export default function Page() {
   const [direction, setDirection] = useQueryState<Direction>(
     "direction",
     {
-      parse: (v) => (v === "out" ? "out" : "in"),
-      serialize: (v) => v,
-    } as any
+      parse: (v: string) => (v === "out" ? "out" : "in"),
+      serialize: (v: Direction) => v,
+    }
   );
 
   // Filial ro'yxati — selektorlarda disable qilish va guruh title'lari uchun
