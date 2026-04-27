@@ -8,10 +8,24 @@ import { DataMenu } from "./menu-datas";
 
 function BossSidebarWidgets() {
   const today = format(new Date(), "dd MMM yyyy");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const setMenu = useBreadcrumbStore((s) => s.setMenu);
+  const isSiActive = location.pathname === "/si-tahlil";
+
   return (
     <div className="flex flex-col gap-[8px] mt-auto pb-[20px]">
-      {/* Si tahlil */}
-      <div className="flex items-center gap-[12px]">
+      {/* Si tahlil — bosilsa /si-tahlil sahifasiga o'tadi */}
+      <button
+        type="button"
+        onClick={() => {
+          setMenu("/si-tahlil", "Si tahlil");
+          navigate("/si-tahlil");
+        }}
+        className={`flex items-center gap-[12px] rounded-[8px] px-[4px] py-[4px] transition-colors text-left ${
+          isSiActive ? "bg-white" : "hover:bg-white/60"
+        }`}
+      >
         <div className="w-[52px] h-[52px] rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0">
           <Bot className="w-[26px] h-[26px] text-white" strokeWidth={1.5} />
         </div>
@@ -19,7 +33,7 @@ function BossSidebarWidgets() {
           <span className="text-[17px] font-medium text-[#1a1a1a]">Si tahlil</span>
           <span className="text-[13px] font-normal text-[#1a1a1a]">Sun'iy intellekt tahlili</span>
         </div>
-      </div>
+      </button>
 
       {/* Currency */}
       <div className="flex items-center gap-[12px]">
