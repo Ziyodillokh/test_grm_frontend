@@ -526,7 +526,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
   const isOrder = item.tip === "order";
   const isIncome = item.type === "Приход";
 
-  if (isOrder && !isIncome && item.order?.status === "canceled") {
+  if (isOrder && !isIncome && item.order?.status === "returned") {
     return { name: item.createdBy?.firstName || "?", url: item.createdBy?.avatar?.path, status: "return" };
   }
   if (isOrder && item.order?.seller) {
@@ -571,7 +571,7 @@ function CashflowRow({ item }: { item: TransactionItem }) {
 
   const [actionLoading, setActionLoading] = useState(false);
   const canReject = isOrder && item.status === "pending" && isIncome;
-  const canReturn = isOrder && item.status === "approved" && item.order?.status !== "canceled" && isIncome;
+  const canReturn = isOrder && item.status === "approved" && item.order?.status !== "returned" && isIncome;
   const canCancel = !isOrder && !item.is_cancelled && item.status !== "cancelled";
 
   const handleReject = () => {

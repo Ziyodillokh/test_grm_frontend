@@ -36,8 +36,8 @@ const UZ_MONTHS = [
 ];
 
 // Backend bilan moslashgan progress kategoriyalari (transfer.service.ts: getAll)
-const ACCEPTED_STATUSES = new Set(["Accepted", "Accepted_F"]);
-const PENDING_STATUSES = new Set(["Processing", "Booked", "New", "InProgres", "other"]);
+const ACCEPTED_STATUSES = new Set(["Accepted"]);
+const PENDING_STATUSES = new Set(["Processing"]);
 
 interface TransferGroup {
   groupKey: string; // composite "dateKey__group"

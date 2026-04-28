@@ -225,7 +225,7 @@ export default function CarpetCashierCard({
                   name={meUser?.firstName}
                   url={meUser?.avatar?.path}
                   status={
-                    status === "canceled" || status === "rejected"
+                    status === "returned" || status === "rejected"
                       ? "fail"
                       : "success"
                   }
@@ -265,13 +265,13 @@ export default function CarpetCashierCard({
                 >
                   {status === "rejected"
                     ? "Отменено"
-                    : status === "canceled"
+                    : status === "returned"
                       ? "Возвращено"
                       : "Подтверждено"}
                 </Button>
               )}
 
-              {status == "rejected" || status == "canceled" ? (
+              {status == "rejected" || status == "returned" ? (
                 ""
               ) : (
                 <DropdownMenu>

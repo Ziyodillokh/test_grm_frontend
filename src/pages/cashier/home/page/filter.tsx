@@ -22,7 +22,7 @@ const Sort = [
   },
   {
     label: "Возвращённые",
-    value: "canceled",
+    value: "returned",
   },
 ];
 export default function Filters() {

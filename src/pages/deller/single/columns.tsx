@@ -118,7 +118,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
             {}
           ),
         onSuccess: () => {
-          toast.success("canceled");
+          toast.success("returned");
           queryClient.invalidateQueries({
             queryKey: [apiRoutes.transferDealer],
           });
@@ -131,7 +131,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
           ShowDelete={false}
           ShowUpdate={false}
         >
-          {row?.original?.progres == "Accepted_F" && (
+          {row?.original?.progres == "Processing" && (
             <DropdownMenuItem disabled={isPending} onClick={() => mutate()}>
               {isPending ? <Loader /> : ""}Отменить
             </DropdownMenuItem>

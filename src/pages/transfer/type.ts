@@ -1,10 +1,8 @@
 enum progresEnum {
-  book = "Booked",
   progress = "Processing",
-  reject = "Rejected",
   accept = "Accepted",
-  other = "other",
-  accept_f= "Accepted_F"
+  reject = "Rejected",
+  returned = "Returned",
 }
 
 export type TransferData = {

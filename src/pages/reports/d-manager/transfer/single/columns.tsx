@@ -28,8 +28,6 @@ const statusMap: Record<string, string> = {
   Processing: "inprogress",
   Accepted: "accepted",
   Rejected: "rejected",
-  Accepted_F: "pending",
-  Booked: "new",
   Returned: "rejected",
 };
 const getStatus = (row: any) => {
@@ -166,7 +164,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
       });
       const filials = filialsData?.items || filialsData || [];
 
-      // Cancel — for Processing / Accepted_F (before package accepted)
+      // Cancel — Processing (paket tasdiqlanishidan oldin)
       const { mutate: cancelMutate, isPending: cancelPending } = useMutation({
         mutationFn: () =>
           DeleteData(
@@ -198,7 +196,7 @@ export const ListColumns: ColumnDef<TransferDealerData>[] = [
         },
       });
 
-      const canCancel = rawStatus === "Processing" || rawStatus === "Accepted_F";
+      const canCancel = rawStatus === "Processing";
       const canReturn = rawStatus === "Accepted";
 
       return (

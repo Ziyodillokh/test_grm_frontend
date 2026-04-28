@@ -80,7 +80,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
             {/* F-Manager avatar — progress dan boshqa har qanday holatda */}
             {item.order?.status !== "progress" && item.createdBy && (
               <TebleAvatar
-                status={item.order?.status === "rejected" || item.status === "rejected" ? "fail" : item.order?.status === "canceled" || item.is_cancelled ? "return" : "success"}
+                status={item.order?.status === "rejected" || item.status === "rejected" ? "fail" : item.order?.status === "returned" || item.is_cancelled ? "return" : "success"}
                 name={item.createdBy.firstName}
                 url={item.createdBy.avatar?.path}
               />
@@ -92,7 +92,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
       // Cashflow (order bo'lmagan) — createdBy avatari
       return (
         <TebleAvatar
-          status={item?.order?.status === "rejected" || item?.status === "rejected" ? "fail" : item?.order?.status === "canceled" || item?.is_cancelled ? "return" : "success"}
+          status={item?.order?.status === "rejected" || item?.status === "rejected" ? "fail" : item?.order?.status === "returned" || item?.is_cancelled ? "return" : "success"}
           name={item?.createdBy?.firstName}
           url={item?.createdBy?.avatar?.path}
         />
@@ -180,7 +180,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
       const queryClient = useQueryClient();
       const [, setEditId] = useQueryState("editCashflowId", parseAsString);
       const item = row.original;
-      const canUpdate = !item.is_cancelled && item.status !== "cancelled" && item.status !== "rejected" && item.order?.status !== "canceled";
+      const canUpdate = !item.is_cancelled && item.status !== "cancelled" && item.status !== "rejected" && item.order?.status !== "returned";
 
       const RejectFunt = () => {
         setLoading(true);
@@ -296,7 +296,7 @@ export const KassaPageColumns: ColumnDef<TransactionItem>[] = [
             {/* APPROVED order → Qaytarish */}
             {row?.original?.tip === "order" &&
               row?.original?.status === "approved" &&
-              row?.original?.order?.status !== "canceled" &&
+              row?.original?.order?.status !== "returned" &&
               row?.original?.type !== "Расход" && (
                 <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
                   <div

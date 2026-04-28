@@ -201,7 +201,7 @@ export const KassaColumns: ColumnDef<TData>[] = [
             ids: [row.original?.id],
           }),
         onSuccess: () => {
-          toast.success("canceled");
+          toast.success("returned");
           queryClient.invalidateQueries({ queryKey: [apiRoutes.kassa] });
         },
       });

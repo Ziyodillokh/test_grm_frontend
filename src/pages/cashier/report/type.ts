@@ -164,7 +164,7 @@ export interface TransactionItem {
 }
 order: {
   id: string;
-  status: "progress" | "accepted" | "rejected" | "canceled";
+  status: "progress" | "accepted" | "rejected" | "returned";
   comment: string | null;
   price: number;
   x: number;

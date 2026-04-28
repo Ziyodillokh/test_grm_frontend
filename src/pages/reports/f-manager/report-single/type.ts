@@ -68,7 +68,7 @@ export interface TData {
 }
 order: {
   id: string;
-  status: "canceled" | "pending" | "completed" | string;
+  status: "returned" | "pending" | "completed" | string;
   comment: string | null;
   price: number;
   x: number;
