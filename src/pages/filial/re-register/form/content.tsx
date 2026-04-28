@@ -103,8 +103,8 @@ export default function FormContent() {
       <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
           option={[
-            { value: "true", label: "Метражный" },
-            { value: "false", label: "Штучный" },
+            { value: "true", label: "Metrli" },
+            { value: "false", label: "Donabay" },
           ]}
           name="isMetric"
           classNameChild="h-[28px] p-2"

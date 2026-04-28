@@ -145,7 +145,7 @@ const ActionPageQrCode = () => {
         },
         isMetric: {
           value: data?.isMetric ? "true" : "false",
-          label: data?.isMetric ? "Метражный" : "Штучный",
+          label: data?.isMetric ? "Metrli" : "Donabay",
         },
         model: {
           value: data?.model?.id,
@@ -169,7 +169,7 @@ const ActionPageQrCode = () => {
   return (
     <FormProvider {...form}>
       <form
-        className="w-1/3  h-full"
+        className="w-full h-full"
         onSubmit={form.handleSubmit((data) => {
           mutate({
             data: data,

@@ -23,7 +23,7 @@ export const Columns: ColumnDef<TData>[] = [
     header: "type-corpet",
     cell: ({ row }) => {
       return (
-        <p>{row.original?.bar_code?.isMetric ? "Метражный" : "Штучный"}</p>
+        <p>{row.original?.bar_code?.isMetric ? "Metrli" : "Donabay"}</p>
       );
     },
   },

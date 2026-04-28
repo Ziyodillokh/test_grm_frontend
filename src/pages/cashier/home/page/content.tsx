@@ -63,7 +63,7 @@ export default function Content({ orderList, isFetchingNextPage = false,
                     });
                   }}
                   tags={[
-                    item?.product?.bar_code?.isMetric ? "Метражный" : "Штучный",
+                    item?.product?.bar_code?.isMetric ? "Metrli" : "Donabay",
                     item?.product?.bar_code?.shape?.title,
                     item?.product?.bar_code?.style?.title,
                     item?.product?.bar_code?.color?.title,

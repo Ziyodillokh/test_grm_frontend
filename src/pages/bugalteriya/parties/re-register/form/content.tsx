@@ -44,7 +44,7 @@ export default function FormContent() {
   const isEditing = !!editProduct;
   const bc = editProduct?.bar_code;
   const editIsMetric = bc?.isMetric;
-  const editTipLabel = editIsMetric ? "Метражный" : "Штучный";
+  const editTipLabel = editIsMetric ? "Metrli" : "Donabay";
 
   return (
     <div className="w-full flex flex-col">
@@ -211,7 +211,7 @@ export default function FormContent() {
             classNameInput={inputCls}
             name="count"
             placeholder={
-              (isEditing ? editIsMetric : isMetric == "Метражный")
+              (isEditing ? editIsMetric : isMetric == "Metrli")
                 ? "Uzunlik"
                 : "Miqdor"
             }

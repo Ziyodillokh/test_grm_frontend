@@ -93,9 +93,9 @@ export default function FormContent() {
           type="number"
           classNameInput="h-[28px] p-2"
           name="count"
-          placeholder={isMetric == "Метражный" ? "Длина" : "count"}
+          placeholder={isMetric == "Metrli" ? "Длина" : "count"}
           disabled={!editble}
-          label={isMetric == "Метражный" ? "Длина" : "count"}
+          label={isMetric == "Metrli" ? "Длина" : "count"}
         />
         <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}

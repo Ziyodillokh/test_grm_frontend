@@ -31,9 +31,9 @@ export default function FormContent() {
   };
 
   return (
-    <div className="w-full border-r border-border">
+    <div className="w-full">
       <Filters />
-      <div className="grid row-start  px-[40px] py-[20px] gap-2 lg:grid-cols-2">
+      <div className="grid grid-cols-2 px-[20px] py-[16px] gap-x-[12px] gap-y-[10px]">
       <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
           fetchUrl="/country"
@@ -97,8 +97,8 @@ export default function FormContent() {
         <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
           option={[
-            { value: "true", label: "Метражный" },
-            { value: "false", label: "Штучный" },
+            { value: "true", label: "Metrli" },
+            { value: "false", label: "Donabay" },
           ]}
           name="isMetric"
           classNameChild="h-[28px] p-2"

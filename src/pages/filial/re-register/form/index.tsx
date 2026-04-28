@@ -118,7 +118,7 @@ const ActionPageQrCode = () => {
         code: qrBaseOne?.code || "",
         isMetric: {
           value: qrBaseOne?.isMetric ? "true" : "false",
-          label: qrBaseOne?.isMetric ? "Метражный" : "Штучный",
+          label: qrBaseOne?.isMetric ? "Metrli" : "Donabay",
         },
         value: "" as unknown as number,
         country: {

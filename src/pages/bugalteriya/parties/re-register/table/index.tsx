@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { parseAsBoolean, parseAsInteger, parseAsString, useQueryState } from "nuqs";
-import { Loader, X } from "lucide-react";
+import { Loader } from "lucide-react";
+import { RightSheet } from "@/components/ui/right-sheet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -285,35 +286,10 @@ export default function ItemsPage() {
         </div>
       </div>
 
-      {/* Add product overlay panel — custom, shadcn Sheet emas */}
-      {addOpen && (
-        <>
-          <div
-            onClick={closeSheet}
-            className="fixed inset-0 bg-black/50 z-40"
-          />
-          <div
-            className="fixed top-0 right-0 h-full bg-white z-50 flex flex-col shadow-2xl"
-            style={{ width: 500, maxWidth: "100vw" }}
-          >
-            <div className="flex items-center justify-between px-[20px] h-[56px] border-b border-border shrink-0">
-              <h2 className="text-[16px] font-medium text-[#1a1a1a]">
-                Mahsulot qo'shish
-              </h2>
-              <button
-                onClick={closeSheet}
-                className="w-[32px] h-[32px] rounded-sm flex items-center justify-center hover:bg-[#f5f7f9] transition"
-                aria-label="Yopish"
-              >
-                <X className="w-[18px] h-[18px] text-[#1a1a1a]" />
-              </button>
-            </div>
-            <div className="flex-1 min-h-0 overflow-y-auto scrollCastom">
-              <ActionPageQrCode key={editProduct?.id || "new"} />
-            </div>
-          </div>
-        </>
-      )}
+      {/* Add product sheet */}
+      <RightSheet open={addOpen} onClose={closeSheet} title="Mahsulot qo'shish">
+        <ActionPageQrCode key={editProduct?.id || "new"} />
+      </RightSheet>
     </div>
   );
 }

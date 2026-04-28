@@ -45,7 +45,7 @@ const ActionPageQrCode = () => {
       : initialEditProduct?.count || 0;
     return {
       code: bc?.code || "",
-      isMetric: bc?.isMetric ? "Метражный" : "Штучный",
+      isMetric: bc?.isMetric ? "Metrli" : "Donabay",
       count: computedCount,
       country: { value: bc?.country?.id || "", label: bc?.country?.title || "" },
       collection: { value: bc?.collection?.id || "", label: bc?.collection?.title || "" },
@@ -189,7 +189,7 @@ const ActionPageQrCode = () => {
 
     form.reset({
       code: bc?.code || "",
-      isMetric: bc?.isMetric ? "Метражный" : "Штучный",
+      isMetric: bc?.isMetric ? "Metrli" : "Donabay",
       count: computedCount,
       country: { value: bc?.country?.id || "", label: bc?.country?.title || "" },
       collection: { value: bc?.collection?.id || "", label: bc?.collection?.title || "" },
@@ -214,7 +214,7 @@ const ActionPageQrCode = () => {
     if (qrBaseOne) {
       form.reset({
         code: qrBaseOne?.code || "",
-        isMetric: qrBaseOne?.isMetric ? "Метражный" : "Штучный",
+        isMetric: qrBaseOne?.isMetric ? "Metrli" : "Donabay",
         count: count,
         country: {
           value: qrBaseOne?.country?.id,
