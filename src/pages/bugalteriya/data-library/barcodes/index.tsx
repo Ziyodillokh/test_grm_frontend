@@ -1,6 +1,8 @@
-import { useEffect, useRef } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { Loader, Plus, MoreHorizontal } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import ReportToolbar from "@/components/report-toolbar";
 import { OutlineButton } from "@/components/ui/outline-button";
@@ -12,6 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UploadFile } from "@/service/apiHelpers";
+import { apiRoutes } from "@/service/apiRoutes";
 import useDataLibrary from "../table/queries";
 import { TData } from "../type";
 import ActionPageQrCode from "../form-qr-code";
@@ -46,6 +50,52 @@ export default function BarcodesPage() {
   const [id, setId] = useQueryState("id");
   const isOpen = !!id;
   const closeSheet = () => setId(null);
+
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importing, setImporting] = useState(false);
+  const MAX_FILE_SIZE = 5_000_000;
+
+  const handleImportFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !files[0]) return;
+    const file = files[0];
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("Fayl 5MB dan kichik bo'lishi kerak");
+      e.target.value = "";
+      return;
+    }
+    setImporting(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      // Backend response: { created, updated, skipped, errors: [{row, code, message}] }
+      const res: any = await UploadFile("qr-base/support", formData);
+      const created = res?.created ?? 0;
+      const updated = res?.updated ?? 0;
+      const errors: any[] = res?.errors || [];
+      let summary = `Yaratilgan: ${created}, yangilangan: ${updated}`;
+      if (errors.length > 0) {
+        const first = errors[0];
+        summary += `\n${errors.length} qatorda xato: qator ${first.row} (code=${first.code || "—"}) — ${first.message}`;
+        toast.warning(summary);
+      } else {
+        toast.success(`Excel import muvaffaqiyatli — ${summary}`);
+      }
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.qrBase] });
+    } catch (err: any) {
+      // UploadFile o'zi handleError chaqiradi — bu yerda qo'shimcha toast kerak emas, faqat fallback
+      const msg = err?.response?.data?.message;
+      if (msg && typeof msg === "string") {
+        // handleError allaqachon toast qildi — duplikat oldini olamiz
+      } else {
+        toast.error("Excel import qilishda kutilmagan xato. Server logs'ini tekshiring.");
+      }
+    } finally {
+      setImporting(false);
+      e.target.value = "";
+    }
+  };
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useDataLibrary({
     queries: {
@@ -86,27 +136,42 @@ export default function BarcodesPage() {
             </OutlineButton>
           }
           actions={
-            <OutlineButton
-              icon={
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9.33398 2V4.66667C9.33398 4.84348 9.40422 5.01305 9.52925 5.13807C9.65427 5.2631 9.82384 5.33333 10.0007 5.33333H12.6673M9.33398 2L4.66732 2C4.3137 2 3.97456 2.14048 3.72451 2.39052C3.47446 2.64057 3.33398 2.97971 3.33398 3.33333L3.33398 8.66667M9.33398 2L12.6673 5.33333M12.6673 5.33333L12.6673 12.6667C12.6673 13.0203 12.5268 13.3594 12.2768 13.6095C12.0267 13.8595 11.6876 14 11.334 14H7.66732M1.33398 12.6667H6.00065M6.00065 12.6667L4.00065 10.6667M6.00065 12.6667L4.00065 14.6667"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              }
-            >
-              Excel fayl import qilish
-            </OutlineButton>
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                className="hidden"
+                onChange={handleImportFile}
+              />
+              <OutlineButton
+                disabled={importing}
+                onClick={() => fileInputRef.current?.click()}
+                icon={
+                  importing ? (
+                    <Loader className="w-[16px] h-[16px] animate-spin" />
+                  ) : (
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.33398 2V4.66667C9.33398 4.84348 9.40422 5.01305 9.52925 5.13807C9.65427 5.2631 9.82384 5.33333 10.0007 5.33333H12.6673M9.33398 2L4.66732 2C4.3137 2 3.97456 2.14048 3.72451 2.39052C3.47446 2.64057 3.33398 2.97971 3.33398 3.33333L3.33398 8.66667M9.33398 2L12.6673 5.33333M12.6673 5.33333L12.6673 12.6667C12.6673 13.0203 12.5268 13.3594 12.2768 13.6095C12.0267 13.8595 11.6876 14 11.334 14H7.66732M1.33398 12.6667H6.00065M6.00065 12.6667L4.00065 10.6667M6.00065 12.6667L4.00065 14.6667"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )
+                }
+              >
+                Excel fayl import qilish
+              </OutlineButton>
+            </>
           }
         />
       </div>

@@ -213,7 +213,7 @@ export default function ReportToolbar({
 
       {/* Inline controls — toolbar iconlaridan 30px o'ngda (filial pickers va h.k.) */}
       {inlineControls && (
-        <div className="ml-[30px] flex items-center gap-[15px]">{inlineControls}</div>
+        <div className="ml-[20px] flex items-center gap-[15px]">{inlineControls}</div>
       )}
 
       {/* Totals */}
