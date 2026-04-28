@@ -84,6 +84,7 @@ export default function Page() {
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set());
 
   const [search] = useQueryState("search", parseAsString);
+  const [progress, setProgress] = useQueryState("progress", parseAsString);
 
   // Filial ro'yxati
   const { data: filialsResp } = useQuery({
@@ -98,6 +99,8 @@ export default function Page() {
       limit: 50,
       page: 1,
       year,
+      search: search || undefined,
+      progress: progress ? (progress as any) : undefined,
       startDate: startDate ? (startDate as any) : undefined,
       endDate: endDate ? (endDate as any) : undefined,
       from: isMM ? filialFrom || undefined : direction === "in" ? filialFrom || undefined : meUser?.filial?.id,
@@ -153,7 +156,8 @@ export default function Page() {
         bucket.groups.push(g);
       }
       g.items.push(item);
-      g.count += Number((item as any).count || 0) || 1;
+      const isMetricItem = (item as any)?.product?.bar_code?.isMetric;
+      g.count += isMetricItem ? 1 : Number((item as any).count || 0) || 1;
       g.volume += Number((item as any).kv || 0);
       g.price += Number((item as any)?.product?.priceMeter || 0) * Number((item as any).kv || 0);
       const status = String((item as any).progress || (item as any).progres || "");
@@ -245,11 +249,58 @@ export default function Page() {
   // F-manager va Kirish tabida — strelka chapga (180deg). Aks holda o'ng.
   const arrowRotate = isFM && (direction || "in") === "in" ? "rotate(180deg)" : "rotate(0deg)";
 
+  // Tasdiqlanmagan grouplar ichidagi gilamlar soni (badge uchun)
+  // Metric → 1, donabay → item.count
+  const pendingCarpetCount = useMemo(() => {
+    let total = 0;
+    for (const b of buckets) {
+      for (const g of b.groups) {
+        if (g.isConfirmed) continue;
+        for (const item of g.items as any[]) {
+          const isMetric = item?.product?.bar_code?.isMetric;
+          total += isMetric ? 1 : Number(item?.count || 0) || 1;
+        }
+      }
+    }
+    return total;
+  }, [buckets]);
+
   return (
     <div className="h-full flex flex-col">
       {/* Toolbar */}
       <div className="shrink-0">
         <ReportToolbar
+          hasActiveSort={!!progress}
+          sortContent={
+            <div className="flex flex-col gap-[2px]">
+              {[
+                { value: null, label: "Barchasi" },
+                { value: "accepted", label: "Tasdiqlangan" },
+                { value: "pending", label: "Kutilmoqda" },
+                { value: "rejected", label: "Rad etilgan" },
+              ].map((opt) => {
+                const isActive =
+                  (opt.value === null && !progress) || progress === opt.value;
+                return (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => setProgress(opt.value)}
+                    className={`relative h-[52px] flex items-center px-[20px] text-left text-[15px] rounded-[6px] transition-colors ${
+                      isActive
+                        ? "bg-white text-[#1a1a1a]"
+                        : "bg-transparent text-[#1a1a1a] hover:bg-white/40"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="absolute left-[8px] top-1/2 -translate-y-1/2 w-[3px] h-[18px] rounded-[10px] bg-[#0078d4]" />
+                    )}
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          }
           hasActiveFilter={hasActiveFilter}
           onClearFilters={() => {
             setYear(new Date().getFullYear());
@@ -328,7 +379,11 @@ export default function Page() {
             subtitle="Filial kesimida"
             icon={<img src="/icons/device-analytics.svg" alt="" className="w-[36px] h-[36px]" />}
           />
-          <RefreshRequestButton />
+          <RefreshRequestButton
+            title="Yangi transferlar"
+            subtitle="Barcha filiallardan kelgan transferlar"
+            badge={pendingCarpetCount}
+          />
         </div>
       )}
 
@@ -399,10 +454,12 @@ export default function Page() {
                             </AvatarFallback>
                           </Avatar>
 
-                          {/* 2-line text */}
+                          {/* 2-line text — F/W Kiruvchi'da from (kim yuborgan), aks holda to (qayerga ketgan) */}
                           <div className="ml-[8px] flex flex-col">
                             <span className="text-[15px] font-medium text-[#1a1a1a] leading-tight">
-                              {g.toTitle || g.fromTitle || "—"}
+                              {(!isMM && (direction || "in") === "in"
+                                ? g.fromTitle
+                                : g.toTitle) || "—"}
                             </span>
                             <div className="flex items-center gap-[12px] mt-[4px]">
                               <span className="text-[13px] text-[#1a1a1a] opacity-60">

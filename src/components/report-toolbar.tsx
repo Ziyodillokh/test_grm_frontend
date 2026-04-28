@@ -21,6 +21,8 @@ interface ReportToolbarProps {
   hasActiveFilter?: boolean;
   /** Filter active bo'lsa popover ichida "Tozalash" button ko'rsatadi va shu callback chaqiriladi */
   onClearFilters?: () => void;
+  /** Sort active bo'lsa tugma bg-oq + qizil badge */
+  hasActiveSort?: boolean;
   /** Toolbar iconlaridan 30px o'ngda inline ko'rinadigan elementlar (masalan filial selektorlar) */
   inlineControls?: React.ReactNode;
 }
@@ -35,6 +37,7 @@ export default function ReportToolbar({
   sortContent,
   hasActiveFilter,
   onClearFilters,
+  hasActiveSort,
   inlineControls,
 }: ReportToolbarProps) {
   const [search, setSearch] = useQueryState("search", parseAsString);
@@ -88,7 +91,11 @@ export default function ReportToolbar({
       {sortContent ? (
         <Popover>
           <PopoverTrigger asChild>
-            <button className="w-[42px] h-[42px] rounded-sm bg-transparent flex items-center justify-center shrink-0 hover:bg-white/50 transition-colors">
+            <button
+              className={`relative w-[42px] h-[42px] rounded-sm flex items-center justify-center shrink-0 transition-colors ${
+                hasActiveSort ? "bg-white hover:bg-white" : "bg-transparent hover:bg-white/50"
+              }`}
+            >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <mask id="mask_sort_rt" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
                   <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -98,11 +105,15 @@ export default function ReportToolbar({
                   <rect x="-1" y="1" width="10" height="16" fill="#1A1A1A" />
                 </g>
               </svg>
+              {hasActiveSort && (
+                <span className="absolute top-[5px] right-[5px] w-[6px] h-[6px] rounded-full bg-[#e5484d]" />
+              )}
             </button>
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="w-[330px] p-[8px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)]"
+            sideOffset={8}
+            className="w-[280px] p-[8px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)]"
           >
             {sortContent}
           </PopoverContent>

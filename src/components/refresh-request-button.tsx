@@ -8,6 +8,10 @@ interface RefreshRequestButtonProps {
   subtitle?: string;
   /** Custom icon — default RefreshCw 36×36 */
   icon?: React.ReactNode;
+  /** Textlardan 4px o'ngda ko'rinadigan badge soni. 0 yoki null bo'lsa ko'rinmaydi. */
+  badge?: number | null;
+  /** Badge fon rangi (default #FF6527) */
+  badgeBg?: string;
   className?: string;
 }
 
@@ -20,6 +24,8 @@ export default function RefreshRequestButton({
   title = "Yangilashni so'rash",
   subtitle = "Barcha kirim-chiqimlarni kiritishni so'rash",
   icon,
+  badge,
+  badgeBg = "#FF6527",
   className,
 }: RefreshRequestButtonProps) {
   return (
@@ -35,6 +41,14 @@ export default function RefreshRequestButton({
         <span className="text-[15px] text-[#1a1a1a] font-medium">{title}</span>
         <span className="text-[13px] text-[#1a1a1a] font-normal opacity-60">{subtitle}</span>
       </div>
+      {!!badge && badge > 0 && (
+        <span
+          className="ml-[4px] min-w-[20px] h-[20px] px-[6px] rounded-full text-white text-[11px] font-semibold flex items-center justify-center shrink-0"
+          style={{ background: badgeBg }}
+        >
+          {badge}
+        </span>
+      )}
     </button>
   );
 }
