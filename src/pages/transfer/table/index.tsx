@@ -35,7 +35,9 @@ const UZ_MONTHS = [
   "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr",
 ];
 
+// Backend bilan moslashgan progress kategoriyalari (transfer.service.ts: getAll)
 const ACCEPTED_STATUSES = new Set(["Accepted", "Accepted_F"]);
+const PENDING_STATUSES = new Set(["Processing", "Booked", "New", "InProgres", "other"]);
 
 interface TransferGroup {
   groupKey: string; // composite "dateKey__group"
@@ -249,14 +251,15 @@ export default function Page() {
   // F-manager va Kirish tabida — strelka chapga (180deg). Aks holda o'ng.
   const arrowRotate = isFM && (direction || "in") === "in" ? "rotate(180deg)" : "rotate(0deg)";
 
-  // Tasdiqlanmagan grouplar ichidagi gilamlar soni (badge uchun)
+  // Kutilmoqda statusidagi gilamlar soni (badge uchun) — backend "pending" kategoriyasi bilan moslashgan
   // Metric → 1, donabay → item.count
   const pendingCarpetCount = useMemo(() => {
     let total = 0;
     for (const b of buckets) {
       for (const g of b.groups) {
-        if (g.isConfirmed) continue;
         for (const item of g.items as any[]) {
+          const status = String(item?.progress || item?.progres || "");
+          if (!PENDING_STATUSES.has(status)) continue;
           const isMetric = item?.product?.bar_code?.isMetric;
           total += isMetric ? 1 : Number(item?.count || 0) || 1;
         }
