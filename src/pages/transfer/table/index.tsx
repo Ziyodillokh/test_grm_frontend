@@ -35,9 +35,11 @@ const UZ_MONTHS = [
   "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr",
 ];
 
-// Backend bilan moslashgan progress kategoriyalari (transfer.service.ts: getAll)
+// Backend bilan moslashgan progress kategoriyalari (transfer.service.ts: getAll).
+// Pending — inverse: ACCEPTED ham, REJECTED ham bo'lmasa pending. Bu legacy DB
+// qiymatlari (Accepted_F, Booked, ...) ham migratsiya o'tgunicha to'g'ri hisoblanishi uchun.
 const ACCEPTED_STATUSES = new Set(["Accepted"]);
-const PENDING_STATUSES = new Set(["Processing"]);
+const REJECTED_STATUSES = new Set(["Rejected", "Returned"]);
 
 interface TransferGroup {
   groupKey: string; // composite "dateKey__group"
@@ -177,18 +179,16 @@ export default function Page() {
   const hasActiveFilter = year !== new Date().getFullYear() || !!startDate || !!endDate;
   const isQueryActive = !!search || hasActiveFilter || !!filialFrom || !!filialTo;
 
-  // Search/filter active bo'lsa — barcha guruhlar avtomatik ochiladi.
-  // Aks holda — default holatda yopiq turadi, user qo'l bilan ochadi.
+  // Search/filter active bo'lsa — buckets har yangilanganda barcha guruhlarni
+  // openGroups'ga sinxronlaymiz (data refetch'dan keyin ham ochiq qoladi).
+  // Inactive bo'lganda — default holat (yopiq), faqat transition'da bir marta clear.
   const prevActiveRef = useRef(isQueryActive);
   useEffect(() => {
-    if (isQueryActive && !prevActiveRef.current) {
-      // Endigina active bo'ldi — barchasini ochib qo'yamiz
+    if (isQueryActive) {
       const all = new Set<string>();
       for (const bucket of buckets) for (const g of bucket.groups) all.add(g.groupKey);
       setOpenGroups(all);
-    }
-    if (!isQueryActive && prevActiveRef.current) {
-      // Filter olib tashlandi — default holat (yopiq) ga qaytariladi
+    } else if (prevActiveRef.current) {
       setOpenGroups(new Set());
     }
     prevActiveRef.current = isQueryActive;
@@ -251,7 +251,7 @@ export default function Page() {
   // F-manager va Kirish tabida — strelka chapga (180deg). Aks holda o'ng.
   const arrowRotate = isFM && (direction || "in") === "in" ? "rotate(180deg)" : "rotate(0deg)";
 
-  // Kutilmoqda statusidagi gilamlar soni (badge uchun) — backend "pending" kategoriyasi bilan moslashgan
+  // Tasdiqlanmagan gilamlar soni (badge) — accepted ham, rejected ham emas
   // Metric → 1, donabay → item.count
   const pendingCarpetCount = useMemo(() => {
     let total = 0;
@@ -259,7 +259,8 @@ export default function Page() {
       for (const g of b.groups) {
         for (const item of g.items as any[]) {
           const status = String(item?.progress || item?.progres || "");
-          if (!PENDING_STATUSES.has(status)) continue;
+          if (ACCEPTED_STATUSES.has(status)) continue;
+          if (REJECTED_STATUSES.has(status)) continue;
           const isMetric = item?.product?.bar_code?.isMetric;
           total += isMetric ? 1 : Number(item?.count || 0) || 1;
         }
