@@ -22,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
 import ReportToolbar from "@/components/report-toolbar";
-import ReportTotalsBar from "@/components/report-totals-bar";
 import { apiRoutes } from "@/service/apiRoutes";
 
 import {
@@ -129,16 +128,13 @@ export default function FManagerPereuchotDetailPage() {
   return (
     <div className="flex flex-col h-full p-4">
       {/* Toolbar + totals */}
-      <div className="flex items-center gap-[4px] mb-[10px]">
-        <ReportToolbar />
-        <ReportTotalsBar
-          items={[
-            { label: "Umumiy:", value: Number(totals?.count || 0), color: "#1a1a1a", suffix: "ta" },
-            { value: Number(totals?.volume || 0), color: "#1a1a1a", suffix: "m²" },
-            { value: Number(totals?.total || 0), color: "#1a1a1a", suffix: "$" },
-          ]}
-        />
-      </div>
+      <ReportToolbar
+        totalsItems={[
+          { label: "Umumiy:", value: Number(totals?.count || 0), color: "#1a1a1a", suffix: "ta" },
+          { value: Number(totals?.volume || 0), color: "#1a1a1a", suffix: "m²" },
+          { value: Number(totals?.total || 0), color: "#1a1a1a", suffix: "$" },
+        ]}
+      />
 
       {/* Tabs + Qo'shish button + Tasdiqlashga yuborish */}
       <div className="flex items-center gap-[4px] mb-[10px]">
