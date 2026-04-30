@@ -3,7 +3,6 @@ import { parseAsString, useQueryState } from "nuqs";
 import { useParams } from "react-router-dom";
 import { Loader, ChevronDown, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { ListRow } from "@/components/ui/list-row";
 import { MonthsArray } from "@/consts";
@@ -24,11 +23,19 @@ const columnLabels = ["Summa", "", "Turi", "Sana", "Ma'lumotlar", ""];
 export default function FactoryDetailPage() {
   const { factoryId } = useParams();
   const { meUser } = useMeStore();
-  const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
-  const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
+  const currentYear = String(new Date().getFullYear());
+  const currentMonth = String(new Date().getMonth() + 1);
+  const [month, setMonth] = useQueryState("month", parseAsString.withDefault(currentMonth));
+  const [yearFilter, setYearFilter] = useQueryState("year", parseAsString.withDefault(currentYear));
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const activeYear = Number(yearFilter);
+
+  const hasActiveFilter = yearFilter !== currentYear || month !== currentMonth;
+  const clearFilters = () => {
+    setYearFilter(null);
+    setMonth(null);
+  };
 
   const { data, isLoading } = useFactoryDetail({
     factoryId: factoryId || "",
@@ -60,31 +67,30 @@ export default function FactoryDetailPage() {
           { value: totals?.period_given || 0, color: "#47B13C" },
           { value: factory?.totalDebt || 0, color: "#1a1a1a" },
         ]}
+        hasActiveFilter={hasActiveFilter}
+        onClearFilters={clearFilters}
         filterContent={
           <>
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Yil</p>
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
               <FilterSelect
+                variant="filter"
                 placeholder="Yil tanlang"
-                className="w-full"
                 options={yearsArray}
                 name="year"
                 defaultValue={String(activeYear)}
               />
             </div>
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
               <FilterSelect
+                variant="filter"
                 placeholder="Oy tanlang"
-                className="w-full"
                 options={MonthsArray}
                 name="month"
-                defaultValue={String(new Date().getMonth() + 1)}
+                defaultValue={currentMonth}
               />
             </div>
-            <Button variant="outline" className="w-full mt-2">
-              Tozalash
-            </Button>
           </>
         }
       />

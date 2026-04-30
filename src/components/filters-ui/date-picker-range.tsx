@@ -42,9 +42,9 @@ export function DateRangePicker({
         ? new Date(value)
         : new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
   });
-  // Filter variant: 44px height, right icon, blue placeholder, white bg, border-bottom only
+  // Filter variant: 44px height, right icon, blue placeholder, white bg, border-bottom only, 4px radius
   const triggerClass = isFilter
-    ? "w-full justify-start text-left bg-white hover:bg-white rounded-none h-[44px] border-0 border-b border-[#e7ebf0] font-normal pl-3 pr-9"
+    ? "w-full justify-start text-left bg-white hover:bg-white rounded-[4px] h-[44px] border-0 border-b border-[#e7ebf0] font-normal pl-3 pr-9"
     : "w-full justify-start text-left bg-card pl-8 hover:bg-card rounded-sm h-[62px] border-0 font-normal";
 
   const placeholderClass = isFilter ? "text-[#0078d4]" : "";

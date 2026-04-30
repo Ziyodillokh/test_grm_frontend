@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { useMeStore } from "@/store/me-store";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import useDataFetch from "@/pages/filial/table/queries";
-import { useQueryState } from "nuqs";
+import { parseAsString, useQueryState } from "nuqs";
 import ReportToolbar from "@/components/report-toolbar";
 
 export default function Filters() {
@@ -11,31 +10,41 @@ export default function Filters() {
     queries: { type: "filial", limit: 50 },
   });
   const [id] = useQueryState("id");
+  const [filial, setFilial] = useQueryState("filial", parseAsString);
+  const [tip, setTip] = useQueryState("tip", parseAsString);
   const filialOption =
     data?.pages[0]?.items?.map((e) => ({
       label: e?.name,
       value: e?.id,
     })) || [];
 
+  const hasActiveFilter = !!filial || !!tip;
+  const clearFilters = () => {
+    setFilial(null);
+    setTip(null);
+  };
+
   return (
     <ReportToolbar
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={clearFilters}
       filterContent={
         <>
           {(meUser?.position?.role == 10 || (meUser?.position?.role == 9 && !id)) && (
             <>
-              <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Filial</p>
+              <div className="flex flex-col gap-[6px]">
+                <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Filial</p>
                 <FilterSelect
+                  variant="filter"
                   placeholder="Hammasi"
-                  className="w-full"
                   options={[{ value: "clear", label: "Hammasi" }, ...filialOption]}
                   name="filial"
                 />
               </div>
-              <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
+              <div className="flex flex-col gap-[6px]">
+                <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Turi</p>
                 <FilterSelect
-                  className="w-full"
+                  variant="filter"
                   placeholder="Hammasi"
                   options={[
                     { value: "clear", label: "Hammasi" },
@@ -50,14 +59,6 @@ export default function Filters() {
               </div>
             </>
           )}
-          {meUser?.position.role === 4 && (
-            <div className="flex items-center bg-white rounded-sm px-[12px] h-[42px]">
-              <span className="text-[14px] font-medium text-[#1a1a1a]">Kassa</span>
-            </div>
-          )}
-          <Button variant="outline" className="w-full mt-2">
-            Tozalash
-          </Button>
         </>
       }
     />

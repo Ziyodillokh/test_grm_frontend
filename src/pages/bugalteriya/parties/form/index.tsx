@@ -93,7 +93,7 @@ const ActionPage = () => {
       setId(null)
       resetForm()
       }}>
-       <DialogContent className="sm:max-w-[796px]">
+       <DialogContent className="sm:max-w-[580px] !w-[580px] !gap-0 !p-0 bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] overflow-hidden [&>button.absolute]:hidden">
           <FormProvider {...form}>
             <form
               onSubmit={form.handleSubmit((data) => {

@@ -1,5 +1,4 @@
 import FilterSelect from "@/components/filters-ui/filter-select";
-import { Button } from "@/components/ui/button";
 import { parseAsString, useQueryState } from "nuqs";
 import { apiRoutes } from "@/service/apiRoutes";
 import { useMutation } from "@tanstack/react-query";
@@ -25,7 +24,14 @@ export default function Filters({
   kassaId: string | undefined;
 }) {
   const [id] = useQueryState("id");
-  const [sort] = useQueryState("sort", parseAsString.withDefault("all"));
+  const [sort, setSort] = useQueryState("sort", parseAsString.withDefault("all"));
+  const [sortSingle, setSortSingle] = useQueryState("sortSingle", parseAsString);
+
+  const hasActiveFilter = sort !== "all" || (!!sortSingle && sortSingle !== "Все");
+  const clearFilters = () => {
+    setSort(null);
+    setSortSingle(null);
+  };
 
   const { mutate: exelMudate, isPending: exelPending } = useMutation({
     mutationFn: async () => {
@@ -45,33 +51,32 @@ export default function Filters({
     <ReportToolbar
       onExport={() => exelMudate()}
       excelPending={exelPending}
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={clearFilters}
       filterContent={
         <>
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Holat</p>
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Holat</p>
             <FilterSelect
+              variant="filter"
               options={CashflowStatus}
-              className="w-full"
               placeholder="Barchasi"
               defaultValue="all"
               name="sort"
             />
           </div>
           {(sort === "all" || Boolean(id)) && (
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Turi</p>
               <FilterSelect
+                variant="filter"
                 options={SortSingle}
-                className="w-full"
                 placeholder="Hammasi"
                 defaultValue="Все"
                 name="sortSingle"
               />
             </div>
           )}
-          <Button variant="outline" className="w-full mt-2">
-            Tozalash
-          </Button>
         </>
       }
     />

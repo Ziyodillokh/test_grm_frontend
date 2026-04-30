@@ -1,25 +1,15 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { parseAsString, useQueryState } from "nuqs";
 import { useParams } from "react-router-dom";
-import { X, Loader, ChevronDown, ChevronRight } from "lucide-react";
+import { Loader, ChevronDown, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import ReportToolbar from "@/components/report-toolbar";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { ListRow } from "@/components/ui/list-row";
 import { MonthsArray } from "@/consts";
 import { useYear } from "@/store/year-store";
 import { useDealerKassaDetail } from "@/pages/reports/d-manager/report/queries";
 import formatPrice from "@/utils/formatPrice";
-import debounce from "@/utils/debounce";
-import ReportTotalsBar from "@/components/report-totals-bar";
 
 const yearsArray = Array.from({ length: 5 }, (_, i) => {
   const y = new Date().getFullYear() - i;
@@ -35,10 +25,9 @@ export default function DealerDetailPage() {
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
   const [yearFilter] = useQueryState("year", parseAsString);
   const [search, setSearch] = useQueryState("search", parseAsString);
-  const [showSearch, setShowSearch] = useState(!!search);
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [, setMonthQs] = useQueryState("month", parseAsString);
+  const [, setYearQs] = useQueryState("year", parseAsString);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const activeYear = yearFilter ? Number(yearFilter) : year;
 
@@ -66,110 +55,50 @@ export default function DealerDetailPage() {
 
   const clearFilters = () => {
     setSearch(null);
-    setFilterOpen(false);
+    setMonthQs(null);
+    setYearQs(null);
   };
+  const hasActiveFilter = !!search;
 
   return (
     <div className="flex flex-col h-full">
-      {/* Toolbar */}
-      <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
-        {/* Search */}
-        {showSearch ? (
-          <div className="flex items-center gap-[4px] bg-white rounded-sm px-[10px] h-[42px]">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <Input
-              ref={searchInputRef}
-              autoFocus
-              defaultValue={search || ""}
-              onChange={debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-                setSearch(e.target.value || null);
-              }, 500)}
-              className="bg-transparent border-none h-[32px] w-[200px] p-0 text-[14px] shadow-none"
-              placeholder="Qidirish..."
-            />
-            <X
-              className="w-[16px] h-[16px] cursor-pointer text-[#A3A3A3] hover:text-[#1A1A1A]"
-              onClick={() => {
-                if (searchInputRef.current) searchInputRef.current.value = "";
-                setSearch(null);
-                setShowSearch(false);
-              }}
-            />
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowSearch(true)}
-            className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        )}
-
-        {/* Sort */}
-        <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <mask id="mask_sort_dd" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
-              <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </mask>
-            <g mask="url(#mask_sort_dd)">
-              <rect x="9" y="1" width="10" height="16" fill="#0078D4" />
-              <rect x="-1" y="1" width="10" height="16" fill="#1A1A1A" />
-            </g>
-          </svg>
-        </button>
-
-        {/* Filter */}
-        <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-          <SheetTrigger asChild>
-            <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[340px] p-4">
-            <SheetHeader>
-              <SheetTitle>Filter</SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col gap-4 mt-4">
-              <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Yil</p>
+      {/* Toolbar — reusable component */}
+      <div className="shrink-0">
+        <ReportToolbar
+          hasActiveFilter={hasActiveFilter}
+          onClearFilters={clearFilters}
+          filterContent={
+            <>
+              <div className="flex flex-col gap-[6px]">
+                <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
                 <FilterSelect
+                  variant="filter"
                   placeholder="Yil tanlang"
-                  className="w-full"
+                  classNameContainer="z-[60]"
                   options={yearsArray}
                   name="year"
                   defaultValue={String(activeYear)}
                 />
               </div>
-              <div>
-                <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+              <div className="flex flex-col gap-[6px]">
+                <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
                 <FilterSelect
+                  variant="filter"
                   placeholder="Oy tanlang"
-                  className="w-full"
+                  classNameContainer="z-[60]"
                   options={MonthsArray}
                   name="month"
                   defaultValue={String(new Date().getMonth() + 1)}
                 />
               </div>
-              <Button variant="outline" onClick={clearFilters} className="w-full mt-2">
-                Tozalash
-              </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
-
-        <ReportTotalsBar items={[
-          { label: dealer?.title, value: totals?.period_owed || 0, color: "#FF6600" },
-          { value: totals?.period_given || 0, color: "#47B13C" },
-          { value: dealer?.balance || 0, color: "#1a1a1a" },
-        ]} />
+            </>
+          }
+          totalsItems={[
+            { label: dealer?.title, value: totals?.period_owed || 0, color: "#FF6600" },
+            { value: totals?.period_given || 0, color: "#47B13C" },
+            { value: dealer?.balance || 0, color: "#1a1a1a" },
+          ]}
+        />
       </div>
 
       {/* Column labels */}

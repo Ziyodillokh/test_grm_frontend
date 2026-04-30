@@ -1,5 +1,5 @@
 import { getMonth } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { parseAsString, useQueryState } from "nuqs";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { MonthsArray } from "@/consts";
 import { useMeStore } from "@/store/me-store";
@@ -8,6 +8,10 @@ import ReportToolbar from "@/components/report-toolbar";
 
 export default function Filter() {
   const { meUser } = useMeStore();
+  const currentMonth = String(getMonth(new Date()) + 1);
+
+  const [filial, setFilial] = useQueryState("filial", parseAsString);
+  const [month, setMonth] = useQueryState("month", parseAsString.withDefault(currentMonth));
 
   const { data } = useDataFetch({
     queries: { type: "filial", limit: 50 },
@@ -18,35 +22,43 @@ export default function Filter() {
       value: e?.id,
     })) || [];
 
+  const hasActiveFilter =
+    (!!filial && filial !== "clear") || month !== currentMonth;
+  const clearFilters = () => {
+    setFilial(null);
+    setMonth(null);
+  };
+
+  const showFilial = meUser?.position?.role != 4;
+
   return (
     <ReportToolbar
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={clearFilters}
       filterContent={
         <>
-          {meUser?.position?.role != 4 && (
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Filial</p>
+          {showFilial && (
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Filial</p>
               <FilterSelect
+                variant="filter"
                 placeholder="Barcha filiallar"
                 defaultValue="clear"
-                className="w-full"
                 options={[{ value: "clear", label: "Barcha filiallar" }, ...filialOptions]}
                 name="filial"
               />
             </div>
           )}
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+          <div className={`flex flex-col gap-[6px] ${showFilial ? "" : "col-span-2"}`}>
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
             <FilterSelect
+              variant="filter"
               placeholder="Oy tanlang"
-              className="w-full"
               options={MonthsArray}
               name="month"
-              defaultValue={String(getMonth(new Date()) + 1)}
+              defaultValue={currentMonth}
             />
           </div>
-          <Button variant="outline" className="w-full mt-2">
-            Tozalash
-          </Button>
         </>
       }
     />

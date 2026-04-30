@@ -2,9 +2,9 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useQueryState } from "nuqs";
 
-import { Button } from "@/components/ui/button";
 import { useMeStore } from "@/store/me-store";
 import ReportToolbar from "@/components/report-toolbar";
+import { OutlineButton } from "@/components/ui/outline-button";
 import FilterComboboxDemoInput from "@/components/filters-ui/filterCombobox";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { TSelectOption } from "@/types";
@@ -42,6 +42,16 @@ export default function Filters() {
     <ReportToolbar
       hasActiveFilter={hasActiveFilter}
       onClearFilters={handleClear}
+      inlineControls={
+        canAdd ? (
+          <OutlineButton
+            icon={<Plus className="w-[16px] h-[16px]" />}
+            onClick={() => setId("new")}
+          >
+            Yangi Partiya
+          </OutlineButton>
+        ) : undefined
+      }
       filterContent={
         <>
           {/* Davr — col-span-2: label tepada, 2 ta date input pastida side-by-side */}
@@ -52,7 +62,7 @@ export default function Filters() {
           <div className="flex flex-col gap-[6px]">
             <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Davlat</p>
             <FilterComboboxDemoInput
-              className="w-[240px] h-[44px] bg-white border-0 border-b border-[#e7ebf0] rounded-none"
+              className="w-full h-[44px] bg-white hover:bg-white border-0 border-b border-[#e7ebf0] rounded-[4px]"
               placeholder="Davlat"
               fetchUrl="/country"
               name="country"
@@ -64,7 +74,7 @@ export default function Filters() {
           <div className="flex flex-col gap-[6px]">
             <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Taminotchi</p>
             <FilterComboboxDemoInput
-              className="w-[240px] h-[44px] bg-white border-0 border-b border-[#e7ebf0] rounded-none"
+              className="w-full h-[44px] bg-white hover:bg-white border-0 border-b border-[#e7ebf0] rounded-[4px]"
               placeholder="Taminotchi"
               fetchUrl="/factory"
               name="factory"
@@ -76,7 +86,7 @@ export default function Filters() {
           <div className="flex flex-col gap-[6px]">
             <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Partiya</p>
             <FilterComboboxDemoInput
-              className="w-[240px] h-[44px] bg-white border-0 border-b border-[#e7ebf0] rounded-none"
+              className="w-full h-[44px] bg-white hover:bg-white border-0 border-b border-[#e7ebf0] rounded-[4px]"
               placeholder="Partiya"
               name="partiya-number"
               fetchUrl="/partiya-number"
@@ -86,16 +96,6 @@ export default function Filters() {
             />
           </div>
         </>
-      }
-      actions={
-        canAdd ? (
-          <Button
-            onClick={() => setId("new")}
-            className="h-[42px] rounded-sm bg-[#1A1A1A] hover:bg-[#333] text-white px-5 text-[14px]"
-          >
-            <Plus size={16} className="mr-1" /> Partiya qo'shish
-          </Button>
-        ) : null
       }
     />
   );

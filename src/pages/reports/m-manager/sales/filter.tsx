@@ -1,16 +1,8 @@
-import { useState, useRef } from "react";
 import { parseAsString, useQueryState } from "nuqs";
-import { X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+
+import ReportToolbar from "@/components/report-toolbar";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { useMeStore } from "@/store/me-store";
-import debounce from "@/utils/debounce";
 import { MonthsArray } from "@/consts";
 
 export default function SalesFilter({
@@ -31,149 +23,60 @@ export default function SalesFilter({
   const isManager = role >= 9;
 
   const [search, setSearch] = useQueryState("search", parseAsString);
-  const [showSearch, setShowSearch] = useState(!!search);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [view, setView] = useQueryState("view", parseAsString);
+  const [month, setMonth] = useQueryState("month", parseAsString);
 
+  const hasActiveFilter = !!search || !!view || !!month;
   const clearFilters = () => {
     setSearch(null);
-    setFilterOpen(false);
+    setView(null);
+    setMonth(null);
   };
 
   return (
-    <div className="flex items-center gap-[4px] shrink-0 mb-[10px]">
-      {/* Search */}
-      {showSearch ? (
-        <div className="flex items-center gap-[4px] bg-white rounded-sm px-[10px] h-[42px]">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <Input
-            ref={searchInputRef}
-            autoFocus
-            defaultValue={search || ""}
-            onChange={debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-              setSearch(e.target.value || null);
-            }, 500)}
-            className="bg-transparent border-none h-[32px] w-[200px] p-0 text-[14px] shadow-none"
-            placeholder="Qidirish..."
-          />
-          <X
-            className="w-[16px] h-[16px] cursor-pointer text-[#A3A3A3] hover:text-[#1A1A1A]"
-            onClick={() => {
-              if (searchInputRef.current) searchInputRef.current.value = "";
-              setSearch(null);
-              setShowSearch(false);
-            }}
-          />
-        </div>
-      ) : (
-        <button
-          onClick={() => setShowSearch(true)}
-          className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors"
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M15.7508 15.7508L12.4883 12.4883" stroke="black" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      )}
-
-      {/* Sort */}
-      <button className="w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <mask id="mask_sort_sales" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="1" y="3" width="16" height="12">
-            <path d="M2.25 6.75L5.25 3.75M5.25 3.75L8.25 6.75M5.25 3.75V14.25M15.75 11.25L12.75 14.25M12.75 14.25L9.75 11.25M12.75 14.25V3.75" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-          </mask>
-          <g mask="url(#mask_sort_sales)">
-            <rect x="9" y="1" width="10" height="16" fill="#0078D4" />
-            <rect x="-1" y="1" width="10" height="16" fill="#1A1A1A" />
-          </g>
-        </svg>
-      </button>
-
-      {/* Filter */}
-      <Popover open={filterOpen} onOpenChange={setFilterOpen}>
-        <PopoverTrigger asChild>
-          <button className="relative w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            {!!search && (
-              <span className="absolute top-[8px] right-[8px] w-[6px] h-[6px] rounded-full bg-[#0078D4]" />
-            )}
-          </button>
-        </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="w-[330px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40]"
-        >
-          <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">Filter</p>
-          <div className="flex flex-col gap-[10px]">
-            {/* Ko'rinish */}
-            {isManager && (
-              <div>
-                <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Ko'rinish</p>
-                <div className="bg-white rounded-[8px]">
-                  <FilterSelect
-                    placeholder="Turi"
-                    className="w-full"
-                    classNameContainer="z-[60]"
-                    defaultValue="filial"
-                    options={[
-                      { label: "Filial bo'yicha", value: "filial" },
-                      { label: "Diller bo'yicha", value: "dealer" },
-                      { label: "Internet bo'yicha", value: "internet" },
-                      { label: "Partiya bo'yicha", value: "partiya" },
-                    ]}
-                    name="view"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Oy */}
-            <div>
-              <p className="text-[12px] text-[#A3A3A3] mb-[4px] px-[4px]">Oy</p>
-              <div className="bg-white rounded-[8px]">
-                <FilterSelect
-                  placeholder="Oy tanlang"
-                  className="w-full"
-                  classNameContainer="z-[60]"
-                  options={MonthsArray}
-                  name="month"
-                  defaultValue={String(new Date().getMonth() + 1)}
-                />
-              </div>
+    <ReportToolbar
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={clearFilters}
+      filterContent={
+        <>
+          {isManager && (
+            <div className="col-span-2 flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Ko'rinish</p>
+              <FilterSelect
+                variant="filter"
+                placeholder="Turini tanlang"
+                classNameContainer="z-[60]"
+                defaultValue="filial"
+                options={[
+                  { label: "Filial bo'yicha", value: "filial" },
+                  { label: "Diller bo'yicha", value: "dealer" },
+                  { label: "Internet bo'yicha", value: "internet" },
+                  { label: "Partiya bo'yicha", value: "partiya" },
+                ]}
+                name="view"
+              />
             </div>
-
-            <Button variant="outline" onClick={clearFilters} className="w-full mt-2">
-              Tozalash
-            </Button>
+          )}
+          <div className="col-span-2 flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
+            <FilterSelect
+              variant="filter"
+              placeholder="Oy tanlang"
+              classNameContainer="z-[60]"
+              options={MonthsArray}
+              name="month"
+              defaultValue={String(new Date().getMonth() + 1)}
+            />
           </div>
-        </PopoverContent>
-      </Popover>
-
-      {/* Totals — o'ngda */}
-      <div className="ml-auto flex items-center gap-[16px] bg-white rounded-sm px-[16px] h-[42px]">
-        <span className="text-[13px] text-[#A3A3A3]">Umumiy:</span>
-        <span className="text-[14px] font-medium text-[#1a1a1a]">
-          {totalCount?.toLocaleString()} ta
-        </span>
-        <span className="text-[14px] font-medium text-[#1a1a1a]">
-          {totalKv?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²
-        </span>
-        <span className="text-[14px] font-medium text-[#1a1a1a]">
-          {totalSum?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $
-        </span>
-        <span className="text-[14px] font-medium text-[#47B13C]">
-          +{totalProfit?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $
-        </span>
-        <span className="text-[14px] font-medium text-[#F59E0B]">
-          -{totalDiscount?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $
-        </span>
-      </div>
-    </div>
+        </>
+      }
+      totalsItems={[
+        { value: totalCount, suffix: "ta" },
+        { value: totalKv, suffix: "m²" },
+        { value: totalSum, suffix: "$" },
+        { value: totalProfit, suffix: "$", color: "#47B13C" },
+        { value: totalDiscount, suffix: "$", color: "#FF6527" },
+      ]}
+    />
   );
 }

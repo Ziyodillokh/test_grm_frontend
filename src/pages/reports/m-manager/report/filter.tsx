@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import useDataFetch from "@/pages/filial/table/queries";
 import { useParams } from "react-router-dom";
@@ -93,18 +92,17 @@ export default function Filters({
       <ReportToolbar
         onExport={() => exelMudate()}
         excelPending={exelPending}
+        filterCols={1}
         filterContent={
-          <>
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Filial</p>
-              <FilterSelect
-                placeholder="Hammasi"
-                className="w-full"
-                options={[{ value: "clear", label: "Hammasi" }, ...filialOption]}
-                name="filial"
-              />
-            </div>
-          </>
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Filial</p>
+            <FilterSelect
+              variant="filter"
+              placeholder="Hammasi"
+              options={[{ value: "clear", label: "Hammasi" }, ...filialOption]}
+              name="filial"
+            />
+          </div>
         }
       />
     );
@@ -124,21 +122,21 @@ export default function Filters({
       filterContent={
         <>
           {myCashFlow && managersAccountants && (
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Menejer</p>
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Menejer</p>
               <FilterSelect
+                variant="filter"
                 placeholder="Hammasi"
-                className="w-full"
                 options={[{ value: "clear", label: "Hammasi" }, ...managersAccountants]}
                 name="typesManage"
               />
             </div>
           )}
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Turi</p>
             <FilterSelect
+              variant="filter"
               placeholder="Hammasi"
-              className="w-full"
               options={
                 cashflowTypesResponse
                   ? [{ value: "clear", label: "Hammasi" }, ...cashflowTypesResponse]
@@ -147,9 +145,6 @@ export default function Filters({
               name="cashflowSlug"
             />
           </div>
-          <Button variant="outline" className="w-full mt-2">
-            Tozalash
-          </Button>
         </>
       }
     />

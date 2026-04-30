@@ -1,51 +1,18 @@
-export interface qrBaseIMarkerData {
-  isMetric: boolean;
-  id: string;
-  code: string;
-  status: "draft" | "published" | "not_ready";
-  i_price: number;
-  date: string; // ISO date
-  other_images: string[];
+import type { TBarCode, TBaseLookup, TBarCodeSize } from '@/types/qr-base';
 
-  country: BaseEntity;
-  collection: BaseEntity;
-  model: BaseEntity;
-  style: BaseEntity;
-  size: Size;
-  shape: BaseEntity;
-  factory: BaseEntity;
-  color: BaseEntity;
-  sizeType: string;
-  internetInfo: string;
-  imgUrl: {
-    path?: string
-    id?: string
-  };
-  videoUrl: string | null;
-  productsCount: number;
-}
+export type qrBaseIMarkerData = TBarCode;
 
-export interface BaseEntity {
-  id: string;
-  title: string;
-  dateOne: string;
-  description?: string;
-  dateTwo: string;
-  deletedDate: string | null;
-}
+export type BaseEntity = TBaseLookup;
+export type Size = TBarCodeSize;
 
-export interface Size extends BaseEntity {
-  x: number;
-  y: number;
-  kv: number;
-}
 export type ProductsQuery = {
   search?: string | undefined;
   filialId?: string | undefined;
   limit: number;
   page: number;
-  isPublished?: boolean; // Added isPublished property to query
+  isPublished?: boolean;
 };
+
 export type qrBaseIMarkerQuery = {
   search?: string | undefined;
   filialId?: string | undefined;

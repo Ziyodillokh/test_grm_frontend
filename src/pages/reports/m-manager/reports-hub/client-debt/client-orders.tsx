@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { Loader } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { ListRow } from "@/components/ui/list-row";
 import formatPrice from "@/utils/formatPrice";
@@ -19,10 +18,17 @@ const columnLabels = ["№", "Kolleksiya", "Model", "Razmer", "Soni", "m²", "Na
 
 export default function ClientDebtOrders() {
   const { clientId } = useParams();
-  const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
-  const [month] = useQueryState("month", parseAsString);
+  const currentYear = String(new Date().getFullYear());
+  const [yearFilter, setYearFilter] = useQueryState("year", parseAsString.withDefault(currentYear));
+  const [month, setMonth] = useQueryState("month", parseAsString);
 
   const year = Number(yearFilter);
+
+  const hasActiveFilter = yearFilter !== currentYear || (!!month && month !== "clear");
+  const clearFilters = () => {
+    setYearFilter(null);
+    setMonth(null);
+  };
 
   const { data, isLoading } = useDebtOrders(clientId, {
     year,
@@ -42,31 +48,30 @@ export default function ClientDebtOrders() {
           { value: client.given || 0, color: "#47B13C" },
           { value: client.balance || 0, color: "#1a1a1a" },
         ] : undefined}
+        hasActiveFilter={hasActiveFilter}
+        onClearFilters={clearFilters}
         filterContent={
           <>
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Yil</p>
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
               <FilterSelect
+                variant="filter"
                 placeholder="Yil tanlang"
-                className="w-full"
                 options={yearsArray}
                 name="year"
-                defaultValue={String(new Date().getFullYear())}
+                defaultValue={currentYear}
               />
             </div>
-            <div>
-              <p className="text-[13px] text-muted-foreground mb-1">Oy</p>
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
               <FilterSelect
+                variant="filter"
                 placeholder="Barcha oylar"
-                className="w-full"
                 options={[{ label: "Hammasi", value: "clear" }, ...MonthsArray]}
                 name="month"
                 defaultValue="clear"
               />
             </div>
-            <Button variant="outline" className="w-full mt-2">
-              Tozalash
-            </Button>
           </>
         }
       />

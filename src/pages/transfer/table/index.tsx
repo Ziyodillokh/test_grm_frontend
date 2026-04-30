@@ -112,7 +112,10 @@ export default function Page() {
     },
   });
 
-  const flatData: TransferData[] = data?.pages?.flatMap((p: any) => p?.items || []) || [];
+  const flatData: TransferData[] = useMemo(
+    () => data?.pages?.flatMap((p: any) => p?.items || []) || [],
+    [data]
+  );
 
   // 2-darajali guruhlash
   const buckets: DateBucket[] = useMemo(() => {
@@ -182,14 +185,18 @@ export default function Page() {
   // Search/filter active bo'lsa — buckets har yangilanganda barcha guruhlarni
   // openGroups'ga sinxronlaymiz (data refetch'dan keyin ham ochiq qoladi).
   // Inactive bo'lganda — default holat (yopiq), faqat transition'da bir marta clear.
+  // setOpenGroups'da functional update + difference check — infinite re-render oldini olish uchun.
   const prevActiveRef = useRef(isQueryActive);
   useEffect(() => {
     if (isQueryActive) {
-      const all = new Set<string>();
-      for (const bucket of buckets) for (const g of bucket.groups) all.add(g.groupKey);
-      setOpenGroups(all);
+      const allKeys: string[] = [];
+      for (const bucket of buckets) for (const g of bucket.groups) allKeys.push(g.groupKey);
+      setOpenGroups((prev) => {
+        if (prev.size === allKeys.length && allKeys.every((k) => prev.has(k))) return prev;
+        return new Set(allKeys);
+      });
     } else if (prevActiveRef.current) {
-      setOpenGroups(new Set());
+      setOpenGroups((prev) => (prev.size === 0 ? prev : new Set()));
     }
     prevActiveRef.current = isQueryActive;
   }, [isQueryActive, buckets]);

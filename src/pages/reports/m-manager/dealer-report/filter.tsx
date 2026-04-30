@@ -1,11 +1,12 @@
 import FilterSelect from "@/components/filters-ui/filter-select";
 import useDataFetch from "@/pages/filial/table/queries";
 import { useParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { parseAsString, useQueryState } from "nuqs";
 import ReportToolbar from "@/components/report-toolbar";
 
 export default function Filters() {
   const { id } = useParams();
+  const [filial, setFilial] = useQueryState("filial", parseAsString);
   const { data } = useDataFetch({
     queries: { type: "filial", limit: 50 },
   });
@@ -29,21 +30,19 @@ export default function Filters() {
 
   return (
     <ReportToolbar
+      hasActiveFilter={!!filial}
+      onClearFilters={() => setFilial(null)}
+      filterCols={1}
       filterContent={
-        <>
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Filial</p>
-            <FilterSelect
-              placeholder="Hammasi"
-              className="w-full"
-              options={[{ value: "clear", label: "Hammasi" }, ...filialOption]}
-              name="filial"
-            />
-          </div>
-          <Button variant="outline" className="w-full mt-2">
-            Tozalash
-          </Button>
-        </>
+        <div className="flex flex-col gap-[6px]">
+          <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Filial</p>
+          <FilterSelect
+            variant="filter"
+            placeholder="Hammasi"
+            options={[{ value: "clear", label: "Hammasi" }, ...filialOption]}
+            name="filial"
+          />
+        </div>
       }
     />
   );

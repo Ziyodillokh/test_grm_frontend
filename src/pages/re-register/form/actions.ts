@@ -45,10 +45,10 @@ export const useProductId = ({ options, id, queries }: IData) =>
   export const useBarCodeById = ({ options, id, queries }: IData) =>
     useQuery({
       ...options,
-      queryKey: [apiRoutes.qrBase + 'find-by', id],
+      queryKey: [apiRoutes.qrBase + '/find-by', id],
       enabled: Boolean(id),
       queryFn: () =>
-        getByIdData<TData, TQuery>(apiRoutes.qrBase+ '/find-by', id || "", queries),
+        getByIdData<TData, TQuery>(apiRoutes.qrBase + '/find-by', id || "", queries),
     });
   
   

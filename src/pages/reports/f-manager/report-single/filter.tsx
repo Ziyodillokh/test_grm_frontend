@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import qs from "qs";
 import { apiRoutes } from "@/service/apiRoutes";
@@ -15,6 +14,12 @@ export default function Filters() {
 
   const [tip] = useQueryState("tip", parseAsString);
   const [myMonth] = useQueryState("myMonth", parseAsInteger);
+  const [cashflowSlug, setCashflowSlug] = useQueryState("cashflowSlug", parseAsString);
+
+  const hasActiveFilter = !!cashflowSlug && cashflowSlug !== "clear";
+  const clearFilters = () => {
+    setCashflowSlug(null);
+  };
 
   const { data: cashflowTypesResponse } = useQuery({
     queryKey: ["/cashflow-types/for/branch-manager", tip],
@@ -54,25 +59,23 @@ export default function Filters() {
           </span>
         </div>
       }
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={clearFilters}
+      filterCols={1}
       filterContent={
-        <>
-          <div>
-            <p className="text-[13px] text-muted-foreground mb-1">Turi</p>
-            <FilterSelect
-              placeholder="Hammasi"
-              className="w-full"
-              options={
-                cashflowTypesResponse
-                  ? [{ value: "clear", label: "Hammasi" }, ...cashflowTypesResponse]
-                  : []
-              }
-              name="cashflowSlug"
-            />
-          </div>
-          <Button variant="outline" className="w-full mt-2">
-            Tozalash
-          </Button>
-        </>
+        <div className="flex flex-col gap-[6px]">
+          <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Turi</p>
+          <FilterSelect
+            variant="filter"
+            placeholder="Hammasi"
+            options={
+              cashflowTypesResponse
+                ? [{ value: "clear", label: "Hammasi" }, ...cashflowTypesResponse]
+                : []
+            }
+            name="cashflowSlug"
+          />
+        </div>
       }
     />
   );

@@ -25,6 +25,8 @@ interface ReportToolbarProps {
   hasActiveSort?: boolean;
   /** Toolbar iconlaridan 30px o'ngda inline ko'rinadigan elementlar (masalan filial selektorlar) */
   inlineControls?: React.ReactNode;
+  /** Filter popoverdagi input ustunlar soni (1 yoki 2). Default 2. 1 — input bo'yicha qisqartirilgan popover. */
+  filterCols?: 1 | 2;
 }
 
 export default function ReportToolbar({
@@ -39,6 +41,7 @@ export default function ReportToolbar({
   onClearFilters,
   hasActiveSort,
   inlineControls,
+  filterCols = 2,
 }: ReportToolbarProps) {
   const [search, setSearch] = useQueryState("search", parseAsString);
   const [showSearch, setShowSearch] = useState(!!search);
@@ -152,7 +155,9 @@ export default function ReportToolbar({
           <PopoverContent
             align="start"
             sideOffset={8}
-            className="w-[580px] p-0 bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40] overflow-hidden"
+            className={`p-0 bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)] z-[40] overflow-hidden ${
+              filterCols === 1 ? "w-[320px]" : "w-[580px]"
+            }`}
           >
             {/* Header: filter icon + "Filter" + X close */}
             <div className="flex items-center justify-between">
@@ -173,12 +178,16 @@ export default function ReportToolbar({
             </div>
             {/* Divider */}
             <div className="h-[1px] bg-[#e7ebf0]" />
-            {/* Body — 20px gap below line, 40px horizontal padding, 2-col grid (input 240px) */}
-            <div className="pt-[20px] px-[40px] pb-[20px] grid grid-cols-2 gap-x-[20px] gap-y-[16px]">
+            {/* Body — 20px gap below line, dynamic columns */}
+            <div
+              className={`pt-[20px] pb-[20px] grid gap-x-[20px] gap-y-[16px] ${
+                filterCols === 1 ? "px-[20px] grid-cols-1" : "px-[40px] grid-cols-2"
+              }`}
+            >
               {filterContent}
               {/* Filterni tozalash button — faqat filter active bo'lganda */}
               {hasActiveFilter && onClearFilters && (
-                <div className="col-span-2 flex justify-start">
+                <div className={`flex justify-start ${filterCols === 2 ? "col-span-2" : ""}`}>
                   <PrimaryButton onClick={onClearFilters} icon={<Eraser />}>
                     Filterni tozalash
                   </PrimaryButton>
@@ -216,8 +225,12 @@ export default function ReportToolbar({
         <div className="ml-[20px] flex items-center gap-[15px]">{inlineControls}</div>
       )}
 
-      {/* Totals */}
-      {totalsItems && <ReportTotalsBar items={totalsItems} />}
+      {/* Totals — toolbar iconlardan 20px o'ngda */}
+      {totalsItems && (
+        <div className="ml-[20px]">
+          <ReportTotalsBar items={totalsItems} />
+        </div>
+      )}
 
       {/* Right-side actions */}
       {actions && <div className="ml-auto flex items-center gap-[4px]">{actions}</div>}
