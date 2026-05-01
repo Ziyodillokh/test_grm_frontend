@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryState } from "nuqs";
 
-import { IData } from "@/pages/cashier/home/type";
+import { IData } from "@/pages/cashflow/order-type";
 import { TQuery } from "@/pages/employees/type";
 import { getAllData } from "@/service/apiHelpers";
 import { TResponse } from "@/types";

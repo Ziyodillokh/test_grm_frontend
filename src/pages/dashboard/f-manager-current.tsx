@@ -20,7 +20,7 @@ import {
 import ReportToolbar from "@/components/report-toolbar";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
-import { useDataCashflow } from "@/pages/cashier/report/queries";
+import { useDataCashflow } from "@/pages/cashflow/queries";
 import { useOpenKassa } from "@/pages/report/table/queries";
 import { useKassaReportSingle } from "@/pages/reports/m-manager/filial-report-finance/queries";
 import { apiRoutes } from "@/service/apiRoutes";
@@ -33,7 +33,7 @@ import formatPrice from "@/utils/formatPrice";
 import TebleAvatar from "@/components/teble-avatar";
 import { Spinner } from "@/components/ui/spinner";
 import type { CashflowType } from "@/components/adding-parish-flow";
-import type { TransactionItem } from "@/pages/cashier/report/type";
+import type { TransactionItem } from "@/pages/cashflow/types";
 
 const tipFilter: Record<string, string> = {
   income: "cashflow",

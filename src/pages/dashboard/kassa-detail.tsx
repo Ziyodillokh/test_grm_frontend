@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
-import { useDataCashflow } from "@/pages/cashier/report/queries";
+import { useDataCashflow } from "@/pages/cashflow/queries";
 import { apiRoutes } from "@/service/apiRoutes";
 import { getByIdData, getAllData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";

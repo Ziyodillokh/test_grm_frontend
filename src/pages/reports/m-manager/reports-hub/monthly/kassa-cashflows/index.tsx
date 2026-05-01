@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { DataTable } from "@/components/ui/data-table";
-import { useDataCashflow } from "@/pages/cashier/report/queries";
+import { useDataCashflow } from "@/pages/cashflow/queries";
 import { useKassaReportSingle } from "@/pages/reports/m-manager/filial-report-finance/queries";
 import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
-import KassaToolbar from "@/pages/cashier/report/page/kassa-toolbar";
+import KassaToolbar from "@/pages/cashflow/kassa-toolbar";
 import { CashflowColumns } from "./columns";
 
 export default function KassaCashflowsPage() {

@@ -16,7 +16,7 @@ import { PatchData, UpdatePatchData } from "@/service/apiHelpers";
 import { useMeStore } from "@/store/me-store";
 import formatPrice from "@/utils/formatPrice";
 import TebleAvatar from "@/components/teble-avatar";
-import type { TransactionItem } from "@/pages/cashier/report/type";
+import type { TransactionItem } from "@/pages/cashflow/types";
 
 export const cashflowGridTemplate = "60px 60px 120px 120px 1fr 70px";
 export const cashflowLabels = [

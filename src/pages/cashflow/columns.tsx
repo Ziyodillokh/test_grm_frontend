@@ -15,7 +15,7 @@ import { parseAsString, useQueryState } from "nuqs";
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
 
-import { TransactionItem } from "../type";
+import { TransactionItem } from "./types";
 import { format } from "date-fns";
 import { useMeStore } from "@/store/me-store";
 import TebleAvatar from "@/components/teble-avatar";

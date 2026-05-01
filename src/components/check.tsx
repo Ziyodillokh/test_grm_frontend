@@ -1,4 +1,4 @@
-import { IData } from "@/pages/cashier/home/type";
+import { IData } from "@/pages/cashflow/order-type";
 import { useMeStore } from "@/store/me-store";
 import { format } from "date-fns";
 

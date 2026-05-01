@@ -5,8 +5,8 @@ import { useMeStore } from "@/store/me-store";
 import Filter from "./filter";
 import  { useKassaReportSingle, useKassaReportTotal } from "./queries";
 import CardSort from "@/components/card-sort";
-import { useDataCashflow, useDataKassa } from "@/pages/cashier/report/queries";
-import {  ReportColumns } from "@/pages/cashier/report/page/columns";
+import { useDataCashflow, useDataKassa } from "@/pages/cashflow/queries";
+import {  ReportColumns } from "@/pages/cashflow/columns";
 import { parseAsString, useQueryState } from "nuqs";
 import { KassaColumns } from "./columns";
 

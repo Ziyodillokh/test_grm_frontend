@@ -14,7 +14,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 
 import { TData } from "../type";
 import { Button } from "@/components/ui/button";
-import { KassaItem } from "@/pages/cashier/report/type";
+import { KassaItem } from "@/pages/cashflow/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PatchData } from "@/service/apiHelpers";
 import { toast } from "sonner";

@@ -8,7 +8,7 @@ import {
 
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { IData } from "@/pages/cashier/home/type";
+import { IData } from "@/pages/cashflow/order-type";
 import { useMeStore } from "@/store/me-store";
 import { AddData, getAllData, UpdatePatchData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";

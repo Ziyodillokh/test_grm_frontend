@@ -1,42 +1,27 @@
 import {
   DefinedInitialDataOptions,
   useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 import { TQuery } from "@/pages/employees/type";
-import { getAllData, PatchData } from "@/service/apiHelpers";
+import { getAllData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
-import { useMeStore } from "@/store/me-store";
 import { TResponse } from "@/types";
 
-import { KassaItem, KassaReportData, TransactionItem } from "./type";
+import { KassaItem, TransactionItem } from "./types";
 
-// Query hook to fetch kassa report
-export const useKassaReport = () => {
-  const { meUser } = useMeStore();
-  const filialId = meUser?.filial?.id;
-
-  return useQuery({
-    queryKey: [apiRoutes.kassaReport],
-    queryFn: () => getAllData<KassaReportData, void>(apiRoutes.kassaReport),
-    enabled: !!filialId,
-  });
-};
 interface IData {
   options?: DefinedInitialDataOptions<TResponse<TransactionItem>>;
   queries?: TQuery;
-  enabled?: boolean
+  enabled?: boolean;
 }
 interface IKassaData {
   options?: DefinedInitialDataOptions<TResponse<KassaItem>>;
   queries?: TQuery;
-  enabled?: boolean
+  enabled?: boolean;
 }
-export const useDataCashflow = ({ queries ,enabled}: IData) =>
+
+export const useDataCashflow = ({ queries, enabled }: IData) =>
   useInfiniteQuery({
     queryKey: [apiRoutes.cashflow, queries],
     queryFn: ({ pageParam = 10 }) =>
@@ -56,7 +41,7 @@ export const useDataCashflow = ({ queries ,enabled}: IData) =>
     initialPageParam: 1,
   });
 
-export const useDataKassa = ({ queries ,enabled =true}: IKassaData) =>
+export const useDataKassa = ({ queries, enabled = true }: IKassaData) =>
   useInfiniteQuery({
     queryKey: [apiRoutes.kassa, queries],
     queryFn: ({ pageParam = 1 }) =>
@@ -75,28 +60,3 @@ export const useDataKassa = ({ queries ,enabled =true}: IKassaData) =>
     enabled: enabled,
     initialPageParam: 1,
   });
-  
-
-interface TQueries {
-  filial: string;
-  status: string;
-}
-export const useReport = ({ queries }: { queries: TQueries }) => {
-  return useQuery({
-    queryKey: [apiRoutes.kassa, queries],
-    queryFn: () =>
-      getAllData<KassaReportData, TQueries>(apiRoutes.kassa, queries),
-  });
-};
-
-export const useApproveCashflow = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => PatchData(`/cashflow/approve/${id}`, {}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
-      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReport] });
-      toast.success("Cashflow tasdiqlandi");
-    },
-  });
-};
