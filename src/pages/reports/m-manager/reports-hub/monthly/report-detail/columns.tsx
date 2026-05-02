@@ -140,7 +140,7 @@ export const DetailColumns: ColumnDef<TKassareportData>[] = [
     id: "hajm",
     header: "Hajm",
     cell: ({ row }) => {
-      const val = row.original?.totalSize ?? 0;
+      const val = row.original?.saleSize ?? row.original?.totalSaleSize ?? row.original?.totalSize ?? 0;
       return <p>{val.toFixed(0)} m²</p>;
     },
   },
@@ -156,7 +156,7 @@ export const DetailColumns: ColumnDef<TKassareportData>[] = [
     id: "chegirma",
     header: "Chegirma",
     cell: ({ row }) => {
-      const val = row.original?.discount ?? row.original?.totalDiscount ?? 0;
+      const val = row.original?.discountSum ?? row.original?.totalDiscountSum ?? row.original?.discount ?? row.original?.totalDiscount ?? 0;
       return <p className="text-red-500">-{Math.abs(val).toFixed(2)}$</p>;
     },
   },

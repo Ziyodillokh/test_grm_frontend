@@ -113,12 +113,17 @@ order: {
   x: number;
   kv: number;
   date: string;
-  additionalProfitSum: number;
-  netProfitSum: number;
-  discountSum: number;
+  additionalProfit: number;
+  additionalProfitSum?: number;
+  netProfit: number;
+  netProfitSum?: number;
+  discount: number;
+  discountSum?: number;
+  managerDiscount?: number;
   discountPercentage: string;
   tip: string;
-  plasticSum: number;
+  plastic: number;
+  plasticSum?: number;
   seller: {
     id: string;
     isActive: boolean;

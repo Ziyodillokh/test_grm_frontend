@@ -196,10 +196,10 @@ export default function PageSellerCashFlow() {
                           {formatPrice(order.price)} $
                         </span>
                         <span className="text-[12px] text-[#FF6600]">
-                          {order.discountSum > 0 ? `${formatPrice(order.discountSum)} $` : "—"}
+                          {order.discount > 0 ? `${formatPrice(order.discount)} $` : "—"}
                         </span>
                         <span className="text-[12px] text-[#58A0C6]">
-                          {order.plasticSum > 0 ? `${formatPrice(order.plasticSum)} $` : "—"}
+                          {order.plastic > 0 ? `${formatPrice(order.plastic)} $` : "—"}
                         </span>
                         <span></span>
                       </div>

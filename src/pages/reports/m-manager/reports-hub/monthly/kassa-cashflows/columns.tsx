@@ -91,8 +91,8 @@ export const CashflowColumns: ColumnDef<any>[] = [
             <span>{o?.bar_code?.size?.title}</span>
             <span>${o?.price}</span>
             <span>{o?.kv ? `${o.kv.toFixed(0)}sm` : ""}</span>
-            {o?.additionalProfitSum > 0 && <span className="text-[#89A143]">+{o.additionalProfitSum.toFixed(2)}$</span>}
-            {o?.discountSum > 0 && <span className="text-[#E38157]">-{o.discountSum}$</span>}
+            {o?.additionalProfit > 0 && <span className="text-[#89A143]">+{o.additionalProfit.toFixed(2)}$</span>}
+            {o?.discount > 0 && <span className="text-[#E38157]">-{Number(o.discount).toFixed(2)}$</span>}
           </div>
         );
       }

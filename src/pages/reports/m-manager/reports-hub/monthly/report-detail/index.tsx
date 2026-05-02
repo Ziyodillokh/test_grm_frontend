@@ -201,9 +201,9 @@ function ReportRow({ item, onRowClick, gridTemplate, reportId: _reportId }: { it
   const terminal = item?.plasticSum ?? item?.totalPlasticSum ?? 0;
   const debt = item?.debtSum ?? 0;
   const inkassa = item?.cashCollection ?? item?.totalCashCollection ?? 0;
-  const hajm = item?.totalSize ?? 0;
+  const hajm = item?.saleSize ?? item?.totalSaleSize ?? item?.totalSize ?? 0;
   const foyda = item?.additionalProfitSum ?? 0;
-  const chegirma = item?.discount ?? item?.totalDiscount ?? 0;
+  const chegirma = item?.discountSum ?? item?.totalDiscountSum ?? item?.discount ?? item?.totalDiscount ?? 0;
 
   const rowStatus = getRowStatus(item);
 

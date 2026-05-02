@@ -4,8 +4,8 @@ export interface OrderItem {
   price: number;
   kv: number;
   x: number;
-  plasticSum: number;
-  discountSum: number;
+  plastic: number;
+  discount: number;
   collection: string | null;
   size: string | null;
   color: string | null;

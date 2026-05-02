@@ -17,6 +17,8 @@ export interface TKassareportData {
   cashCollection?: number;
   totalDiscount?: number;
   discount?: number;
+  discountSum?: number;
+  totalDiscountSum?: number;
   totalIncome?: number;
   income?: number;
   totalExpense?: number;
@@ -27,6 +29,10 @@ export interface TKassareportData {
   totalSum?: number;
   totalSellCount?: number;
   totalSize?: number;
+  saleSize?: number;
+  saleCount?: number;
+  totalSaleSize?: number;
+  totalSaleCount?: number;
   additionalProfitSum?: number;
   netProfitSum?: number;
   inHand?: number;
