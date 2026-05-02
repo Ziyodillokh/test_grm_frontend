@@ -186,10 +186,10 @@ export interface TKassareportData {
 export interface TQuery {
   search?: string | undefined;
   filial?: string;
-  limit: number;
+  limit?: number;
   year?: number;
   report?: string;
-  page: number;
+  page?: number;
   startDate?: Date | null;
   endDate?: Date | null;
 }
