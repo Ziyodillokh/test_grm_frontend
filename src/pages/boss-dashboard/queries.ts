@@ -143,7 +143,7 @@ export const useBossCashflowList = (params: {
   createdByRole?: number;
   reportMonth?: number;
   reportYear?: number;
-  type?: "Приход" | "Расход";
+  type?: "income" | "expense";
   cashflowSlug?: string;
   enabled?: boolean;
 }) =>

@@ -28,7 +28,7 @@ const ActionPageQrCode = () => {
     "tip",
     parseAsString.withDefault(
       meUser?.position?.role == 7 || meUser?.position.role == 4
-        ? "переучет"
+        ? "recount"
         : "new"
     )
   );

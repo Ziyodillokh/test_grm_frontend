@@ -13,9 +13,9 @@ import { getAllData } from "@/service/apiHelpers";
 import { IProductCheckProductreport } from "../type";
 // import { z } from "zod";
 // enum ProductReportEnum {
-//   SURPLUS = 'излишки',
-//   DEFICIT = 'дефицит',
-//   INVENTORY = 'переучет',
+//   SURPLUS = 'surplus',
+//   DEFICIT = 'deficit',
+//   INVENTORY = 'recount',
 // }
 // const schema = z.object({
 //   id: z.array(z.string()),
@@ -45,7 +45,7 @@ function ItemBottom({items}:{items:IProductCheckProductreport }){
 export default function Page() {
   const [search] = useQueryState("search");
   const { meUser } = useMeStore();
-  const [type] = useQueryState("type", parseAsString.withDefault("переучет"));
+  const [type] = useQueryState("type", parseAsString.withDefault("recount"));
   // const [, setIds] = useQueryState('ids',parseAsJson(schema.parse))
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -53,13 +53,13 @@ export default function Page() {
       queries: {
         search: search || undefined,
         filialId: meUser?.filial?.id || "",
-        type: type == "all" ? undefined : type || "переучет",
+        type: type == "all" ? undefined : type || "recount",
       },
     });
 
     const productCheckProductreportQueries = {
       filialId: meUser?.filial?.id || undefined,
-      tip: type == "all"? undefined : type || "переучет",
+      tip: type == "all"? undefined : type || "recount",
     }
      const {data:productCheckProductreport} = useQuery({
       queryKey: [apiRoutes.productCheckProductReport,productCheckProductreportQueries],

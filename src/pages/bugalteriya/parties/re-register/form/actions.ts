@@ -35,7 +35,7 @@ export const useProdcutCheck = ({
     mutationFn: async ({ partiyaId, data, isMetric, isUpdate }) => {
       if(isUpdate){
         return await UpdateData(apiRoutes.excelSingle, partiyaId,  
-          data?.tip == "переучет" ?{
+          data?.tip == "recount" ?{
           check_count:data?.y
         }: {
           count:isMetric? undefined: data?.y,

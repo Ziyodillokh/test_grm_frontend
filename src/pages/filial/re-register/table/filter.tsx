@@ -68,10 +68,10 @@ export default function Filters() {
         className="border-border max-w-[150px] w-full border-r"
         options={[
           { label: "Остатка", value: "new" },
-          { label: "Переучёт", value: "переучет" },
-          { label: "Розница", value: "излишки" },
+          { label: "Переучёт", value: "recount" },
+          { label: "Розница", value: "surplus" },
         ]}
-        defaultValue={isFmanager ? "переучет" : "new"}
+        defaultValue={isFmanager ? "recount" : "new"}
         placeholder="Накладной"
         name="tip"
       />

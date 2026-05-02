@@ -86,8 +86,8 @@ export default function KentDetailPage() {
                   classNameContainer="z-[60]"
                   options={[
                     { label: "Hammasi", value: "clear" },
-                    { label: "Olingan", value: "Приход" },
-                    { label: "Qaytarilgan", value: "Расход" },
+                    { label: "Olingan", value: "income" },
+                    { label: "Qaytarilgan", value: "expense" },
                   ]}
                   defaultValue="clear"
                   name="type"
@@ -121,7 +121,7 @@ export default function KentDetailPage() {
           </div>
         ) : (
           items.map((item: any, i: number) => {
-            const isIncome = item.type === "Приход";
+            const isIncome = item.type === "income";
             const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
             const user = item.createdBy;
 

@@ -44,7 +44,7 @@ export const Columns: ColumnDef<TData>[] = [
   {
     id: "expense",
     accessorKey: "expense",
-    header: "Расход",
+    header: "expense",
     cell: ({ row }) => {
       return <>{row.original.expense}$</>;
     },

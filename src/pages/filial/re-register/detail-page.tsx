@@ -35,16 +35,16 @@ import {
 import EditProductDialog from "@/pages/reports/m-manager/reports-hub/re-inventory/edit-product-dialog";
 import ActionPageQrCode from "./form";
 
-type TabValue = "переучет" | "all" | "излишки" | "дефицит";
+type TabValue = "recount" | "all" | "surplus" | "deficit";
 
 const tabs: { value: TabValue; label: string }[] = [
-  { value: "переучет", label: "Qayta ro'yxat" },
+  { value: "recount", label: "Qayta ro'yxat" },
   { value: "all", label: "Qoldiq" },
-  { value: "излишки", label: "Ortiqcha" },
-  { value: "дефицит", label: "Kamomad" },
+  { value: "surplus", label: "Ortiqcha" },
+  { value: "deficit", label: "Kamomad" },
 ];
 
-const isInventoryTab = (tab: TabValue) => tab === "переучет";
+const isInventoryTab = (tab: TabValue) => tab === "recount";
 const tabToApiType = (tab: TabValue) => (tab === "all" ? undefined : tab);
 
 const defaultGridTemplate = "40px 1fr 1fr 70px 70px 140px 150px";
@@ -70,7 +70,7 @@ export default function FManagerPereuchotDetailPage() {
   const reportId = filialReportId || "";
   const queryClient = useQueryClient();
   const [search] = useQueryState("search", parseAsString);
-  const [activeTab, setActiveTab] = useState<TabValue>("переучет");
+  const [activeTab, setActiveTab] = useState<TabValue>("recount");
   const [scanOpen, setScanOpen] = useState(false);
   const [statusConfirm, setStatusConfirm] = useState<"close" | null>(null);
   const [editState, setEditState] = useState<{
@@ -214,7 +214,7 @@ export default function FManagerPereuchotDetailPage() {
 
             let displayCount: number = count;
             let displayVolume: number = y;
-            if (activeTab === "излишки") {
+            if (activeTab === "surplus") {
               if (isMetric) {
                 displayCount = 1;
                 displayVolume = Math.max(0, checkCount / 100 - y);
@@ -223,7 +223,7 @@ export default function FManagerPereuchotDetailPage() {
                 displayCount = diff;
                 displayVolume = diff * sizeX * y;
               }
-            } else if (activeTab === "дефицит") {
+            } else if (activeTab === "deficit") {
               if (isMetric) {
                 displayCount = 1;
                 displayVolume = Math.max(0, y - checkCount / 100);

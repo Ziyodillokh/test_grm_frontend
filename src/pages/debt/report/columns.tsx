@@ -20,15 +20,15 @@ export const Columns: ColumnDef<TData>[] = [
       const item = row.original;
       return (
         <div
-          className={`w-12 h-12 flex items-center justify-center ${item.type === "Приход" ? "bg-[#89A143] text-white" : "bg-[#E38157] text-white"}`}
+          className={`w-12 h-12 flex items-center justify-center ${item.type === "income" ? "bg-[#89A143] text-white" : "bg-[#E38157] text-white"}`}
         >
           {item?.tip === "order" ? (
-            item?.type === "Приход" ? (
+            item?.type === "income" ? (
               <ShoppingCart className={`h-6 w-6`} />
             ) : (
               <Delete className={`h-6 w-6`} />
             )
-          ) : item?.type === "Приход" ? (
+          ) : item?.type === "income" ? (
             <Plus className="h-6 w-6 " />
           ) : (
             <Minus className="h-6 w-6" />
@@ -44,9 +44,9 @@ export const Columns: ColumnDef<TData>[] = [
       const item = row.original;
       return (
         <span
-          className={`font-bold text-nowrap  text-[16px] ${item.type === "Приход" ? "text-[#89A143]" : "text-[#E38157]"}`}
+          className={`font-bold text-nowrap  text-[16px] ${item.type === "income" ? "text-[#89A143]" : "text-[#E38157]"}`}
         >
-          {item?.type === "Приход" ? "+" : "-"}
+          {item?.type === "income" ? "+" : "-"}
           {formatPrice(item?.price || 0)}$
         </span>
       );
@@ -60,7 +60,7 @@ export const Columns: ColumnDef<TData>[] = [
       return (
         <div>
           <Button
-            className={`${item?.type !== "Приход" ? "text-[#E38157] border-[#E38157] hover:text-[#E38157]" : "text-[#89A143] border-[#89A143] hover:text-[#89A143]"}  rounded-[70px] p-[14px] h-10 `}
+            className={`${item?.type !== "income" ? "text-[#E38157] border-[#E38157] hover:text-[#E38157]" : "text-[#89A143] border-[#89A143] hover:text-[#89A143]"}  rounded-[70px] p-[14px] h-10 `}
             variant={"outline"}
           >
             {item?.cashflow_type?.title}

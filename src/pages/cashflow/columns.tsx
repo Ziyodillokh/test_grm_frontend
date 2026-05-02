@@ -63,15 +63,15 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
       const item = row.original;
       return (
         <div
-          className={`w-12 h-12 flex items-center justify-center ${item.type === "Приход" ? "bg-[#89A143] text-white" : "bg-[#E38157] text-white"}`}
+          className={`w-12 h-12 flex items-center justify-center ${item.type === "income" ? "bg-[#89A143] text-white" : "bg-[#E38157] text-white"}`}
         >
           {item?.tip === "order" ? (
-              item?.type === "Приход"?
+              item?.type === "income"?
                 <ShoppingCart  className={`h-6 w-6`} />:
                 <Delete className={`h-6 w-6`} />
 
           ) :
-           item?.type === "Приход" ? <Plus className="h-6 w-6 "/> :  <Minus className="h-6 w-6" />
+           item?.type === "income" ? <Plus className="h-6 w-6 "/> :  <Minus className="h-6 w-6" />
           }
         </div>
       );
@@ -84,10 +84,10 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
       const item = row.original;
       return (
         <span
-          className={`font-bold text-[16px] ${item.type === "Приход" ? "text-[#89A143]" : "text-[#E38157]"}`}
+          className={`font-bold text-[16px] ${item.type === "income" ? "text-[#89A143]" : "text-[#E38157]"}`}
         >
-          {item?.type === "Приход" ? "+" : "-"}
-          {item?.tip =="order" && item?.type != "Расход"  ? formatPrice(item?.order?.price || 0) :formatPrice(item?.price || 0) }$
+          {item?.type === "income" ? "+" : "-"}
+          {item?.tip =="order" && item?.type != "expense"  ? formatPrice(item?.order?.price || 0) :formatPrice(item?.price || 0) }$
         </span>
       );
     },
@@ -98,7 +98,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
     cell: ({ row }) => {
       const item = row.original;
       return (
-        item.type === "Приход"?
+        item.type === "income"?
         <span
           className={`font-bold text-[16px]  text-[#58A0C6]`}
         >
@@ -116,7 +116,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
       return (
       <div >
           <Button
-          className={`${item?.type !== "Приход" ? "text-[#E38157] border-[#E38157] hover:text-[#E38157]" : "text-[#89A143] border-[#89A143] hover:text-[#89A143]"}  rounded-[70px] p-[14px] h-10 `}
+          className={`${item?.type !== "income" ? "text-[#E38157] border-[#E38157] hover:text-[#E38157]" : "text-[#89A143] border-[#89A143] hover:text-[#89A143]"}  rounded-[70px] p-[14px] h-10 `}
           variant={"outline"}
         >
           {item?.cashflow_type?.title}
@@ -331,7 +331,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
             </DropdownMenuItem>
           )}
           {/* PENDING order → Bekor qilish */}
-          {row?.original?.tip == "order" && row?.original?.status === "pending" && row?.original?.type != "Расход" && (
+          {row?.original?.tip == "order" && row?.original?.status === "pending" && row?.original?.type != "expense" && (
             <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
               <div
                 onClick={loading ? () => {} : () => RejectFunt()}
@@ -347,7 +347,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
             </DropdownMenuItem>
           )}
           {/* APPROVED order → Qaytarish */}
-          {row?.original?.tip == "order" && row?.original?.status === "approved" && row?.original?.order?.status !== "returned" && row?.original?.type != "Расход" && (
+          {row?.original?.tip == "order" && row?.original?.status === "approved" && row?.original?.order?.status !== "returned" && row?.original?.type != "expense" && (
             <DropdownMenuItem className="flex items-center gap-2 py-2 cursor-pointer">
               <div
                 onClick={loading ? () => {} : () => ReturnFunt()}

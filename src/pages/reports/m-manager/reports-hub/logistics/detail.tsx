@@ -100,7 +100,7 @@ export default function LogisticsDetailPage() {
           </div>
         ) : (
           items.map((item: LogisticsDetailItem) => {
-            const isIncome = item.type === "Приход";
+            const isIncome = item.type === "income";
             const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
 
             const avatarName = item.createdBy?.firstName || "?";

@@ -56,7 +56,7 @@ export default function BossCashflowPage() {
       createdByRole,
       reportMonth: month,
       reportYear: year,
-      type: flow === "income" ? "Приход" : flow === "expense" ? "Расход" : undefined,
+      type: flow === "income" ? "income" : flow === "expense" ? "expense" : undefined,
       cashflowSlug: cashflowSlug || undefined,
     });
 
@@ -95,7 +95,7 @@ export default function BossCashflowPage() {
       createdByRole,
       reportMonth: month,
       reportYear: year,
-      type: flow === "income" ? "Приход" : flow === "expense" ? "Расход" : undefined,
+      type: flow === "income" ? "income" : flow === "expense" ? "expense" : undefined,
       cashflowSlug: cashflowSlug || undefined,
     };
     const params = `?${qs.stringify(query, { skipNulls: true })}`;
@@ -293,7 +293,7 @@ export default function BossCashflowPage() {
 
 /* ── Cashflow row (figma px-perfect) ── */
 function BossCashflowRow({ item }: { item: any }) {
-  const isIncome = item.type === "Приход";
+  const isIncome = item.type === "income";
   const price = Number(item.price || 0);
   const sign = isIncome ? "+" : "-";
   const amountColor = isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]";

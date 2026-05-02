@@ -37,7 +37,7 @@ export default function ItemsPage() {
     "tip",
     parseAsString.withDefault(
       meUser?.position?.role == 7 || meUser?.position.role == 4
-        ? "переучет"
+        ? "recount"
         : "new"
     )
   );
@@ -74,9 +74,9 @@ export default function ItemsPage() {
     queries: {
       search: search || undefined,
       // type: tip || "default",
-      type: "дефицит",
+      type: "deficit",
     },
-    enabled: Boolean(tip == "излишки"),
+    enabled: Boolean(tip == "surplus"),
   });
 
   const { data: PartiyaReportData } = usePartiyaReport({
@@ -89,9 +89,9 @@ export default function ItemsPage() {
   const { data: BootomPartiyaReportData } = usePartiyaReport({
     id: filialReportId || "",
     queries: {
-      type: "дефицит",
+      type: "deficit",
     },
-    enabled: Boolean(tip == "излишки"),
+    enabled: Boolean(tip == "surplus"),
   });
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
@@ -104,7 +104,7 @@ export default function ItemsPage() {
           (col) =>
             col.header !== "Сумма" &&
             col.header !== "Зав.цена" &&
-            col.header !== "Расход"
+            col.header !== "expense"
         );
       } else {
         return ColumnsColaction;
@@ -131,7 +131,7 @@ export default function ItemsPage() {
           ischeckble={false}
           isNumberble={true}
           className={
-            tip == "излишки"
+            tip == "surplus"
               ? "h-[calc(50vh-118px)] scrollCastom"
               : "h-[calc(100vh-183px)] scrollCastom"
           }
@@ -142,14 +142,14 @@ export default function ItemsPage() {
         />
 
         {PartiyaReportData ? <ItemBottom items={PartiyaReportData} /> : ""}
-        {tip == "излишки" && (
+        {tip == "surplus" && (
           <DataTable
             isLoading={BottomIsLoading}
             columns={LocalColums}
             ischeckble={false}
             isNumberble={true}
             className={
-              tip == "излишки"
+              tip == "surplus"
                 ? "h-[calc(50vh-110px)]  scrollCastom"
                 : "h-[calc(100vh-165px)] scrollCastom"
             }
@@ -159,7 +159,7 @@ export default function ItemsPage() {
             isFetchingNextPage={BottomIsFetchingNextPage}
           />
         )}
-        {BootomPartiyaReportData && tip == "излишки" ? (
+        {BootomPartiyaReportData && tip == "surplus" ? (
           <ItemBottom items={BootomPartiyaReportData} />
         ) : (
           ""

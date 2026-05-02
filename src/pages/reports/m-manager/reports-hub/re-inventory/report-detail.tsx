@@ -37,16 +37,16 @@ import {
 import AddProductDialog from "./add-product-dialog";
 import EditProductDialog from "./edit-product-dialog";
 
-type TabValue = "переучет" | "all" | "излишки" | "дефицит";
+type TabValue = "recount" | "all" | "surplus" | "deficit";
 
 const tabs: { value: TabValue; label: string }[] = [
-  { value: "переучет", label: "Qayta ro'yxat" },
+  { value: "recount", label: "Qayta ro'yxat" },
   { value: "all", label: "Qoldiq" },
-  { value: "излишки", label: "Ortiqcha" },
-  { value: "дефицит", label: "Kamomad" },
+  { value: "surplus", label: "Ortiqcha" },
+  { value: "deficit", label: "Kamomad" },
 ];
 
-const isInventoryTab = (tab: TabValue) => tab === "переучет";
+const isInventoryTab = (tab: TabValue) => tab === "recount";
 const tabToApiType = (tab: TabValue) => (tab === "all" ? undefined : tab);
 
 // Qayta ro'yxat tabi + report open bo'lsa — tahrirlash uchun 40px column qo'shiladi
@@ -72,7 +72,7 @@ export default function ReInventoryReportDetailPage() {
   const { reportId } = useParams();
   const queryClient = useQueryClient();
   const [search] = useQueryState("search", parseAsString);
-  const [activeTab, setActiveTab] = useState<TabValue>("переучет");
+  const [activeTab, setActiveTab] = useState<TabValue>("recount");
   const [addOpen, setAddOpen] = useState(false);
   const [editState, setEditState] = useState<{
     reInventoryId: string;
@@ -273,7 +273,7 @@ export default function ReInventoryReportDetailPage() {
             // Ortiqcha/Kamomad tablarda "Soni" va "Hajmi" farqni ko'rsatadi, registrdagi qiymatni emas
             let displayCount: number = count;
             let displayVolume: number = y;
-            if (activeTab === "излишки") {
+            if (activeTab === "surplus") {
               // surplus: check_count > count (non-metric) / check_count > y*100 (metric)
               if (isMetric) {
                 displayCount = 1;
@@ -283,7 +283,7 @@ export default function ReInventoryReportDetailPage() {
                 displayCount = diff;
                 displayVolume = diff * sizeX * y;
               }
-            } else if (activeTab === "дефицит") {
+            } else if (activeTab === "deficit") {
               // deficit: count > check_count (non-metric) / y*100 > check_count (metric)
               if (isMetric) {
                 displayCount = 1;

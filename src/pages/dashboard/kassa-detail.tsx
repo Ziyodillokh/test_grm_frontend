@@ -35,10 +35,10 @@ const tipFilter: Record<string, string> = {
   debt: "debt",
 };
 const typeFilter: Record<string, string> = {
-  income: "Приход",
-  expense: "Расход",
-  sale: "Приход",
-  return: "Расход",
+  income: "income",
+  expense: "expense",
+  sale: "income",
+  return: "expense",
 };
 
 import { CashflowRow, cashflowGridTemplate, cashflowLabels } from "@/components/cashflow-row";

@@ -18,7 +18,7 @@ export default function FormContent() {
     "tip",
     parseAsString.withDefault(
       meUser?.position?.role == 7 || meUser?.position.role == 4
-        ? "переучет"
+        ? "recount"
         : "new"
     )
   );
@@ -55,7 +55,7 @@ export default function FormContent() {
             setBarCode("new");
           }}
           label="code"
-          disabled={tip !== "переучет" || reportStatus == "closed"}
+          disabled={tip !== "recount" || reportStatus == "closed"}
         />
          <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
@@ -88,7 +88,7 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="collection"
           label="collection"
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
         />
         <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
@@ -98,7 +98,7 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="model"
           label="model"
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
         />
       <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
@@ -110,7 +110,7 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="isMetric"
           label="isMetric"
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
         />
         <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
@@ -119,7 +119,7 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="shape"
           label="shape"
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
         />
         <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
@@ -128,14 +128,14 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="size"
           label="size"
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
         />
         <FormTextInput
           type="number"
           classNameInput="h-[28px] p-2"
           name="value"
           placeholder={isMetric?.value === "true"   ? "Длина" : "count"}
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
           label={isMetric?.value === "true" ? "Длина" : "count"}
           
         />
@@ -146,7 +146,7 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="color"
           label="color"
-          disabled={tip !== "переучет"|| reportStatus == "closed"}
+          disabled={tip !== "recount"|| reportStatus == "closed"}
         />
         <FormComboboxDemoInput
           fieldNames={{ value: "id", label: "title" }}
@@ -155,11 +155,11 @@ export default function FormContent() {
           classNameChild="h-[28px] p-2"
           placeholder="style"
           label="style"
-          disabled={tip !== "переучет" || reportStatus == "closed"}
+          disabled={tip !== "recount" || reportStatus == "closed"}
         />
       </div>
       <div className="bg-sidebar border-y text-primary border-border  h-[44px]  flex  items-center justify-end  ">
-        {tip == "переучет" && reportStatus !== "closed"  &&<>
+        {tip == "recount" && reportStatus !== "closed"  &&<>
           <Button
             className={`h-full w-1/2 text-primary justify-center font-[16px] gap-1.5  border-none`}
             variant={"outline"}

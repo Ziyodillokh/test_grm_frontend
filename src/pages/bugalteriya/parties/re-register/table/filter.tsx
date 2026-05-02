@@ -26,7 +26,7 @@ interface Props {
   onAdd?: () => void;
 }
 
-const DEFAULT_TIP_FOR_W = "переучет";
+const DEFAULT_TIP_FOR_W = "recount";
 const DEFAULT_TIP_FOR_M = "new";
 
 export default function Filters({ partiyaStatus = "new", check, totals, onAdd }: Props) {
@@ -45,21 +45,21 @@ export default function Filters({ partiyaStatus = "new", check, totals, onAdd }:
   // Tab tartibi rolga qarab
   const tabs = isWManager
     ? [
-        { value: "переучет", label: "Qabul" },
+        { value: "recount", label: "Qabul" },
         { value: "new", label: "Ro'yxat" },
-        { value: "излишки", label: "Ortiqcha" },
-        { value: "дефицит", label: "Kamomad" },
+        { value: "surplus", label: "Ortiqcha" },
+        { value: "deficit", label: "Kamomad" },
       ]
     : [
         { value: "new", label: "Ro'yxat" },
-        { value: "переучет", label: "Qabul" },
-        { value: "излишки", label: "Ortiqcha" },
-        { value: "дефицит", label: "Kamomad" },
+        { value: "recount", label: "Qabul" },
+        { value: "surplus", label: "Ortiqcha" },
+        { value: "deficit", label: "Kamomad" },
       ];
 
   // +Qo'shish faqat: M-manager → Ro'yxat (new); W-manager → Qabul (переучет)
   const showAdd =
-    (isMManager && tip === "new") || (isWManager && tip === "переучет");
+    (isMManager && tip === "new") || (isWManager && tip === "recount");
 
   // Status change button (mavjud logika saqlandi)
   const changeStatus = useMemo(() => {

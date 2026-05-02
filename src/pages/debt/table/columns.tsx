@@ -34,7 +34,7 @@ export const ClientsColumns: ColumnDef<TData>[] = [
   },
 
   {
-    header: "Дано",
+    header: "given",
     accessorKey: "given",
       cell: ({ row }) => {
         return <p className="text-[#89A143]">{row.original?.given}</p>;

@@ -32,7 +32,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
     queryFn: () =>
       getAllData<CashflowType[], object>(
         "/cashflow-types/by/managers/both",
-        { type: item?.type === "Приход" ? "in" : "out" }
+        { type: item?.type === "income" ? "in" : "out" }
       ),
     enabled: isOpen,
   });
@@ -90,7 +90,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
     updateCashflow(payload);
   };
 
-  const isIncome = item?.type === "Приход";
+  const isIncome = item?.type === "income";
   const headerColor = isIncome ? "bg-[#89A143]" : "bg-[#E38157]";
 
   return (

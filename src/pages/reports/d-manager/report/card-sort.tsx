@@ -16,7 +16,7 @@ import { TKassareportData } from "@/pages/report/type";
 export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,isAddable?:boolean,SortData?:TKassareportData}) {
   const queryClient = useQueryClient();
   const [sorttype, setSortType] = useQueryState("sorttype", parseAsString);
-  const [type, setType] = useState<string>("Приход");
+  const [type, setType] = useState<string>("income");
   const [typePay, setTypePay] = useState<string>("cash");
   const isReportLoading = false;
   const [comment, setComment] = useState<string>("");
@@ -65,7 +65,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
       ),
       button: (
         <div
-          onClick={() => setType("Приход")}
+          onClick={() => setType("income")}
           className="bg-card p-4 rounded-sm"
         >
           <Plus size={20} color="#5d5d53" className="opacity-100" />
@@ -104,7 +104,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
       await api.post(apiRoutes.cashflowDealerIncome, body);
 
       toast.success(
-        `${type === "Приход" ? "Приход" : "Задолжность"} успешно добавлен`
+        `${type === "income" ? "income" : "Задолжность"} успешно добавлен`
       );
 
       setComment("");
@@ -179,11 +179,11 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
 
       <DialogContent className="costomModal border-0 gap-[0px] min-w-[494px] p-1 rounded-sm">
         <div
-          className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[48px]  ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+          className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[48px]  ${type === "income" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
         >
-          {type === "Приход" ? "Добавление прихода" : "Добавление  задолжность"}
+          {type === "income" ? "Добавление прихода" : "Добавление  задолжность"}
         </div>
-        <div className={ type === "Приход" ?`grid grid-cols-2 gap-1`:''}>
+        <div className={ type === "income" ?`grid grid-cols-2 gap-1`:''}>
           <div className="w-full">
             <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
               <Input
@@ -206,7 +206,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
               type="datetime-local"
               className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]"
             />
-           { type === "Приход" ? <div className="text-center mt-1 w-full bg-input p-1  rounded-sm">
+           { type === "income" ? <div className="text-center mt-1 w-full bg-input p-1  rounded-sm">
               <div className="flex items-center justify-center mt-[18px] mb-2">
                 <Banknote />
               </div>
@@ -233,18 +233,18 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
             placeholder="Комментария"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className={`${type === "Приход" ? " h-full":""} w-full border-none focus:border-none outline-none mt-0.5  text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5`}
+            className={`${type === "income" ? " h-full":""} w-full border-none focus:border-none outline-none mt-0.5  text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5`}
           />
         </div>
         <Button
           onClick={handleSubmit}
           disabled={loading}
           type="submit"
-          className={`p-5 mt-[6px]   rounded-sm h-[50px] ${type === "Приход" ? "bg-[#89A143] hover:bg-[#799132]" : "bg-[#E38157] hover:bg-[#D27047]"} text-white ${false ? "opacity-70" : ""}`}
+          className={`p-5 mt-[6px]   rounded-sm h-[50px] ${type === "income" ? "bg-[#89A143] hover:bg-[#799132]" : "bg-[#E38157] hover:bg-[#D27047]"} text-white ${false ? "opacity-70" : ""}`}
         >
           {loading
             ? "Добавление..."
-            : `Добавить в ${type === "Приход" ? "приход" : "задолжность"}`}
+            : `Добавить в ${type === "income" ? "приход" : "задолжность"}`}
         </Button>
       </DialogContent>
     </Dialog>

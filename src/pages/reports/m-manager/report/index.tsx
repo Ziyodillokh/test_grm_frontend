@@ -51,10 +51,10 @@ export default function ReportPage() {
   };
 
   const typeFilter = {
-    income: "Приход",
-    expense: "Расход",
-    sale: "Приход",
-    return: "Расход",
+    income: "income",
+    expense: "expense",
+    sale: "income",
+    return: "expense",
   };
 
   const { id, kassaId } = useParams();
@@ -76,7 +76,7 @@ export default function ReportPage() {
 
   // Cashflow create dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<"Приход" | "Расход">("Приход");
+  const [dialogType, setDialogType] = useState<"income" | "expense">("income");
   const [selectedType, setSelectedType] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [cfDate, setCfDate] = useState("");
@@ -95,7 +95,7 @@ export default function ReportPage() {
   const { data: cfTypes } = useQuery({
     queryKey: ["/cashflow-types/by/managers", meUser?.id, dialogType],
     queryFn: () => getAllData<CashflowType[], object>("/cashflow-types/by/managers/" + (meUser?.id || "both"), {
-      type: dialogType === "Приход" ? "in" : "out",
+      type: dialogType === "income" ? "in" : "out",
     }),
     enabled: dialogOpen && !!meUser?.id,
   });
@@ -124,7 +124,7 @@ export default function ReportPage() {
     enabled: Boolean(isCustomsSelected),
   });
 
-  const openCfDialog = (type: "Приход" | "Расход") => {
+  const openCfDialog = (type: "income" | "expense") => {
     setDialogType(type);
     setSelectedType("");
     setPrice(0);
@@ -160,7 +160,7 @@ export default function ReportPage() {
         logisticsId: isLogisticsSelected ? logisticsId : undefined,
         customsId: isCustomsSelected ? customsId : undefined,
       });
-      toast.success(`${dialogType === "Приход" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
+      toast.success(`${dialogType === "income" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
       queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
@@ -346,13 +346,13 @@ export default function ReportPage() {
                 meUser?.position?.role != 12 ? (
                   <>
                     <Button
-                      onClick={() => openCfDialog("Приход")}
+                      onClick={() => openCfDialog("income")}
                       className="bg-[#47B13C] hover:bg-[#3da032] text-white px-5 h-[42px] rounded-sm text-[14px]"
                     >
                       <Plus size={16} className="mr-1" /> Kirim qo'shish
                     </Button>
                     <Button
-                      onClick={() => openCfDialog("Расход")}
+                      onClick={() => openCfDialog("expense")}
                       className="bg-[#E38157] hover:bg-[#D27047] text-white px-5 h-[42px] rounded-sm text-[14px]"
                     >
                       <Plus size={16} className="mr-1" /> Chiqim qo'shish
@@ -440,8 +440,8 @@ export default function ReportPage() {
           {/* Cashflow create dialog */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent className="sm:max-w-[640px] costomModal rounded-sm px-4 pb-4">
-              <div className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[45px] ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}>
-                {dialogType === "Приход" ? "Kirim qo'shish" : "Chiqim qo'shish"}
+              <div className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[45px] ${dialogType === "income" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}>
+                {dialogType === "income" ? "Kirim qo'shish" : "Chiqim qo'shish"}
               </div>
               <div className="grid grid-cols-2 gap-1">
                 <div className={`w-full grid ${cfTypes && cfTypes.length < 6 ? "grid-cols-2" : "grid-cols-3"} gap-0.5`}>
@@ -584,10 +584,10 @@ export default function ReportPage() {
               <Button
                 onClick={handleCfSubmit}
                 disabled={isSubmitting}
-                className={`p-5 py-6 rounded-sm ${dialogType === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+                className={`p-5 py-6 rounded-sm ${dialogType === "income" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
               >
                 {isSubmitting ? <Spinner className="h-4 w-4 mr-2" /> : null}
-                {isSubmitting ? "Qo'shilmoqda..." : `${dialogType === "Приход" ? "Kirimga" : "Chiqimga"} qo'shish`}
+                {isSubmitting ? "Qo'shilmoqda..." : `${dialogType === "income" ? "Kirimga" : "Chiqimga"} qo'shish`}
               </Button>
             </DialogContent>
           </Dialog>

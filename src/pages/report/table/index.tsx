@@ -21,10 +21,10 @@ export default function Page() {
   }
 
   const typeFilter = {
-    income:"Приход",
-    expense:"Расход",
-    sale:"Приход",
-    return:"Расход",
+    income:"income",
+    expense:"expense",
+    sale:"income",
+    return:"expense",
   }
 
   const [id] = useQueryState(

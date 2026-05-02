@@ -82,7 +82,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     },
   },
   {
-    header: "Приход",
+    header: "income",
     id: "income",
     cell: ({ row }) => {
       const item = row.original;
@@ -90,7 +90,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     },
   },
   {
-    header: "Расход",
+    header: "expense",
     id: "expense",
     cell: ({ row }) => {
       const item = row.original;

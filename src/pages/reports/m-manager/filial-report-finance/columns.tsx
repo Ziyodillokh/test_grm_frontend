@@ -95,7 +95,7 @@ export const KassaColumns: ColumnDef<TData>[] = [
     },
   },
   {
-    header: "Приход",
+    header: "income",
     id: "income",
     cell: ({ row }) => {
       const item = row.original;
@@ -103,7 +103,7 @@ export const KassaColumns: ColumnDef<TData>[] = [
     },
   },
   {
-    header: "Расход",
+    header: "expense",
     id: "expense",
     cell: ({ row }) => {
       const item = row.original;

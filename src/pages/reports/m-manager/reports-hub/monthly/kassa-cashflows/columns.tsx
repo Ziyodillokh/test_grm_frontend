@@ -18,7 +18,7 @@ export const CashflowColumns: ColumnDef<any>[] = [
     header: "Summa",
     cell: ({ row }) => {
       const item = row.original;
-      const isIncome = item?.type === "Приход";
+      const isIncome = item?.type === "income";
       const price = item?.price || item?.order?.price || 0;
       const terminal = item?.order?.plasticSum || 0;
 
@@ -58,7 +58,7 @@ export const CashflowColumns: ColumnDef<any>[] = [
     header: "Turi",
     cell: ({ row }) => {
       const item = row.original;
-      const isIncome = item?.type === "Приход";
+      const isIncome = item?.type === "income";
       const dotColor = item?.tip === "order" ? "bg-[#89A143]" : isIncome ? "bg-[#89A143]" : "bg-[#E38157]";
 
       return (

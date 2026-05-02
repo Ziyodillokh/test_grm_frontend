@@ -62,7 +62,7 @@ export default function CardSort({
   const [kassaReports] = useQueryState("kassaReports");
 
   const [sorttype, setSortType] = useQueryState("tip", parseAsString);
-  const [type, setType] = useState<string>("Приход");
+  const [type, setType] = useState<string>("income");
   const [cashflow_type, setCashflow_type] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
@@ -87,7 +87,7 @@ export default function CardSort({
   });
 
   const { data: types } = useDataCashflowTypes({
-    queries: { limit: 20, page: 1, type: type == "Приход" ? "in" : "out" },
+    queries: { limit: 20, page: 1, type: type == "income" ? "in" : "out" },
     enabled: Boolean(dialogOpen),
   });
 
@@ -130,7 +130,7 @@ export default function CardSort({
   }
   const columns = [
     {
-      title: "Приход",
+      title: "income",
       value: "income",
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
@@ -140,14 +140,14 @@ export default function CardSort({
       button: isAddible ? (
         <div
           onClick={() => {
-            setType("Приход");
+            setType("income");
             setDialogOpen(true);
           }}
           className="border-border   border p-4 rounded-sm"
         >
           <Plus
             size={20}
-            color={sorttype == "Приход" ? "#f0f0e5" : "#5D5D53"}
+            color={sorttype == "income" ? "#f0f0e5" : "#5D5D53"}
           />
         </div>
       ) : (
@@ -186,7 +186,7 @@ export default function CardSort({
       ),
     },
     {
-      title: "Расход",
+      title: "expense",
       value: "expense",
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
@@ -196,14 +196,14 @@ export default function CardSort({
       button: isAddible ? (
         <div
           onClick={() => {
-            setType("Расход");
+            setType("expense");
             setDialogOpen(true);
           }}
           className="border-border   border p-4 rounded-sm"
         >
           <Plus
             size={20}
-            color={sorttype == "Расход" ? "#f0f0e5" : "#5D5D53"}
+            color={sorttype == "expense" ? "#f0f0e5" : "#5D5D53"}
           />
         </div>
       ) : (
@@ -449,7 +449,7 @@ export default function CardSort({
                   <DialogTrigger
                     onClick={(event) => {
                       event.stopPropagation();
-                      setType(e.title === "Расход" ? "Расход" : "Приход");
+                      setType(e.title === "expense" ? "expense" : "income");
                     }}
                   >
                     {e.button as React.ReactNode}
@@ -464,9 +464,9 @@ export default function CardSort({
 
         <DialogContent className="sm:max-w-[640px]  costomModal rounded-sm px-4 pb-4">
           <div
-            className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[45px]  ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
+            className={`p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[45px]  ${type === "income" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white`}
           >
-            {type === "Приход" ? "Добавление прихода" : "Добавление расхода"}
+            {type === "income" ? "Добавление прихода" : "Добавление расхода"}
           </div>
           <div className="grid grid-cols-2 gap-1">
             <div
@@ -630,11 +630,11 @@ export default function CardSort({
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`p-5 py-6 rounded-sm ${type === "Приход" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white ${isSubmitting ? "opacity-70" : ""}`}
+            className={`p-5 py-6 rounded-sm ${type === "income" ? "bg-[#89A143]" : "bg-[#E38157]"} text-white ${isSubmitting ? "opacity-70" : ""}`}
           >
             {isSubmitting
               ? "Добавление..."
-              : `Добавить в ${type === "Приход" ? "приход" : "расход"}`}
+              : `Добавить в ${type === "income" ? "приход" : "расход"}`}
           </Button>
         </DialogContent>
       </Dialog>

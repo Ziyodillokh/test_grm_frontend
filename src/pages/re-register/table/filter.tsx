@@ -17,9 +17,9 @@ export default function Filters() {
       <FilterSelect
         className="border-border border-r"
         options={[
-          { label: "Переучёт", value: "переучет" },
-          { label: "Недостатки", value: "дефицит" },
-          { label: "Личные", value: "излишки" },
+          { label: "Переучёт", value: "recount" },
+          { label: "Недостатки", value: "deficit" },
+          { label: "Личные", value: "surplus" },
           { label: "Остатки", value: "all" },
         ]}
         placeholder="Переучёт"

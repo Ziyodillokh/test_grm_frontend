@@ -40,7 +40,7 @@ const ActionPageQrCode = () => {
     const bc = initialEditProduct?.bar_code;
     const computedCount = bc?.isMetric
       ? (initialEditProduct?.y || 0) * 100
-      : initialTip === "переучет"
+      : initialTip === "recount"
       ? initialEditProduct?.check_count || 0
       : initialEditProduct?.count || 0;
     return {
@@ -72,7 +72,7 @@ const ActionPageQrCode = () => {
   );
   const [tip] = useQueryState(
     "tip",
-    parseAsString.withDefault((meUser?.position?.role == 7 || meUser?.position.role == 4) ? "переучет" : "new")
+    parseAsString.withDefault((meUser?.position?.role == 7 || meUser?.position.role == 4) ? "recount" : "new")
   );
   const [idLoc, setId] = useQueryState("id");
   const { id } = useParams();
@@ -182,7 +182,7 @@ const ActionPageQrCode = () => {
     const computedCount = Number(
       bc?.isMetric
         ? (editProduct?.y || 0) * 100
-        : tip === "переучет"
+        : tip === "recount"
         ? editProduct?.check_count || 0
         : editProduct?.count || 0
     );

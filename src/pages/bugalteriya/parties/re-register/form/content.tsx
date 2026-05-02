@@ -28,7 +28,7 @@ export default function FormContent() {
   const [tip] = useQueryState(
     "tip",
     parseAsString.withDefault(
-      meuserIsW(meUser?.position?.role) ? "переучет" : "new"
+      meuserIsW(meUser?.position?.role) ? "recount" : "new"
     )
   );
 
@@ -38,7 +38,7 @@ export default function FormContent() {
   const canSubmit =
     (role === 9 && tip === "new") ||
     role === 5 ||
-    ((role === 7 || role === 4) && tip === "переучет");
+    ((role === 7 || role === 4) && tip === "recount");
 
   const editProduct = useEditPartiyaProductStore((s) => s.product);
   const isEditing = !!editProduct;

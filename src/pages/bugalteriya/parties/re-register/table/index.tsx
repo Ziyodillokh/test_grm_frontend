@@ -28,13 +28,13 @@ const COLLECTION_GRID = "30px 1fr 80px 100px 110px 130px 130px 130px";
 function getMiqdor(row: TData, tip: string) {
   const isMetric = row?.bar_code?.isMetric;
   if (isMetric) {
-    if (tip === "излишки") return (row.check_count || 0) - (row.y || 0) * 100;
-    if (tip === "дефицит") return (row.y || 0) * 100 - (row.check_count || 0);
+    if (tip === "surplus") return (row.check_count || 0) - (row.y || 0) * 100;
+    if (tip === "deficit") return (row.y || 0) * 100 - (row.check_count || 0);
     return (row.y || 0) * 100;
   }
-  if (tip === "переучет") return row.check_count || 0;
-  if (tip === "дефицит") return (row.count || 0) - (row.check_count || 0);
-  if (tip === "излишки") return (row.check_count || 0) - (row.count || 0);
+  if (tip === "recount") return row.check_count || 0;
+  if (tip === "deficit") return (row.count || 0) - (row.check_count || 0);
+  if (tip === "surplus") return (row.check_count || 0) - (row.count || 0);
   return row.count || 0;
 }
 
@@ -47,7 +47,7 @@ export default function ItemsPage() {
 
   const [tip] = useQueryState(
     "tip",
-    parseAsString.withDefault(isWManager ? "переучет" : "new")
+    parseAsString.withDefault(isWManager ? "recount" : "new")
   );
   const [type] = useQueryState("type", parseAsString.withDefault("default"));
   const [, setBarCode] = useQueryState("barcode");
@@ -117,8 +117,8 @@ export default function ItemsPage() {
   //   W-manager: faqat Qabul (переучет)
   //   M-manager: Ro'yxat (new) va Qabul (переучет); Kamomad (дефицит) va Ortiqcha (излишки) read-only
   const canModify = isWManager
-    ? tip === "переучет"
-    : tip === "new" || tip === "переучет";
+    ? tip === "recount"
+    : tip === "new" || tip === "recount";
 
   // Tahrirlash — 3 nuqta menyusidan ishga tushadi (row click emas)
   const handleEdit = (row: TData) => {
@@ -129,7 +129,7 @@ export default function ItemsPage() {
     } as any);
     setBarCode(row?.bar_code?.code || null);
     setProductId(row?.id);
-    if (tip == "переучет") {
+    if (tip == "recount") {
       setCount(row?.bar_code?.isMetric ? (row?.y || 0) * 100 : row?.check_count || 0);
     } else {
       setCount(row?.bar_code?.isMetric ? (row?.y || 0) * 100 : row?.count || 0);
@@ -261,7 +261,7 @@ export default function ItemsPage() {
                           url={apiRoutes.excelProducts}
                           ShowPreview={false}
                           ShowUpdate={false}
-                          ShowDelete={tip !== "излишки"}
+                          ShowDelete={tip !== "surplus"}
                           costomDelete={() => deleteRow(row.id)}
                           id={row.id}
                           refetchUrl={apiRoutes.excelProducts}

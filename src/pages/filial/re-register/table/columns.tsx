@@ -49,16 +49,16 @@ export const Columns: ColumnDef<TData>[] = [
         "tip",
         parseAsString.withDefault(
           meUser?.position?.role == 7 || meUser?.position.role == 4
-            ? "переучет"
+            ? "recount"
             : "new"
         )
       );
       return (
         <p>
           {row.original?.bar_code?.isMetric ? (
-            tip === "излишки" ? (
+            tip === "surplus" ? (
               row.original?.check_count - row.original?.y * 100
-            ).toFixed(0) : tip === "дефицит" ? (
+            ).toFixed(0) : tip === "deficit" ? (
               row.original?.y * 100 - row.original?.check_count
             ).toFixed(0) : tip === "new" ? (
               row.original?.y * 100
@@ -67,10 +67,10 @@ export const Columns: ColumnDef<TData>[] = [
             ).toFixed(0)
           ) : (
             <>
-              {tip === "переучет" && row.original?.check_count}
-              {tip === "дефицит" &&
+              {tip === "recount" && row.original?.check_count}
+              {tip === "deficit" &&
                 (row.original?.count - row.original?.check_count).toFixed(0)}
-              {tip === "излишки" &&
+              {tip === "surplus" &&
                 (row.original?.check_count - row.original?.count).toFixed(0)}
               {tip === "new" && row.original?.count}
             </>
@@ -89,25 +89,25 @@ export const Columns: ColumnDef<TData>[] = [
         "tip",
         parseAsString.withDefault(
           meUser?.position?.role == 7 || meUser?.position.role == 4
-            ? "переучет"
+            ? "recount"
             : "new"
         )
       );
       const volume = row.original?.bar_code?.isMetric
-        ? ((tip === "излишки"
+        ? ((tip === "surplus"
           ? row.original?.check_count - (row.original?.y * 100)
-          : tip === "дефицит"
+          : tip === "deficit"
             ? row.original?.y * 100 - row.original?.check_count
             : tip === "new"
               ? row.original?.y * 100
               : row.original?.check_count) /
           100) *
         (row?.original?.bar_code?.size?.x || 1)
-        : (tip === "переучет"
+        : (tip === "recount"
           ? row.original?.check_count
-          : tip === "дефицит"
+          : tip === "deficit"
             ? row.original?.count - row.original?.check_count
-            : tip === "излишки"
+            : tip === "surplus"
               ? row.original?.check_count - row.original?.count
               : tip === "new"
                 ? row.original?.count
@@ -156,11 +156,11 @@ export const Columns: ColumnDef<TData>[] = [
         "tip",
         parseAsString.withDefault(
           meUser?.position?.role == 7 || meUser?.position.role == 4
-            ? "переучет"
+            ? "recount"
             : "new"
         )
       );
-      return tip == "переучет" ? (
+      return tip == "recount" ? (
         <TableAction
           url={apiRoutes.reInventoryGetByFilialReport}
           ShowPreview={false}
@@ -235,7 +235,7 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
   //   },
   // },
   // {
-  //   header: "Расход",
+  //   header: "expense",
   //   cell: ({ row }) => {
   //     return <p>{row.original?.expence}</p>;
   //   },
@@ -312,11 +312,11 @@ export const ColumnsColaction: ColumnDef<TData>[] = [
         "tip",
         parseAsString.withDefault(
           meUser?.position?.role == 7 || meUser?.position.role == 4
-            ? "переучет"
+            ? "recount"
             : "new"
         )
       );
-      return tip != "излишки" ? (
+      return tip != "surplus" ? (
         <TableAction
           url={apiRoutes.excelProducts}
           ShowPreview={false}

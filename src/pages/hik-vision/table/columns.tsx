@@ -59,7 +59,7 @@ export const FilialColumns: ColumnDef<TData>[] = [
     },
   },
   {
-    header: "Приход",
+    header: "income",
     cell: ({ row }) => {
       const timeEnter = format(row?.original?.enter, "HH:mm");
 

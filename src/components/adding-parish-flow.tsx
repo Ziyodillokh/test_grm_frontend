@@ -141,7 +141,7 @@ export default function AddingParishOrFlow({ kassaId }: { kassaId: string }) {
     // Prepare data for API call
     const cashflowData = {
       price: parseFloat(amount),
-      type: type === "parish" ? "Приход" : "Расход",
+      type: type === "parish" ? "income" : "expense",
       comment: comment,
       title:
         type === "parish"

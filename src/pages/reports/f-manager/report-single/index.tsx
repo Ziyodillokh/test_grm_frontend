@@ -19,10 +19,10 @@ const tipFilter = {
 };
 
 const typeFilter = {
-  income: "Приход",
-  expense: "Расход",
-  sale: "Приход",
-  return: "Расход",
+  income: "income",
+  expense: "expense",
+  sale: "income",
+  return: "expense",
 };
 export default function SinglePage() {
   const { meUser } = useMeStore();

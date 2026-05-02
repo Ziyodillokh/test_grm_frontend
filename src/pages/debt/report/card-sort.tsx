@@ -6,11 +6,11 @@ export default function CardSort({SortData}:{SortData?:TData}) {
 
   const columns = [
     {
-      title: "Взято",
+      title: "taken",
       price:formatPrice( SortData?.owed || 0 )
     },
     {
-      title: "Дано",
+      title: "given",
       price:formatPrice( SortData?.given || 0 )
     },
     {

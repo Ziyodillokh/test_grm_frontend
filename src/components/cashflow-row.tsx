@@ -30,7 +30,7 @@ export const cashflowLabels = [
 
 function getCashflowAvatar(item: TransactionItem): { name: string; url?: string; status: string } {
   const isOrder = item.tip === "order";
-  const isIncome = item.type === "Приход";
+  const isIncome = item.type === "income";
 
   if (isOrder && !isIncome && item.order?.status === "returned") {
     return {
@@ -88,7 +88,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const role = meUser?.position?.role ?? 0;
   const isFManager = role === 4;
   const isOrder = item.tip === "order";
-  const isIncome = item.type === "Приход";
+  const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
   const cashPrice = isOrder && isIncome ? (item.order?.price || 0) : (isOrder ? (item.order?.price || 0) : (item.price || 0));

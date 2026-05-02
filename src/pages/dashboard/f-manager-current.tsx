@@ -47,10 +47,10 @@ const tipFilter: Record<string, string> = {
   saldo: "cashflow",
 };
 const typeFilter: Record<string, string> = {
-  income: "Приход",
-  expense: "Расход",
-  sale: "Приход",
-  return: "Расход",
+  income: "income",
+  expense: "expense",
+  sale: "income",
+  return: "expense",
 };
 
 const cashflowGridTemplate = "60px 60px 120px 120px 1fr 70px";
@@ -138,7 +138,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
     if (!amount || parseFloat(amount) <= 0) { toast.error("Summani kiriting"); return; }
     addCashflow({
       price: parseFloat(amount),
-      type: dialogType === "parish" ? "Приход" : "Расход",
+      type: dialogType === "parish" ? "income" : "expense",
       comment,
       ...(date ? { date } : {}),
       createdBy: meUser?.id,
@@ -473,7 +473,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
 
 function getCashflowAvatar(item: TransactionItem): { name: string; url?: string; status: string } {
   const isOrder = item.tip === "order";
-  const isIncome = item.type === "Приход";
+  const isIncome = item.type === "income";
 
   if (isOrder && !isIncome && item.order?.status === "returned") {
     return { name: item.createdBy?.firstName || "?", url: item.createdBy?.avatar?.path, status: "return" };
@@ -496,7 +496,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
 function CashflowRow({ item }: { item: TransactionItem }) {
   const queryClient = useQueryClient();
   const isOrder = item.tip === "order";
-  const isIncome = item.type === "Приход";
+  const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
   const cashPrice = isOrder ? (item.order?.price || 0) : (item.price || 0);

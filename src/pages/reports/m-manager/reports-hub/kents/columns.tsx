@@ -70,12 +70,12 @@ export const KentDetailColumns: ColumnDef<KentDetailItem>[] = [
       return (
         <div
           className={`w-10 h-10 flex items-center justify-center rounded ${
-            item.type === "Приход"
+            item.type === "income"
               ? "bg-[#89A143] text-white"
               : "bg-[#E38157] text-white"
           }`}
         >
-          {item.type === "Приход" ? (
+          {item.type === "income" ? (
             <Plus className="h-5 w-5" />
           ) : (
             <Minus className="h-5 w-5" />
@@ -92,10 +92,10 @@ export const KentDetailColumns: ColumnDef<KentDetailItem>[] = [
       return (
         <span
           className={`font-bold text-[15px] ${
-            item.type === "Приход" ? "text-[#89A143]" : "text-[#E38157]"
+            item.type === "income" ? "text-[#89A143]" : "text-[#E38157]"
           }`}
         >
-          {item.type === "Приход" ? "+" : "-"}
+          {item.type === "income" ? "+" : "-"}
           {formatPrice(item?.price || 0)} $
         </span>
       );
@@ -109,7 +109,7 @@ export const KentDetailColumns: ColumnDef<KentDetailItem>[] = [
       return (
         <Button
           className={`${
-            item.type !== "Приход"
+            item.type !== "income"
               ? "text-[#E38157] border-[#E38157] hover:text-[#E38157]"
               : "text-[#89A143] border-[#89A143] hover:text-[#89A143]"
           } rounded-[70px] p-[14px] h-8`}

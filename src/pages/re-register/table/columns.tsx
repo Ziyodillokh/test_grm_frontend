@@ -39,7 +39,7 @@ export const Columns: ColumnDef<TData>[] = [
     cell: ({ row }) => {
       const [type] = useQueryState(
         "type",
-        parseAsString.withDefault("переучет")
+        parseAsString.withDefault("recount")
       );
       return (
         <p>
@@ -47,10 +47,10 @@ export const Columns: ColumnDef<TData>[] = [
             row.original?.y * 100
           ) : (
             <>
-              {type === "переучет" && row.original?.check_count}
-              {type === "дефицит" &&
+              {type === "recount" && row.original?.check_count}
+              {type === "deficit" &&
                 row.original?.count - row.original?.check_count}
-              {type === "излишки" &&
+              {type === "surplus" &&
                 row.original?.check_count - row.original?.count}
                   {type === "all" && row.original?.count}
             </>
