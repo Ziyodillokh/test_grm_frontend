@@ -37,23 +37,23 @@ interface IDataCostom {
   isActive: boolean;
   totalSellCount: number;
   totalSum: number;
-  additionalProfitTotalSum: number;
-  netProfitTotalSum: number;
+  additionalProfitSum: number;
+  netProfitSum: number;
   totalSize: number;
   plasticSum: number;
   internetShopSum: number;
   sale: number;
-  return_sale: number;
-  cash_collection: number;
+  saleReturn: number;
+  cashCollection: number;
   discount: number;
   income: number;
   expense: number;
-  in_hand: number;
-  debt_count: number;
-  debt_kv: number;
-  debt_sum: number;
+  inHand: number;
+  debtCount: number;
+  debtSize: number;
+  debtSum: number;
   status: string;
-  is_cancelled: boolean;
+  isCancelled: boolean;
 
 }
 interface ICarpetCard {

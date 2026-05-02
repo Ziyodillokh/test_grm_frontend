@@ -65,7 +65,7 @@ export default function DetailPage() {
           total: Number(item.payroll?.total || 0),
           plastic: Number(item.payroll?.plastic || 0),
           prepayment: Number(item.payroll?.prepayment || 0),
-          in_hand: Number(item.payroll?.in_hand || 0),
+          inHand: Number(item.payroll?.inHand || 0),
         },
       };
       return transformedItem;

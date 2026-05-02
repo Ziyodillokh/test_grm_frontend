@@ -204,7 +204,7 @@ export default function ReportPage() {
         // @ts-ignore
         tip: tipFilter[tip],
         search: search || undefined,
-        cashflowSlug: tip == "collection" ? "cash_collection" : cashflowSlug|| undefined,
+        cashflowSlug: tip == "collection" ? "cashCollection" : cashflowSlug|| undefined,
         fromDate: startDate || undefined,
         toDate: endDate || undefined,
         report: myCashFlow && !FManagerCashFlow ? id : undefined,
@@ -369,7 +369,7 @@ export default function ReportPage() {
               <p className="text-[28px] font-medium">
                 ${(meUser?.position?.role == 9
                   ? myCashFlowReports?.managerSum || 0
-                  : myCashFlowReports?.accountantSum || myCashFlowReports?.accauntantSum || 0
+                  : myCashFlowReports?.accountantSum || myCashFlowReports?.accountantSum || 0
                 ).toLocaleString("uz-UZ", { minimumFractionDigits: 2 })}
               </p>
               <div className="flex items-center gap-[16px] text-[15px]">

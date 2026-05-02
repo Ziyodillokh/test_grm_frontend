@@ -213,7 +213,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
     id: "closer",
     cell: ({ row }) => {
       const item = row.original;
-      return    <TebleAvatar status={item?.order?.status === "rejected" || item?.status === "rejected" ? "fail" : item?.order?.status === "returned" || item?.is_cancelled ? "return" : "success"} name={ item?.createdBy?.firstName} url={item?.createdBy?.avatar?.path} />
+      return    <TebleAvatar status={item?.order?.status === "rejected" || item?.status === "rejected" ? "fail" : item?.order?.status === "returned" || item?.isCancelled ? "return" : "success"} name={ item?.createdBy?.firstName} url={item?.createdBy?.avatar?.path} />
 
 
 
@@ -253,7 +253,7 @@ export const ReportColumns: ColumnDef<TransactionItem>[] = [
       const queryClient = useQueryClient();
       const [, setEditId] = useQueryState("editCashflowId", parseAsString);
       const item = row.original;
-      const canUpdate = !item.is_cancelled && item.status !== "cancelled" && item.status !== "rejected" && item.order?.status !== "returned";
+      const canUpdate = !item.isCancelled && item.status !== "cancelled" && item.status !== "rejected" && item.order?.status !== "returned";
 
       const RejectFunt = () => {
         setLoading(true);

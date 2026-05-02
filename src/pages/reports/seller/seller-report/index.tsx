@@ -90,7 +90,7 @@ export default function PageSellerReport() {
                 {formatPrice(Number(item.discount || 0))} $
               </span>
               <span className="text-[13px] text-[#1a1a1a]">
-                {formatPrice(Number(item.plan_price || 0))} $
+                {formatPrice(Number(item.planPrice || 0))} $
               </span>
             </ListRow>
           ))

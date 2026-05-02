@@ -128,7 +128,7 @@ export default function DashboardKassaDetail() {
           sortSingle === "Все"
             ? typeFilter[tip as string]
             : sortSingle || typeFilter[tip as string],
-        cashflowSlug: tip === "collection" ? "cash_collection" : undefined,
+        cashflowSlug: tip === "collection" ? "cashCollection" : undefined,
         status: cashflowStatus,
         search: search || undefined,
         sellerId: sellerId || undefined,
@@ -171,11 +171,11 @@ export default function DashboardKassaDetail() {
       totalExpense: kassaData?.expense ?? 0,
       totalSale: kassaData?.sale ?? 0,
       totalPlasticSum: kassaData?.plasticSum ?? 0,
-      totalCashCollection: kassaData?.cash_collection ?? 0,
+      totalCashCollection: kassaData?.cashCollection ?? 0,
       totalDiscount: kassaData?.discount ?? 0,
-      totalSaleReturn: kassaData?.return_sale ?? 0,
-      managerSum: kassaData?.in_hand ?? 0,
-      managerSaldo: kassaData?.opening_balance ?? 0,
+      totalSaleReturn: kassaData?.saleReturn ?? 0,
+      managerSum: kassaData?.inHand ?? 0,
+      managerSaldo: kassaData?.openingBalance ?? 0,
     } as TKassareportData;
   }, [kassaData]);
 

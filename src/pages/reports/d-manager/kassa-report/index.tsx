@@ -125,10 +125,10 @@ function KassaRow({ item, gridTemplate, onRowClick }: { item: TKassareportData; 
   const queryClient = useQueryClient();
 
   const filialTitle = item?.filial?.title || "—";
-  const naqd = item?.in_hand ?? 0;
+  const naqd = item?.inHand ?? 0;
   const terminal = item?.totalPlasticSum ?? item?.plasticSum ?? 0;
-  const yuborilgan = item?.debt_sum ?? 0;
-  const qarzdorlik = item?.kassaStatus === 2 ? (item?.filial?.owed ?? 0) : (item?.dealer_frozen_owed ?? 0);
+  const yuborilgan = item?.debtSum ?? 0;
+  const qarzdorlik = item?.kassaStatus === 2 ? (item?.filial?.owed ?? 0) : (item?.frozenOwed ?? 0);
 
   const statusText = item?.kassaStatus === 2
     ? "willSell"

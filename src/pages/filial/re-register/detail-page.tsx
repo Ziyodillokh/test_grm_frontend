@@ -22,6 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
 import ReportToolbar from "@/components/report-toolbar";
+import { TabsPill } from "@/components/ui/tabs-pill";
+import { PrimaryButton } from "@/components/ui/primary-button";
 import { apiRoutes } from "@/service/apiRoutes";
 
 import {
@@ -33,14 +35,17 @@ import {
 import EditProductDialog from "@/pages/reports/m-manager/reports-hub/re-inventory/edit-product-dialog";
 import ActionPageQrCode from "./form";
 
-const tabs = [
-  { key: "переучет", label: "Qayta ro'yxat" },
-  { key: undefined, label: "Qoldiq" },
-  { key: "излишки", label: "Ortiqcha" },
-  { key: "дефицит", label: "Kamomad" },
+type TabValue = "переучет" | "all" | "излишки" | "дефицит";
+
+const tabs: { value: TabValue; label: string }[] = [
+  { value: "переучет", label: "Qayta ro'yxat" },
+  { value: "all", label: "Qoldiq" },
+  { value: "излишки", label: "Ortiqcha" },
+  { value: "дефицит", label: "Kamomad" },
 ];
 
-const isInventoryTab = (tab?: string) => tab === "переучет";
+const isInventoryTab = (tab: TabValue) => tab === "переучет";
+const tabToApiType = (tab: TabValue) => (tab === "all" ? undefined : tab);
 
 const defaultGridTemplate = "40px 1fr 1fr 70px 70px 140px 150px";
 const defaultColumnLabels = ["№", "Kolleksiya", "Model / O'lcham / Rang", "Soni", "Hajmi", "Partiya", "Shtrix kod"];
@@ -65,7 +70,7 @@ export default function FManagerPereuchotDetailPage() {
   const reportId = filialReportId || "";
   const queryClient = useQueryClient();
   const [search] = useQueryState("search", parseAsString);
-  const [activeTab, setActiveTab] = useState<string | undefined>("переучет");
+  const [activeTab, setActiveTab] = useState<TabValue>("переучет");
   const [scanOpen, setScanOpen] = useState(false);
   const [statusConfirm, setStatusConfirm] = useState<"close" | null>(null);
   const [editState, setEditState] = useState<{
@@ -76,15 +81,16 @@ export default function FManagerPereuchotDetailPage() {
   } | null>(null);
 
   const { data: report } = useFilialReportOne({ reportId, enabled: !!reportId });
+  const apiType = tabToApiType(activeTab);
   const { data: totalsData } = useReInventoryTotals({
     reportId,
-    type: activeTab,
+    type: apiType,
     search: search || undefined,
     enabled: !!reportId,
   });
   const { data, isLoading } = useReInventoryItems({
     reportId,
-    queries: { type: activeTab, search: search || undefined, limit: 50 },
+    queries: { type: apiType, search: search || undefined, limit: 50 },
     enabled: !!reportId,
   });
 
@@ -127,32 +133,33 @@ export default function FManagerPereuchotDetailPage() {
 
   return (
     <div className="flex flex-col h-full p-4">
-      {/* Toolbar + totals */}
+      {/* Toolbar + totals + Tasdiqlashga yuborish (right) */}
       <ReportToolbar
         totalsItems={[
           { label: "Umumiy:", value: Number(totals?.count || 0), color: "#1a1a1a", suffix: "ta" },
           { value: Number(totals?.volume || 0), color: "#1a1a1a", suffix: "m²" },
           { value: Number(totals?.total || 0), color: "#1a1a1a", suffix: "$" },
         ]}
+        actions={
+          <>
+            {isOpen && (
+              <PrimaryButton onClick={() => setStatusConfirm("close")}>
+                Tasdiqlashga yuborish
+              </PrimaryButton>
+            )}
+            {reportStatus === "closed" && (
+              <span className="text-[13px] text-[#a3a3a3]">Tasdiqlash kutilmoqda</span>
+            )}
+            {reportStatus === "accepted" && (
+              <span className="text-[13px] text-[#3ABC49]">Tasdiqlangan</span>
+            )}
+          </>
+        }
       />
 
-      {/* Tabs + Qo'shish button + Tasdiqlashga yuborish */}
+      {/* Tabs + Qo'shish button */}
       <div className="flex items-center gap-[4px] mb-[10px]">
-        <div className="flex gap-[4px]">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key || "all"}
-              onClick={() => setActiveTab(tab.key)}
-              className={`h-[34px] px-[14px] rounded-sm text-[13px] font-medium transition-colors ${
-                activeTab === tab.key
-                  ? "bg-[#1a1a1a] text-white"
-                  : "bg-white text-[#1a1a1a] hover:bg-gray-50"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <TabsPill tabs={tabs} value={activeTab} onChange={setActiveTab} />
 
         <div className="ml-auto flex items-center gap-[4px]">
           {isInvTab && isOpen && (
@@ -163,21 +170,6 @@ export default function FManagerPereuchotDetailPage() {
               <Plus className="w-[16px] h-[16px]" />
               Qo'shish
             </button>
-          )}
-
-          {isOpen && (
-            <button
-              onClick={() => setStatusConfirm("close")}
-              className="h-[34px] px-[14px] rounded-sm bg-white border border-[#0078D4] text-[#0078D4] text-[13px] font-medium hover:bg-[#e6f2fb]"
-            >
-              Tasdiqlashga yuborish
-            </button>
-          )}
-          {reportStatus === "closed" && (
-            <span className="text-[13px] text-[#a3a3a3]">M-manager tasdiqlashini kuting</span>
-          )}
-          {reportStatus === "accepted" && (
-            <span className="text-[13px] text-[#3ABC49]">Tasdiqlangan</span>
           )}
         </div>
       </div>

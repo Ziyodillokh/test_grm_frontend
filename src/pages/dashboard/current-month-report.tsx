@@ -75,14 +75,14 @@ export default function CurrentMonthReport() {
         isDealer: true,
         dealerReportId: dealerData[0]?.id,
         filial: { title: "Dillerlar" },
-        in_hand: dealerData[0]?.in_hand || 0,
+        inHand: dealerData[0]?.inHand || 0,
         totalSale: dealerData[0]?.totalSale || 0,
         totalPlasticSum: dealerData[0]?.totalPlasticSum || 0,
-        debt_sum: dealerData[0]?.debt_sum || 0,
+        debtSum: dealerData[0]?.debtSum || 0,
         totalCashCollection: dealerData[0]?.totalCashCollection || 0,
-        totalSize: dealerData[0]?.debt_kv || 0,
-        additionalProfitTotalSum:
-          dealerData[0]?.debt_profit_sum || 0,
+        totalSize: dealerData[0]?.debtSize || 0,
+        additionalProfitSum:
+          dealerData[0]?.debtProfitSum || 0,
         totalDiscount: dealerData[0]?.totalDiscount || 0,
         status: dealerData[0]?.status || "open",
         isMManagerConfirmed: dealerData[0]?.isMManagerConfirmed,
@@ -211,14 +211,14 @@ function ReportRow({ item, onRowClick, gridTemplate }: { item: TKassareportData;
       getAllData<TResponse<IUserData>, object>(apiRoutes.userManagersAccountants, {}),
   });
 
-  const saldo = item?.in_hand || 0;
+  const saldo = item?.inHand || 0;
   const filialName = item?.isDealer ? "Dillerlar" : item?.filial?.title || "—";
   const sale = item?.sale ?? item?.totalSale ?? 0;
   const terminal = item?.plasticSum ?? item?.totalPlasticSum ?? 0;
-  const debt = item?.debt_sum ?? 0;
-  const inkassa = item?.cash_collection ?? item?.totalCashCollection ?? 0;
+  const debt = item?.debtSum ?? 0;
+  const inkassa = item?.cashCollection ?? item?.totalCashCollection ?? 0;
   const hajm = item?.totalSize ?? 0;
-  const foyda = item?.additionalProfitTotalSum ?? 0;
+  const foyda = item?.additionalProfitSum ?? 0;
   const chegirma = item?.discount ?? item?.totalDiscount ?? 0;
 
   const rowStatus = getRowStatus(item);

@@ -97,17 +97,17 @@ export function Conent() {
     : isFilial
       ? [
           { label: "Kelgan qarzlar", key: "owed_debt", detail: "kelgan_qarz" },
-          { label: "Oydan o'tgan pul", key: "opening_balance", detail: "opening_balance" },
+          { label: "Oydan o'tgan pul", key: "openingBalance", detail: "openingBalance" },
           { label: "Bossdan kirim", key: "boss_income", detail: "boss_income" },
         ]
       : [
           { label: "Naqd kassa", key: "cash", detail: "naqd_kassa" },
           { label: "Terminal va o'tkazma", key: "terminal", detail: "terminal" },
-          { label: "Inkassatsiya", key: "cash_collection", detail: "inkassatsiya" },
+          { label: "Inkassatsiya", key: "cashCollection", detail: "inkassatsiya" },
           { label: "Diller naqd", key: "dealer_cash", detail: "dealer_cash" },
           { label: "Diller o'tkazma", key: "dealer_terminal", detail: "dealer_terminal" },
           { label: "Kelgan qarzlar", key: "owed_debt", detail: "kelgan_qarz" },
-          { label: "Oydan o'tgan pul", key: "opening_balance", detail: "opening_balance" },
+          { label: "Oydan o'tgan pul", key: "openingBalance", detail: "openingBalance" },
           { label: "Bossdan kirim", key: "boss_income", detail: "boss_income" },
           { label: "Kentdan kirim", key: "kent_income", detail: "kent_income" },
           { label: "Boshqa kirimlar", key: "extra_income", detail: "extra_income" },
@@ -120,7 +120,7 @@ export function Conent() {
       ? [
           { label: "Naqd kassa", key: "cash", detail: "naqd_kassa" },
           { label: "Terminal va o'tkazma", key: "terminal", detail: "terminal" },
-          { label: "Inkassatsiya", key: "cash_collection", detail: "inkassatsiya" },
+          { label: "Inkassatsiya", key: "cashCollection", detail: "inkassatsiya" },
           { label: "Bossdan chiqim", key: "boss_expense", detail: "boss_expense" },
           { label: "Biznes xarajatlari", key: "business_expense", detail: "business_expense" },
           { label: "Qaytgan tovarlar", key: "return_orders", detail: "return_orders", hasKv: true },

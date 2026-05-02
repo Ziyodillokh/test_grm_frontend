@@ -90,14 +90,14 @@ function getRowStatus(item: any): { barColor: string; showBar: boolean } {
 function MonthlyRow({ item, onRowClick, gridTemplate }: { item: any; onRowClick: (item: any) => void; gridTemplate: string }) {
   const { meUser } = useMeStore();
 
-  const saldo = item?.in_hand || 0;
+  const saldo = item?.inHand || 0;
   const monthName = item?.month ? MonthsArray[item.month - 1]?.label : "—";
   const sale = item?.sale ?? item?.totalSale ?? 0;
   const terminal = item?.plasticSum ?? item?.totalPlasticSum ?? 0;
-  const debt = item?.debt_sum ?? 0;
-  const inkassa = item?.cash_collection ?? item?.totalCashCollection ?? 0;
+  const debt = item?.debtSum ?? 0;
+  const inkassa = item?.cashCollection ?? item?.totalCashCollection ?? 0;
   const hajm = item?.totalSize ?? 0;
-  const foyda = item?.additionalProfitTotalSum ?? 0;
+  const foyda = item?.additionalProfitSum ?? 0;
   const chegirma = Number(item?.discount ?? item?.totalDiscount ?? 0);
 
   const rowStatus = getRowStatus(item);

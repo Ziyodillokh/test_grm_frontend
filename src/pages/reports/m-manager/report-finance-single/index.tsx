@@ -66,7 +66,7 @@ export default function PageFinanceSingle() {
       dealerReportId: ReportDealer?.[0]?.id,
       totalSum: ReportDealer?.[0]?.totalIncome || 0,
       totalPlasticSum: ReportDealer?.[0]?.totalPlasticSum || 0,
-      in_hand:ReportDealer?.[0]?.in_hand || 0,
+      inHand:ReportDealer?.[0]?.inHand || 0,
       totalExpense: ReportDealer?.[0]?.totalExpense || 0,
       status:
         (ReportDealer?.[0]?.isMManagerConfirmed &&

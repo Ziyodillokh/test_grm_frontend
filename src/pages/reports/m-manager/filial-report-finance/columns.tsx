@@ -37,8 +37,8 @@ export const KassaColumns: ColumnDef<TData>[] = [
     cell: ({ row }) => {
       const item = row.original;
       return (
-        <p className={`text-nowrap  ${((item?.in_hand || 0) >= 0) ? "text-[#89A143]" : "text-red-500"} `}>
-          {(item?.in_hand || 0).toFixed(2)}
+        <p className={`text-nowrap  ${((item?.inHand || 0) >= 0) ? "text-[#89A143]" : "text-red-500"} `}>
+          {(item?.inHand || 0).toFixed(2)}
         </p>
       );
     },
@@ -54,10 +54,10 @@ export const KassaColumns: ColumnDef<TData>[] = [
   },
   {
     header: "В долг",
-    id: "debt_sum",
+    id: "debtSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.debt_sum} $</p>;
+      return <p> {item?.debtSum} $</p>;
     },
   },
 
@@ -73,14 +73,14 @@ export const KassaColumns: ColumnDef<TData>[] = [
 
   {
     header: "Навар",
-    id: "additionalProfitTotalSum",
+    id: "additionalProfitSum",
     cell: ({ row }) => {
       const item = row.original;
       return (
         <p>
           {" "}
-          {item?.additionalProfitTotalSum &&
-            item?.additionalProfitTotalSum + " $"}{" "}
+          {item?.additionalProfitSum &&
+            item?.additionalProfitSum + " $"}{" "}
         </p>
       );
     },
@@ -112,10 +112,10 @@ export const KassaColumns: ColumnDef<TData>[] = [
   },
   {
     header: "Инкассация",
-    id: "cash_collection",
+    id: "cashCollection",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.cash_collection && item?.cash_collection + " $"} </p>;
+      return <p> {item?.cashCollection && item?.cashCollection + " $"} </p>;
     },
   },
   {

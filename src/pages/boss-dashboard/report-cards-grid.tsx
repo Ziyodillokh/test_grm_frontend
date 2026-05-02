@@ -58,8 +58,8 @@ export default function ReportCardsGrid({
             : "—"
         }
         negative={
-          yearlyData?.netProfitTotalSum != null || yearlyData?.additionalProfitTotalSum != null
-            ? `${formatPrice(Number(yearlyData?.netProfitTotalSum ?? yearlyData?.additionalProfitTotalSum ?? 0))} $ foyda`
+          yearlyData?.netProfitSum != null || yearlyData?.additionalProfitSum != null
+            ? `${formatPrice(Number(yearlyData?.netProfitSum ?? yearlyData?.additionalProfitSum ?? 0))} $ foyda`
             : ""
         }
         variant="primary"

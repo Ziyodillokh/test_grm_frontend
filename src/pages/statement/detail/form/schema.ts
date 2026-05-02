@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const PayrollItemSchema = z.object({
   plastic: z.number(),
-  in_hand: z.number(),
+  inHand: z.number(),
   prepayment: z.number(),
   userId: z.string().optional(),
   awardId: z.string().optional(),

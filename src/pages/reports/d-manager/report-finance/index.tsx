@@ -142,12 +142,12 @@ function MonthlyRow({
   });
 
   const monthName = item?.month ? MonthsArray[item.month - 1]?.label : "—";
-  const naqd = item?.in_hand ?? 0;
+  const naqd = item?.inHand ?? 0;
   const terminal = item?.totalPlasticSum ?? item?.plasticSum ?? 0;
-  const hajm = item?.debt_kv ?? item?.totalSize ?? 0;
+  const hajm = item?.debtSize ?? item?.totalSize ?? 0;
   const chegirma = item?.discount ?? item?.totalDiscount ?? 0;
-  const yuborilgan = item?.debt_sum ?? 0;
-  const qarzdorlik = item?.dealer_frozen_owed ?? 0;
+  const yuborilgan = item?.debtSum ?? 0;
+  const qarzdorlik = item?.frozenOwed ?? 0;
 
   const rowStatus = getRowStatus(item);
 

@@ -78,27 +78,27 @@ export const MonthlyColumns: ColumnDef<TData>[] = [
     },
   },
   {
-    id: "cash_collection",
+    id: "cashCollection",
     header: "Inkassatsiya",
     cell: ({ row }) => {
       const item = row.original;
       return (
-        <p>{item?.cash_collection ? item.cash_collection + " $" : "—"}</p>
+        <p>{item?.cashCollection ? item.cashCollection + " $" : "—"}</p>
       );
     },
   },
   {
-    id: "in_hand",
+    id: "inHand",
     header: "Qo'lda",
     cell: ({ row }) => {
       const item = row.original;
       return (
         <p
           className={
-            (item?.in_hand || 0) >= 0 ? "text-[#89A143]" : "text-red-500"
+            (item?.inHand || 0) >= 0 ? "text-[#89A143]" : "text-red-500"
           }
         >
-          {item?.in_hand != null ? item.in_hand.toFixed(2) + " $" : "—"}
+          {item?.inHand != null ? item.inHand.toFixed(2) + " $" : "—"}
         </p>
       );
     },

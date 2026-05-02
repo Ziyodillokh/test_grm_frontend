@@ -5,18 +5,18 @@ export interface TData{
   isActive?: boolean;
   totalSellCount?: number;
   totalSum?: number;
-  additionalProfitTotalSum?: number;
-  netProfitTotalSum?: number;
+  additionalProfitSum?: number;
+  netProfitSum?: number;
   totalSize?: number;
   plasticSum?: number;
   internetShopSum?: number;
   sale?: number;
-  cash_collection?: number;
+  cashCollection?: number;
   discount?: number;
   income?: number;
   expense?: number;
-  in_hand?: number;
-  debt_sum?:number;
+  inHand?: number;
+  debtSum?:number;
   status?: string;
 closer?: {
     id: string;

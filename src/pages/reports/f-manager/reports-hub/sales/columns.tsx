@@ -42,13 +42,13 @@ export const SalesColumns: ColumnDef<TData>[] = [
     },
   },
   {
-    id: "return_sale",
+    id: "saleReturn",
     header: "Qaytarish",
     cell: ({ row }) => {
       const item = row.original;
       return (
         <p className="text-red-500">
-          {item?.return_sale ? item.return_sale + " $" : "—"}
+          {item?.saleReturn ? item.saleReturn + " $" : "—"}
         </p>
       );
     },
@@ -70,27 +70,27 @@ export const SalesColumns: ColumnDef<TData>[] = [
     },
   },
   {
-    id: "additionalProfitTotalSum",
+    id: "additionalProfitSum",
     header: "Qo'shimcha foyda",
     cell: ({ row }) => {
       const item = row.original;
       return (
         <p>
-          {item?.additionalProfitTotalSum
-            ? item.additionalProfitTotalSum + " $"
+          {item?.additionalProfitSum
+            ? item.additionalProfitSum + " $"
             : "—"}
         </p>
       );
     },
   },
   {
-    id: "netProfitTotalSum",
+    id: "netProfitSum",
     header: "Sof foyda",
     cell: ({ row }) => {
       const item = row.original;
       return (
         <p className="text-[#89A143]">
-          {item?.netProfitTotalSum ? item.netProfitTotalSum + " $" : "—"}
+          {item?.netProfitSum ? item.netProfitSum + " $" : "—"}
         </p>
       );
     },

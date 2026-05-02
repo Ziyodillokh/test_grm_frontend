@@ -179,8 +179,8 @@ export default function CardSort({
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          KassaReport?.additionalProfitTotalSum ||
-            kassaData?.additionalProfitTotalSum ||
+          KassaReport?.additionalProfitSum ||
+            kassaData?.additionalProfitSum ||
             0
         )
       ),
@@ -213,7 +213,7 @@ export default function CardSort({
     {
       title: "Возврат сумма",
       value: "return",
-      price: `-${formatPrice(KassaReport?.totalSaleReturn || KassaReport?.return_sale || kassaData?.return_sale || 0)}`,
+      price: `-${formatPrice(KassaReport?.totalSaleReturn || KassaReport?.saleReturn || kassaData?.saleReturn || 0)}`,
     },
     {
       title: "Инкассация",
@@ -222,9 +222,9 @@ export default function CardSort({
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          (KassaReport?.totalCashCollection || KassaReport?.cash_collection)
-            ? Math.abs(KassaReport?.totalCashCollection || KassaReport?.cash_collection || 0)
-            : kassaData?.cash_collection || 0
+          (KassaReport?.totalCashCollection || KassaReport?.cashCollection)
+            ? Math.abs(KassaReport?.totalCashCollection || KassaReport?.cashCollection || 0)
+            : kassaData?.cashCollection || 0
         )
       ),
     },
@@ -379,16 +379,16 @@ export default function CardSort({
                 {isReportLoading ? (
                   <Skeleton className="h-7 w-24 mt-1" />
                 ) : (
-                  <p className={`${((kassaData?.in_hand || KassaReport?.in_hand || 0) >= 0) ? "text-foreground":"text-red-500"} text-[25px] font-bold `}>
+                  <p className={`${((kassaData?.inHand || KassaReport?.inHand || 0) >= 0) ? "text-foreground":"text-red-500"} text-[25px] font-bold `}>
                     {formatPrice(
                       isOnlyCash
                         ? KassaReport?.managerSum ||
                             KassaReport?.manegerSum ||
                             0
                         : isOnlyTerminal
-                          ? KassaReport?.accauntantSum || 0
-                          : KassaReport?.in_hand ? KassaReport?.in_hand
-                            : (isTotalPage &&  KassaReport?.totalSale) ? KassaReport?.totalSale : kassaData?.in_hand ||0
+                          ? KassaReport?.accountantSum || 0
+                          : KassaReport?.inHand ? KassaReport?.inHand
+                            : (isTotalPage &&  KassaReport?.totalSale) ? KassaReport?.totalSale : kassaData?.inHand ||0
                     )}
                   </p>
                 )}
@@ -416,7 +416,7 @@ export default function CardSort({
                   Продажа в долг:
                 </p>
                 <p className="text-[14px] text-[#E38157]  inline-block font-semibold">
-                  {KassaReport?.debt_sum ? KassaReport?.debt_sum : kassaData?.debt_sum} { KassaReport?.debt_sum || kassaData?.debt_sum ? "$":""} 
+                  {KassaReport?.debtSum ? KassaReport?.debtSum : kassaData?.debtSum} { KassaReport?.debtSum || kassaData?.debtSum ? "$":""} 
                 </p>
               </div>
             )}
@@ -426,10 +426,10 @@ export default function CardSort({
                   Сальдо баланс: 
                 </p>
                 {
-                  KassaReport ?  <p className={`text-[14px]   ${(KassaReport?.opening_balance || 0) >0 ? "text-[#89A143]" : (KassaReport?.opening_balance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
-                  { KassaReport?.opening_balance}  {KassaReport?.opening_balance? "$":""} 
-                </p>:<p className={`text-[14px]   ${ (kassaData?.kassaReport?.opening_balance ||0) >0 ? "text-[#89A143]" : (kassaData?.kassaReport?.opening_balance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
-                  { kassaData?.kassaReport?.opening_balance}  {kassaData?.kassaReport?.opening_balance? "$":""} 
+                  KassaReport ?  <p className={`text-[14px]   ${(KassaReport?.openingBalance || 0) >0 ? "text-[#89A143]" : (KassaReport?.openingBalance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
+                  { KassaReport?.openingBalance}  {KassaReport?.openingBalance? "$":""} 
+                </p>:<p className={`text-[14px]   ${ (kassaData?.kassaReport?.openingBalance ||0) >0 ? "text-[#89A143]" : (kassaData?.kassaReport?.openingBalance || 0) <0? "text-[#E38157]":"" } inline-block font-semibold`}>
+                  { kassaData?.kassaReport?.openingBalance}  {kassaData?.kassaReport?.openingBalance? "$":""} 
                 </p>
                 }
                 </div>:""

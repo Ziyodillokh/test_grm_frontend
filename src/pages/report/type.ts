@@ -1,5 +1,5 @@
 export interface TData {
-  return_sale: number;
+  saleReturn: number;
   isMetric?: boolean;
   id: string;
   is_visible: boolean;
@@ -16,11 +16,11 @@ export interface TData {
   slug: string;
   tip: string;
   title: string;
-  in_hand:number;
-  opening_balance?:number;
-  debt_sum:number;
+  inHand:number;
+  openingBalance?:number;
+  debtSum:number;
   kassaReport?:{
-    opening_balance?:number
+    openingBalance?:number
     filialType?:string;
   }
   icon: {
@@ -37,12 +37,12 @@ export interface TData {
   endDate: string | null;
   isActive: boolean;
   totalSum: number;
-  additionalProfitTotalSum: number;
-  netProfitTotalSum: number;
+  additionalProfitSum: number;
+  netProfitSum: number;
   totalSize: number;
   discount: string;
   sale:number;
-  cash_collection:number;
+  cashCollection:number;
   plasticSum: number;
   income: number;
   cashFlowSumBoss: number;
@@ -108,11 +108,11 @@ export interface TKassareportData {
   totalSale?: number;
   sale?: number;
   totalSaleReturn?: number;
-  return_sale?: number;
+  saleReturn?: number;
   totalSaleSizeReturn?: number;
-  return_size?: number;
+  sizeReturn?: number;
   totalCashCollection?: number;
-  cash_collection?: number;
+  cashCollection?: number;
   totalDiscount?: number;
   discount?: number;
   totalIncome?: number;
@@ -125,14 +125,14 @@ export interface TKassareportData {
   totalSum?: number;
   totalSellCount?: number;
   totalSize?: number;
-  additionalProfitTotalSum?: number;
-  netProfitTotalSum?: number;
-  in_hand?: number;
-  opening_balance?: number;
-  debt_count?: number;
-  debt_kv?: number;
-  debt_sum?: number;
-  debt_profit_sum?: number;
+  additionalProfitSum?: number;
+  netProfitSum?: number;
+  inHand?: number;
+  openingBalance?: number;
+  debtCount?: number;
+  debtSize?: number;
+  debtSum?: number;
+  debtProfitSum?: number;
   status?: string;
   confirmationStatus?: string;
   isAccountantConfirmed?: boolean;
@@ -141,11 +141,11 @@ export interface TKassareportData {
   filial?: any;
   report?: any;
   // Extra fields specific to this file
-  dealer_frozen_owed?: number;
+  frozenOwed?: number;
   owed?: number;
   manegerSum?: number;
   managerSum?: number;
-  accauntantSum?: number;
+  accountantSum?: number;
   kassaReport?: TKassareportData[];
   reportStatus?: number;
 }

@@ -479,10 +479,10 @@ export const KassaColumns: ColumnDef<KassaItem>[] = [
 
   {
     header: "Навар",
-    id: "additionalProfitTotalSum",
+    id: "additionalProfitSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p>  {item?.additionalProfitTotalSum && item?.additionalProfitTotalSum + " $"} </p>;
+      return <p>  {item?.additionalProfitSum && item?.additionalProfitSum + " $"} </p>;
     },
   },
 
@@ -512,10 +512,10 @@ export const KassaColumns: ColumnDef<KassaItem>[] = [
   },
   {
     header: "Инкассация",
-    id: "cash_collection",
+    id: "cashCollection",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.cash_collection && item?.cash_collection + " $"} </p>;
+      return <p> {item?.cashCollection && item?.cashCollection + " $"} </p>;
     },
   },
   {

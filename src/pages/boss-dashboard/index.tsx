@@ -55,7 +55,7 @@ export default function BossDashboard() {
       : filials.find((f) => f.id === filial)?.title || filials.find((f) => f.id === filial)?.name;
 
   const yearlyTotal = yearlyData?.totalSale ?? yearlyData?.totalSum;
-  const yearlyProfit = yearlyData?.netProfitTotalSum ?? yearlyData?.additionalProfitTotalSum;
+  const yearlyProfit = yearlyData?.netProfitSum ?? yearlyData?.additionalProfitSum;
 
   return (
     <div className="h-full overflow-y-auto bg-[#f5f7f9] scrollCastom">

@@ -118,7 +118,7 @@ export const StatementEmployeeColumns = (): ColumnDef<Statement>[] => {
       accessorKey: "cash",
       cell: ({ row }) => {
         return (
-          <span className="p-2 border bg-[#EAEADE]">{row.original?.in_hand} $</span>
+          <span className="p-2 border bg-[#EAEADE]">{row.original?.inHand} $</span>
         );
       },
     },

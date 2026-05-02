@@ -21,7 +21,8 @@ import {
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
 import ReportToolbar from "@/components/report-toolbar";
-import ReportTotalsBar from "@/components/report-totals-bar";
+import { TabsPill } from "@/components/ui/tabs-pill";
+import { PrimaryButton } from "@/components/ui/primary-button";
 import { apiRoutes } from "@/service/apiRoutes";
 
 import {
@@ -36,14 +37,17 @@ import {
 import AddProductDialog from "./add-product-dialog";
 import EditProductDialog from "./edit-product-dialog";
 
-const tabs = [
-  { key: "переучет", label: "Qayta ro'yxat" },
-  { key: undefined, label: "Qoldiq" },
-  { key: "излишки", label: "Ortiqcha" },
-  { key: "дефицит", label: "Kamomad" },
+type TabValue = "переучет" | "all" | "излишки" | "дефицит";
+
+const tabs: { value: TabValue; label: string }[] = [
+  { value: "переучет", label: "Qayta ro'yxat" },
+  { value: "all", label: "Qoldiq" },
+  { value: "излишки", label: "Ortiqcha" },
+  { value: "дефицит", label: "Kamomad" },
 ];
 
-const isInventoryTab = (tab?: string) => tab === "переучет";
+const isInventoryTab = (tab: TabValue) => tab === "переучет";
+const tabToApiType = (tab: TabValue) => (tab === "all" ? undefined : tab);
 
 // Qayta ro'yxat tabi + report open bo'lsa — tahrirlash uchun 40px column qo'shiladi
 const defaultGridTemplate = "40px 1fr 1fr 70px 70px 140px 150px";
@@ -68,7 +72,7 @@ export default function ReInventoryReportDetailPage() {
   const { reportId } = useParams();
   const queryClient = useQueryClient();
   const [search] = useQueryState("search", parseAsString);
-  const [activeTab, setActiveTab] = useState<string | undefined>("переучет");
+  const [activeTab, setActiveTab] = useState<TabValue>("переучет");
   const [addOpen, setAddOpen] = useState(false);
   const [editState, setEditState] = useState<{
     reInventoryId: string;
@@ -84,9 +88,10 @@ export default function ReInventoryReportDetailPage() {
     enabled: !!reportId,
   });
 
+  const apiType = tabToApiType(activeTab);
   const { data: totalsData } = useReInventoryTotals({
     reportId: reportId || "",
-    type: activeTab,
+    type: apiType,
     search: search || undefined,
     enabled: !!reportId,
   });
@@ -94,7 +99,7 @@ export default function ReInventoryReportDetailPage() {
   const { data, isLoading } = useReInventoryItems({
     reportId: reportId || "",
     queries: {
-      type: activeTab,
+      type: apiType,
       search: search || undefined,
       limit: 50,
     },
@@ -168,33 +173,51 @@ export default function ReInventoryReportDetailPage() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Toolbar + totals */}
-      <div className="flex items-center gap-[4px] mb-[10px]">
-        <ReportToolbar />
-        <ReportTotalsBar items={[
+      {/* Toolbar + totals + Status actions (right) */}
+      <ReportToolbar
+        totalsItems={[
           { label: "Umumiy:", value: Number(totals?.count || 0), color: "#1a1a1a", suffix: "ta" },
           { value: Number(totals?.volume || 0), color: "#1a1a1a", suffix: "m²" },
           { value: Number(totals?.total || 0), color: "#1a1a1a", suffix: "$" },
-        ]} />
-      </div>
+        ]}
+        actions={
+          <>
+            {/* OPEN: F-manager hali skan qilmoqda — faqat status yozuvi */}
+            {isOpen && (
+              <span className="text-[13px] text-[#a3a3a3]">Jarayonda</span>
+            )}
+
+            {/* CLOSED: M-manager Tasdiqlash + 3-dot menu bilan Rad etish */}
+            {isClosed && (
+              <>
+                <PrimaryButton onClick={() => setStatusConfirm("accept")}>
+                  Tasdiqlash
+                </PrimaryButton>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="h-[42px] w-[42px] rounded-sm bg-white hover:bg-gray-50 flex items-center justify-center">
+                      <MoreHorizontal className="w-[18px] h-[18px] text-[#1a1a1a]" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => setStatusConfirm("reject")}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4 text-[#EF5C12]" />
+                      <span className="text-[13px] text-[#EF5C12]">Rad etish</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
+          </>
+        }
+      />
 
       {/* Tabs + Qo'shish button */}
       <div className="flex items-center gap-[4px] mb-[10px]">
-        <div className="flex gap-[4px]">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key || "all"}
-              onClick={() => setActiveTab(tab.key)}
-              className={`h-[34px] px-[14px] rounded-sm text-[13px] font-medium transition-colors ${
-                activeTab === tab.key
-                  ? "bg-[#1a1a1a] text-white"
-                  : "bg-white text-[#1a1a1a] hover:bg-gray-50"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <TabsPill tabs={tabs} value={activeTab} onChange={setActiveTab} />
 
         <div className="ml-auto flex items-center gap-[4px]">
           {canShowAddButton && (
@@ -205,45 +228,6 @@ export default function ReInventoryReportDetailPage() {
               <Plus className="w-[16px] h-[16px]" />
               Qo'shish
             </button>
-          )}
-
-          {/* OPEN: F-manager yakunlash (Tasdiqlashga yuborish) */}
-          {isOpen && (
-            <button
-              onClick={() => setStatusConfirm("close")}
-              className="h-[34px] px-[14px] rounded-sm bg-white border border-[#0078D4] text-[#0078D4] text-[13px] font-medium hover:bg-[#e6f2fb]"
-            >
-              Tasdiqlashga yuborish
-            </button>
-          )}
-
-          {/* CLOSED: M-manager Tasdiqlash (yashil 10% bg) + 3-dot menu bilan Rad etish */}
-          {isClosed && (
-            <>
-              <button
-                onClick={() => setStatusConfirm("accept")}
-                className="h-[34px] px-[14px] rounded-sm text-[#3ABC49] text-[13px] font-medium"
-                style={{ backgroundColor: "rgba(58, 188, 73, 0.1)" }}
-              >
-                Tasdiqlash
-              </button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="h-[34px] w-[34px] rounded-sm bg-white hover:bg-gray-50 flex items-center justify-center">
-                    <MoreHorizontal className="w-[18px] h-[18px] text-[#1a1a1a]" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => setStatusConfirm("reject")}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Trash2 className="w-4 h-4 text-[#EF5C12]" />
-                    <span className="text-[13px] text-[#EF5C12]">Rad etish</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
           )}
         </div>
       </div>

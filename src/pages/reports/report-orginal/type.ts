@@ -8,11 +8,11 @@ export type TData = {
   profit_remaining: PriceKv;    // foyda qoldig'i = foyda - biznes rasxod
   cash: PriceKv;
   terminal: PriceKv;
-  cash_collection: PriceKv;
+  cashCollection: PriceKv;
   dealer_cash: PriceKv;
   dealer_terminal: PriceKv;
   owed_debt: PriceKv;
-  opening_balance: PriceKv;
+  openingBalance: PriceKv;
   filial_balance: PriceKv;
   manager_balance: PriceKv;     // manager balansi
   accountant_balance: PriceKv;  // bugalter balansi

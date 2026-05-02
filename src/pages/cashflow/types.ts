@@ -70,7 +70,7 @@ export interface TransactionItem {
     need_get_report: boolean;
     type: "filial";
   }
-  is_cancelled:boolean;
+  isCancelled:boolean;
   cashflow_type:{
     id: string;
     title: string;
@@ -190,13 +190,13 @@ export interface KassaItem{
   isActive?: boolean;
   totalSellCount?: number;
   totalSum?: number;
-  additionalProfitTotalSum?: number;
-  netProfitTotalSum?: number;
+  additionalProfitSum?: number;
+  netProfitSum?: number;
   totalSize?: number;
   plasticSum?: number;
   internetShopSum?: number;
   sale?: number;
-  cash_collection?: number;
+  cashCollection?: number;
   discount?: number;
   income?: number;
   expense?: number;

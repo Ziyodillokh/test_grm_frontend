@@ -41,7 +41,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          SortData?.additionalProfitTotalSum || 0 )
+          SortData?.additionalProfitSum || 0 )
       ),
     },
     {
@@ -50,7 +50,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
         <Skeleton className="h-5 w-12" />
       ) :(
         formatPrice(
-          SortData?.totalSaleReturn || SortData?.return_sale || 0 )
+          SortData?.totalSaleReturn || SortData?.saleReturn || 0 )
       ),
     },
     {

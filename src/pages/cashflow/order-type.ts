@@ -138,8 +138,8 @@ export interface IData {
     endDate: string | null;
     isActive: boolean;
     totalSum: number;
-    additionalProfitTotalSum: number;
-    netProfitTotalSum: number;
+    additionalProfitSum: number;
+    netProfitSum: number;
     totalSize: number;
     plasticSum: number;
     cashFlowSumBoss: number;

@@ -2,7 +2,7 @@ export interface TData {
   id: string;
   firstName: string;
   lastName: string;
-  plan_price: string;
+  planPrice: string;
   earn: string;
   avatar?: {
     path: string;

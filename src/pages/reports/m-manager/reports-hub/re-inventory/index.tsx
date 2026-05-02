@@ -32,9 +32,7 @@ export default function ReInventoryFilialsPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-[4px] mb-[10px]">
-        <ReportToolbar />
-      </div>
+      <ReportToolbar />
 
       {/* Column labels */}
       <div

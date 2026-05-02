@@ -32,7 +32,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
         <Skeleton className="h-5 w-12" />
       ) :(
         formatPrice(
-          SortData?.debt_kv || 0 )
+          SortData?.debtSize || 0 )
       ),
     },
     {
@@ -41,7 +41,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          SortData?.debt_sum || 0 )
+          SortData?.debtSum || 0 )
       ),
     },
 
@@ -51,7 +51,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
         <Skeleton className="h-5 w-12" />
       ) : (
         formatPrice(
-          SortData?.debt_profit_sum || 0 )
+          SortData?.debtProfitSum || 0 )
       ),
     },
     
@@ -79,7 +79,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
       ) : (
         (
           formatPrice(
-            SortData?.kassaStatus == 2? (SortData.filial?.owed || 0) : (SortData?.dealer_frozen_owed||0)
+            SortData?.kassaStatus == 2? (SortData.filial?.owed || 0) : (SortData?.frozenOwed||0)
              )
         )
       )
@@ -150,7 +150,7 @@ export default function CardSort({kassaId,isAddable,SortData}:{kassaId?:string,i
           <p className="text-[12px] mt-[15px] mb-1 text-[#5D5D53]">
             Объём долга:
           </p>
-          <p className="text-[14px] font-semibold">{SortData?.debt_kv} м²</p>
+          <p className="text-[14px] font-semibold">{SortData?.debtSize} м²</p>
         </div>
         <div className="grid row-start w-full  grid-cols-3  ">
           {columns?.map((e) => (

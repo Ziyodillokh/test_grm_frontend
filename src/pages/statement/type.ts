@@ -2,7 +2,7 @@
 export type Statement = {
   createdAt: string;
   id: string;
-  in_hand: number;
+  inHand: number;
   number_payroll: number;
   plastic: number;
   premium: number;
@@ -34,7 +34,7 @@ export type Statement = {
     total: number;
     plastic: number;
     prepayment: number;
-    in_hand: number;
+    inHand: number;
   };
 };
 
@@ -46,7 +46,7 @@ export type StatementItem = {
   createdAt: Date;
   total: number;
   plastic: number;
-  in_hand: number;
+  inHand: number;
   prepayment: number;
   selectedMonth: number;
   year: number;

@@ -69,7 +69,7 @@ export default function FormContent({
           label="Наличные"
           type="number"
           className="w-full"
-          name="in_hand"
+          name="inHand"
           placeholder="Наличные"
         />
 

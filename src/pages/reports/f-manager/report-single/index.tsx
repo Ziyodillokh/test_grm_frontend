@@ -48,7 +48,7 @@ export default function SinglePage() {
        // @ts-ignore
        tip: tipFilter[tip],
        search: search || undefined,
-       cashflowSlug: tip == "collection" ? "cash_collection" :cashflowSlug|| undefined,
+       cashflowSlug: tip == "collection" ? "cashCollection" :cashflowSlug|| undefined,
       },
       enabled: Boolean(id),
     });

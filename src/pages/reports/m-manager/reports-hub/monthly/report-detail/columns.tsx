@@ -31,10 +31,10 @@ function getStatusBadge(item: TKassareportData) {
 
 export const DetailColumns: ColumnDef<TKassareportData>[] = [
   {
-    id: "in_hand",
+    id: "inHand",
     header: "Saldo",
     cell: ({ row }) => {
-      const val = row.original?.in_hand || 0;
+      const val = row.original?.inHand || 0;
       return (
         <p className={`font-semibold ${val >= 0 ? "text-[#89A143]" : "text-red-500"}`}>
           {val >= 0 ? "+" : ""}{val.toFixed(2)}
@@ -124,7 +124,7 @@ export const DetailColumns: ColumnDef<TKassareportData>[] = [
     id: "debt",
     header: "Qarz",
     cell: ({ row }) => {
-      const val = row.original?.debt_sum ?? 0;
+      const val = row.original?.debtSum ?? 0;
       return <p>{val.toLocaleString()}$</p>;
     },
   },
@@ -132,7 +132,7 @@ export const DetailColumns: ColumnDef<TKassareportData>[] = [
     id: "inkassa",
     header: "Inkassa",
     cell: ({ row }) => {
-      const val = row.original?.cash_collection ?? row.original?.totalCashCollection ?? 0;
+      const val = row.original?.cashCollection ?? row.original?.totalCashCollection ?? 0;
       return <p>{val.toLocaleString()}$</p>;
     },
   },
@@ -148,7 +148,7 @@ export const DetailColumns: ColumnDef<TKassareportData>[] = [
     id: "foyda",
     header: "Foyda",
     cell: ({ row }) => {
-      const val = row.original?.additionalProfitTotalSum ?? 0;
+      const val = row.original?.additionalProfitSum ?? 0;
       return <p className="text-[#89A143]">+{val.toFixed(2)}$</p>;
     },
   },

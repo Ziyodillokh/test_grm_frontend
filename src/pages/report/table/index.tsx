@@ -76,7 +76,7 @@ export default function Page() {
       tip: tipFilter[tip],
       fromDate: startDate || undefined,
       toDate: endDate || undefined,
-      cashflowSlug:tip =="collection" ? "cash_collection":undefined
+      cashflowSlug:tip =="collection" ? "cashCollection":undefined
 
     },
     enabled: Boolean(id || meUser?.position?.role ===  10 ||meUser?.position?.role ===  9  || Myid),

@@ -45,7 +45,7 @@ export const CashflowColumns: ColumnDef<any>[] = [
             <TebleAvatar status="success" name={item?.order?.seller?.firstName} url={item?.order?.seller?.avatar?.path} />
           )}
           <TebleAvatar
-            status={item?.is_cancelled ? "fail" : "success"}
+            status={item?.isCancelled ? "fail" : "success"}
             name={item?.createdBy?.firstName}
             url={item?.createdBy?.avatar?.path}
           />

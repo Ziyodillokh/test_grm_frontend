@@ -44,7 +44,7 @@ const ActionPage = ({month}:{month:string}) => {
     if (data) {
       form.reset({
         plastic: data?.plastic,
-        in_hand: data?.in_hand,
+        inHand: data?.inHand,
         prepayment: data?.prepayment,
         payrollId:  data?.payroll?.id,
         userId: data?.user?.id,

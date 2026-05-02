@@ -27,7 +27,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       const item = row.original;
       return (
         <p className="text-[#89A143] text-nowrap ">
-          {item?.in_hand?.toFixed(2)}
+          {item?.inHand?.toFixed(2)}
           $
         </p>
       );
@@ -50,7 +50,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     cell: ({ row }) => {
       const item = row.original;
       return (
-        <p className="text-[#58A0C6]"> {item?.debt_sum?.toFixed(2)} $</p>
+        <p className="text-[#58A0C6]"> {item?.debtSum?.toFixed(2)} $</p>
       );
     },
   },
@@ -59,7 +59,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
     id: "owed",
     cell: ({ row }) => {
       const item = row.original;
-      return <p className="text-[#FF6600]"> {item?.kassaStatus == 2 ? item?.filial?.owed : item?.dealer_frozen_owed} $</p>;
+      return <p className="text-[#FF6600]"> {item?.kassaStatus == 2 ? item?.filial?.owed : item?.frozenOwed} $</p>;
     },
   },
 

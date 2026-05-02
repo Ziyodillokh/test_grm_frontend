@@ -9,8 +9,8 @@ const metricCards: { key: keyof TKassareportData; label: string; suffix?: string
   { key: "totalSale", label: "Umumiy sotuv" },
   { key: "totalSize", label: "Sotuv hajmi", suffix: " m²" },
   { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314" },
-  { key: "debt_sum", label: "Yuborilgan" },
-  { key: "dealer_frozen_owed", label: "Qarzdorlik qoldig'i" },
+  { key: "debtSum", label: "Yuborilgan" },
+  { key: "frozenOwed", label: "Qarzdorlik qoldig'i" },
 ];
 
 function CashIcon() {
@@ -31,7 +31,7 @@ function ArrowsExchangeIcon() {
 
 export default function ReportTotals({ data }: ReportTotalsProps) {
   const mainSum = data?.totalIncome || 0;
-  const naqd = data?.in_hand || 0;
+  const naqd = data?.inHand || 0;
   const terminal = data?.totalPlasticSum || 0;
 
   return (

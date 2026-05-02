@@ -72,7 +72,7 @@ export default function AddEmployeeModal({
       await AddData("/payroll-items", {
         selectedMonth: month,
         plastic: 0,
-        in_hand: data?.salary,
+        inHand: data?.salary,
         prepayment: 0,
         payrollId: statementId,
         userId: data?.employeeId?.value,

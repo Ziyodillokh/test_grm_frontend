@@ -11,11 +11,11 @@ export interface TKassareportData {
   totalSale?: number;
   sale?: number;
   totalSaleReturn?: number;
-  return_sale?: number;
+  saleReturn?: number;
   totalSaleSizeReturn?: number;
-  return_size?: number;
+  sizeReturn?: number;
   totalCashCollection?: number;
-  cash_collection?: number;
+  cashCollection?: number;
   totalDiscount?: number;
   discount?: number;
   totalIncome?: number;
@@ -27,14 +27,14 @@ export interface TKassareportData {
   totalSum?: number;
   totalSellCount?: number;
   totalSize?: number;
-  additionalProfitTotalSum?: number;
-  netProfitTotalSum?: number;
-  in_hand?: number;
-  opening_balance?: number;
-  debt_count?: number;
-  debt_kv?: number;
-  debt_sum?: number;
-  debt_profit_sum?: number;
+  additionalProfitSum?: number;
+  netProfitSum?: number;
+  inHand?: number;
+  openingBalance?: number;
+  debtCount?: number;
+  debtSize?: number;
+  debtSum?: number;
+  debtProfitSum?: number;
   status?: string;
   confirmationStatus?: string;
   isAccountantConfirmed?: boolean;
@@ -43,7 +43,7 @@ export interface TKassareportData {
   filial?: any;
   report?: any;
   // Extra fields specific to this file
-  dealer_frozen_owed?: number;
+  frozenOwed?: number;
   kassaReport?: TKassareportData[];
 }
 

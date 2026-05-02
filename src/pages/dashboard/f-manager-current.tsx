@@ -205,7 +205,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
           sortSingle === "Все"
             ? typeFilter[tip as string]
             : sortSingle || typeFilter[tip as string],
-        cashflowSlug: tip === "collection" ? "cash_collection" : tip === "saldo" ? "balance" : undefined,
+        cashflowSlug: tip === "collection" ? "cashCollection" : tip === "saldo" ? "balance" : undefined,
         status: cashflowStatus,
         search: search || undefined,
         sellerId: sellerId || undefined,
@@ -246,11 +246,11 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
       totalExpense: reportData?.expense ?? 0,
       totalSale: reportData?.sale ?? 0,
       totalPlasticSum: reportData?.plasticSum ?? 0,
-      totalCashCollection: reportData?.cash_collection ?? 0,
+      totalCashCollection: reportData?.cashCollection ?? 0,
       totalDiscount: reportData?.discount ?? 0,
-      totalSaleReturn: reportData?.return_sale ?? 0,
-      managerSum: reportData?.in_hand ?? 0,
-      managerSaldo: reportData?.opening_balance ?? 0,
+      totalSaleReturn: reportData?.saleReturn ?? 0,
+      managerSum: reportData?.inHand ?? 0,
+      managerSaldo: reportData?.openingBalance ?? 0,
     } as unknown as TKassareportData;
   }, [reportData]);
 
@@ -479,7 +479,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
     return { name: item.createdBy?.firstName || "?", url: item.createdBy?.avatar?.path, status: "return" };
   }
   if (isOrder && item.order?.seller) {
-    if (item.order?.status === "rejected" || item.status === "rejected" || item.is_cancelled) {
+    if (item.order?.status === "rejected" || item.status === "rejected" || item.isCancelled) {
       return { name: item.order.seller.firstName, url: item.order.seller.avatar?.path, status: "fail" };
     }
     if (item.status === "approved" || item.order?.status === "accepted") {
@@ -487,7 +487,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
     }
     return { name: item.order.seller.firstName, url: item.order.seller.avatar?.path, status: "panding" };
   }
-  if (item.is_cancelled || item.status === "rejected" || item.status === "cancelled") {
+  if (item.isCancelled || item.status === "rejected" || item.status === "cancelled") {
     return { name: item.createdBy?.firstName || "?", url: item.createdBy?.avatar?.path, status: "fail" };
   }
   return { name: item.createdBy?.firstName || "?", url: item.createdBy?.avatar?.path, status: "success" };
@@ -521,7 +521,7 @@ function CashflowRow({ item }: { item: TransactionItem }) {
   const [actionLoading, setActionLoading] = useState(false);
   const canReject = isOrder && item.status === "pending" && isIncome;
   const canReturn = isOrder && item.status === "approved" && item.order?.status !== "returned" && isIncome;
-  const canCancel = !isOrder && !item.is_cancelled && item.status !== "cancelled";
+  const canCancel = !isOrder && !item.isCancelled && item.status !== "cancelled";
 
   const handleReject = () => {
     setActionLoading(true);

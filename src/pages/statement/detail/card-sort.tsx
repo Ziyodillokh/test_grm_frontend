@@ -22,7 +22,7 @@ const isReportLoading = false
       price: isReportLoading ? (
         <Skeleton className="h-5 w-12" />
       ) : (
-        formatPrice(columnData?.in_hand||0)
+        formatPrice(columnData?.inHand||0)
       ),
     },
     {

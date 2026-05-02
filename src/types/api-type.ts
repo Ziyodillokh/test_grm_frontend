@@ -4,8 +4,8 @@ export interface IOpenKassa {
   endDate: string | null;
   isActive: boolean;
   totalSum: number;
-  additionalProfitTotalSum: number;
-  netProfitTotalSum: number;
+  additionalProfitSum: number;
+  netProfitSum: number;
   totalSize: number;
   plasticSum: number;
   cashFlowSumBoss: number;
@@ -16,7 +16,7 @@ export interface IOpenKassa {
   status: "open" | "closed";
   orders: any[];
   cashflow: any[];
-  in_hand:number;
+  inHand:number;
   filial: {
     id: string;
     title: string;

@@ -67,10 +67,10 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
   },
   {
     header: "Навар",
-    id: "additionalProfitTotalSum",
+    id: "additionalProfitSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.additionalProfitTotalSum} $</p>;
+      return <p> {item?.additionalProfitSum} $</p>;
     },
   },
   {
@@ -99,7 +99,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
   },
   {
     header: "Инкассация",
-    id: "cash_collection",
+    id: "cashCollection",
     cell: ({ row }) => {
       const item = row.original;
       return <p> {item?.totalCashCollection} $</p>;

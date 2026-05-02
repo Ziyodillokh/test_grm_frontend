@@ -19,7 +19,7 @@ const TITLES: Record<string, string> = {
   dealer_cash: "Diller naqd",
   dealer_terminal: "Diller o'tkazma",
   kelgan_qarz: "Kelgan qarzlar",
-  opening_balance: "Oydan o'tgan pul",
+  openingBalance: "Oydan o'tgan pul",
   boss_income: "Bossdan kirim",
   kent_income: "Kentdan kirim",
   extra_income: "Boshqa kirimlar",

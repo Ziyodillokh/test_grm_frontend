@@ -39,10 +39,10 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       const item = row.original;
       const isMy = row?.original?.status == "my";
       return (
-        <p className={`text-nowrap  ${((item?.in_hand || 0) >= 0) ? "text-[#89A143]" : "text-red-500"} `}>
+        <p className={`text-nowrap  ${((item?.inHand || 0) >= 0) ? "text-[#89A143]" : "text-red-500"} `}>
           {isMy
             ? ""
-            : (item?.in_hand || 0).toFixed(2)}
+            : (item?.inHand || 0).toFixed(2)}
         </p>
       );
     },
@@ -65,10 +65,10 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
 
   {
     header: "В долг",
-    id: "debt_sum",
+    id: "debtSum",
     cell: ({ row }) => {
       const item = row.original;
-      return <p> {item?.debt_sum} $</p>;
+      return <p> {item?.debtSum} $</p>;
     },
   },
   {
@@ -86,14 +86,14 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
 
   {
     header: "Навар",
-    id: "additionalProfitTotalSum",
+    id: "additionalProfitSum",
     cell: ({ row }) => {
       const item = row.original;
       return (
         <p>
           {" "}
-          {item?.additionalProfitTotalSum?.toFixed(2)}{" "}
-          {item?.additionalProfitTotalSum ? "$" : ""}
+          {item?.additionalProfitSum?.toFixed(2)}{" "}
+          {item?.additionalProfitSum ? "$" : ""}
         </p>
       );
     },
@@ -138,7 +138,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
   },
   {
     header: "Инкассация",
-    id: "cash_collection",
+    id: "cashCollection",
     cell: ({ row }) => {
       const item = row.original;
       return (

@@ -17,23 +17,23 @@ interface ReportTotalsProps {
 
 const metricCards = [
   { key: "totalSale", label: "Umumiy sotuv", isFirst: true, filterValue: "sale" },
-  { key: "debt_sum", label: "Qarz savdosi", filterValue: "debt" },
+  { key: "debtSum", label: "Qarz savdosi", filterValue: "debt" },
   { key: "totalPlasticSum", label: "Terminal", filterValue: "terminal" },
   { key: "totalSaleReturn", label: "Qaytarilgan", negative: true, filterValue: "return" },
   { key: "totalCashCollection", label: "Inkasatsiya", filterValue: "collection" },
   { key: "totalSize", label: "Sotuv hajmi m²", suffix: " m²", filterValue: "sale" },
-  { key: "additionalProfitTotalSum", label: "Navar foydasi", filterValue: "navar" },
+  { key: "additionalProfitSum", label: "Navar foydasi", filterValue: "navar" },
   { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314", filterValue: "discount" },
 ];
 
 const filteredTotalsMap: Record<string, string> = {
   totalSale: "totalPrice",
-  debt_sum: "totalDebtSum",
+  debtSum: "totalDebtSum",
   totalPlasticSum: "plasticSum",
   totalSaleReturn: "totalReturnSale",
   totalCashCollection: "totalCashCollection",
   totalSize: "kv",
-  additionalProfitTotalSum: "totalAdditionalProfit",
+  additionalProfitSum: "totalAdditionalProfit",
   totalDiscount: "totalDiscount",
 };
 
@@ -51,11 +51,11 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
     mainSum = data?.managerSum || 0;
     saldo = data?.managerSaldo || 0;
   } else if (role === 10) {
-    mainSum = data?.accountantSum || data?.accauntantSum || 0;
+    mainSum = data?.accountantSum || data?.accountantSum || 0;
     saldo = data?.accountantSaldo || 0;
   } else {
     mainSum = data?.totalSale || data?.sale || 0;
-    saldo = showDebtLabel ? (data?.debt_sum || 0) : (data?.in_hand ?? data?.managerSaldo ?? 0);
+    saldo = showDebtLabel ? (data?.debtSum || 0) : (data?.inHand ?? data?.managerSaldo ?? 0);
   }
 
   return (

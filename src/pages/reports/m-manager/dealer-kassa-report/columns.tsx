@@ -27,7 +27,7 @@ export const KassaColumnsLoc: ColumnDef<TKassareportData>[] = [
       return (
         <p className="text-[#89A143] text-nowrap ">
           {
-            (item?.in_hand || 0).toFixed(2) + " $"}
+            (item?.inHand || 0).toFixed(2) + " $"}
         </p>
       );
     },

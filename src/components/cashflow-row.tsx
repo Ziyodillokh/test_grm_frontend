@@ -41,7 +41,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
   }
 
   if (isOrder && item.order?.seller) {
-    if (item.order?.status === "rejected" || item.status === "rejected" || item.is_cancelled) {
+    if (item.order?.status === "rejected" || item.status === "rejected" || item.isCancelled) {
       return {
         name: item.order.seller.firstName,
         url: item.order.seller.avatar?.path,
@@ -62,7 +62,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
     };
   }
 
-  if (item.is_cancelled || item.status === "rejected" || item.status === "cancelled") {
+  if (item.isCancelled || item.status === "rejected" || item.status === "cancelled") {
     return {
       name: item.createdBy?.firstName || "?",
       url: item.createdBy?.avatar?.path,
@@ -121,7 +121,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const [actionLoading, setActionLoading] = useState(false);
   const canReject = isOrder && item.status === "pending" && isIncome;
   const canReturn = isOrder && item.status === "approved" && item.order?.status !== "returned" && isIncome;
-  const canCancel = !isOrder && !item.is_cancelled && item.status !== "cancelled";
+  const canCancel = !isOrder && !item.isCancelled && item.status !== "cancelled";
 
   const handleReject = () => {
     setActionLoading(true);
