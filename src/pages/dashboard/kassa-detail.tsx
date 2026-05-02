@@ -405,14 +405,18 @@ export default function DashboardKassaDetail() {
           </div>
         ) : (
           <>
-            {flatData.map((item: any, i: number) => (
-              <CashflowRow
-                key={item?.id || i}
-                item={item}
-                isWarning={kassaData?.kassaStatus === 1}
-                onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
-              />
-            ))}
+            {flatData.map((item: any, i: number) => {
+              const isWarning = kassaData?.kassaStatus === 1;
+              return (
+                <CashflowRow
+                  key={item?.id || i}
+                  item={item}
+                  isWarning={isWarning}
+                  // Tahrirlash faqat warning kassa va manual cashflow uchun
+                  onEdit={isWarning && item?.tip !== "order" ? (cf: any) => setEditCashflowId(String(cf.id)) : undefined}
+                />
+              );
+            })}
             {/* Infinite scroll trigger */}
             <div ref={loadMoreRef} className="h-[1px]" />
             {isFetchingNextPage && (
