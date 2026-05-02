@@ -27,6 +27,8 @@ import type { CashflowType } from "@/components/adding-parish-flow";
 const tipFilter: Record<string, string> = {
   income: "cashflow",
   expense: "cashflow",
+  saldo: "cashflow",
+  collection: "cashflow",
   sale: "order",
   return: "order",
   terminal: "terminal",
@@ -37,6 +39,7 @@ const tipFilter: Record<string, string> = {
 const typeFilter: Record<string, string> = {
   income: "income",
   expense: "expense",
+  saldo: "income",
   sale: "income",
   return: "expense",
 };
@@ -128,7 +131,7 @@ export default function DashboardKassaDetail() {
           sortSingle === "Все"
             ? typeFilter[tip as string]
             : sortSingle || typeFilter[tip as string],
-        cashflowSlug: tip === "collection" ? "cashCollection" : undefined,
+        cashflowSlug: tip === "collection" ? "cashCollection" : tip === "saldo" ? "balance" : undefined,
         status: cashflowStatus,
         search: search || undefined,
         sellerId: sellerId || undefined,
@@ -206,6 +209,10 @@ export default function DashboardKassaDetail() {
 
   const handleIncomeClick = () => {
     setTip(tip === "income" ? null : "income");
+  };
+
+  const handleSaldoClick = () => {
+    setTip(tip === "saldo" ? null : "saldo");
   };
 
   const handleExpenseClick = () => {
@@ -369,6 +376,8 @@ export default function DashboardKassaDetail() {
         onCardClick={handleCardClick}
         onIncomeClick={handleIncomeClick}
         onExpenseClick={handleExpenseClick}
+        onSaldoClick={handleSaldoClick}
+        activeFilter={tip || undefined}
         onGreenCardClick={() => setTip(null)}
       />
 

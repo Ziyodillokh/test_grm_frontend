@@ -91,8 +91,12 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
-  const cashPrice = isOrder && isIncome ? (item.order?.price || 0) : (isOrder ? (item.order?.price || 0) : (item.price || 0));
-  const terminalPrice = isOrder && isIncome ? (item.order?.plasticSum || 0) : 0;
+  // Order: cashPrice = order.price - order.plastic (naqd qism), terminalPrice = order.plastic (terminal qism)
+  // Non-order: faqat cashflow.price
+  const orderPlastic = item.order?.plastic ?? item.order?.plasticSum ?? 0;
+  const orderPrice = item.order?.price ?? 0;
+  const cashPrice = isOrder ? Math.max(orderPrice - orderPlastic, 0) : (item.price || 0);
+  const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
 
   const typeName = item.cashflow_type?.title || (isOrder ? "Order" : "—");
   const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
@@ -158,13 +162,18 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
       {/* Summa */}
       <div className="text-right">
-        <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
-          {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
-        </span>
+        {cashPrice > 0 && (
+          <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+            {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
+          </span>
+        )}
         {terminalPrice > 0 && (
           <p className="text-[15px] font-medium text-[#0078D4]">
             + {formatPrice(terminalPrice)}
           </p>
+        )}
+        {cashPrice === 0 && terminalPrice === 0 && (
+          <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
         )}
       </div>
 
