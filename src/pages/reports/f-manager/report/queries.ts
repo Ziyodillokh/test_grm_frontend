@@ -21,18 +21,16 @@ interface IKassareport {
 export const useDataKassa = ({ queries ,enabled}: IKassaData) =>
   useInfiniteQuery({
     queryKey: [apiRoutes.kassa, queries],
-    queryFn: ({ pageParam = 10 }) =>
+    queryFn: ({ pageParam = 1 }) =>
       getAllData<TResponse<TData>, TQuery>(apiRoutes.kassa, {
         ...queries,
         page: pageParam as number,
         limit: 10,
       }),
     getNextPageParam: (lastPage) => {
-      if (lastPage.meta?.currentPage <= lastPage.meta?.totalPages) {
-        return lastPage?.meta?.currentPage + 1;
-      } else {
-        return null;
-      }
+      const cur = lastPage?.meta?.currentPage ?? 0;
+      const total = lastPage?.meta?.totalPages ?? 0;
+      return cur < total ? cur + 1 : null;
     },
     enabled: enabled,
     initialPageParam: 1,

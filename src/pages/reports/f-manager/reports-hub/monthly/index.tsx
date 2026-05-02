@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef } from "react";
 import { ListRow } from "@/components/ui/list-row";
 import { Loader } from "lucide-react";
 import { useYear } from "@/store/year-store";
@@ -18,11 +19,9 @@ export default function MonthlyReportsPage() {
   const push = useBreadcrumbStore((s) => s.push);
   const filialId = meUser?.filial?.id;
 
-  const { data: kassaData, isLoading } = useDataKassa({
+  const { data: kassaData, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useDataKassa({
     queries: {
       filial: filialId || undefined,
-      page: 1,
-      limit: 12,
       year,
     },
     enabled: Boolean(filialId),
@@ -34,6 +33,25 @@ export default function MonthlyReportsPage() {
   });
 
   const flatData = kassaData?.pages?.flatMap((page) => page?.items || []) || [];
+
+  // Infinite scroll trigger
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage]
+  );
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(handleObserver, { threshold: 0.1 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [handleObserver]);
 
   const gridTemplate = "4px 80px 60px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr";
   const columnLabels = ["", "Saldo", "", "Oy", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma"];
@@ -59,15 +77,20 @@ export default function MonthlyReportsPage() {
             <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
           </div>
         ) : (
-          flatData.map((item: any, i: number) => (
-            <MonthlyRow key={item?.id || i} item={item} gridTemplate={gridTemplate} onRowClick={(item) => {
-              if (item?.id) {
-                const monthLabel = item?.month ? MonthsArray[item.month - 1]?.label : "Kassa";
-                push(monthLabel || "Kassa", `/f-manager/reports-hub/monthly/${item.id}`);
-                navigate(`/f-manager/reports-hub/monthly/${item.id}`);
-              }
-            }} />
-          ))
+          <>
+            {flatData.map((item: any, i: number) => (
+              <MonthlyRow key={item?.id || i} item={item} gridTemplate={gridTemplate} onRowClick={(item) => {
+                if (item?.id) {
+                  const monthLabel = item?.month ? MonthsArray[item.month - 1]?.label : "Kassa";
+                  push(monthLabel || "Kassa", `/f-manager/reports-hub/monthly/${item.id}`);
+                  navigate(`/f-manager/reports-hub/monthly/${item.id}`);
+                }
+              }} />
+            ))}
+            <div ref={loadMoreRef} className="h-[20px] flex items-center justify-center">
+              {isFetchingNextPage && <Loader className="w-4 h-4 animate-spin text-[#a3a3a3]" />}
+            </div>
+          </>
         )}
       </div>
     </div>
@@ -96,9 +119,9 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: any; onRowClick:
   const terminal = item?.plasticSum ?? item?.totalPlasticSum ?? 0;
   const debt = item?.debtSum ?? 0;
   const inkassa = item?.cashCollection ?? item?.totalCashCollection ?? 0;
-  const hajm = item?.totalSize ?? 0;
-  const foyda = item?.additionalProfitSum ?? 0;
-  const chegirma = Number(item?.discount ?? item?.totalDiscount ?? 0);
+  const hajm = item?.saleSize ?? item?.totalSaleSize ?? item?.totalSize ?? 0;
+  const foyda = item?.additionalProfitSum ?? item?.totalAdditionalProfitSum ?? 0;
+  const chegirma = Number(item?.discountSum ?? item?.totalDiscountSum ?? item?.discount ?? item?.totalDiscount ?? 0);
 
   const rowStatus = getRowStatus(item);
 
