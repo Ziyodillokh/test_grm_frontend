@@ -15,15 +15,16 @@ interface ReportTotalsProps {
   showDebtLabel?: boolean;
 }
 
-const metricCards = [
-  { key: "totalSale", label: "Umumiy sotuv", isFirst: true, filterValue: "sale" },
-  { key: "debtSum", label: "Qarz savdosi", filterValue: "debt" },
-  { key: "totalPlasticSum", label: "Terminal", filterValue: "terminal" },
-  { key: "totalSaleReturn", label: "Qaytarilgan", negative: true, filterValue: "return" },
-  { key: "totalCashCollection", label: "Inkasatsiya", filterValue: "collection" },
-  { key: "totalSize", label: "Sotuv hajmi m²", suffix: " m²", filterValue: "sale" },
-  { key: "additionalProfitSum", label: "Navar foydasi", filterValue: "navar" },
-  { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314", filterValue: "discount" },
+// Har key — ikki qatlam (report level + kassa level) ham ishlashi uchun fallback chain
+const metricCards: Array<{ keys: string[]; label: string; isFirst?: boolean; negative?: boolean; valueColor?: string; suffix?: string; filterValue: string }> = [
+  { keys: ["totalSale", "sale"],                                   label: "Umumiy sotuv",  isFirst: true, filterValue: "sale" },
+  { keys: ["debtSum", "totalDebtSum"],                             label: "Qarz savdosi",                 filterValue: "debt" },
+  { keys: ["totalPlasticSum", "plasticSum"],                       label: "Terminal",                     filterValue: "terminal" },
+  { keys: ["totalSaleReturn", "saleReturn"],                       label: "Qaytarilgan", negative: true,  filterValue: "return" },
+  { keys: ["totalCashCollection", "cashCollection"],               label: "Inkasatsiya",                  filterValue: "collection" },
+  { keys: ["totalSaleSize", "saleSize", "totalSize"],              label: "Sotuv hajmi m²", suffix: " m²", filterValue: "sale" },
+  { keys: ["totalAdditionalProfitSum", "additionalProfitSum"],     label: "Navar foydasi",                filterValue: "navar" },
+  { keys: ["totalDiscountSum", "discountSum", "totalDiscount"],    label: "Chegirma", negative: true, valueColor: "#FF6314", filterValue: "discount" },
 ];
 
 const filteredTotalsMap: Record<string, string> = {
@@ -32,9 +33,9 @@ const filteredTotalsMap: Record<string, string> = {
   totalPlasticSum: "plasticSum",
   totalSaleReturn: "totalReturnSale",
   totalCashCollection: "totalCashCollection",
-  totalSize: "kv",
-  additionalProfitSum: "totalAdditionalProfit",
-  totalDiscount: "totalDiscount",
+  totalSaleSize: "kv",
+  totalAdditionalProfitSum: "totalAdditionalProfit",
+  totalDiscountSum: "totalDiscount",
 };
 
 export default function ReportTotals({ data, filteredTotals, hasActiveFilter, onGreenCardClick, activeFilter, onCardClick, onIncomeClick, onExpenseClick, onSaldoClick, showDebtLabel }: ReportTotalsProps) {
@@ -106,17 +107,20 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
         {/* 8 ta metrika card — 2x4 grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 grid-rows-2 gap-[4px] flex-1 h-[150px]">
           {metricCards.map((card) => {
-            const filteredKey = filteredTotalsMap[card.key];
+            // Birinchi mavjud key dan qiymat olish (kassa va report ikkalasi qo'llab-quvvatlanadi)
+            const primaryKey = card.keys[0];
+            const filteredKey = filteredTotalsMap[primaryKey];
+            const dataValue = card.keys.reduce<number>((acc, k) => acc || ((data as any)?.[k] ?? 0), 0);
             const value = (hasActiveFilter && filteredTotals && filteredKey)
               ? (filteredTotals[filteredKey] || 0)
-              : ((data as any)?.[card.key] || 0);
+              : dataValue;
             const displayValue = card.negative ? `-${Math.abs(value).toLocaleString()}` : value.toLocaleString();
             const isFirst = (card as any).isFirst;
             const isNegative = card.negative || value < 0;
             const isActive = activeFilter === card.filterValue && card.filterValue !== "";
             return (
               <div
-                key={card.key}
+                key={primaryKey}
                 onClick={() => onCardClick?.(card.filterValue)}
                 className={`rounded-sm p-[10px] flex flex-col justify-between cursor-pointer transition-colors ${
                   isFirst
