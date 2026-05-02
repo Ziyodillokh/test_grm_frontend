@@ -20,9 +20,9 @@ interface IKassareport {
 
 export const useDataKassa = ({ queries ,enabled}: IKassaData) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.kassa, queries],
+    queryKey: [apiRoutes.kassa + "/report", queries],
     queryFn: ({ pageParam = 1 }) =>
-      getAllData<TResponse<TData>, TQuery>(apiRoutes.kassa, {
+      getAllData<TResponse<TData>, TQuery>(apiRoutes.kassa + "/report", {
         ...queries,
         page: pageParam as number,
         limit: 10,
