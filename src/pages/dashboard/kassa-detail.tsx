@@ -45,6 +45,7 @@ const typeFilter: Record<string, string> = {
 };
 
 import { CashflowRow, cashflowGridTemplate, cashflowLabels } from "@/components/cashflow-row";
+import UpdateCashflowDialog from "@/pages/reports/m-manager/report/update-cashflow-dialog";
 
 export default function DashboardKassaDetail() {
   const params = useParams();
@@ -64,6 +65,7 @@ export default function DashboardKassaDetail() {
 
   const [showSearch, setShowSearch] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [editCashflowId, setEditCashflowId] = useState<string | null>(null);
 
   const { data: kassaData } = useQuery({
     queryKey: [apiRoutes.kassa, id],
@@ -404,7 +406,12 @@ export default function DashboardKassaDetail() {
         ) : (
           <>
             {flatData.map((item: any, i: number) => (
-              <CashflowRow key={item?.id || i} item={item} />
+              <CashflowRow
+                key={item?.id || i}
+                item={item}
+                isWarning={kassaData?.kassaStatus === 1}
+                onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
+              />
             ))}
             {/* Infinite scroll trigger */}
             <div ref={loadMoreRef} className="h-[1px]" />
@@ -416,6 +423,12 @@ export default function DashboardKassaDetail() {
           </>
         )}
       </div>
+
+      <UpdateCashflowDialog
+        editId={editCashflowId}
+        onClose={() => setEditCashflowId(null)}
+        item={flatData.find((i: any) => String(i.id) === editCashflowId) as any}
+      />
     </div>
   );
 }

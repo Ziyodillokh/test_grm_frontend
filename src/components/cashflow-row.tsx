@@ -80,9 +80,10 @@ interface CashflowRowProps {
   item: TransactionItem;
   onEdit?: (item: TransactionItem) => void;
   onDelete?: (item: TransactionItem) => void;
+  isWarning?: boolean;  // kassa.kassaStatus === 1 (closed/historical) — update btn faqat shu holatda
 }
 
-export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
+export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowProps) {
   const queryClient = useQueryClient();
   const { meUser } = useMeStore();
   const role = meUser?.position?.role ?? 0;
@@ -249,6 +250,12 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              {/* Warning kassa: faqat manual cashflow uchun Tahrirlash */}
+              {isWarning && !isOrder && !!onEdit && (
+                <DropdownMenuItem onClick={() => { (onEdit as (it: TransactionItem) => void)(item); }}>
+                  Tahrirlash
+                </DropdownMenuItem>
+              )}
               {canReject && (
                 <DropdownMenuItem disabled={actionLoading} onClick={handleReject}>
                   {actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}
