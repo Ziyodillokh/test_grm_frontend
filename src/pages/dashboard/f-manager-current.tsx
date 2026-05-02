@@ -505,8 +505,8 @@ function CashflowRow({ item }: { item: TransactionItem }) {
   const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
   const dateStr = item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—";
   const barCode = item.order?.bar_code;
-  const additionalProfit = item.order?.additionalProfitSum || 0;
-  const discount = item.order?.discountSum || 0;
+  const additionalProfit = item.order?.additionalProfit ?? item.order?.additionalProfitSum ?? 0;
+  const discount = item.order?.discount ?? item.order?.discountSum ?? 0;
 
   const [approveLoading, setApproveLoading] = useState(false);
   const canApprove = isOrder && item.status === "pending" && isIncome;
