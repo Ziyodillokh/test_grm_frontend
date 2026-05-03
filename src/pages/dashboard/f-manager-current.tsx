@@ -27,6 +27,7 @@ import { apiRoutes } from "@/service/apiRoutes";
 import { getAllData, AddData, PatchData, UpdatePatchData } from "@/service/apiHelpers";
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
 import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
+import UpdateCashflowDialog from "@/pages/reports/m-manager/report/update-cashflow-dialog";
 import { useMeStore } from "@/store/me-store";
 import useData from "@/pages/employees/table/queries";
 import formatPrice from "@/utils/formatPrice";
@@ -82,6 +83,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
   const [amount, setAmount] = useState("");
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
+  const [editCashflowId, setEditCashflowId] = useState<string | null>(null);
 
   // F-Manager o'z kassasi (faqat kassaIdProp bo'lmaganda)
   const { data: openKassaData } = useOpenKassa({
@@ -411,7 +413,12 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
         ) : (
           <>
             {flatData.map((item: any, i: number) => (
-              <CashflowRow key={item?.id || i} item={item} />
+              <CashflowRow
+                key={item?.id || i}
+                item={item}
+                isWarning={kassaStatus === "warning" || (reportData as any)?.kassaStatus === 1}
+                onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
+              />
             ))}
             <div ref={loadMoreRef} className="h-[1px]" />
             {isFetchingNextPage && (
@@ -467,6 +474,12 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
           </Button>
         </DialogContent>
       </Dialog>
+
+      <UpdateCashflowDialog
+        editId={editCashflowId}
+        onClose={() => setEditCashflowId(null)}
+        item={flatData.find((i: any) => String(i.id) === editCashflowId) as any}
+      />
     </div>
   );
 }
@@ -493,7 +506,7 @@ function getCashflowAvatar(item: TransactionItem): { name: string; url?: string;
   return { name: item.createdBy?.firstName || "?", url: item.createdBy?.avatar?.path, status: "success" };
 }
 
-function CashflowRow({ item }: { item: TransactionItem }) {
+function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWarning?: boolean; onEdit?: (item: TransactionItem) => void }) {
   const queryClient = useQueryClient();
   const isOrder = item.tip === "order";
   const isIncome = item.type === "income";
@@ -512,6 +525,7 @@ function CashflowRow({ item }: { item: TransactionItem }) {
 
   const [approveLoading, setApproveLoading] = useState(false);
   const canApprove = isOrder && item.status === "pending" && isIncome;
+  void isWarning;
 
   const handleApprove = () => {
     setApproveLoading(true);
@@ -521,9 +535,11 @@ function CashflowRow({ item }: { item: TransactionItem }) {
   };
 
   const [actionLoading, setActionLoading] = useState(false);
+  const isOrderReturned = item.order?.status === "returned";
   const canReject = isOrder && item.status === "pending" && isIncome;
-  const canReturn = isOrder && item.status === "approved" && item.order?.status !== "returned" && isIncome;
+  const canReturn = isOrder && !isOrderReturned && isIncome && item.status === "approved";
   const canCancel = !isOrder && !item.isCancelled && item.status !== "cancelled";
+  const canEdit = !!onEdit && !(isOrder && isOrderReturned && isIncome);
 
   const handleReject = () => {
     setActionLoading(true);
@@ -611,8 +627,9 @@ function CashflowRow({ item }: { item: TransactionItem }) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {canReject && <DropdownMenuItem disabled={actionLoading} onClick={handleReject}>{actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}Bekor qilish</DropdownMenuItem>}
+            {canEdit && <DropdownMenuItem onClick={() => onEdit?.(item)}>Tahrirlash</DropdownMenuItem>}
             {canReturn && <DropdownMenuItem disabled={actionLoading} onClick={handleReturn}>{actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}Qaytarish</DropdownMenuItem>}
+            {canReject && <DropdownMenuItem disabled={actionLoading} onClick={handleReject}>{actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}Bekor qilish</DropdownMenuItem>}
             {canCancel && <DropdownMenuItem disabled={actionLoading} onClick={handleCancel}>{actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}Bekor qilish</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
