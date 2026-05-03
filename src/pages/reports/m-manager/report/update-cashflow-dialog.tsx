@@ -23,9 +23,12 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   const isOpen = !!editId && !!item;
 
   const [price, setPrice] = useState("");
+  const [plastic, setPlastic] = useState("");
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
   const [selectedType, setSelectedType] = useState("");
+
+  const isOrder = item?.tip === "order";
 
   const { data: cashflowTypesData } = useQuery({
     queryKey: ["/cashflow-types/by/managers", "update-dialog", item?.type],
@@ -45,7 +48,15 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
 
   useEffect(() => {
     if (item) {
-      setPrice(String(item.price || 0));
+      // Order uchun price = order.price (naqd qism), plastic = order.plastic (terminal qism)
+      // Manual cashflow uchun price = cashflow.price
+      if (item.tip === "order") {
+        setPrice(String((item as any).order?.price || 0));
+        setPlastic(String((item as any).order?.plastic ?? (item as any).order?.plasticSum ?? 0));
+      } else {
+        setPrice(String(item.price || 0));
+        setPlastic("0");
+      }
       setComment(item.comment || "");
       setDate(item.date ? item.date.slice(0, 16) : "");
       setSelectedType(item.cashflow_type?.id || "");
@@ -68,14 +79,18 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   });
 
   const handleSubmit = () => {
-    const priceNum = parseFloat(price);
-    if (!priceNum || priceNum <= 0) {
-      toast.error("Summani kiriting");
+    const priceNum = parseFloat(price) || 0;
+    const plasticNum = isOrder ? (parseFloat(plastic) || 0) : 0;
+    if (priceNum + plasticNum <= 0) {
+      toast.error("Summani kiriting (price yoki plastic)");
       return;
     }
 
     const payload: Record<string, unknown> = {};
     payload.price = priceNum;
+    if (isOrder) {
+      payload.plasticSum = plasticNum;
+    }
 
     if (selectedType && selectedType !== item?.cashflow_type?.id) {
       payload.cashflow_type = selectedType;
@@ -92,6 +107,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
 
   const isIncome = item?.type === "income";
   const headerColor = isIncome ? "bg-[#89A143]" : "bg-[#E38157]";
+  const headerLabel = isOrder ? "Order tahrirlash" : "Tahrirlash";
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -99,31 +115,35 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
         <div
           className={`p-1 h-[30px] pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[35px] ${headerColor} text-white`}
         >
-          Tahrirlash
+          {headerLabel}
         </div>
 
         <div className="flex gap-1">
-          <div className="flex w-full max-w-[210px] items-start justify-start flex-wrap gap-1">
-            {categories?.map((ct) => (
-              <div
-                key={ct.id}
-                onClick={() => setSelectedType(ct.id)}
-                className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-sm text-center cursor-pointer ${
-                  selectedType === ct.id
-                    ? isIncome
-                      ? "ring-2 ring-[#89A143]"
-                      : "ring-2 ring-[#E38157]"
-                    : ""
-                }`}
-              >
-                <p className="text-primary text-[13px] font-medium mt-2.5">
-                  {ct.title}
-                </p>
-              </div>
-            ))}
-          </div>
+          {/* Kategoriyalar — faqat manual cashflow uchun */}
+          {!isOrder && (
+            <div className="flex w-full max-w-[210px] items-start justify-start flex-wrap gap-1">
+              {categories?.map((ct) => (
+                <div
+                  key={ct.id}
+                  onClick={() => setSelectedType(ct.id)}
+                  className={`w-[calc(50%-2px)] h-22 bg-input flex items-center justify-center flex-col rounded-sm text-center cursor-pointer ${
+                    selectedType === ct.id
+                      ? isIncome
+                        ? "ring-2 ring-[#89A143]"
+                        : "ring-2 ring-[#E38157]"
+                      : ""
+                  }`}
+                >
+                  <p className="text-primary text-[13px] font-medium mt-2.5">
+                    {ct.title}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="w-full">
+            {/* Naqd (price) */}
             <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
               <Input
                 placeholder="0.00"
@@ -133,8 +153,24 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
                 onChange={(e) => setPrice(e.target.value)}
                 className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0"
               />
-              <div className="text-4xl text-[#5D5D53] mx-4">$</div>
+              <div className="text-[16px] text-[#5D5D53] mr-4 whitespace-nowrap">$ Naqd</div>
             </div>
+
+            {/* Plastic (faqat order uchun) */}
+            {isOrder && (
+              <div className="flex pl-2 items-center bg-input rounded-sm h-[60px] mt-0.5">
+                <Input
+                  placeholder="0.00"
+                  value={plastic}
+                  type="number"
+                  min={0}
+                  onChange={(e) => setPlastic(e.target.value)}
+                  className="w-full border-none h-[60px] placeholder:text-[20px] !text-[20px] font-semibold rounded-sm bg-transparent px-0 text-[#0078D4]"
+                />
+                <div className="text-[14px] text-[#0078D4] mr-4 whitespace-nowrap">$ Terminal</div>
+              </div>
+            )}
+
             <Input
               type="datetime-local"
               value={date}
@@ -152,7 +188,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
 
         <Button
           onClick={handleSubmit}
-          disabled={isPending || !price}
+          disabled={isPending}
           className={`p-5 rounded-sm mt-1 ${headerColor} text-white`}
         >
           {isPending ? (
