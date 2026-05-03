@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { UpdatePatchData, getAllData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
+import { useMeStore } from "@/store/me-store";
 import type { TData } from "./type";
 import type { CashflowType } from "@/components/adding-parish-flow";
 
@@ -20,6 +21,18 @@ interface Props {
 
 export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   const queryClient = useQueryClient();
+  const { meUser } = useMeStore();
+  const role = meUser?.position?.role ?? 0;
+  // Role-based cashflow_type endpoint:
+  // 4 (F-manager) → /for/f-manager
+  // 6 (cashier) → /for/cashier (= F-manager filterli)
+  // 9 (M-manager), 10 (Accountant) → /by/managers/both (M-manager + Accountant kategoriyalari)
+  // Boshqa role'lar → /by/managers/<userId> (o'z position'iga ko'ra)
+  const cashflowTypesEndpoint =
+    role === 4 ? "/cashflow-types/for/f-manager" :
+    role === 6 ? "/cashflow-types/for/cashier" :
+    (role === 9 || role === 10) ? "/cashflow-types/by/managers/both" :
+    `/cashflow-types/by/managers/${meUser?.id || "both"}`;
   const isOpen = !!editId && !!item;
 
   const [price, setPrice] = useState("");
@@ -31,10 +44,10 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   const isOrder = item?.tip === "order";
 
   const { data: cashflowTypesData } = useQuery({
-    queryKey: ["/cashflow-types/by/managers", "update-dialog", item?.type],
+    queryKey: [cashflowTypesEndpoint, "update-dialog", item?.type, role],
     queryFn: () =>
       getAllData<CashflowType[], object>(
-        "/cashflow-types/by/managers/both",
+        cashflowTypesEndpoint,
         { type: item?.type === "income" ? "in" : "out" }
       ),
     enabled: isOpen,
