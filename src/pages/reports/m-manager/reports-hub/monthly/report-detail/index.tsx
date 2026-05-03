@@ -4,6 +4,7 @@ import { ListRow } from "@/components/ui/list-row";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useYear } from "@/store/year-store";
 import ReportTotals from "../../../report-finance/monthly/report-totals";
+import ReportToolbar from "@/components/report-toolbar";
 import { TKassareportData } from "../../../report-finance/type";
 import {
   useReportsSingle,
@@ -93,6 +94,8 @@ export default function ReportDetailPage() {
 
   return (
     <div className="flex flex-col h-full">
+      <ReportToolbar />
+
       <ReportTotals
         data={reportTotalsData}
         onGreenCardClick={() => {
