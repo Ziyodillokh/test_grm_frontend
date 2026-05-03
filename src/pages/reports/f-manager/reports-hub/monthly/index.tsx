@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ListRow } from "@/components/ui/list-row";
 import { Loader } from "lucide-react";
 import { useYear } from "@/store/year-store";
 import { useMeStore } from "@/store/me-store";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { MonthsArray } from "@/consts";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import ReportTotals from "../../../m-manager/report-finance/monthly/report-totals";
 import { TKassareportData } from "../../../m-manager/report-finance/type";
 import { useDataKassa } from "../../report/queries";
@@ -14,7 +15,8 @@ import TebleAvatar from "@/components/teble-avatar";
 
 export default function MonthlyReportsPage() {
   const { meUser } = useMeStore();
-  const { year } = useYear();
+  const { year, setYear } = useYear();
+  const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
   const filialId = meUser?.filial?.id;
@@ -56,9 +58,48 @@ export default function MonthlyReportsPage() {
   const gridTemplate = "4px 80px 60px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr";
   const columnLabels = ["", "Saldo", "", "Oy", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma"];
 
+  const currentYear = new Date().getFullYear();
+  const yearOptions = [currentYear - 1, currentYear, currentYear + 1];
+
   return (
     <div className="flex flex-col h-full">
       <ReportTotals data={totals as TKassareportData} showDebtLabel />
+
+      {/* Toolbar */}
+      <div className="flex items-center gap-[4px] shrink-0 mt-[10px]">
+        {/* Filter (year) */}
+        <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+          <PopoverTrigger asChild>
+            <button className="relative w-[42px] h-[42px] rounded-sm bg-white flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.75 3H2.25M9.75 12H5.25M8.25 15H11.25M4.5 6H15M3 9H12" stroke="#1A1A1A" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {year !== currentYear && (
+                <span className="absolute top-[8px] right-[8px] w-[6px] h-[6px] rounded-full bg-[#0078D4]" />
+              )}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className="w-[200px] p-[12px] bg-[#f5f7f9] border border-[#e7ebf0] rounded-[6px] shadow-[0px_12px_24px_0px_rgba(12,36,58,0.08)]"
+          >
+            <p className="text-[15px] font-medium text-[#1a1a1a] px-[4px] mb-[10px]">Yil</p>
+            <div className="flex flex-col gap-[4px]">
+              {yearOptions.map((y) => (
+                <button
+                  key={y}
+                  onClick={() => { setYear(y); setFilterOpen(false); }}
+                  className={`text-left px-[12px] py-[8px] rounded-[6px] text-[14px] transition-colors ${y === year ? "bg-[#0078D4] text-white" : "bg-white hover:bg-gray-50 text-[#1a1a1a]"}`}
+                >
+                  {y}
+                </button>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <span className="text-[13px] text-[#A3A3A3] ml-[8px]">Yil: <b className="text-[#1a1a1a]">{year}</b></span>
+      </div>
 
       {/* Labellar */}
       <div
