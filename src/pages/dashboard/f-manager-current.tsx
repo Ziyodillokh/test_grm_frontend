@@ -512,9 +512,10 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
   const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
+  // order.price = NAQD (cash), order.plastic = TERMINAL alohida
   const orderPlastic = item.order?.plastic ?? item.order?.plasticSum ?? 0;
   const orderPrice = item.order?.price ?? 0;
-  const cashPrice = isOrder ? Math.max(orderPrice - orderPlastic, 0) : (item.price || 0);
+  const cashPrice = isOrder ? orderPrice : (item.price || 0);
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
   const typeName = item.cashflow_type?.title || (isOrder ? "Order" : "—");
   const typeColor = isIncome ? "#3ABC49" : "#EF5C12";

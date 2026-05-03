@@ -92,11 +92,11 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
-  // Order: cashPrice = order.price - order.plastic (naqd qism), terminalPrice = order.plastic (terminal qism)
-  // Non-order: faqat cashflow.price
+  // Order: order.price = NAQD qism (cash), order.plastic = TERMINAL qism (alohida saqlangan)
+  // cashflow.price = order.price + order.plastic (gross). Lekin display'da naqd va terminal alohida.
   const orderPlastic = item.order?.plastic ?? item.order?.plasticSum ?? 0;
   const orderPrice = item.order?.price ?? 0;
-  const cashPrice = isOrder ? Math.max(orderPrice - orderPlastic, 0) : (item.price || 0);
+  const cashPrice = isOrder ? orderPrice : (item.price || 0);
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
 
   const typeName = item.cashflow_type?.title || (isOrder ? "Order" : "—");

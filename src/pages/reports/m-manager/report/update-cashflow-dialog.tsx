@@ -143,7 +143,10 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
           )}
 
           <div className="w-full">
-            {/* Naqd (price) */}
+            {/* Naqd (order.price — naqd qism) */}
+            {isOrder && (
+              <p className="text-[11px] text-[#5D5D53] px-1 mb-0.5">Naqd (order.price)</p>
+            )}
             <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
               <Input
                 placeholder="0.00"
@@ -153,22 +156,29 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
                 onChange={(e) => setPrice(e.target.value)}
                 className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0"
               />
-              <div className="text-[16px] text-[#5D5D53] mr-4 whitespace-nowrap">$ Naqd</div>
+              <div className="text-[16px] text-[#5D5D53] mr-4 whitespace-nowrap">$ {isOrder ? "Naqd" : ""}</div>
             </div>
 
-            {/* Plastic (faqat order uchun) */}
+            {/* Plastic / Terminal (faqat order uchun) */}
             {isOrder && (
-              <div className="flex pl-2 items-center bg-input rounded-sm h-[60px] mt-0.5">
-                <Input
-                  placeholder="0.00"
-                  value={plastic}
-                  type="number"
-                  min={0}
-                  onChange={(e) => setPlastic(e.target.value)}
-                  className="w-full border-none h-[60px] placeholder:text-[20px] !text-[20px] font-semibold rounded-sm bg-transparent px-0 text-[#0078D4]"
-                />
-                <div className="text-[14px] text-[#0078D4] mr-4 whitespace-nowrap">$ Terminal</div>
-              </div>
+              <>
+                <p className="text-[11px] text-[#0078D4] px-1 mt-1 mb-0.5">Terminal (order.plastic)</p>
+                <div className="flex pl-2 items-center bg-input rounded-sm h-[60px]">
+                  <Input
+                    placeholder="0.00"
+                    value={plastic}
+                    type="number"
+                    min={0}
+                    onChange={(e) => setPlastic(e.target.value)}
+                    className="w-full border-none h-[60px] placeholder:text-[20px] !text-[20px] font-semibold rounded-sm bg-transparent px-0 text-[#0078D4]"
+                  />
+                  <div className="text-[14px] text-[#0078D4] mr-4 whitespace-nowrap">$ Terminal</div>
+                </div>
+                {/* Jami (preview) */}
+                <p className="text-[11px] text-[#1a1a1a] px-1 mt-1">
+                  Jami: <b>${(parseFloat(price) || 0) + (parseFloat(plastic) || 0)}</b>
+                </p>
+              </>
             )}
 
             <Input
