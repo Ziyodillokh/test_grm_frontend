@@ -24,13 +24,11 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   const { meUser } = useMeStore();
   const role = meUser?.position?.role ?? 0;
   // Role-based cashflow_type endpoint:
-  // 4 (F-manager) → /for/f-manager
-  // 6 (cashier) → /for/cashier (= F-manager filterli)
-  // 9 (M-manager), 10 (Accountant) → /by/managers/both (M-manager + Accountant kategoriyalari)
-  // Boshqa role'lar → /by/managers/<userId> (o'z position'iga ko'ra)
+  // 4 (F-menejer)              → /for/f-manager
+  // 9 (Menejer), 10 (Hisobchi) → /by/managers/both (M+Accountant union)
+  // Boshqa (6 D-menejer, 12 Boss, va h.k.) → /by/managers/<userId> (position'iga ko'ra)
   const cashflowTypesEndpoint =
     role === 4 ? "/cashflow-types/for/f-manager" :
-    role === 6 ? "/cashflow-types/for/cashier" :
     (role === 9 || role === 10) ? "/cashflow-types/by/managers/both" :
     `/cashflow-types/by/managers/${meUser?.id || "both"}`;
   const isOpen = !!editId && !!item;
