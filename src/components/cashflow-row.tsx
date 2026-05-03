@@ -83,7 +83,7 @@ interface CashflowRowProps {
   isWarning?: boolean;  // kassa.kassaStatus === 1 (closed/historical) — update btn faqat shu holatda
 }
 
-export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowProps) {
+export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const queryClient = useQueryClient();
   const { meUser } = useMeStore();
   const role = meUser?.position?.role ?? 0;
@@ -124,9 +124,14 @@ export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowPr
   };
 
   const [actionLoading, setActionLoading] = useState(false);
+  const isOrderReturned = item.order?.status === "returned";
   const canReject = isOrder && item.status === "pending" && isIncome;
-  const canReturn = isOrder && item.status === "approved" && item.order?.status !== "returned" && isIncome;
+  // Qaytarish — order accepted bo'lsa, har kassa statusida (return cashflow open kassaga ketadi)
+  const canReturn = isOrder && !isOrderReturned && isIncome && item.status === "approved";
+  // Manual cashflow bekor qilish — open va warning kassada mumkin (closed'da emas — closed list'ga umuman ko'rinmaydi)
   const canCancel = !isOrder && !item.isCancelled && item.status !== "cancelled";
+  // Returned order'ning asl income cashflow'ini tahrirlash mumkin emas — faqat return cashflow date
+  const canEdit = !!onEdit && !(isOrder && isOrderReturned && isIncome);
 
   const handleReject = () => {
     setActionLoading(true);
@@ -155,9 +160,6 @@ export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowPr
       .finally(() => setActionLoading(false));
   };
 
-  // Edit/Delete actions (myCashFlow uchun)
-  const canEditDelete = !!onEdit || !!onDelete;
-  const canEditItem = onEdit && !isOrder;
 
   return (
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
@@ -241,8 +243,8 @@ export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowPr
           </button>
         )}
 
-        {/* F-Manager dropdown */}
-        {isFManager && !canEditDelete && (
+        {/* Yagona 3-nuqta menyu */}
+        {(canEdit || canReject || canReturn || canCancel || !!onDelete) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="w-[24px] h-[24px] flex items-center justify-center rounded hover:bg-gray-100">
@@ -250,16 +252,9 @@ export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowPr
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {/* Warning kassa: faqat manual cashflow uchun Tahrirlash */}
-              {isWarning && !isOrder && !!onEdit && (
+              {canEdit && (
                 <DropdownMenuItem onClick={() => { (onEdit as (it: TransactionItem) => void)(item); }}>
                   Tahrirlash
-                </DropdownMenuItem>
-              )}
-              {canReject && (
-                <DropdownMenuItem disabled={actionLoading} onClick={handleReject}>
-                  {actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Bekor qilish
                 </DropdownMenuItem>
               )}
               {canReturn && (
@@ -268,32 +263,20 @@ export function CashflowRow({ item, onEdit, onDelete, isWarning }: CashflowRowPr
                   Qaytarish
                 </DropdownMenuItem>
               )}
+              {canReject && (
+                <DropdownMenuItem disabled={actionLoading} onClick={handleReject}>
+                  {actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}
+                  Bekor qilish
+                </DropdownMenuItem>
+              )}
               {canCancel && (
                 <DropdownMenuItem disabled={actionLoading} onClick={handleCancel}>
                   {actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}
                   Bekor qilish
                 </DropdownMenuItem>
               )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-
-        {/* Edit/Delete dropdown (myCashFlow) */}
-        {canEditDelete && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-[24px] h-[24px] flex items-center justify-center rounded hover:bg-gray-100">
-                <MoreVertical className="w-[16px] h-[16px] text-[#A3A3A3]" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {canEditItem && (
-                <DropdownMenuItem onClick={() => onEdit?.(item)}>
-                  Tahrirlash
-                </DropdownMenuItem>
-              )}
-              {onDelete && (
-                <DropdownMenuItem onClick={() => onDelete?.(item)}>
+              {!!onDelete && (
+                <DropdownMenuItem onClick={() => onDelete(item)}>
                   O'chirish
                 </DropdownMenuItem>
               )}

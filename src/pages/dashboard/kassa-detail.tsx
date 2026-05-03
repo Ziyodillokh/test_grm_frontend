@@ -412,8 +412,8 @@ export default function DashboardKassaDetail() {
                   key={item?.id || i}
                   item={item}
                   isWarning={isWarning}
-                  // Tahrirlash faqat warning kassa va manual cashflow uchun
-                  onEdit={isWarning && item?.tip !== "order" ? (cf: any) => setEditCashflowId(String(cf.id)) : undefined}
+                  // Tahrirlash hammasida (open + warning kassa, order + cashflow)
+                  onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
                 />
               );
             })}

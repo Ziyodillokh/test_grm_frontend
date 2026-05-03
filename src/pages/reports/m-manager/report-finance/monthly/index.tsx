@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useReports, useReportsTotal } from "./queries";
 import ReportTotals from "./report-totals";
+import ReportToolbar from "@/components/report-toolbar";
+import ShadcnSelect from "@/components/Select";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { useMeStore } from "@/store/me-store";
 import { TKassareportData } from "../type";
@@ -23,7 +25,7 @@ import {
 import { toast } from "sonner";
 
 export default function MonthlyReportsPage() {
-  const { year } = useYear();
+  const { year, setYear } = useYear();
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
 
@@ -40,11 +42,31 @@ export default function MonthlyReportsPage() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
-  const gridTemplate = "4px 80px 100px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 70px";
-  const columnLabels = ["", "Saldo", "Status", "Oy", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
+  const currentYear = new Date().getFullYear();
+  const yearOptions = [currentYear - 1, currentYear, currentYear + 1].map((y) => ({ label: String(y), value: String(y) }));
+  const gridTemplate = "4px 100px 100px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 60px";
+  const columnLabels = ["", "Oy", "Status", "Saldo", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
 
   return (
     <div className="flex flex-col h-full">
+      <ReportToolbar
+        filterCols={1}
+        hasActiveFilter={year !== currentYear}
+        onClearFilters={() => setYear(currentYear)}
+        filterContent={
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
+            <ShadcnSelect
+              value={String(year)}
+              onChange={(v) => v && setYear(Number(v))}
+              options={yearOptions}
+              placeholder="Yil tanlang"
+              className="bg-white h-[44px] rounded-[4px]"
+            />
+          </div>
+        }
+      />
+
       <ReportTotals
         data={totals}
         onGreenCardClick={() => {}}
@@ -53,10 +75,10 @@ export default function MonthlyReportsPage() {
       {/* Labellar */}
       <div
         className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "10px" }}
       >
         {columnLabels.map((label, i) => (
-          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" || label === "Saldo" ? "text-center" : ""}`}>{label}</span>
+          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" ? "text-center" : ""}`}>{label}</span>
         ))}
       </div>
 
@@ -160,6 +182,7 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: TKassareportData
   return (
     <ListRow
       gridTemplate={gridTemplate}
+      gridGap="10px"
       onClick={() => onRowClick(item)}
     >
       {/* Tayoqcha */}
@@ -169,10 +192,8 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: TKassareportData
         <div />
       )}
 
-      {/* Saldo */}
-      <span className={`text-[15px] font-medium whitespace-nowrap text-right ${saldo === 0 ? "text-[#1a1a1a]" : saldo > 0 ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
-        {saldo === 0 ? "0$" : saldo > 0 ? `+${saldo.toLocaleString()}$` : `${saldo.toLocaleString()}$`}
-      </span>
+      {/* Oy (kattaroq, saldo o'rnida) */}
+      <span className="text-[15px] font-medium text-[#1a1a1a] whitespace-nowrap text-left">{monthName}</span>
 
       {/* Avatarlar */}
       <div className="flex items-center justify-center [&>*:not(:first-child)]:ml-[-8px]">
@@ -187,8 +208,10 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: TKassareportData
         ))}
       </div>
 
-      {/* Oy */}
-      <span className="text-[13px] font-medium text-[#1a1a1a]">{monthName}</span>
+      {/* Saldo (kichikroq, oy o'rnida) */}
+      <span className={`text-[13px] font-medium whitespace-nowrap ${saldo === 0 ? "text-[#1a1a1a]" : saldo > 0 ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+        {saldo === 0 ? "0$" : saldo > 0 ? `+${saldo.toLocaleString()}$` : `${saldo.toLocaleString()}$`}
+      </span>
 
       {/* Savdo */}
       <span className="text-[13px] text-[#1a1a1a]">{sale ? `${sale.toLocaleString()}$` : "0$"}</span>

@@ -88,8 +88,8 @@ export default function ReportDetailPage() {
     return rows;
   }, [reportData, dealerData]);
 
-  const gridTemplate = "4px 80px 100px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 70px";
-  const columnLabels = ["", "Saldo", "Status", "Filial", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
+  const gridTemplate = "4px 100px 100px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 60px";
+  const columnLabels = ["", "Filial", "Status", "Saldo", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
 
   return (
     <div className="flex flex-col h-full">
@@ -106,10 +106,10 @@ export default function ReportDetailPage() {
       {/* Labellar */}
       <div
         className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "10px" }}
       >
         {columnLabels.map((label, i) => (
-          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" || label === "Saldo" ? "text-center" : ""}`}>{label}</span>
+          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" ? "text-center" : ""}`}>{label}</span>
         ))}
       </div>
 
@@ -210,6 +210,7 @@ function ReportRow({ item, onRowClick, gridTemplate, reportId: _reportId }: { it
   return (
     <ListRow
       gridTemplate={gridTemplate}
+      gridGap="10px"
       onClick={() => onRowClick(item)}
     >
       {/* Tayoqcha */}
@@ -219,10 +220,8 @@ function ReportRow({ item, onRowClick, gridTemplate, reportId: _reportId }: { it
         <div />
       )}
 
-      {/* Saldo */}
-      <span className={`text-[15px] font-medium whitespace-nowrap text-right ${saldo === 0 ? "text-[#1a1a1a]" : saldo > 0 ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
-        {saldo === 0 ? "0$" : saldo > 0 ? `+${saldo.toLocaleString()}$` : `${saldo.toLocaleString()}$`}
-      </span>
+      {/* Filial (kattaroq, saldo o'rnida) */}
+      <span className="text-[15px] font-medium text-[#1a1a1a] whitespace-nowrap text-left">{filialName}</span>
 
       {/* Avatarlar */}
       <div className="flex items-center justify-center [&>*:not(:first-child)]:ml-[-8px]">
@@ -237,8 +236,10 @@ function ReportRow({ item, onRowClick, gridTemplate, reportId: _reportId }: { it
         ))}
       </div>
 
-      {/* Filial */}
-      <span className="text-[13px] font-medium text-[#1a1a1a]">{filialName}</span>
+      {/* Saldo (kichikroq, filial o'rnida) */}
+      <span className={`text-[13px] font-medium whitespace-nowrap ${saldo === 0 ? "text-[#1a1a1a]" : saldo > 0 ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+        {saldo === 0 ? "0$" : saldo > 0 ? `+${saldo.toLocaleString()}$` : `${saldo.toLocaleString()}$`}
+      </span>
 
       {/* Savdo */}
       <span className="text-[13px] text-[#1a1a1a]">{sale ? `${sale.toLocaleString()}$` : "0$"}</span>
