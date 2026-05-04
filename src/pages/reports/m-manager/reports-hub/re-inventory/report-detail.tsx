@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { parseAsString, useQueryState } from "nuqs";
 import { useQueryClient } from "@tanstack/react-query";
@@ -96,7 +96,7 @@ export default function ReInventoryReportDetailPage() {
     enabled: !!reportId,
   });
 
-  const { data, isLoading } = useReInventoryItems({
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useReInventoryItems({
     reportId: reportId || "",
     queries: {
       type: apiType,
@@ -105,6 +105,22 @@ export default function ReInventoryReportDetailPage() {
     },
     enabled: !!reportId,
   });
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const node = sentinelRef.current;
+    if (!node || !hasNextPage) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { root: null, rootMargin: "200px", threshold: 0 }
+    );
+    obs.observe(node);
+    return () => obs.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const { mutate: removeReInventory, isPending: deleting } = useDeleteReInventory();
   const { mutate: closeReport, isPending: closing } = useCloseFilialReport();
@@ -384,6 +400,12 @@ export default function ReInventoryReportDetailPage() {
               </ListRow>
             );
           })
+        )}
+        <div ref={sentinelRef} className="h-[1px]" />
+        {isFetchingNextPage && (
+          <div className="flex items-center justify-center py-3">
+            <Loader className="w-4 h-4 animate-spin text-[#a3a3a3]" />
+          </div>
         )}
       </div>
 

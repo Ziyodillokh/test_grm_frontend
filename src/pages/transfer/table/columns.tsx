@@ -99,9 +99,14 @@ export const paymentColumns = (flatDataFilial: TData[]): ColumnDef<TransferData>
         if (row.original?.type === "header") {
           return null
         }
+        const bc = row.original?.product?.bar_code;
+        const sx = Number(bc?.size?.x || 0);
+        const cnt = Number(row.original?.count || 0);
+        const yV = Number(row.original?.product?.y || 0);
+        const vol = bc?.isMetric ? sx * (cnt / 100) : sx * cnt * yV;
         return (
           <p>
-            {`${(row.original?.product?.bar_code?.size?.x * (row.original.product?.bar_code?.isMetric ? +row.original.count / 100 : +row.original.count * +row.original?.product?.y)).toFixed(2)}`}
+            {vol.toFixed(2)}
             м²
           </p>
         );
@@ -159,7 +164,7 @@ export const paymentColumns = (flatDataFilial: TData[]): ColumnDef<TransferData>
         );
         const { meUser } = useMeStore();
         const queryClient = useQueryClient();
-        const status = row?.original?.progres;
+        const status = (row?.original as any)?.progress || row?.original?.progres;
 
         const { mutate, isPending } = useMutation({
           mutationFn: () =>

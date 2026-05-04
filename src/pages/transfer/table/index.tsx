@@ -599,7 +599,7 @@ export default function Page() {
                                   <span className="text-[15px] text-[#1a1a1a] truncate">
                                     {bar?.color?.title || "—"}
                                   </span>
-                                  <span className="text-[15px] text-[#1a1a1a]">{cnt} ta</span>
+                                  <span className="text-[15px] text-[#1a1a1a]">{isMetric ? 1 : cnt} ta</span>
                                   <span className="text-[15px] text-[#1a1a1a]">
                                     {itemVolume.toFixed(2)} m²
                                   </span>
