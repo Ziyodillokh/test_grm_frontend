@@ -13,6 +13,7 @@ import { IUserData, TResponse } from "@/types";
 import { useReports, useReportsTotal } from "./queries";
 import ReportTotals from "./report-totals";
 import { TKassareportData } from "./type";
+import ReportToolbar from "@/components/report-toolbar";
 
 export default function PageFinance() {
   const { year } = useYear();
@@ -34,6 +35,7 @@ export default function PageFinance() {
 
   return (
     <div className="flex flex-col h-full">
+      <ReportToolbar />
       <ReportTotals data={totals} />
 
       {/* Column labels */}
