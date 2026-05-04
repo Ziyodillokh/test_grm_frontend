@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import {
   ArrowDown,
   ArrowUp,
@@ -28,6 +29,8 @@ import { TrendingDown } from "lucide-react";
 
 export default function DealerReportPage() {
   const { id, dealerId: dealerIdParam } = useParams();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const { year } = useYear();
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
@@ -49,6 +52,11 @@ export default function DealerReportPage() {
     data?.pages?.flatMap((page) => page?.items || []) || [];
   const totals = data?.pages?.[0]?.totals;
   const dealer = data?.pages?.[0]?.dealer;
+
+  useEffect(() => {
+    const title = (dealer as any)?.title || (kassaData as any)?.filial?.title || "Diller";
+    if (title) push(title, location.pathname);
+  }, [dealer, kassaData, location.pathname]);
 
   const toggleExpand = (itemId: string) => {
     setExpandedRows((prev) => {

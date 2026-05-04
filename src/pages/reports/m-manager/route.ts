@@ -1,5 +1,5 @@
 import DealerReportPage from "./dealer-report";
-import PageDealerKassaReport from "./dealer-kassa-report";
+import PageKassaReportDealer from "../d-manager/kassa-report";
 import ReportPage from "./report";
 import PageFinance from "./report-finance";
 import PageFinanceSingle from "./report-finance-single";
@@ -75,7 +75,7 @@ const Route = [
 
   {
     url: "/m-manager/d-manager/report-monthly/:id/info",
-    Element: PageDealerKassaReport,
+    Element: PageKassaReportDealer,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   

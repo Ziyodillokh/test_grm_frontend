@@ -4,14 +4,18 @@ import {
   parseAsIsoDate,
   useQueryState,
 } from "nuqs";
+import { useEffect } from "react";
 import { useDataCashflow } from "./queries";
 import { Columns } from "./columns";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import CardSort from "./card-sort";
 import { useKassaReportSingle } from "@/pages/report/table/queries";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function DealerReportPage() {
   const { id } = useParams();
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [startDate] = useQueryState("startDate", parseAsIsoDate);
   const [endDate] = useQueryState("endDate", parseAsIsoDate);
 
@@ -31,7 +35,12 @@ export default function DealerReportPage() {
       id: id ,
       enabled: Boolean(id),
     });
-  
+
+  useEffect(() => {
+    const title = (KassaReportSingle as any)?.filial?.title || (KassaReportSingle as any)?.filial?.name || "Kassa";
+    if (title) push(title, location.pathname);
+  }, [KassaReportSingle, location.pathname]);
+
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
   return (

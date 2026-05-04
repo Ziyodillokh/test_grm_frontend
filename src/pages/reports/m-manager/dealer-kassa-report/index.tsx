@@ -1,16 +1,23 @@
 import { DataTable } from "@/components/ui/data-table";
 import { KassaColumnsLoc } from "./columns";
 import { useKassaReports } from "./queries";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { useReportsSingle } from "../report-finance-single/queries";
 import CardSort from "../../d-manager/report/card-sort";
 import { useYear } from "@/store/year-store";
+import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 
 export default function PageDealerKassaReport() {
   const {id}  =useParams()
+  const location = useLocation();
+  const push = useBreadcrumbStore((s) => s.push);
   const [seleted, setSeleted] = useState<string[]>([]);
   const {year} = useYear()
+
+  useEffect(() => {
+    push("Diller", location.pathname);
+  }, [location.pathname]);
   const {
     data: ReportsSingle,
     // isLoading: ReportsSingleLoading,

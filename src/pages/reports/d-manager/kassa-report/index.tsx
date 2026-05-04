@@ -107,7 +107,10 @@ export default function PageKassaReport() {
               onRowClick={(item) => {
                 if (item?.id) {
                   const title = item?.filial?.title || "Diller";
-                  const path = `/d-manager/reports-hub/monthly/${id}/info/${item.id}/info`;
+                  const isMM = window.location.pathname.startsWith("/m-manager/");
+                  const path = isMM
+                    ? `/m-manager/d-manager/report-monthly/${id}/info/${item.id}/info`
+                    : `/d-manager/reports-hub/monthly/${id}/info/${item.id}/info`;
                   push(title, path);
                   navigate(path);
                 }

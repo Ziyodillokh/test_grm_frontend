@@ -23,7 +23,16 @@ export const useBreadcrumbStore = create<BreadcrumbStore>()(
       setMenu: (link, label) =>
         set({ activeMenuLink: link, items: [{ label, path: link }] }),
       push: (label, path) =>
-        set((s) => ({ items: [...s.items, { label, path }] })),
+        set((s) => {
+          const last = s.items[s.items.length - 1];
+          if (last?.path === path) {
+            // Same path — replace label only (keep history)
+            const items = s.items.slice(0, -1);
+            return { items: [...items, { label, path }] };
+          }
+          // Different path — append
+          return { items: [...s.items, { label, path }] };
+        }),
       goBack: () => {
         const { items } = get();
         if (items.length <= 1) return null;
