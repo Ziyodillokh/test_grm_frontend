@@ -87,7 +87,7 @@ export default function FactoryFilter({
       actions={
         <Select onValueChange={(id) => id && enableFactory(id)} disabled={isPending}>
           <SelectPrimitive.Trigger
-            className="h-[42px] w-[180px] rounded-sm border border-[#1a1a1a]/15 bg-transparent px-[12px] flex items-center justify-between gap-[8px] text-[13px] text-[#1a1a1a] hover:bg-white/40 disabled:opacity-50 outline-none"
+            className="h-[42px] w-[180px] rounded-[6px] border border-[#e7ebf0] bg-transparent px-[16px] flex items-center justify-between gap-[8px] text-[15px] font-normal text-[#1a1a1a] hover:bg-white/40 disabled:opacity-50 outline-none"
           >
             <span className="flex items-center gap-[8px]">
               {isPending ? (
