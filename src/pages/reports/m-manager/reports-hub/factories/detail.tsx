@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { Loader, ChevronDown, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import FilterSelect from "@/components/filters-ui/filter-select";
+import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { ListRow } from "@/components/ui/list-row";
-import { MonthsArray } from "@/consts";
 import { useMeStore } from "@/store/me-store";
 import { useFactoryDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
@@ -24,24 +24,26 @@ export default function FactoryDetailPage() {
   const { factoryId } = useParams();
   const { meUser } = useMeStore();
   const currentYear = String(new Date().getFullYear());
-  const currentMonth = String(new Date().getMonth() + 1);
-  const [month, setMonth] = useQueryState("month", parseAsString.withDefault(currentMonth));
   const [yearFilter, setYearFilter] = useQueryState("year", parseAsString.withDefault(currentYear));
+  const [startDate, setStartDate] = useQueryState("startDate", parseAsString);
+  const [endDate, setEndDate] = useQueryState("endDate", parseAsString);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const activeYear = Number(yearFilter);
 
-  const hasActiveFilter = yearFilter !== currentYear || month !== currentMonth;
+  const hasActiveFilter = yearFilter !== currentYear || !!startDate || !!endDate;
   const clearFilters = () => {
     setYearFilter(null);
-    setMonth(null);
+    setStartDate(null);
+    setEndDate(null);
   };
 
   const { data, isLoading } = useFactoryDetail({
     factoryId: factoryId || "",
     queries: {
       year: activeYear,
-      month: Number(month),
+      ...(startDate ? { fromDate: startDate } : {}),
+      ...(endDate ? { toDate: endDate } : {}),
     },
     enabled: !!factoryId,
   });
@@ -81,14 +83,12 @@ export default function FactoryDetailPage() {
                 defaultValue={String(activeYear)}
               />
             </div>
-            <div className="flex flex-col gap-[6px]">
-              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
-              <FilterSelect
+            <div className="flex flex-col gap-[6px] col-span-2">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Davr</p>
+              <DateRangePicker
                 variant="filter"
-                placeholder="Oy tanlang"
-                options={MonthsArray}
-                name="month"
-                defaultValue={currentMonth}
+                fromPlaceholder="Boshlanish"
+                toPlaceholder="Tugash"
               />
             </div>
           </>

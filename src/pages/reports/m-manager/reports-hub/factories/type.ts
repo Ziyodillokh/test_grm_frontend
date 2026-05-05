@@ -56,6 +56,8 @@ export interface FactoryDetailItem {
 export interface FactoryDetailQuery {
   year?: number;
   month?: number;
+  fromDate?: string;
+  toDate?: string;
   page?: number;
   limit?: number;
 }
