@@ -42,10 +42,16 @@ export default function DealerReportPage() {
 
   const dealerId = dealerIdParam || kassaData?.filial?.id || "";
 
+  // Kassa kontekstidan oy/yil olamiz; dealerlar ro'yxatidan kelgan bo'lsa global yil + joriy oy
+  const kassaYear = (kassaData as any)?.year;
+  const kassaMonth = (kassaData as any)?.month;
+  const filterYear = kassaYear ?? year;
+  const filterMonth = dealerIdParam ? new Date().getMonth() + 1 : kassaMonth;
+
   const { data, isLoading } = useDealerKassaDetail({
     dealerId,
-    queries: { year, month: new Date().getMonth() + 1 },
-    enabled: !!dealerId,
+    queries: { year: filterYear, month: filterMonth },
+    enabled: !!dealerId && (dealerIdParam ? true : Boolean(kassaMonth)),
   });
 
   const flatData: DealerDetailItem[] =
