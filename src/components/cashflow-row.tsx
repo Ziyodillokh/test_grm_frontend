@@ -112,7 +112,10 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
 
   // F-Manager actions
   const [approveLoading, setApproveLoading] = useState(false);
-  const canApprove = !isReadOnly && isFManager && isOrder && item.status === "pending" && isIncome;
+  // ORDER actionlari M-Manager/Accountant/Boss uchun yopiq.
+  // Manual (non-order) cashflow esa har kassa statusida tahrir/bekor qilishga ochiq.
+  const canActOnOrder = !isReadOnly;
+  const canApprove = canActOnOrder && isFManager && isOrder && item.status === "pending" && isIncome;
 
   const handleApprove = () => {
     setApproveLoading(true);
@@ -127,13 +130,14 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
 
   const [actionLoading, setActionLoading] = useState(false);
   const isOrderReturned = item.order?.status === "returned";
-  const canReject = !isReadOnly && isOrder && item.status === "pending" && isIncome;
+  const canReject = canActOnOrder && isOrder && item.status === "pending" && isIncome;
   // Qaytarish — order accepted bo'lsa, har kassa statusida (return cashflow open kassaga ketadi)
-  const canReturn = !isReadOnly && isOrder && !isOrderReturned && isIncome && item.status === "approved";
-  // Manual cashflow bekor qilish — open va warning kassada mumkin (closed'da emas — closed list'ga umuman ko'rinmaydi)
-  const canCancel = !isReadOnly && !isOrder && !item.isCancelled && item.status !== "cancelled";
+  const canReturn = canActOnOrder && isOrder && !isOrderReturned && isIncome && item.status === "approved";
+  // Manual cashflow bekor qilish — open va warning kassada hamma rolda mumkin
+  const canCancel = !isOrder && !item.isCancelled && item.status !== "cancelled";
   // Returned order'ning asl income cashflow'ini tahrirlash mumkin emas — faqat return cashflow date
-  const canEdit = !isReadOnly && !!onEdit && !(isOrder && isOrderReturned && isIncome);
+  // Order tahrir faqat F-Managerga; manual cashflow tahrir hammaga
+  const canEdit = !!onEdit && !(isOrder && isOrderReturned && isIncome) && (!isOrder || !isReadOnly);
 
   const handleReject = () => {
     setActionLoading(true);
@@ -246,7 +250,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
         )}
 
         {/* Yagona 3-nuqta menyu */}
-        {(canEdit || canReject || canReturn || canCancel || (!!onDelete && !isReadOnly)) && (
+        {(canEdit || canReject || canReturn || canCancel || (!!onDelete && !isOrder)) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="w-[24px] h-[24px] flex items-center justify-center rounded hover:bg-gray-100">
@@ -277,7 +281,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
                   Bekor qilish
                 </DropdownMenuItem>
               )}
-              {!!onDelete && !isReadOnly && (
+              {!!onDelete && !isOrder && (
                 <DropdownMenuItem onClick={() => onDelete(item)}>
                   O'chirish
                 </DropdownMenuItem>
