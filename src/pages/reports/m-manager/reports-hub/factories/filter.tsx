@@ -1,8 +1,14 @@
 import { parseAsString, useQueryState } from "nuqs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import FilterSelect from "@/components/filters-ui/filter-select";
+import ShadcnSelect from "@/components/Select";
 import { MonthsArray } from "@/consts";
 import ReportToolbar from "@/components/report-toolbar";
+import { PatchData } from "@/service/apiHelpers";
+import { apiRoutes } from "@/service/apiRoutes";
 import { FactoryReportTotals } from "./type";
+import { useFactoryNotReportEnabled } from "./queries";
 
 const yearsArray = Array.from({ length: 5 }, (_, i) => {
   const y = new Date().getFullYear() - i;
@@ -24,6 +30,20 @@ export default function FactoryFilter({
     setYearFilter(null);
     setMonth(null);
   };
+
+  const queryClient = useQueryClient();
+  const { data: notEnabled } = useFactoryNotReportEnabled();
+  const factoryOptions = (notEnabled || []).map((f) => ({ label: f.title, value: f.id }));
+
+  const { mutate: enableFactory, isPending } = useMutation({
+    mutationFn: (factoryId: string) => PatchData(`/factory/${factoryId}/toggle-report`, {}),
+    onSuccess: () => {
+      toast.success("Zavod hisobotga qo'shildi");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.factoryNotReportEnabled] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.factoryDebtReport] });
+    },
+    onError: () => toast.error("Xatolik yuz berdi"),
+  });
 
   return (
     <ReportToolbar
@@ -57,6 +77,16 @@ export default function FactoryFilter({
             />
           </div>
         </>
+      }
+      actions={
+        <ShadcnSelect
+          value={undefined}
+          onChange={(id) => id && enableFactory(id)}
+          options={factoryOptions}
+          placeholder={isPending ? "Qo'shilmoqda..." : "Zavod qo'shish"}
+          disabled={isPending}
+          className="bg-white border h-[42px] w-[220px] rounded-sm"
+        />
       }
     />
   );
