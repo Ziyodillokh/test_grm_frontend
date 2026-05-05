@@ -49,7 +49,6 @@ export default function FactoryDetailPage() {
   });
 
   const items = data?.pages?.flatMap((page) => page?.items || []) || [];
-  const totals = data?.pages?.[0]?.totals;
   const factory = data?.pages?.[0]?.factory;
 
   const toggleExpand = (itemId: string) => {
