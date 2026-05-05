@@ -29,7 +29,7 @@ export default function DealerReportPage() {
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useDataCashflow({
-      queries: { kassa: id, limit: 10, page: 1 },
+      queries: { kassaId: id, limit: 10, page: 1 },
       enabled: Boolean(id),
     });
 
