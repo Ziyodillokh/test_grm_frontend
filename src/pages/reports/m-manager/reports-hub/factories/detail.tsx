@@ -65,8 +65,8 @@ export default function FactoryDetailPage() {
     <div className="flex flex-col h-full">
       <ReportToolbar
         totalsItems={[
-          { label: (factory?.title || "") + ":", value: totals?.period_owed || 0, color: "#FF6600" },
-          { value: totals?.period_given || 0, color: "#47B13C" },
+          { label: (factory?.title || "") + ":", value: factory?.owed || 0, color: "#FF6600" },
+          { value: factory?.given || 0, color: "#47B13C" },
           { value: factory?.totalDebt || 0, color: "#1a1a1a" },
         ]}
         hasActiveFilter={hasActiveFilter}
