@@ -18,7 +18,7 @@ import formatPrice from "@/utils/formatPrice";
 import TebleAvatar from "@/components/teble-avatar";
 import type { TransactionItem } from "@/pages/cashflow/types";
 
-export const cashflowGridTemplate = "60px 60px 120px 120px 1fr 70px";
+export const cashflowGridTemplate = "minmax(80px,max-content) 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
 export const cashflowLabels = [
   { text: "Summa", right: true },
   { text: "Status", center: true },
@@ -160,7 +160,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   return (
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
       {/* Summa */}
-      <div className="text-right">
+      <div className="text-right whitespace-nowrap">
         {cashPrice > 0 && (
           <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
             {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
@@ -187,13 +187,13 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
       </div>
 
       {/* Turi */}
-      <div className="flex items-center gap-[6px]">
+      <div className="flex items-center gap-[6px] whitespace-nowrap">
         <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
         <span className="text-[13px] font-medium text-[#1a1a1a]">{typeName}</span>
       </div>
 
       {/* Sana */}
-      <span className="text-[13px] text-[#1a1a1a]">{dateStr}</span>
+      <span className="text-[13px] text-[#1a1a1a] whitespace-nowrap">{dateStr}</span>
 
       {/* Malumotlar */}
       <div className="flex items-center gap-[16px] text-[13px] text-[#1a1a1a] overflow-hidden">
