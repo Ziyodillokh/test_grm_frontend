@@ -36,7 +36,7 @@ const reports = [
     icon: ShoppingCart,
   },
   {
-    title: "Kentlar Hisoboti",
+    title: "Ko'cha Hisoboti",
     description: "Mijozlar qarzdorligi",
     link: "/m-manager/reports-hub/kents",
     icon: Users,

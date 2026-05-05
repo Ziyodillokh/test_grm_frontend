@@ -77,11 +77,11 @@ export default function KentReportPage() {
               <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{item.fullName}</span>
               <span className="text-[13px] text-[#1a1a1a]">{item.phone}</span>
-              <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.owed || 0)} $</span>
-              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.owed || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#EF5C12]">{formatPrice(item.given || 0)} $</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
               <span className="text-[13px] text-[#47B13C]">{formatPrice(item.period_income || 0)} $</span>
-              <span className="text-[13px] text-[#FF6600]">{formatPrice(item.period_expense || 0)} $</span>
+              <span className="text-[13px] text-[#EF5C12]">{formatPrice(item.period_expense || 0)} $</span>
             </ListRow>
           ))
         )}

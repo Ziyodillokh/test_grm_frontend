@@ -13,7 +13,7 @@ import { useYear } from "@/store/year-store";
 import { useKentDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
 
-const gridTemplate = "80px 60px 120px 120px 1fr 70px";
+const gridTemplate = "minmax(80px,max-content) 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
 
 export default function KentDetailPage() {
   const { debtId } = useParams();
@@ -98,8 +98,8 @@ export default function KentDetailPage() {
             </>
           }
           totalsItems={[
-            { label: debt?.fullName, value: debt?.owed || 0, color: "#FF6600" },
-            { value: debt?.given || 0, color: "#47B13C" },
+            { label: debt?.fullName, value: debt?.owed || 0, color: "#47B13C" },
+            { value: debt?.given || 0, color: "#EF5C12" },
             { value: debt?.totalDebt || 0, color: "#1a1a1a" },
           ]}
         />
@@ -134,8 +134,8 @@ export default function KentDetailPage() {
                 gridGap="16px"
               >
                 {/* Summa */}
-                <div className="text-right">
-                  <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+                <div className="text-right whitespace-nowrap">
+                  <span className={`text-[15px] font-medium ${isIncome ? "text-[#47B13C]" : "text-[#EF5C12]"}`}>
                     {isIncome ? "+" : "-"} {formatPrice(item.price || 0)}
                   </span>
                 </div>
@@ -151,7 +151,7 @@ export default function KentDetailPage() {
                 </div>
 
                 {/* Turi */}
-                <div className="flex items-center gap-[6px]">
+                <div className="flex items-center gap-[6px] whitespace-nowrap">
                   <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
                   <span className="text-[13px] font-medium text-[#1a1a1a]">
                     {item.cashflow_type?.title || (isIncome ? "Olingan" : "Qaytarilgan")}
@@ -159,7 +159,7 @@ export default function KentDetailPage() {
                 </div>
 
                 {/* Sana */}
-                <span className="text-[13px] text-[#1a1a1a]">
+                <span className="text-[13px] text-[#1a1a1a] whitespace-nowrap">
                   {item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—"}
                 </span>
 
