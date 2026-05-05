@@ -266,7 +266,7 @@ export default function ReportPage() {
     queryFn: () => getAllData<CashflowType[], object>("/cashflow-types/by/managers/" + (typesManage || "both"), {}),
     enabled: myCashFlow,
   });
-  const cfTypesFilterList = (cfTypesFilter as CashflowType[])?.filter((ct) => ct.slug !== "balance") || [];
+  const cfTypesFilterList = (cfTypesFilter as CashflowType[]) || [];
 
   // Managers/accountants for filter
   const { data: managersAccountants } = useQuery({
