@@ -1,7 +1,7 @@
 import { parseAsString, useQueryState } from "nuqs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChevronDown, Plus, Loader } from "lucide-react";
+import { Plus, Loader } from "lucide-react";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import {
@@ -87,17 +87,16 @@ export default function FactoryFilter({
       actions={
         <Select onValueChange={(id) => id && enableFactory(id)} disabled={isPending}>
           <SelectPrimitive.Trigger
-            className="h-[42px] w-[180px] rounded-[6px] border border-[#e7ebf0] bg-transparent px-[16px] flex items-center justify-between gap-[8px] text-[15px] font-normal text-[#1a1a1a] hover:bg-white/40 disabled:opacity-50 outline-none"
+            className="group h-[42px] w-fit rounded-[6px] border border-[#e7ebf0] bg-transparent px-[16px] flex items-center gap-[8px] text-[15px] font-normal text-[#1a1a1a] outline-none disabled:opacity-50"
           >
-            <span className="flex items-center gap-[8px]">
-              {isPending ? (
-                <Loader className="w-[16px] h-[16px] animate-spin" />
-              ) : (
-                <Plus className="w-[16px] h-[16px]" />
-              )}
-              <span>{isPending ? "Qo'shilmoqda..." : "Zavod qo'shish"}</span>
+            {isPending ? (
+              <Loader className="w-[16px] h-[16px] animate-spin" />
+            ) : (
+              <Plus className="w-[16px] h-[16px]" />
+            )}
+            <span className="opacity-50 group-hover:opacity-100 transition-opacity">
+              {isPending ? "Qo'shilmoqda..." : "Zavod qo'shish"}
             </span>
-            <ChevronDown className="w-[16px] h-[16px] text-[#1a1a1a]/60" />
           </SelectPrimitive.Trigger>
           <SelectContent>
             {factoryOptions.length === 0 ? (
