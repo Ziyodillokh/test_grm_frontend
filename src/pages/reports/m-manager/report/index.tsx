@@ -473,11 +473,14 @@ export default function ReportPage() {
                         if (item?.slug === "kent") {
                           setIsKentSelected(true);
                           setIsFactorySelected(false);
-                        } else if (item?.title === "Поставщики") {
+                        } else if (item?.slug === "factory") {
                           setIsFactorySelected(true);
                           setIsKentSelected(false);
                           setIsLogisticsSelected(false);
+                          setIsCustomsSelected(false);
                           setDebtId(undefined);
+                          setLogisticsId(undefined);
+                          setCustomsId(undefined);
                         } else if (item?.slug === "logistics") {
                           setIsLogisticsSelected(true);
                           setIsKentSelected(false);
@@ -541,7 +544,7 @@ export default function ReportPage() {
                           label: item.title,
                         })) || []
                       }
-                      placeholder={"Заводы"}
+                      placeholder={"Zavod tanlang"}
                       onChange={(value) => {
                         setFactoryId(value);
                       }}
