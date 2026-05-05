@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/ui/data-table";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, ArrowDown, ArrowUp, Loader } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -232,6 +232,24 @@ export default function ReportPage() {
 
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
+
+  // Infinite scroll sentinel — myCashFlow list pagination
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!myCashFlow) return;
+    const node = loadMoreRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [myCashFlow, hasNextPage, isFetchingNextPage, fetchNextPage, flatData.length]);
 
   // Biznes umumiy totallar (filtrlarga qarab o'zgaradi)
   const businessTotals = data?.pages?.[0]?.totals;
@@ -613,20 +631,29 @@ export default function ReportPage() {
                 <span className="text-[13px] text-[#A3A3A3]">Ma'lumot topilmadi</span>
               </div>
             ) : (
-              flatData.map((item: any, i: number) => (
-                <MyCashflowRow
-                  key={item?.id || i}
-                  item={item}
-                  onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
-                  onDelete={(cf: any) => {
-                    api.delete(apiRoutes.cashflow + "/" + cf.id).then(() => {
-                      toast.success("O'chirildi");
-                      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
-                      queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
-                    });
-                  }}
-                />
-              ))
+              <>
+                {flatData.map((item: any, i: number) => (
+                  <MyCashflowRow
+                    key={item?.id || i}
+                    item={item}
+                    onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
+                    onDelete={(cf: any) => {
+                      api.delete(apiRoutes.cashflow + "/" + cf.id).then(() => {
+                        toast.success("O'chirildi");
+                        queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+                        queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
+                      });
+                    }}
+                  />
+                ))}
+                {hasNextPage && (
+                  <div ref={loadMoreRef} className="flex items-center justify-center py-[16px]">
+                    {isFetchingNextPage && (
+                      <Loader className="w-[20px] h-[20px] animate-spin text-[#A3A3A3]" />
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
           </>
