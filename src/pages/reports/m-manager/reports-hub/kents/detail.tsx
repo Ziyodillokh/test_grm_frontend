@@ -5,10 +5,10 @@ import { Loader } from "lucide-react";
 import { format } from "date-fns";
 import ReportToolbar from "@/components/report-toolbar";
 import FilterSelect from "@/components/filters-ui/filter-select";
+import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { ListRow } from "@/components/ui/list-row";
 import { cashflowLabels } from "@/components/cashflow-row";
 import TebleAvatar from "@/components/teble-avatar";
-import { MonthsArray } from "@/consts";
 import { useYear } from "@/store/year-store";
 import { useKentDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
@@ -18,10 +18,10 @@ const gridTemplate = "80px 60px 120px 120px 1fr 70px";
 export default function KentDetailPage() {
   const { debtId } = useParams();
   const { year } = useYear();
-  const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
   const [typeFilter] = useQueryState("type", parseAsString);
   const [search, setSearch] = useQueryState("search", parseAsString);
-  const [, setMonthQs] = useQueryState("month", parseAsString);
+  const [startDate, setStartDate] = useQueryState("startDate", parseAsString);
+  const [endDate, setEndDate] = useQueryState("endDate", parseAsString);
   const [, setTypeQs] = useQueryState("type", parseAsString);
   const [excelPending, setExcelPending] = useState(false);
 
@@ -29,21 +29,25 @@ export default function KentDetailPage() {
     debtId: debtId || "",
     queries: {
       year,
-      month: Number(month),
+      ...(startDate ? { fromDate: startDate } : {}),
+      ...(endDate ? { toDate: endDate } : {}),
       type: typeFilter === "clear" ? undefined : typeFilter || undefined,
       limit: 100,
     },
   });
 
   const items = data?.pages?.flatMap((page) => page?.items || []) || [];
-  const totals = data?.pages?.[0]?.totals;
   const debt = data?.pages?.[0]?.debt;
 
   const handleExport = () => {
     setExcelPending(true);
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      window.open(`${baseUrl}/debt/report/excel?year=${year}&month=${month}&debtId=${debtId}`, "_blank");
+      const dateParams = [
+        startDate ? `fromDate=${startDate}` : "",
+        endDate ? `toDate=${endDate}` : "",
+      ].filter(Boolean).join("&");
+      window.open(`${baseUrl}/debt/report/excel?year=${year}&debtId=${debtId}${dateParams ? "&" + dateParams : ""}`, "_blank");
     } finally {
       setExcelPending(false);
     }
@@ -51,10 +55,11 @@ export default function KentDetailPage() {
 
   const clearFilters = () => {
     setSearch(null);
-    setMonthQs(null);
+    setStartDate(null);
+    setEndDate(null);
     setTypeQs(null);
   };
-  const hasActiveFilter = !!search || !!typeFilter;
+  const hasActiveFilter = !!search || !!typeFilter || !!startDate || !!endDate;
 
   return (
     <div className="flex flex-col h-full">
@@ -67,18 +72,15 @@ export default function KentDetailPage() {
           excelPending={excelPending}
           filterContent={
             <>
-              <div className="flex flex-col gap-[6px]">
-                <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
-                <FilterSelect
+              <div className="flex flex-col gap-[6px] col-span-2">
+                <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Davr</p>
+                <DateRangePicker
                   variant="filter"
-                  placeholder="Oy tanlang"
-                  classNameContainer="z-[60]"
-                  options={MonthsArray}
-                  name="month"
-                  defaultValue={String(new Date().getMonth() + 1)}
+                  fromPlaceholder="Boshlanish"
+                  toPlaceholder="Tugash"
                 />
               </div>
-              <div className="flex flex-col gap-[6px]">
+              <div className="flex flex-col gap-[6px] col-span-2">
                 <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Turi</p>
                 <FilterSelect
                   variant="filter"
@@ -96,8 +98,8 @@ export default function KentDetailPage() {
             </>
           }
           totalsItems={[
-            { label: debt?.fullName, value: totals?.total_income || 0, color: "#FF6600" },
-            { value: totals?.total_expense || 0, color: "#47B13C" },
+            { label: debt?.fullName, value: debt?.owed || 0, color: "#FF6600" },
+            { value: debt?.given || 0, color: "#47B13C" },
             { value: debt?.totalDebt || 0, color: "#1a1a1a" },
           ]}
         />

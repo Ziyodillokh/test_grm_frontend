@@ -71,6 +71,8 @@ export interface KentDetailItem {
 export interface KentDetailQuery {
   year?: number;
   month?: number;
+  fromDate?: string;
+  toDate?: string;
   type?: string;
   page?: number;
   limit?: number;
