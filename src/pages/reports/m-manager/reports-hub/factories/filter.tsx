@@ -1,8 +1,14 @@
 import { parseAsString, useQueryState } from "nuqs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { ChevronDown, Plus, Loader } from "lucide-react";
 import FilterSelect from "@/components/filters-ui/filter-select";
-import ShadcnSelect from "@/components/Select";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { MonthsArray } from "@/consts";
 import ReportToolbar from "@/components/report-toolbar";
 import { PatchData } from "@/service/apiHelpers";
@@ -79,14 +85,32 @@ export default function FactoryFilter({
         </>
       }
       actions={
-        <ShadcnSelect
-          value={undefined}
-          onChange={(id) => id && enableFactory(id)}
-          options={factoryOptions}
-          placeholder={isPending ? "Qo'shilmoqda..." : "Zavod qo'shish"}
-          disabled={isPending}
-          className="bg-white border h-[42px] w-[220px] rounded-sm"
-        />
+        <Select onValueChange={(id) => id && enableFactory(id)} disabled={isPending}>
+          <SelectPrimitive.Trigger
+            className="h-[42px] w-[180px] rounded-sm border border-[#1a1a1a]/15 bg-transparent px-[12px] flex items-center justify-between gap-[8px] text-[13px] text-[#1a1a1a] hover:bg-white/40 disabled:opacity-50 outline-none"
+          >
+            <span className="flex items-center gap-[8px]">
+              {isPending ? (
+                <Loader className="w-[16px] h-[16px] animate-spin" />
+              ) : (
+                <Plus className="w-[16px] h-[16px]" />
+              )}
+              <span>{isPending ? "Qo'shilmoqda..." : "Zavod qo'shish"}</span>
+            </span>
+            <ChevronDown className="w-[16px] h-[16px] text-[#1a1a1a]/60" />
+          </SelectPrimitive.Trigger>
+          <SelectContent>
+            {factoryOptions.length === 0 ? (
+              <div className="px-3 py-2 text-[13px] text-[#a3a3a3]">Bo'sh</div>
+            ) : (
+              factoryOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))
+            )}
+          </SelectContent>
+        </Select>
       }
     />
   );
