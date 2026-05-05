@@ -252,8 +252,10 @@ export default function ReportPage() {
   }, [myCashFlow, hasNextPage, isFetchingNextPage, fetchNextPage, flatData.length]);
 
   // Biznes umumiy totallar (filtrlarga qarab o'zgaradi)
+  // totalIncome backend tomonida logistics income'ni allaqachon chiqarib tashlagan,
+  // shuning uchun totalSum-totalExpense'dan ko'ra to'g'ridan-to'g'ri ishlatamiz.
   const businessTotals = data?.pages?.[0]?.totals;
-  const businessIncome = (businessTotals?.totalSum || 0) - (businessTotals?.totalExpense || 0);
+  const businessIncome = businessTotals?.totalIncome || 0;
   const businessExpense = businessTotals?.totalExpense || 0;
 
   const hasActiveFilter = !!search || !!cashflowSlug || !!startDate || !!endDate || !!typesManage;
