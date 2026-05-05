@@ -133,8 +133,6 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const canReject = canActOnOrder && isOrder && item.status === "pending" && isIncome;
   // Qaytarish — order accepted bo'lsa, har kassa statusida (return cashflow open kassaga ketadi)
   const canReturn = canActOnOrder && isOrder && !isOrderReturned && isIncome && item.status === "approved";
-  // Manual cashflow bekor qilish — open va warning kassada hamma rolda mumkin
-  const canCancel = !isOrder && !item.isCancelled && item.status !== "cancelled";
   // Returned order'ning asl income cashflow'ini tahrirlash mumkin emas — faqat return cashflow date
   // Order tahrir faqat F-Managerga; manual cashflow tahrir hammaga
   const canEdit = !!onEdit && !(isOrder && isOrderReturned && isIncome) && (!isOrder || !isReadOnly);
@@ -158,14 +156,6 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
         .finally(() => setActionLoading(false));
     }
   };
-
-  const handleCancel = () => {
-    setActionLoading(true);
-    UpdatePatchData(apiRoutes.cashflow + "/" + item.id, "cancel", {})
-      .then(() => { toast.success("Bekor qilindi"); queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] }); queryClient.invalidateQueries({ queryKey: [apiRoutes.kassa] }); })
-      .finally(() => setActionLoading(false));
-  };
-
 
   return (
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
@@ -250,7 +240,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
         )}
 
         {/* Yagona 3-nuqta menyu */}
-        {(canEdit || canReject || canReturn || canCancel || (!!onDelete && !isOrder)) && (
+        {(canEdit || canReject || canReturn || (!!onDelete && !isOrder)) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="w-[24px] h-[24px] flex items-center justify-center rounded hover:bg-gray-100">
@@ -271,12 +261,6 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
               )}
               {canReject && (
                 <DropdownMenuItem disabled={actionLoading} onClick={handleReject}>
-                  {actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Bekor qilish
-                </DropdownMenuItem>
-              )}
-              {canCancel && (
-                <DropdownMenuItem disabled={actionLoading} onClick={handleCancel}>
                   {actionLoading ? <Loader className="w-4 h-4 animate-spin mr-2" /> : null}
                   Bekor qilish
                 </DropdownMenuItem>
