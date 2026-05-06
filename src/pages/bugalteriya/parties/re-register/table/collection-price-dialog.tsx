@@ -26,6 +26,8 @@ interface PriceRow {
   factoryPricePerKv: number;
   overheadPerKv: number;
   sharePricePerKv: number;
+  kv: number;
+  kassaPricePerKv: number;
 }
 
 export default function CollectionPriceDialog({
@@ -65,12 +67,22 @@ export default function CollectionPriceDialog({
   useEffect(() => {
     if (!open) return;
 
-    const collections: { id: string; title: string }[] = [];
+    const collections: {
+      id: string;
+      title: string;
+      kv: number;
+      kassaPricePerKv: number;
+    }[] = [];
     const items = collectionsData?.items || collectionsData || [];
     for (const item of items) {
-      const col = item?.bar_code?.collection || item?.collection;
+      const col = item?.bar_code?.collection || item?.collection || (item?.id ? { id: item.id, title: item.title } : null);
       if (col?.id && !collections.find((c) => c.id === col.id)) {
-        collections.push({ id: col.id, title: col.title });
+        collections.push({
+          id: col.id,
+          title: col.title,
+          kv: Number(item?.kv || 0),
+          kassaPricePerKv: Number(item?.collectionPrice?.priceMeter || 0),
+        });
       }
     }
 
@@ -82,7 +94,12 @@ export default function CollectionPriceDialog({
       // Also add collections from existing prices that might not be in products
       for (const e of existing) {
         if (e.collection?.id && !collections.find((c) => c.id === e.collection.id)) {
-          collections.push({ id: e.collection.id, title: e.collection.title });
+          collections.push({
+            id: e.collection.id,
+            title: e.collection.title,
+            kv: 0,
+            kassaPricePerKv: 0,
+          });
         }
       }
     }
@@ -96,6 +113,8 @@ export default function CollectionPriceDialog({
           factoryPricePerKv: ex?.factoryPricePerKv || 0,
           overheadPerKv: ex?.overheadPerKv || 0,
           sharePricePerKv: ex?.sharePricePerKv || 0,
+          kv: col.kv,
+          kassaPricePerKv: col.kassaPricePerKv,
         };
       })
     );
@@ -130,7 +149,7 @@ export default function CollectionPriceDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[820px]">
+      <DialogContent className="sm:max-w-[920px]">
         <DialogHeader>
           <DialogTitle>Kolleksiya narxlari</DialogTitle>
         </DialogHeader>
@@ -152,7 +171,8 @@ export default function CollectionPriceDialog({
                   <th className="py-2 px-2 font-medium">Zavor narxi ($/m²)</th>
                   <th className="py-2 px-2 font-medium">Ustama ($/m²)</th>
                   <th className="py-2 px-2 font-medium">Sherik ulushi ($/m²)</th>
-                  <th className="py-2 px-2 font-medium">Jami ($/m²)</th>
+                  <th className="py-2 px-2 font-medium">Tani ($/m²)</th>
+                  <th className="py-2 px-2 font-medium">Kassa ($)</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,6 +217,9 @@ export default function CollectionPriceDialog({
                     </td>
                     <td className="py-2 px-2 text-muted-foreground">
                       {(row.factoryPricePerKv + row.overheadPerKv + row.sharePricePerKv).toFixed(2)} $
+                    </td>
+                    <td className="py-2 px-2 text-muted-foreground">
+                      {(row.kassaPricePerKv * row.kv).toFixed(2)} $
                     </td>
                   </tr>
                 ))}
