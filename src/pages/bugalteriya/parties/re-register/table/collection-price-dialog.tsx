@@ -13,6 +13,7 @@ interface CollectionPrice {
   id: string;
   factoryPricePerKv: number;
   overheadPerKv: number;
+  sharePricePerKv: number;
   collection: {
     id: string;
     title: string;
@@ -24,6 +25,7 @@ interface PriceRow {
   collectionTitle: string;
   factoryPricePerKv: number;
   overheadPerKv: number;
+  sharePricePerKv: number;
 }
 
 export default function CollectionPriceDialog({
@@ -93,6 +95,7 @@ export default function CollectionPriceDialog({
           collectionTitle: col.title,
           factoryPricePerKv: ex?.factoryPricePerKv || 0,
           overheadPerKv: ex?.overheadPerKv || 0,
+          sharePricePerKv: ex?.sharePricePerKv || 0,
         };
       })
     );
@@ -106,6 +109,7 @@ export default function CollectionPriceDialog({
           collectionId: r.collectionId,
           factoryPricePerKv: r.factoryPricePerKv,
           overheadPerKv: r.overheadPerKv,
+          sharePricePerKv: r.sharePricePerKv,
         })),
       }),
     onSuccess: () => {
@@ -126,7 +130,7 @@ export default function CollectionPriceDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px]">
+      <DialogContent className="sm:max-w-[820px]">
         <DialogHeader>
           <DialogTitle>Kolleksiya narxlari</DialogTitle>
         </DialogHeader>
@@ -147,6 +151,7 @@ export default function CollectionPriceDialog({
                   <th className="py-2 px-2 font-medium">Kolleksiya</th>
                   <th className="py-2 px-2 font-medium">Zavor narxi ($/m²)</th>
                   <th className="py-2 px-2 font-medium">Ustama ($/m²)</th>
+                  <th className="py-2 px-2 font-medium">Sherik ulushi ($/m²)</th>
                   <th className="py-2 px-2 font-medium">Jami ($/m²)</th>
                 </tr>
               </thead>
@@ -178,8 +183,20 @@ export default function CollectionPriceDialog({
                         className="h-8 w-[120px]"
                       />
                     </td>
+                    <td className="py-2 px-2">
+                      <Input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        value={row.sharePricePerKv || ""}
+                        onChange={(e) =>
+                          updateRow(idx, "sharePricePerKv", Number(e.target.value))
+                        }
+                        className="h-8 w-[120px]"
+                      />
+                    </td>
                     <td className="py-2 px-2 text-muted-foreground">
-                      {(row.factoryPricePerKv + row.overheadPerKv).toFixed(2)} $
+                      {(row.factoryPricePerKv + row.overheadPerKv + row.sharePricePerKv).toFixed(2)} $
                     </td>
                   </tr>
                 ))}
