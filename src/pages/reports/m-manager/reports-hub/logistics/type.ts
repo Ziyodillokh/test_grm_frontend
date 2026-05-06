@@ -69,6 +69,8 @@ export interface LogisticsDetailItem {
 export interface LogisticsDetailQuery {
   year?: number;
   month?: number;
+  fromDate?: string;
+  toDate?: string;
   type?: string;
   page?: number;
   limit?: number;

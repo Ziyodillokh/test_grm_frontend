@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { Loader } from "lucide-react";
 import { format } from "date-fns";
 import FilterSelect from "@/components/filters-ui/filter-select";
+import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
 import { ListRow } from "@/components/ui/list-row";
-import { MonthsArray } from "@/consts";
 import { useLogisticsDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
 import TebleAvatar from "@/components/teble-avatar";
@@ -22,36 +22,37 @@ const columnLabels = ["Summa", "", "Turi", "Sana", "Ma'lumotlar"];
 export default function LogisticsDetailPage() {
   const { logisticsId } = useParams();
   const currentYear = String(new Date().getFullYear());
-  const currentMonth = String(new Date().getMonth() + 1);
-  const [month, setMonth] = useQueryState("month", parseAsString.withDefault(currentMonth));
   const [yearFilter, setYearFilter] = useQueryState("year", parseAsString.withDefault(currentYear));
+  const [startDate, setStartDate] = useQueryState("startDate", parseAsString);
+  const [endDate, setEndDate] = useQueryState("endDate", parseAsString);
 
   const activeYear = Number(yearFilter);
 
-  const hasActiveFilter = yearFilter !== currentYear || month !== currentMonth;
+  const hasActiveFilter = yearFilter !== currentYear || !!startDate || !!endDate;
   const clearFilters = () => {
     setYearFilter(null);
-    setMonth(null);
+    setStartDate(null);
+    setEndDate(null);
   };
 
   const { data, isLoading } = useLogisticsDetail({
     logisticsId: logisticsId || "",
     queries: {
       year: activeYear,
-      month: Number(month),
+      ...(startDate ? { fromDate: startDate } : {}),
+      ...(endDate ? { toDate: endDate } : {}),
     },
   });
 
   const items = data?.pages?.flatMap((page) => page?.items || []) || [];
-  const totals = data?.pages?.[0]?.totals;
   const logistics = data?.pages?.[0]?.logistics;
 
   return (
     <div className="flex flex-col h-full">
       <ReportToolbar
         totalsItems={[
-          { label: (logistics?.title || "") + ":", value: totals?.total_income || 0, color: "#FF6600" },
-          { value: totals?.total_expense || 0, color: "#47B13C" },
+          { label: (logistics?.title || "") + ":", value: logistics?.owed || 0, color: "#FF6600" },
+          { value: logistics?.given || 0, color: "#47B13C" },
           { value: logistics?.totalDebt || 0, color: "#1a1a1a" },
         ]}
         hasActiveFilter={hasActiveFilter}
@@ -68,15 +69,9 @@ export default function LogisticsDetailPage() {
                 defaultValue={String(activeYear)}
               />
             </div>
-            <div className="flex flex-col gap-[6px]">
-              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Oy</p>
-              <FilterSelect
-                variant="filter"
-                placeholder="Oy tanlang"
-                options={MonthsArray}
-                name="month"
-                defaultValue={currentMonth}
-              />
+            <div className="flex flex-col gap-[6px] col-span-2">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Davr</p>
+              <DateRangePicker variant="filter" fromPlaceholder="Boshlanish" toPlaceholder="Tugash" />
             </div>
           </>
         }
