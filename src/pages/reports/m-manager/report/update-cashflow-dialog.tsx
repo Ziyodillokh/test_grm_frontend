@@ -31,11 +31,15 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
 
   const [price, setPrice] = useState("");
   const [plastic, setPlastic] = useState("");
+  const [streetPercent, setStreetPercent] = useState("");
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
   const [selectedType, setSelectedType] = useState("");
 
   const isOrder = item?.tip === "order";
+  const isStreet = item?.cashflow_type?.slug === "street";
+  const isIncomeFlow = item?.type === "income";
+  const showStreetPercent = isStreet && isIncomeFlow && !isOrder;
 
   const { data: cashflowTypesData } = useQuery({
     queryKey: [cashflowTypesEndpoint, "update-dialog", item?.type, role],
@@ -64,6 +68,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
         setPrice(String(item.price || 0));
         setPlastic("0");
       }
+      setStreetPercent(String((item as any).streetPercent || 0));
       setComment(item.comment || "");
       setDate(item.date ? item.date.slice(0, 16) : "");
       setSelectedType(item.cashflow_type?.id || "");
@@ -97,6 +102,9 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
     payload.price = priceNum;
     if (isOrder) {
       payload.plasticSum = plasticNum;
+    }
+    if (showStreetPercent) {
+      payload.streetPercent = parseFloat(streetPercent) || 0;
     }
 
     if (selectedType && selectedType !== item?.cashflow_type?.id) {
@@ -165,6 +173,24 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
               />
               <div className="text-[16px] text-[#5D5D53] mr-4 whitespace-nowrap">$ {isOrder ? "Naqd" : ""}</div>
             </div>
+
+            {/* Foiz (faqat Ko'cha income uchun) */}
+            {showStreetPercent && (
+              <>
+                <p className="text-[11px] text-[#1a1a1a] opacity-60 px-1 mt-1 mb-0.5">Foiz</p>
+                <div className="flex pl-2 items-center bg-input rounded-sm h-[60px]">
+                  <Input
+                    placeholder="0.00"
+                    value={streetPercent}
+                    type="number"
+                    min={0}
+                    onChange={(e) => setStreetPercent(e.target.value)}
+                    className="w-full border-none h-[60px] placeholder:text-[20px] !text-[20px] font-semibold rounded-sm bg-transparent px-0 opacity-80"
+                  />
+                  <div className="text-[14px] text-[#1a1a1a] opacity-60 mr-4 whitespace-nowrap">$ Foiz</div>
+                </div>
+              </>
+            )}
 
             {/* Plastic / Terminal (faqat order uchun) */}
             {isOrder && (
