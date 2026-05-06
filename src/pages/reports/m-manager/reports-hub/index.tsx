@@ -8,7 +8,6 @@ import {
   Users,
   Factory,
   Truck,
-  Shield,
   UserCheck,
   FileText,
   Handshake,
@@ -42,6 +41,12 @@ const reports = [
     icon: Users,
   },
   {
+    title: "Sherikchilik Hisoboti",
+    description: "Biznes sheriklar va ularning foyda va ulush taqsimoti",
+    link: "/m-manager/reports-hub/sherikchilik",
+    icon: Users,
+  },
+  {
     title: "Dillerlar Hisoboti",
     description: "Diller qarzdorligi to'langan va qoldiq",
     link: "/m-manager/reports-hub/dealers",
@@ -58,12 +63,6 @@ const reports = [
     description: "Qarzdorlik to'langan va qoldiq",
     link: "/m-manager/reports-hub/logistics",
     icon: Truck,
-  },
-  {
-    title: "Tamojniy",
-    description: "Qarzdorlik to'langan va qoldiq",
-    link: "/m-manager/reports-hub/bojxona",
-    icon: Shield,
   },
   {
     title: "Qarz Hisoboti",

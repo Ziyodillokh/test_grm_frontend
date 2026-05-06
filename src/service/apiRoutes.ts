@@ -153,6 +153,8 @@ export const apiRoutes = {
   customs: '/bojxona',
   customsReport: '/bojxona/report',
   customsReportExcel: '/bojxona/report/excel',
+  share: '/share',
+  shareReport: '/share/report',
   dealerReport: '/reports/dealers-list',
   dealerKassaDetail: '/reports/dealer',
   packageTransferCancel: '/package-transfer',

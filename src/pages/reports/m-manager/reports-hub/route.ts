@@ -3,8 +3,8 @@ import DealerListPage from "./dealers";
 import DealerDetailPage from "./dealers/detail";
 import LogisticsReportPage from "./logistics";
 import LogisticsDetailPage from "./logistics/detail";
-import CustomsReportPage from "./customs";
-import CustomsDetailPage from "./customs/detail";
+import SherikchilikReportPage from "./sherikchilik";
+import SherikchilikDetailPage from "./sherikchilik/detail";
 import KentReportPage from "./kents";
 import KentDetailPage from "./kents/detail";
 import FactoryReportPage from "./factories";
@@ -216,20 +216,15 @@ const Route = [
     Element: LogisticsDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  // Bojxona hisoboti
+  // Sherikchilik Hisoboti
   {
-    url: "/m-manager/reports-hub/bojxona",
-    Element: CustomsReportPage,
+    url: "/m-manager/reports-hub/sherikchilik",
+    Element: SherikchilikReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/m-manager/reports-hub/bojxona/:customsId",
-    Element: CustomsDetailPage,
-    meta: { isAuth: true, role: new Set(["admin"]) },
-  },
-  {
-    url: "/m-manager/reports-hub/bojxona/:customsId/info",
-    Element: CustomsDetailPage,
+    url: "/m-manager/reports-hub/sherikchilik/:shareId",
+    Element: SherikchilikDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Qayta ro'yxat (re-inventory)

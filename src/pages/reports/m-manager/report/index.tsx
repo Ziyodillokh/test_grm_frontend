@@ -90,6 +90,9 @@ export default function ReportPage() {
   const [isLogisticsSelected, setIsLogisticsSelected] = useState(false);
   const [customsId, setCustomsId] = useState<string | undefined>(undefined);
   const [isCustomsSelected, setIsCustomsSelected] = useState(false);
+  const [shareId, setShareId] = useState<string | undefined>(undefined);
+  const [isShareSelected, setIsShareSelected] = useState(false);
+  const [shareKind, setShareKind] = useState<"capital" | "profit">("capital");
   const [editCashflowId, setEditCashflowId] = useQueryState("editCashflowId", parseAsString);
 
   const { data: cfTypes } = useQuery({
@@ -124,6 +127,12 @@ export default function ReportPage() {
     enabled: Boolean(isCustomsSelected),
   });
 
+  const { data: sharesData } = useQuery({
+    queryKey: [apiRoutes.share, "share-select"],
+    queryFn: () => getAllData<any, { limit: number }>(apiRoutes.share, { limit: 200 }),
+    enabled: Boolean(isShareSelected),
+  });
+
   const openCfDialog = (type: "income" | "expense") => {
     setDialogType(type);
     setSelectedType("");
@@ -138,6 +147,9 @@ export default function ReportPage() {
     setIsLogisticsSelected(false);
     setCustomsId(undefined);
     setIsCustomsSelected(false);
+    setShareId(undefined);
+    setIsShareSelected(false);
+    setShareKind("capital");
     setDialogOpen(true);
   };
 
@@ -159,6 +171,8 @@ export default function ReportPage() {
         factoryId: isFactorySelected ? factoryId : undefined,
         logisticsId: isLogisticsSelected ? logisticsId : undefined,
         customsId: isCustomsSelected ? customsId : undefined,
+        shareId: isShareSelected ? shareId : undefined,
+        shareKind: isShareSelected && dialogType === "expense" ? shareKind : undefined,
       });
       toast.success(`${dialogType === "income" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
@@ -494,10 +508,13 @@ export default function ReportPage() {
                           setIsKentSelected(false);
                           setIsFactorySelected(false);
                           setIsLogisticsSelected(false);
+                          setIsShareSelected(false);
                           setDebtId(undefined);
                           setFactoryId(undefined);
                           setLogisticsId(undefined);
-                        } else {
+                          setShareId(undefined);
+                        } else if (item?.slug === "share") {
+                          setIsShareSelected(true);
                           setIsKentSelected(false);
                           setIsFactorySelected(false);
                           setIsLogisticsSelected(false);
@@ -506,6 +523,18 @@ export default function ReportPage() {
                           setFactoryId(undefined);
                           setLogisticsId(undefined);
                           setCustomsId(undefined);
+                          setShareKind("capital");
+                        } else {
+                          setIsKentSelected(false);
+                          setIsFactorySelected(false);
+                          setIsLogisticsSelected(false);
+                          setIsCustomsSelected(false);
+                          setIsShareSelected(false);
+                          setDebtId(undefined);
+                          setFactoryId(undefined);
+                          setLogisticsId(undefined);
+                          setCustomsId(undefined);
+                          setShareId(undefined);
                         }
                       }}
                       className={`${selectedType === item.id ? "bg-[#5D5D53] text-[white]" : "bg-input text-primary"} flex items-center justify-center flex-col pt-4 rounded-sm text-center cursor-pointer`}
@@ -582,6 +611,47 @@ export default function ReportPage() {
                       }}
                       className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                     />
+                  )}
+                  {isShareSelected && (
+                    <div className="flex flex-col gap-1">
+                      <ShadcnSelect
+                        value={shareId}
+                        options={
+                          ((sharesData as any)?.items || [])?.map((item: any) => ({
+                            value: item.id,
+                            label: item.fullName || "—",
+                          })) || []
+                        }
+                        placeholder={"Sherikni tanlang"}
+                        onChange={(value) => {
+                          setShareId(value);
+                        }}
+                        className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
+                      />
+                      {dialogType === "expense" && (
+                        <div className="flex w-full bg-input rounded-sm p-0.5 mt-1 cursor-pointer relative">
+                          <div
+                            className={`${shareKind === "capital" ? "left-0.5" : "left-[50%]"} transition-all duration-300 ease-in-out absolute rounded-sm top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-primary`}
+                          />
+                          <p
+                            onClick={() => setShareKind("capital")}
+                            className={`flex-1 text-center py-2 z-10 text-[14px] font-medium ${
+                              shareKind === "capital" ? "text-input" : "text-primary"
+                            }`}
+                          >
+                            Tani
+                          </p>
+                          <p
+                            onClick={() => setShareKind("profit")}
+                            className={`flex-1 text-center py-2 z-10 text-[14px] font-medium ${
+                              shareKind === "profit" ? "text-input" : "text-primary"
+                            }`}
+                          >
+                            Foyda
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   )}
                   <Input
                     value={price || ""}

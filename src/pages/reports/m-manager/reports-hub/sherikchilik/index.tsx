@@ -1,26 +1,27 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { parseAsString, useQueryState } from "nuqs";
+import { useNavigate } from "react-router-dom";
 import { Loader } from "lucide-react";
 import { ListRow } from "@/components/ui/list-row";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
+import { useYear } from "@/store/year-store";
 import formatPrice from "@/utils/formatPrice";
 
-import CustomsFilter from "./filter";
-import { useCustomsReport } from "./queries";
+import ShareFilter from "./filter";
+import { useShareReport } from "./queries";
 
-const gridTemplate = "40px 1fr 120px 120px 120px 120px 120px";
-const columnLabels = ["№", "Nomi", "Umumiy qarzi", "To'langani", "Qoldig'i", "Davriy qarzi", "Davriy to'langan"];
+const gridTemplate = "40px 1fr 140px 120px 120px 120px 120px";
+const columnLabels = ["№", "Ism", "Telefon", "Capital", "Tani qaytarilgan", "Foyda ulushi", "Qoldiq"];
 
-export default function CustomsReportPage() {
+export default function SherikchilikReportPage() {
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
-  const [yearFilter] = useQueryState("year", parseAsString.withDefault(String(new Date().getFullYear())));
+  const { year } = useYear();
   const [month] = useQueryState("month", parseAsString.withDefault(String(new Date().getMonth() + 1)));
   const [search] = useQueryState("search", parseAsString);
+  const [excelPending] = useState(false);
 
-  const year = Number(yearFilter);
-
-  const { data, isLoading } = useCustomsReport({
+  const { data, isLoading } = useShareReport({
     queries: {
       year,
       month: Number(month),
@@ -34,7 +35,7 @@ export default function CustomsReportPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <CustomsFilter totals={totals} />
+      <ShareFilter totals={totals} excelPending={excelPending} />
 
       <div
         className="mb-[10px] shrink-0 px-[12px]"
@@ -51,25 +52,25 @@ export default function CustomsReportPage() {
             <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
           </div>
         ) : (
-          items.map((item: any, i: number) => (
+          items.map((item, i) => (
             <ListRow
               key={item.id || i}
               gridTemplate={gridTemplate}
               className="pl-[12px]"
               minHeight={60}
               onClick={() => {
-                const path = `/m-manager/reports-hub/bojxona/${item.id}?month=${month}&year=${year}`;
-                push(item.title || "Bojxona", `/m-manager/reports-hub/bojxona/${item.id}`);
+                const path = `/m-manager/reports-hub/sherikchilik/${item.id}`;
+                push(item.fullName || "Sherik", path);
                 navigate(path);
               }}
             >
               <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
-              <span className="text-[13px] font-medium text-[#1a1a1a]">{item.title}</span>
-              <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.owed || 0)} $</span>
-              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{item.fullName}</span>
+              <span className="text-[13px] text-[#1a1a1a]">{item.phone}</span>
+              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.capital || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#EF5C12]">{formatPrice(item.given_capital || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.given_profit || 0)} $</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
-              <span className="text-[13px] text-[#FF6600]">{formatPrice(item.period_income || 0)} $</span>
-              <span className="text-[13px] text-[#47B13C]">{formatPrice(item.period_expense || 0)} $</span>
             </ListRow>
           ))
         )}
