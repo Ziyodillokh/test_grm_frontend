@@ -101,7 +101,13 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const cashPrice = isOrder ? orderPrice : (item.price || 0);
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
 
-  const typeName = item.cashflow_type?.title || (isOrder ? "Order" : "—");
+  // Share (Ulush) cashflowlari uchun aniqroq nom: Tan kirim / Foyda chiqim ...
+  const isShare = item.cashflow_type?.slug === "share";
+  const shareKind = (item as any).shareKind as "capital" | "profit" | undefined;
+  const shareLabel = isShare && shareKind
+    ? `${shareKind === "capital" ? "Tan" : "Foyda"} ${isIncome ? "kirim" : "chiqim"}`
+    : null;
+  const typeName = shareLabel || item.cashflow_type?.title || (isOrder ? "Order" : "—");
   const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
 
   const dateStr = item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—";
