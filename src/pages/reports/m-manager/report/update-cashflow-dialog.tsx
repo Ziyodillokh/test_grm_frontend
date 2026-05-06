@@ -19,6 +19,15 @@ interface Props {
   item: TData | undefined;
 }
 
+// ISO/Date string → "YYYY-MM-DDTHH:mm" in LOCAL timezone (datetime-local format)
+function toLocalInput(d: string | Date | null | undefined): string {
+  if (!d) return "";
+  const date = typeof d === "string" ? new Date(d) : d;
+  if (isNaN(date.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
   const queryClient = useQueryClient();
   const { meUser } = useMeStore();
@@ -70,7 +79,7 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
       }
       setStreetPercent(String((item as any).streetPercent || 0));
       setComment(item.comment || "");
-      setDate(item.date ? item.date.slice(0, 16) : "");
+      setDate(item.date ? toLocalInput(item.date) : "");
       setSelectedType(item.cashflow_type?.id || "");
     }
   }, [item, editId]);
@@ -113,8 +122,9 @@ export default function UpdateCashflowDialog({ editId, onClose, item }: Props) {
     if (comment !== (item?.comment || "")) {
       payload.comment = comment;
     }
-    if (date && date !== (item?.date || "").slice(0, 16)) {
-      payload.date = date;
+    if (date && date !== toLocalInput(item?.date || "")) {
+      // datetime-local "YYYY-MM-DDTHH:mm" → JS interprets as LOCAL → ISO UTC
+      payload.date = new Date(date).toISOString();
     }
 
     updateCashflow(payload);
