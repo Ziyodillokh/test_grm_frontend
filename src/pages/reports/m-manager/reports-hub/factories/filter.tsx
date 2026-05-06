@@ -54,9 +54,9 @@ export default function FactoryFilter({
   return (
     <ReportToolbar
       totalsItems={[
-        { label: "Umumiy:", value: totals?.total_owed || 0, color: "#FF6600" },
+        { label: "Umumiy:", value: totals?.total_owed || 0, color: "#1a1a1a" },
         { value: totals?.total_given || 0, color: "#47B13C" },
-        { value: totals?.total_debt || 0, color: "#1a1a1a" },
+        { value: totals?.total_debt || 0, color: "#ef4444" },
       ]}
       hasActiveFilter={hasActiveFilter}
       onClearFilters={clearFilters}
