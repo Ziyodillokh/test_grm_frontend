@@ -5,8 +5,8 @@ import LogisticsReportPage from "./logistics";
 import LogisticsDetailPage from "./logistics/detail";
 import SherikchilikReportPage from "./sherikchilik";
 import SherikchilikDetailPage from "./sherikchilik/detail";
-import KentReportPage from "./kents";
-import KentDetailPage from "./kents/detail";
+import StreetReportPage from "./streets";
+import StreetDetailPage from "./streets/detail";
 import FactoryReportPage from "./factories";
 import FactoryDetailPage from "./factories/detail";
 import MonthlyReportsPage from "../report-finance/monthly";
@@ -163,20 +163,20 @@ const Route = [
     Element: GeneralReportDetail,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
-  // Kent hisoboti
+  // Ko'cha hisoboti
   {
-    url: "/m-manager/reports-hub/kents",
-    Element: KentReportPage,
+    url: "/m-manager/reports-hub/streets",
+    Element: StreetReportPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/m-manager/reports-hub/kents/:debtId",
-    Element: KentDetailPage,
+    url: "/m-manager/reports-hub/streets/:streetId",
+    Element: StreetDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   {
-    url: "/m-manager/reports-hub/kents/:debtId/info",
-    Element: KentDetailPage,
+    url: "/m-manager/reports-hub/streets/:streetId/info",
+    Element: StreetDetailPage,
     meta: { isAuth: true, role: new Set(["admin"]) },
   },
   // Diller hisoboti

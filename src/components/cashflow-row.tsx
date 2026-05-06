@@ -101,6 +101,10 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const cashPrice = isOrder ? orderPrice : (item.price || 0);
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
 
+  // Ko'cha (street) cashflow: price = asosiy summa (kassaga), streetPercent = foiz (kassaga emas)
+  const isStreet = item.cashflow_type?.slug === "street";
+  const streetPercentVal = isStreet && isIncome ? Number((item as any).streetPercent || 0) : 0;
+
   // Share (Ulush) cashflowlari uchun aniqroq nom: Tan kirim / Foyda chiqim ...
   const isShare = item.cashflow_type?.slug === "share";
   const shareKind = (item as any).shareKind as "capital" | "profit" | undefined;
@@ -177,7 +181,12 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
             + {formatPrice(terminalPrice)}
           </p>
         )}
-        {cashPrice === 0 && terminalPrice === 0 && (
+        {streetPercentVal > 0 && (
+          <p className="text-[12px] font-medium text-[#1a1a1a] opacity-60">
+            + {formatPrice(streetPercentVal)} foiz
+          </p>
+        )}
+        {cashPrice === 0 && terminalPrice === 0 && streetPercentVal === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
         )}
       </div>

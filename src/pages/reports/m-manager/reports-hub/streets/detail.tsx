@@ -10,13 +10,13 @@ import { ListRow } from "@/components/ui/list-row";
 import { cashflowLabels } from "@/components/cashflow-row";
 import TebleAvatar from "@/components/teble-avatar";
 import { useYear } from "@/store/year-store";
-import { useKentDetail } from "./queries";
+import { useStreetDetail } from "./queries";
 import formatPrice from "@/utils/formatPrice";
 
 const gridTemplate = "minmax(80px,max-content) 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
 
-export default function KentDetailPage() {
-  const { debtId } = useParams();
+export default function StreetDetailPage() {
+  const { streetId } = useParams();
   const { year } = useYear();
   const [typeFilter] = useQueryState("type", parseAsString);
   const [search, setSearch] = useQueryState("search", parseAsString);
@@ -25,8 +25,8 @@ export default function KentDetailPage() {
   const [, setTypeQs] = useQueryState("type", parseAsString);
   const [excelPending, setExcelPending] = useState(false);
 
-  const { data, isLoading } = useKentDetail({
-    debtId: debtId || "",
+  const { data, isLoading } = useStreetDetail({
+    streetId: streetId || "",
     queries: {
       year,
       ...(startDate ? { fromDate: startDate } : {}),
@@ -37,7 +37,7 @@ export default function KentDetailPage() {
   });
 
   const items = data?.pages?.flatMap((page) => page?.items || []) || [];
-  const debt = data?.pages?.[0]?.debt;
+  const street = data?.pages?.[0]?.street;
 
   const handleExport = () => {
     setExcelPending(true);
@@ -47,7 +47,7 @@ export default function KentDetailPage() {
         startDate ? `fromDate=${startDate}` : "",
         endDate ? `toDate=${endDate}` : "",
       ].filter(Boolean).join("&");
-      window.open(`${baseUrl}/debt/report/excel?year=${year}&debtId=${debtId}${dateParams ? "&" + dateParams : ""}`, "_blank");
+      window.open(`${baseUrl}/street/report/excel?year=${year}&streetId=${streetId}${dateParams ? "&" + dateParams : ""}`, "_blank");
     } finally {
       setExcelPending(false);
     }
@@ -63,7 +63,6 @@ export default function KentDetailPage() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Toolbar — reusable component */}
       <div className="shrink-0">
         <ReportToolbar
           hasActiveFilter={hasActiveFilter}
@@ -98,14 +97,14 @@ export default function KentDetailPage() {
             </>
           }
           totalsItems={[
-            { label: debt?.fullName, value: debt?.owed || 0, color: "#47B13C" },
-            { value: debt?.given || 0, color: "#EF5C12" },
-            { value: debt?.totalDebt || 0, color: "#1a1a1a" },
+            { label: street?.fullName, value: street?.owed || 0, color: "#1a1a1a" },
+            { value: street?.percent || 0, color: "#1a1a1a" },
+            { value: street?.given || 0, color: "#47B13C" },
+            { value: street?.totalDebt || 0, color: "#ef4444" },
           ]}
         />
       </div>
 
-      {/* Column labels */}
       <div
         className="mb-[10px] shrink-0 px-[12px]"
         style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "16px" }}
@@ -115,7 +114,6 @@ export default function KentDetailPage() {
         ))}
       </div>
 
-      {/* List */}
       <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
         {isLoading ? (
           <div className="flex items-center justify-center h-[200px]">
@@ -126,6 +124,7 @@ export default function KentDetailPage() {
             const isIncome = item.type === "income";
             const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
             const user = item.createdBy;
+            const streetPercentVal = Number(item.streetPercent || 0);
 
             return (
               <ListRow
@@ -133,14 +132,18 @@ export default function KentDetailPage() {
                 gridTemplate={gridTemplate}
                 gridGap="16px"
               >
-                {/* Summa */}
+                {/* Summa + Foiz */}
                 <div className="text-right whitespace-nowrap">
                   <span className={`text-[15px] font-medium ${isIncome ? "text-[#47B13C]" : "text-[#EF5C12]"}`}>
                     {isIncome ? "+" : "-"} {formatPrice(item.price || 0)}
                   </span>
+                  {isIncome && streetPercentVal > 0 && (
+                    <p className="text-[12px] font-medium text-[#1a1a1a] opacity-60">
+                      + {formatPrice(streetPercentVal)} foiz
+                    </p>
+                  )}
                 </div>
 
-                {/* Avatar */}
                 <div className="flex items-center justify-center">
                   <TebleAvatar
                     size={42}
@@ -150,7 +153,6 @@ export default function KentDetailPage() {
                   />
                 </div>
 
-                {/* Turi */}
                 <div className="flex items-center gap-[6px] whitespace-nowrap">
                   <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
                   <span className="text-[13px] font-medium text-[#1a1a1a]">
@@ -158,17 +160,14 @@ export default function KentDetailPage() {
                   </span>
                 </div>
 
-                {/* Sana */}
                 <span className="text-[13px] text-[#1a1a1a] whitespace-nowrap">
                   {item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—"}
                 </span>
 
-                {/* Malumotlar */}
                 <span className="text-[13px] text-[#1a1a1a] truncate">
                   {item.comment || "—"}
                 </span>
 
-                {/* Action placeholder */}
                 <div />
               </ListRow>
             );

@@ -7,13 +7,13 @@ import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { useYear } from "@/store/year-store";
 import formatPrice from "@/utils/formatPrice";
 
-import KentFilter from "./filter";
-import { useKentReport } from "./queries";
+import StreetFilter from "./filter";
+import { useStreetReport } from "./queries";
 
-const gridTemplate = "40px 1fr 140px 120px 120px 120px 120px 120px";
-const columnLabels = ["№", "Ism", "Telefon", "Olingan", "Qaytarilgan", "Qolgan", "Davriy olingan", "Davriy qaytarilgan"];
+const gridTemplate = "40px 1fr 130px 110px 110px 110px 110px 110px 110px";
+const columnLabels = ["№", "Ism", "Telefon", "Olingan", "Foiz", "Qaytarilgan", "Qolgan", "Davriy olingan", "Davriy qaytarilgan"];
 
-export default function KentReportPage() {
+export default function StreetReportPage() {
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
   const { year } = useYear();
@@ -21,7 +21,7 @@ export default function KentReportPage() {
   const [search] = useQueryState("search", parseAsString);
   const [excelPending, setExcelPending] = useState(false);
 
-  const { data, isLoading } = useKentReport({
+  const { data, isLoading } = useStreetReport({
     queries: {
       year,
       month: Number(month),
@@ -37,7 +37,7 @@ export default function KentReportPage() {
     setExcelPending(true);
     try {
       const baseUrl = import.meta.env.VITE_BASE_URL;
-      window.open(`${baseUrl}/debt/report/excel?year=${year}&month=${month}`, "_blank");
+      window.open(`${baseUrl}/street/report/excel?year=${year}&month=${month}`, "_blank");
     } finally {
       setExcelPending(false);
     }
@@ -45,7 +45,7 @@ export default function KentReportPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <KentFilter totals={totals} onExport={handleExport} excelPending={excelPending} />
+      <StreetFilter totals={totals} onExport={handleExport} excelPending={excelPending} />
 
       <div
         className="mb-[10px] shrink-0 px-[12px]"
@@ -69,19 +69,20 @@ export default function KentReportPage() {
               className="pl-[12px]"
               minHeight={60}
               onClick={() => {
-                const path = `/m-manager/reports-hub/kents/${item.id}`;
-                push(item.fullName || "Kent", path);
+                const path = `/m-manager/reports-hub/streets/${item.id}`;
+                push(item.fullName || "Ko'cha", path);
                 navigate(path);
               }}
             >
               <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{item.fullName}</span>
               <span className="text-[13px] text-[#1a1a1a]">{item.phone}</span>
-              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.owed || 0)} $</span>
-              <span className="text-[13px] font-medium text-[#EF5C12]">{formatPrice(item.given || 0)} $</span>
-              <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
-              <span className="text-[13px] text-[#47B13C]">{formatPrice(item.period_income || 0)} $</span>
-              <span className="text-[13px] text-[#EF5C12]">{formatPrice(item.period_expense || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.owed || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.percent || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#ef4444]">{formatPrice(item.totalDebt || 0)} $</span>
+              <span className="text-[13px] text-[#1a1a1a]">{formatPrice(item.period_income || 0)} $</span>
+              <span className="text-[13px] text-[#47B13C]">{formatPrice(item.period_expense || 0)} $</span>
             </ListRow>
           ))
         )}

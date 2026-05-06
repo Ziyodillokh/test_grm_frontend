@@ -313,7 +313,7 @@ export default function CardSort({
         createdBy: meUser?.id,
         kassa: kassaId || kassaReports || (kassaReports ? undefined : kassaData?.id) || undefined,
         report: reportId || undefined,
-        debtId: isUserLocSelectble ? debtId : undefined,
+        streetId: isUserLocSelectble ? debtId : undefined,
         factoryId: isFactorySelectble ? factoryId : undefined,
         logisticsId: isLogisticsSelectble ? logisticsId : undefined,
         customsId: isCustomsSelectble ? customsId : undefined,
@@ -479,7 +479,7 @@ export default function CardSort({
                     key={item.id}
                     onClick={() => {
                       setCashflow_type(item.id);
-                      if (item?.slug === "kent" && isUserSelectble) {
+                      if (item?.slug === "street" && isUserSelectble) {
                         setisUserLocSelectble(true);
                         setIsFactorySelectble(false);
                       } else if (item?.title === "Поставщики") {

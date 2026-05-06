@@ -82,8 +82,9 @@ export default function ReportPage() {
   const [cfDate, setCfDate] = useState("");
   const [cfComment, setCfComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [debtId, setDebtId] = useState<string | undefined>(undefined);
-  const [isKentSelected, setIsKentSelected] = useState(false);
+  const [streetId, setStreetId] = useState<string | undefined>(undefined);
+  const [isStreetSelected, setIsStreetSelected] = useState(false);
+  const [streetPercent, setStreetPercent] = useState<number>(0);
   const [factoryId, setFactoryId] = useState<string | undefined>(undefined);
   const [isFactorySelected, setIsFactorySelected] = useState(false);
   const [logisticsId, setLogisticsId] = useState<string | undefined>(undefined);
@@ -105,9 +106,9 @@ export default function ReportPage() {
 
   const { data: DeblsData } = useDeblsData({
     queries: { limit: 100, page: 1 },
-    enabled: Boolean(isKentSelected),
+    enabled: Boolean(isStreetSelected),
   });
-  const flatDeblsData = DeblsData?.pages?.flatMap((page) => page?.items || []) || [];
+  const flatStreetsData = DeblsData?.pages?.flatMap((page) => page?.items || []) || [];
 
   const { data: factoriesData } = useQuery({
     queryKey: [apiRoutes.factoryReportEnabled],
@@ -139,8 +140,9 @@ export default function ReportPage() {
     setPrice(0);
     setCfDate("");
     setCfComment("");
-    setDebtId(undefined);
-    setIsKentSelected(false);
+    setStreetId(undefined);
+    setIsStreetSelected(false);
+    setStreetPercent(0);
     setFactoryId(undefined);
     setIsFactorySelected(false);
     setLogisticsId(undefined);
@@ -167,7 +169,8 @@ export default function ReportPage() {
         ...(cfDate ? { date: cfDate } : {}),
         createdBy: meUser?.id,
         report: id,
-        debtId: isKentSelected ? debtId : undefined,
+        streetId: isStreetSelected ? streetId : undefined,
+        streetPercent: isStreetSelected && dialogType === "income" ? streetPercent : undefined,
         factoryId: isFactorySelected ? factoryId : undefined,
         logisticsId: isLogisticsSelected ? logisticsId : undefined,
         customsId: isCustomsSelected ? customsId : undefined,
@@ -485,53 +488,53 @@ export default function ReportPage() {
                       key={item.id}
                       onClick={() => {
                         setSelectedType(item.id);
-                        if (item?.slug === "kent") {
-                          setIsKentSelected(true);
+                        if (item?.slug === "street") {
+                          setIsStreetSelected(true);
                           setIsFactorySelected(false);
                         } else if (item?.slug === "factory") {
                           setIsFactorySelected(true);
-                          setIsKentSelected(false);
+                          setIsStreetSelected(false);
                           setIsLogisticsSelected(false);
                           setIsCustomsSelected(false);
-                          setDebtId(undefined);
+                          setStreetId(undefined);
                           setLogisticsId(undefined);
                           setCustomsId(undefined);
                         } else if (item?.slug === "logistics") {
                           setIsLogisticsSelected(true);
-                          setIsKentSelected(false);
+                          setIsStreetSelected(false);
                           setIsFactorySelected(false);
                           setIsCustomsSelected(false);
-                          setDebtId(undefined);
+                          setStreetId(undefined);
                           setFactoryId(undefined);
                           setCustomsId(undefined);
                         } else if (item?.slug === "customs") {
                           setIsCustomsSelected(true);
-                          setIsKentSelected(false);
+                          setIsStreetSelected(false);
                           setIsFactorySelected(false);
                           setIsLogisticsSelected(false);
                           setIsShareSelected(false);
-                          setDebtId(undefined);
+                          setStreetId(undefined);
                           setFactoryId(undefined);
                           setLogisticsId(undefined);
                           setShareId(undefined);
                         } else if (item?.slug === "share") {
                           setIsShareSelected(true);
-                          setIsKentSelected(false);
+                          setIsStreetSelected(false);
                           setIsFactorySelected(false);
                           setIsLogisticsSelected(false);
                           setIsCustomsSelected(false);
-                          setDebtId(undefined);
+                          setStreetId(undefined);
                           setFactoryId(undefined);
                           setLogisticsId(undefined);
                           setCustomsId(undefined);
                           setShareKind("capital");
                         } else {
-                          setIsKentSelected(false);
+                          setIsStreetSelected(false);
                           setIsFactorySelected(false);
                           setIsLogisticsSelected(false);
                           setIsCustomsSelected(false);
                           setIsShareSelected(false);
-                          setDebtId(undefined);
+                          setStreetId(undefined);
                           setFactoryId(undefined);
                           setLogisticsId(undefined);
                           setCustomsId(undefined);
@@ -549,21 +552,33 @@ export default function ReportPage() {
                   ))}
                 </div>
                 <div className="w-full">
-                  {isKentSelected && (
-                    <ShadcnSelect
-                      value={debtId}
-                      options={
-                        flatDeblsData.map((item) => ({
-                          value: item.id,
-                          label: item.fullName,
-                        })) || []
-                      }
-                      placeholder={"Кенты"}
-                      onChange={(value) => {
-                        setDebtId(value);
-                      }}
-                      className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
-                    />
+                  {isStreetSelected && (
+                    <div className="flex flex-col gap-1">
+                      <ShadcnSelect
+                        value={streetId}
+                        options={
+                          flatStreetsData.map((item) => ({
+                            value: item.id,
+                            label: item.fullName,
+                          })) || []
+                        }
+                        placeholder={"Qarz beruvchi"}
+                        onChange={(value) => {
+                          setStreetId(value);
+                        }}
+                        className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
+                      />
+                      {dialogType === "income" && (
+                        <Input
+                          type="number"
+                          inputMode="decimal"
+                          placeholder="Foiz summa ($)"
+                          value={streetPercent || ""}
+                          onChange={(e) => setStreetPercent(Number(e.target.value))}
+                          className="w-full !text-[16px] h-[44px] rounded-sm bg-input border-none px-3"
+                        />
+                      )}
+                    </div>
                   )}
                   {isFactorySelected && (
                     <ShadcnSelect

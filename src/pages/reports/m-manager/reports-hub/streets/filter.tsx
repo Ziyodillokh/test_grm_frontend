@@ -3,14 +3,14 @@ import { parseAsString, useQueryState } from "nuqs";
 import ReportToolbar from "@/components/report-toolbar";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { MonthsArray } from "@/consts";
-import { KentReportTotals } from "./type";
+import { StreetReportTotals } from "./type";
 
-export default function KentFilter({
+export default function StreetFilter({
   totals,
   onExport,
   excelPending,
 }: {
-  totals?: KentReportTotals;
+  totals?: StreetReportTotals;
   onExport?: () => void;
   excelPending?: boolean;
 }) {
@@ -44,9 +44,10 @@ export default function KentFilter({
         </div>
       }
       totalsItems={[
-        { label: "Umumiy:", value: totals?.total_owed || 0, color: "#FF6600" },
+        { label: "Umumiy:", value: totals?.total_owed || 0, color: "#1a1a1a" },
+        { value: totals?.total_percent || 0, color: "#1a1a1a" },
         { value: totals?.total_given || 0, color: "#47B13C" },
-        { value: totals?.total_debt || 0, color: "#1a1a1a" },
+        { value: totals?.total_debt || 0, color: "#ef4444" },
       ]}
     />
   );

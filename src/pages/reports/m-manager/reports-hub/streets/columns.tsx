@@ -3,9 +3,9 @@ import { format } from "date-fns";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import formatPrice from "@/utils/formatPrice";
-import { KentReportItem, KentDetailItem } from "./type";
+import { StreetReportItem, StreetDetailItem } from "./type";
 
-export const KentColumns: ColumnDef<KentReportItem>[] = [
+export const StreetColumns: ColumnDef<StreetReportItem>[] = [
   {
     header: "№",
     cell: ({ row }) => <p>{row.original?.number_debt}</p>,
@@ -62,7 +62,7 @@ export const KentColumns: ColumnDef<KentReportItem>[] = [
   },
 ];
 
-export const KentDetailColumns: ColumnDef<KentDetailItem>[] = [
+export const StreetDetailColumns: ColumnDef<StreetDetailItem>[] = [
   {
     id: "icon",
     cell: ({ row }) => {

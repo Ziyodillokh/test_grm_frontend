@@ -2,22 +2,22 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAllData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
 import {
-  KentReportResponse,
-  KentReportQuery,
-  KentDetailResponse,
-  KentDetailQuery,
+  StreetReportResponse,
+  StreetReportQuery,
+  StreetDetailResponse,
+  StreetDetailQuery,
 } from "./type";
 
-interface IKentReportQuery {
-  queries?: KentReportQuery;
+interface IStreetReportQuery {
+  queries?: StreetReportQuery;
   enabled?: boolean;
 }
 
-export const useKentReport = ({ queries, enabled = true }: IKentReportQuery) =>
+export const useStreetReport = ({ queries, enabled = true }: IStreetReportQuery) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.debtReport, queries],
+    queryKey: [apiRoutes.streetReport, queries],
     queryFn: ({ pageParam = 1 }) =>
-      getAllData<KentReportResponse, KentReportQuery>(apiRoutes.debtReport, {
+      getAllData<StreetReportResponse, StreetReportQuery>(apiRoutes.streetReport, {
         ...queries,
         page: pageParam as number,
         limit: queries?.limit || 20,
@@ -32,22 +32,22 @@ export const useKentReport = ({ queries, enabled = true }: IKentReportQuery) =>
     initialPageParam: 1,
   });
 
-interface IKentDetailQuery {
-  debtId: string;
-  queries?: KentDetailQuery;
+interface IStreetDetailQuery {
+  streetId: string;
+  queries?: StreetDetailQuery;
   enabled?: boolean;
 }
 
-export const useKentDetail = ({
-  debtId,
+export const useStreetDetail = ({
+  streetId,
   queries,
   enabled = true,
-}: IKentDetailQuery) =>
+}: IStreetDetailQuery) =>
   useInfiniteQuery({
-    queryKey: [apiRoutes.debt, debtId, "report", queries],
+    queryKey: [apiRoutes.street, streetId, "report", queries],
     queryFn: ({ pageParam = 1 }) =>
-      getAllData<KentDetailResponse, KentDetailQuery>(
-        `${apiRoutes.debt}/${debtId}/report`,
+      getAllData<StreetDetailResponse, StreetDetailQuery>(
+        `${apiRoutes.street}/${streetId}/report`,
         {
           ...queries,
           page: pageParam as number,
@@ -60,6 +60,6 @@ export const useKentDetail = ({
       }
       return null;
     },
-    enabled: enabled && !!debtId,
+    enabled: enabled && !!streetId,
     initialPageParam: 1,
   });

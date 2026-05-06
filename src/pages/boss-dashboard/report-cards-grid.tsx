@@ -89,10 +89,10 @@ export default function ReportCardsGrid({
         isLoading={!yearlyData}
       />
       <ReportCard
-        title="Kent"
+        title="Ko'cha"
         positive={fmt(kentsTotals.total_given)}
         negative={fmtDebt(kentsTotals.total_debt)}
-        navigateTo="/m-manager/reports-hub/kents"
+        navigateTo="/m-manager/reports-hub/streets"
         isLoading={kentsLoading}
       />
       <ReportCard

@@ -1,16 +1,17 @@
-export interface KentReportItem {
+export interface StreetReportItem {
   id: string;
   fullName: string;
   phone: string;
   given: number;
   owed: number;
+  percent: number;
   totalDebt: number;
   number_debt: number;
   period_income: number;
   period_expense: number;
 }
 
-export interface KentReportQuery {
+export interface StreetReportQuery {
   year?: number;
   month?: number;
   search?: string;
@@ -18,28 +19,30 @@ export interface KentReportQuery {
   limit?: number;
 }
 
-export interface KentReportTotals {
+export interface StreetReportTotals {
   total_given: number;
   total_owed: number;
+  total_percent: number;
   total_debt: number;
   total_period_income: number;
   total_period_expense: number;
 }
 
-export interface KentReportResponse {
-  items: KentReportItem[];
+export interface StreetReportResponse {
+  items: StreetReportItem[];
   meta: {
     totalItems: number;
     currentPage: number;
     totalPages: number;
     itemCount: number;
   };
-  totals: KentReportTotals;
+  totals: StreetReportTotals;
 }
 
-export interface KentDetailItem {
+export interface StreetDetailItem {
   id: string;
   price: number;
+  streetPercent: number;
   type: string;
   tip: string;
   comment: string;
@@ -51,7 +54,7 @@ export interface KentDetailItem {
     title: string;
     slug: string;
   };
-  debt: {
+  street: {
     id: string;
     fullName: string;
   };
@@ -68,7 +71,7 @@ export interface KentDetailItem {
   };
 }
 
-export interface KentDetailQuery {
+export interface StreetDetailQuery {
   year?: number;
   month?: number;
   fromDate?: string;
@@ -78,27 +81,29 @@ export interface KentDetailQuery {
   limit?: number;
 }
 
-export interface KentDetailTotals {
+export interface StreetDetailTotals {
   total_income: number;
+  total_percent: number;
   total_expense: number;
   balance: number;
 }
 
-export interface KentDetailResponse {
-  items: KentDetailItem[];
+export interface StreetDetailResponse {
+  items: StreetDetailItem[];
   meta: {
     totalItems: number;
     currentPage: number;
     totalPages: number;
     itemCount: number;
   };
-  totals: KentDetailTotals;
-  debt: {
+  totals: StreetDetailTotals;
+  street: {
     id: string;
     fullName: string;
     phone: string;
     given: number;
     owed: number;
+    percent: number;
     totalDebt: number;
   };
 }
