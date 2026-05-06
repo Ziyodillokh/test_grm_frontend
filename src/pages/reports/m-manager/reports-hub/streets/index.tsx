@@ -10,8 +10,8 @@ import formatPrice from "@/utils/formatPrice";
 import StreetFilter from "./filter";
 import { useStreetReport } from "./queries";
 
-const gridTemplate = "40px 1fr 130px 110px 110px 110px 110px 110px 110px";
-const columnLabels = ["№", "Ism", "Telefon", "Olingan", "Foiz", "Qaytarilgan", "Qolgan", "Davriy olingan", "Davriy qaytarilgan"];
+const gridTemplate = "40px 1fr 110px 110px 110px 110px 110px 110px";
+const columnLabels = ["№", "Ism", "Olingan", "Foiz", "Qaytarilgan", "Qolgan", "Davriy olingan", "Davriy qaytarilgan"];
 
 export default function StreetReportPage() {
   const navigate = useNavigate();
@@ -76,7 +76,6 @@ export default function StreetReportPage() {
             >
               <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{item.fullName}</span>
-              <span className="text-[13px] text-[#1a1a1a]">{item.phone}</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.owed || 0)} $</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.percent || 0)} $</span>
               <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.given || 0)} $</span>
