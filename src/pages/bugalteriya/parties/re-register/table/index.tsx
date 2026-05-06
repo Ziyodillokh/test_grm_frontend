@@ -23,7 +23,7 @@ import debounce from "@/utils/debounce";
 import { TData } from "../type";
 
 const GRID = "30px 1fr 130px 100px 110px 90px 90px 110px 110px 50px";
-const COLLECTION_GRID = "30px 1fr 80px 100px 110px 130px 130px 130px";
+const COLLECTION_GRID = "30px 1fr 70px 90px 110px 110px 110px 110px 110px 110px";
 
 function getMiqdor(row: TData, tip: string) {
   const isMetric = row?.bar_code?.isMetric;
@@ -167,10 +167,12 @@ export default function ItemsPage() {
           <span className="text-[13px] text-[#A3A3A3]">Kalleksiya</span>
           <span className="text-[13px] text-[#A3A3A3]">Soni</span>
           <span className="text-[13px] text-[#A3A3A3]">Hajm</span>
-          <span className="text-[13px] text-[#A3A3A3]">Qiymati</span>
+          <span className="text-[13px] text-[#A3A3A3]">Tani</span>
           <span className="text-[13px] text-[#A3A3A3]">Zavod narxi (m²)</span>
           <span className="text-[13px] text-[#A3A3A3]">Ustama (m²)</span>
+          <span className="text-[13px] text-[#A3A3A3]">Sherik ulushi (m²)</span>
           <span className="text-[13px] text-[#A3A3A3] text-center">Kassa narxi (m²)</span>
+          <span className="text-[13px] text-[#A3A3A3] text-center">Kassa</span>
         </div>
       ) : (
         <div
@@ -310,10 +312,15 @@ function CollectionRow({
   const collectionId = row?.id;
   const factoryDefault = Number(row?.factoryPricePerKv || 0);
   const overheadDefault = Number(row?.overheadPerKv || 0);
-  const cassaPrice = row?.collectionPrice?.priceMeter;
+  const shareDefault = Number(row?.sharePricePerKv || 0);
+  const cassaPrice = Number(row?.collectionPrice?.priceMeter || 0);
 
   const { mutate: savePrice } = useMutation({
-    mutationFn: async (payload: { factoryPricePerKv: number; overheadPerKv: number }) =>
+    mutationFn: async (payload: {
+      factoryPricePerKv: number;
+      overheadPerKv: number;
+      sharePricePerKv: number;
+    }) =>
       AddData(apiRoutes.partiyaCollectionPrice, {
         partiyaId,
         items: [{ collectionId, ...payload }],
@@ -326,15 +333,32 @@ function CollectionRow({
   });
 
   const handleFactoryChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    savePrice({ factoryPricePerKv: Number(e.target.value), overheadPerKv: overheadDefault });
+    savePrice({
+      factoryPricePerKv: Number(e.target.value),
+      overheadPerKv: overheadDefault,
+      sharePricePerKv: shareDefault,
+    });
   }, 700);
 
   const handleOverheadChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    savePrice({ factoryPricePerKv: factoryDefault, overheadPerKv: Number(e.target.value) });
+    savePrice({
+      factoryPricePerKv: factoryDefault,
+      overheadPerKv: Number(e.target.value),
+      sharePricePerKv: shareDefault,
+    });
+  }, 700);
+
+  const handleShareChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    savePrice({
+      factoryPricePerKv: factoryDefault,
+      overheadPerKv: overheadDefault,
+      sharePricePerKv: Number(e.target.value),
+    });
   }, 700);
 
   const kv = Number(row?.kv || 0);
-  const qiymati = (factoryDefault * kv).toFixed(2);
+  const tani = ((factoryDefault + overheadDefault + shareDefault) * kv).toFixed(2);
+  const kassa = (cassaPrice * kv).toFixed(2);
 
   return (
     <ListRow gridTemplate={COLLECTION_GRID} minHeight={60}>
@@ -342,13 +366,13 @@ function CollectionRow({
       <span className="text-[14px] text-[#1a1a1a] truncate">{row?.title || "—"}</span>
       <span className="text-[14px] text-[#1a1a1a]">{row?.count || 0}</span>
       <span className="text-[14px] text-[#1a1a1a]">{kv.toFixed(1)} m²</span>
-      <span className="text-[14px] text-[#1a1a1a]">{qiymati} $</span>
+      <span className="text-[14px] text-[#1a1a1a]">{tani} $</span>
       <Input
         defaultValue={factoryDefault || ""}
         type="number"
         placeholder="0"
         disabled={!canModify}
-        className="h-[36px] w-[110px] rounded-[4px] text-[14px]"
+        className="h-[36px] w-[100px] rounded-[4px] text-[14px]"
         onChange={handleFactoryChange}
       />
       <Input
@@ -356,11 +380,22 @@ function CollectionRow({
         type="number"
         placeholder="0"
         disabled={!canModify}
-        className="h-[36px] w-[110px] rounded-[4px] text-[14px]"
+        className="h-[36px] w-[100px] rounded-[4px] text-[14px]"
         onChange={handleOverheadChange}
       />
+      <Input
+        defaultValue={shareDefault || ""}
+        type="number"
+        placeholder="0"
+        disabled={!canModify}
+        className="h-[36px] w-[100px] rounded-[4px] text-[14px]"
+        onChange={handleShareChange}
+      />
       <span className="text-[14px] text-[#1a1a1a] text-center">
-        {cassaPrice != null ? `${cassaPrice} $` : "—"}
+        {cassaPrice ? `${cassaPrice} $` : "—"}
+      </span>
+      <span className="text-[14px] text-[#1a1a1a] text-center">
+        {cassaPrice ? `${kassa} $` : "—"}
       </span>
     </ListRow>
   );
