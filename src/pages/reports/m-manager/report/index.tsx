@@ -172,7 +172,8 @@ export default function ReportPage() {
         logisticsId: isLogisticsSelected ? logisticsId : undefined,
         customsId: isCustomsSelected ? customsId : undefined,
         shareId: isShareSelected ? shareId : undefined,
-        shareKind: isShareSelected && dialogType === "expense" ? shareKind : undefined,
+        // Yangi logika: income ham, expense ham Kapital/Foyda toggle bilan
+        shareKind: isShareSelected ? shareKind : undefined,
       });
       toast.success(`${dialogType === "income" ? "Kirim" : "Chiqim"} muvaffaqiyatli qo'shildi`);
       setDialogOpen(false);
@@ -628,29 +629,27 @@ export default function ReportPage() {
                         }}
                         className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
                       />
-                      {dialogType === "expense" && (
-                        <div className="flex w-full bg-input rounded-sm p-0.5 mt-1 cursor-pointer relative">
-                          <div
-                            className={`${shareKind === "capital" ? "left-0.5" : "left-[50%]"} transition-all duration-300 ease-in-out absolute rounded-sm top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-primary`}
-                          />
-                          <p
-                            onClick={() => setShareKind("capital")}
-                            className={`flex-1 text-center py-2 z-10 text-[14px] font-medium ${
-                              shareKind === "capital" ? "text-input" : "text-primary"
-                            }`}
-                          >
-                            Tani
-                          </p>
-                          <p
-                            onClick={() => setShareKind("profit")}
-                            className={`flex-1 text-center py-2 z-10 text-[14px] font-medium ${
-                              shareKind === "profit" ? "text-input" : "text-primary"
-                            }`}
-                          >
-                            Foyda
-                          </p>
-                        </div>
-                      )}
+                      <div className="flex w-full bg-input rounded-sm p-0.5 mt-1 cursor-pointer relative">
+                        <div
+                          className={`${shareKind === "capital" ? "left-0.5" : "left-[50%]"} transition-all duration-300 ease-in-out absolute rounded-sm top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-primary`}
+                        />
+                        <p
+                          onClick={() => setShareKind("capital")}
+                          className={`flex-1 text-center py-2 z-10 text-[14px] font-medium ${
+                            shareKind === "capital" ? "text-input" : "text-primary"
+                          }`}
+                        >
+                          Tan
+                        </p>
+                        <p
+                          onClick={() => setShareKind("profit")}
+                          className={`flex-1 text-center py-2 z-10 text-[14px] font-medium ${
+                            shareKind === "profit" ? "text-input" : "text-primary"
+                          }`}
+                        >
+                          Foyda
+                        </p>
+                      </div>
                     </div>
                   )}
                   <Input

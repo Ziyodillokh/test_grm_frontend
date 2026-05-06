@@ -3,6 +3,7 @@ export interface ShareReportItem {
   fullName: string;
   phone: string;
   capital: number;
+  profit: number;
   given_capital: number;
   given_profit: number;
   totalDebt: number;
@@ -88,6 +89,7 @@ export interface ShareDetailResponse {
     fullName: string;
     phone: string;
     capital: number;
+    profit: number;
     given_capital: number;
     given_profit: number;
     totalDebt: number;

@@ -103,8 +103,9 @@ export default function SherikchilikDetailPage() {
           }
           totalsItems={[
             { label: share?.fullName, value: share?.capital || 0, color: "#47B13C" },
+            { value: share?.profit || 0, color: "#FF6600" },
             { value: share?.given_capital || 0, color: "#EF5C12" },
-            { value: share?.given_profit || 0, color: "#FF6600" },
+            { value: share?.given_profit || 0, color: "#EF5C12" },
             { value: share?.totalDebt || 0, color: "#1a1a1a" },
           ]}
         />
@@ -133,12 +134,20 @@ export default function SherikchilikDetailPage() {
           items.map((item, i: number) => {
             const isIncome = item.type === "income";
             const isCapital = item.shareKind === "capital";
-            const typeLabel = isIncome
-              ? "Ulush kirim"
+            const typeLabel = isCapital
+              ? isIncome
+                ? "Tan kirim"
+                : "Tan chiqim"
+              : isIncome
+                ? "Foyda kirim"
+                : "Foyda chiqim";
+            const typeColor = isIncome
+              ? isCapital
+                ? "#47B13C"
+                : "#3ABC49"
               : isCapital
-                ? "Tani qaytarish"
-                : "Foyda ulushi";
-            const typeColor = isIncome ? "#47B13C" : isCapital ? "#EF5C12" : "#FF6600";
+                ? "#EF5C12"
+                : "#FF6600";
             const user = item.createdBy;
 
             return (
