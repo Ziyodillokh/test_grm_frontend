@@ -107,9 +107,9 @@ export const useCustomsCardTotals = (queries: BossDashboardFilter, enabled = tru
 // Kent (debt) card
 export const useKentsCardTotals = (queries: BossDashboardFilter, enabled = true) =>
   useQuery({
-    queryKey: [apiRoutes.debtReport, "boss-card", queries],
+    queryKey: [apiRoutes.streetReport, "boss-card", queries],
     queryFn: () =>
-      getAllData<any, any>(apiRoutes.debtReport, {
+      getAllData<any, any>(apiRoutes.streetReport, {
         year: queries.year ? Number(queries.year) : undefined,
         month: queries.month ? Number(queries.month) : undefined,
         page: 1,

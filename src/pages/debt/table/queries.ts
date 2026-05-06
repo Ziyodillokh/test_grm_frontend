@@ -19,9 +19,9 @@ const useDeblsData = ({ options, queries,enabled=true }: ITransfers) =>
   useInfiniteQuery({
     ...options,
     enabled,
-    queryKey: [apiRoutes.debt, queries],
+    queryKey: [apiRoutes.street, queries],
     queryFn: ({ pageParam = 1 }) =>
-      getAllData<TResponse<TData>, TQuery>(apiRoutes.debt, {
+      getAllData<TResponse<TData>, TQuery>(apiRoutes.street, {
         ...queries,
         page: pageParam as number,
       }),

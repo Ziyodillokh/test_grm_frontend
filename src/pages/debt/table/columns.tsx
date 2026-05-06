@@ -53,7 +53,7 @@ export const ClientsColumns: ColumnDef<TData>[] = [
     size: 50,
     cell: ({ row }) => {
       return (
-          <TableAction url={apiRoutes.debt} id={row.original?.id} />
+          <TableAction url={apiRoutes.street} id={row.original?.id} />
       );
     },
   },

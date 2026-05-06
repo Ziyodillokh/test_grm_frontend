@@ -34,12 +34,12 @@ export const useClientMutation = ({
       };
       if (id)
         return await UpdatePatchData<ClientFormType>(
-          apiRoutes.debt,
+          apiRoutes.street,
           id,
           costomData as ClientFormType
         );
       return await AddData<ClientFormType>(
-        apiRoutes.debt,
+        apiRoutes.street,
         costomData as ClientFormType
       );
     },
@@ -48,8 +48,8 @@ export const useClientMutation = ({
 export const useClientById = ({ options, id, queries }: IClients) =>
   useQuery({
     ...options,
-    queryKey: [apiRoutes.debt, id],
+    queryKey: [apiRoutes.street, id],
     enabled: Boolean(id),
     queryFn: () =>
-      getByIdData<TData, TQuery>(apiRoutes.debt, id || "", queries),
+      getByIdData<TData, TQuery>(apiRoutes.street, id || "", queries),
   });
