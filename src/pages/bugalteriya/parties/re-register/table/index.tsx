@@ -168,11 +168,11 @@ export default function ItemsPage() {
           <span className="text-[13px] text-[#A3A3A3]">Soni</span>
           <span className="text-[13px] text-[#A3A3A3]">Hajm</span>
           <span className="text-[13px] text-[#A3A3A3]">Tani</span>
+          <span className="text-[13px] text-[#A3A3A3]">Kassa</span>
           <span className="text-[13px] text-[#A3A3A3]">Zavod narxi (m²)</span>
           <span className="text-[13px] text-[#A3A3A3]">Ustama (m²)</span>
           <span className="text-[13px] text-[#A3A3A3]">Sherik ulushi (m²)</span>
           <span className="text-[13px] text-[#A3A3A3] text-center">Kassa narxi (m²)</span>
-          <span className="text-[13px] text-[#A3A3A3] text-center">Kassa</span>
         </div>
       ) : (
         <div
@@ -367,6 +367,9 @@ function CollectionRow({
       <span className="text-[14px] text-[#1a1a1a]">{row?.count || 0}</span>
       <span className="text-[14px] text-[#1a1a1a]">{kv.toFixed(1)} m²</span>
       <span className="text-[14px] text-[#1a1a1a]">{tani} $</span>
+      <span className="text-[14px] text-[#1a1a1a]">
+        {cassaPrice ? `${kassa} $` : "—"}
+      </span>
       <Input
         defaultValue={factoryDefault || ""}
         type="number"
@@ -393,9 +396,6 @@ function CollectionRow({
       />
       <span className="text-[14px] text-[#1a1a1a] text-center">
         {cassaPrice ? `${cassaPrice} $` : "—"}
-      </span>
-      <span className="text-[14px] text-[#1a1a1a] text-center">
-        {cassaPrice ? `${kassa} $` : "—"}
       </span>
     </ListRow>
   );
