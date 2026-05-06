@@ -37,6 +37,7 @@ export default function ShareFilter({
   const [open, setOpen] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isProfitDebt, setIsProfitDebt] = useState(true);
 
   const hasActiveFilter = yearFilter !== currentYear || month !== currentMonth;
   const clearFilters = () => {
@@ -45,13 +46,14 @@ export default function ShareFilter({
   };
 
   const { mutate: createShare, isPending } = useMutation({
-    mutationFn: () => AddData(apiRoutes.share, { fullName, phone }),
+    mutationFn: () => AddData(apiRoutes.share, { fullName, phone, isProfitDebt }),
     onSuccess: () => {
       toast.success("Sherik qo'shildi");
       queryClient.invalidateQueries({ queryKey: [apiRoutes.shareReport] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.share] });
       setFullName("");
       setPhone("");
+      setIsProfitDebt(true);
       setOpen(false);
     },
     onError: () => toast.error("Xatolik yuz berdi"),
@@ -110,6 +112,21 @@ export default function ShareFilter({
             <div className="flex flex-col gap-3 mt-2">
               <Input placeholder="Ismi" value={fullName} onChange={(e) => setFullName(e.target.value)} />
               <Input placeholder="Telefon" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <label className="flex items-start gap-2 select-none cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="mt-[3px] w-4 h-4 cursor-pointer"
+                  checked={isProfitDebt}
+                  onChange={(e) => setIsProfitDebt(e.target.checked)}
+                />
+                <span className="text-[13px] text-[#1a1a1a] leading-tight">
+                  Foyda chiqim qoldiqdan ayriladi
+                  <br />
+                  <span className="text-[12px] text-[#a3a3a3]">
+                    (belgilanmasa — qoldiq foyda to'lov bilan o'zgarmaydi)
+                  </span>
+                </span>
+              </label>
               <Button
                 onClick={() => createShare()}
                 disabled={isPending || !fullName.trim()}
