@@ -68,7 +68,7 @@ export default function SherikchilikReportPage() {
               <span className="text-[13px] font-medium text-[#1a1a1a]">{item.fullName}</span>
               <span className="text-[13px] text-[#1a1a1a]">{item.phone}</span>
               <span className="text-[13px] font-medium text-[#47B13C]">{formatPrice(item.capital || 0)} $</span>
-              <span className="text-[13px] font-medium text-[#FF6600]">{formatPrice(item.profit || 0)} $</span>
+              <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.profit || 0)} $</span>
               <span className="text-[13px] font-medium text-[#EF5C12]">{formatPrice(item.given_capital || 0)} $</span>
               <span className="text-[13px] font-medium text-[#EF5C12]">{formatPrice(item.given_profit || 0)} $</span>
               <span className="text-[13px] font-medium text-[#1a1a1a]">{formatPrice(item.totalDebt || 0)} $</span>
