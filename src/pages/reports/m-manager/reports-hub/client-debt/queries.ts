@@ -9,13 +9,18 @@ export const useDebtFilials = () =>
       getAllData<any, any>(apiRoutes.clientDebtReportFilials, {}),
   });
 
-export const useDebtClients = (filialId?: string, page = 1, limit = 50) =>
+export const useDebtClients = (
+  filialId?: string,
+  type?: "mijoz" | "qarzdor",
+  page = 1,
+  limit = 50,
+) =>
   useQuery({
-    queryKey: [apiRoutes.clientDebtReportClients, filialId, page, limit],
+    queryKey: [apiRoutes.clientDebtReportClients, filialId, type, page, limit],
     queryFn: () =>
       getAllData<any, any>(
         `${apiRoutes.clientDebtReportClients}/${filialId}/clients`,
-        { page, limit }
+        { page, limit, ...(type ? { type } : {}) }
       ),
     enabled: !!filialId,
   });
