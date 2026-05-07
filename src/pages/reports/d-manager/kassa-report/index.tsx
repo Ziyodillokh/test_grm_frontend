@@ -57,7 +57,7 @@ export default function PageKassaReport() {
   const columnLabels = ["", "Diller", "", "Naqd", "Terminal", "Yuborilgan", "Qarzdorlik", ""];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full gap-[20px]">
       {/* Toolbar: search + sort + oyni yopish button */}
       <div className="flex items-center gap-[4px]">
         <ReportToolbar />
@@ -82,18 +82,19 @@ export default function PageKassaReport() {
 
       <ReportTotals data={reportData as any} />
 
-      {/* Column labels */}
-      <div
-        className="mt-[10px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
-      >
-        {columnLabels.map((label, i) => (
-          <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
-        ))}
-      </div>
+      <div className="flex-1 min-h-0 flex flex-col gap-[10px]">
+        {/* Column labels */}
+        <div
+          className="shrink-0 px-[12px]"
+          style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+        >
+          {columnLabels.map((label, i) => (
+            <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
+          ))}
+        </div>
 
-      {/* Kassa rows */}
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
+        {/* Kassa rows */}
+        <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
         {isLoading ? (
           <div className="flex items-center justify-center h-[200px]">
             <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
@@ -118,6 +119,7 @@ export default function PageKassaReport() {
             />
           ))
         )}
+        </div>
       </div>
     </div>
   );
@@ -136,6 +138,16 @@ function KassaRow({ item, gridTemplate, onRowClick }: { item: TKassareportData; 
   const statusText = item?.kassaStatus === 2
     ? "willSell"
     : item?.status || "open";
+
+  // O'tgan oy + status='warning' yoki kassaStatus=1 → "Yopish" pill button
+  const now = new Date();
+  const curY = now.getFullYear();
+  const curM = now.getMonth() + 1;
+  const isPastMonth =
+    (item?.year ?? curY) < curY ||
+    ((item?.year ?? curY) === curY && (item?.month ?? curM) < curM);
+  const isPastWarning =
+    isPastMonth && (item?.status === "warning" || item?.kassaStatus === 1);
 
   const { mutate: closeDmanager, isPending } = useMutation({
     mutationFn: () =>
@@ -185,22 +197,27 @@ function KassaRow({ item, gridTemplate, onRowClick }: { item: TKassareportData; 
 
       {/* Action */}
       <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-        {item?.kassaStatus === 2 ? (
+        {item?.status === "open" ? (
+          <span className="text-[13px] text-[#47B13C]">Jarayonda...</span>
+        ) : item?.kassaStatus === 2 ? (
           <ActionBadge status="willSell" />
-        ) : item?.status === "open" ? (
+        ) : isPastWarning ? (
           <button
+            type="button"
             onClick={() => closeDmanager()}
             disabled={isPending}
-            className="w-[36px] h-[36px] rounded-full bg-[#47B13C] flex items-center justify-center shrink-0 hover:bg-[#3da032] transition-colors disabled:opacity-50"
+            className="h-[40px] px-[14px] rounded-full flex items-center gap-[6px] text-[13px] font-medium transition-colors bg-white text-[#47B13C] hover:bg-[#47B13C]/10 disabled:opacity-50"
           >
             {isPending ? (
-              <Loader className="w-[16px] h-[16px] text-white animate-spin" />
+              <Loader className="w-[16px] h-[16px] animate-spin" />
             ) : (
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16.5 8.31039V9.00039C16.4991 10.6177 15.9754 12.1914 15.007 13.4868C14.0386 14.7821 12.6775 15.7297 11.1265 16.1883C9.57557 16.6469 7.91794 16.5918 6.40085 16.0313C4.88376 15.4708 3.58849 14.435 2.70822 13.0782C1.82795 11.7214 1.40984 10.1164 1.51626 8.50262C1.62267 6.88881 2.24791 5.35263 3.29871 4.12319C4.34951 2.89375 5.76959 2.03692 7.34714 1.6805C8.92469 1.32407 10.5752 1.48714 12.0525 2.14539" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M16.5 3L9 10.5075L6.75 8.2575" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <span className="w-[16px] h-[16px] flex items-center justify-center shrink-0 text-[#47B13C]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.99984 7.33464L7.99984 9.33464L13.3332 4.0013M13.3332 8.0013V12.0013C13.3332 12.3549 13.1927 12.6941 12.9426 12.9441C12.6926 13.1942 12.3535 13.3346 11.9998 13.3346H3.99984C3.64622 13.3346 3.30708 13.1942 3.05703 12.9441C2.80698 12.6941 2.6665 12.3549 2.6665 12.0013V4.0013C2.6665 3.64768 2.80698 3.30854 3.05703 3.05849C3.30708 2.80844 3.64622 2.66797 3.99984 2.66797H9.99984" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
             )}
+            <span>Yopish</span>
           </button>
         ) : (
           <ActionBadge status={statusText} />

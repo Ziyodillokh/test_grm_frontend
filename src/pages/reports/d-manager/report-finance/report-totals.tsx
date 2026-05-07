@@ -6,8 +6,8 @@ interface ReportTotalsProps {
 }
 
 const metricCards: { key: keyof TKassareportData; label: string; suffix?: string; negative?: boolean; valueColor?: string }[] = [
-  { key: "totalDebtSum", label: "Qarzdorlik" },
-  { key: "totalDebtSize", label: "Qarz hajmi", suffix: " m²" },
+  { key: "totalDebtSum", label: "Qarz Savdosi" },
+  { key: "totalDebtSize", label: "Hajmi", suffix: " m²" },
   { key: "totalDiscountSum", label: "Chegirma", negative: true, valueColor: "#FF6314" },
   { key: "totalFrozenOwed", label: "Qoldiq", valueColor: "#EC6724" },
 ];

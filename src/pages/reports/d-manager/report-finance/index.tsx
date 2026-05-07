@@ -1,12 +1,13 @@
 import { useYear } from "@/store/year-store";
 import { useNavigate } from "react-router-dom";
 import { ListRow } from "@/components/ui/list-row";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { MonthsArray } from "@/consts";
 import { Loader } from "lucide-react";
+import { toast } from "sonner";
 import TebleAvatar from "@/components/teble-avatar";
-import { getAllData } from "@/service/apiHelpers";
+import { getAllData, PatchData } from "@/service/apiHelpers";
 import { apiRoutes } from "@/service/apiRoutes";
 import { IUserData, TResponse } from "@/types";
 
@@ -14,6 +15,7 @@ import { useReports, useReportsTotal } from "./queries";
 import ReportTotals from "./report-totals";
 import { TKassareportData } from "./type";
 import ReportToolbar from "@/components/report-toolbar";
+import ActionBadge from "@/components/actionBadge";
 
 export default function PageFinance() {
   const { year } = useYear();
@@ -137,10 +139,38 @@ function MonthlyRow({
   onRowClick: (item: TKassareportData) => void;
   gridTemplate: string;
 }) {
+  const queryClient = useQueryClient();
   const { data: usersData } = useQuery({
     queryKey: [apiRoutes.userManagersAccountants],
     queryFn: () =>
       getAllData<TResponse<IUserData>, object>(apiRoutes.userManagersAccountants, {}),
+  });
+
+  const now = new Date();
+  const curY = now.getFullYear();
+  const curM = now.getMonth() + 1;
+  const isPastMonth =
+    (item?.year ?? curY) < curY ||
+    ((item?.year ?? curY) === curY && (item?.month ?? curM) < curM);
+  // Status hanuz "open" (DB'da legacy '1' yoki yangi 'open') — closed/accepted/rejected emas
+  const isOpenStatus =
+    !item?.status ||
+    item?.status === "open" ||
+    item?.status === "1" ||
+    !["accepted", "closed", "closed_by_d", "rejected", "warning"].includes(
+      item?.status as string,
+    );
+  const canClose = isOpenStatus && isPastMonth;
+
+  const { mutate: closeMonth, isPending: isClosing } = useMutation({
+    mutationFn: () =>
+      PatchData(apiRoutes.reports + "/" + (item?.id || "") + "/close-dealer", {}),
+    onSuccess: () => {
+      toast.success("Oy yopildi");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
+    },
+    onError: () => toast.error("Xatolik yuz berdi"),
   });
 
   const monthName = item?.month ? MonthsArray[item.month - 1]?.label : "—";
@@ -196,8 +226,38 @@ function MonthlyRow({
       {/* Qarzdorlik */}
       <span className="text-[13px] text-[#1a1a1a]">{qarzdorlik ? `${qarzdorlik.toLocaleString()}$` : "0$"}</span>
 
-      {/* Action placeholder */}
-      <div />
+      {/* Action — statusga qarab */}
+      <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+        {item?.status === "accepted" ? (
+          <ActionBadge status="success" />
+        ) : (item?.isManagerRejected || item?.isAccountantRejected) ? (
+          <ActionBadge status="fail" />
+        ) : item?.status === "closed_by_d" || item?.status === "closed" ? (
+          <ActionBadge status="panding" />
+        ) : canClose ? (
+          <button
+            type="button"
+            onClick={() => closeMonth()}
+            disabled={isClosing}
+            className="h-[40px] px-[14px] rounded-full flex items-center gap-[6px] text-[13px] font-medium transition-colors bg-white text-[#47B13C] hover:bg-[#47B13C]/10 disabled:opacity-50"
+          >
+            {isClosing ? (
+              <Loader className="w-[16px] h-[16px] animate-spin" />
+            ) : (
+              <span className="w-[16px] h-[16px] flex items-center justify-center shrink-0 text-[#47B13C]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.99984 7.33464L7.99984 9.33464L13.3332 4.0013M13.3332 8.0013V12.0013C13.3332 12.3549 13.1927 12.6941 12.9426 12.9441C12.6926 13.1942 12.3535 13.3346 11.9998 13.3346H3.99984C3.64622 13.3346 3.30708 13.1942 3.05703 12.9441C2.80698 12.6941 2.6665 12.3549 2.6665 12.0013V4.0013C2.6665 3.64768 2.80698 3.30854 3.05703 3.05849C3.30708 2.80844 3.64622 2.66797 3.99984 2.66797H9.99984" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            )}
+            <span>Yopish</span>
+          </button>
+        ) : isOpenStatus ? (
+          <span className="text-[13px] text-[#47B13C]">Jarayonda...</span>
+        ) : (
+          <div />
+        )}
+      </div>
     </ListRow>
   );
 }

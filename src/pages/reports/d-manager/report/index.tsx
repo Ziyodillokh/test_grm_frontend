@@ -56,7 +56,6 @@ export default function DealerReportPage() {
 
   const flatData: DealerDetailItem[] =
     data?.pages?.flatMap((page) => page?.items || []) || [];
-  const totals = data?.pages?.[0]?.totals;
   const dealer = data?.pages?.[0]?.dealer;
   const kassa = (data?.pages?.[0] as any)?.kassa;
 
@@ -126,7 +125,7 @@ export default function DealerReportPage() {
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full gap-[20px]">
         {/* Toolbar + Kirim qo'shish button */}
         <div className="flex items-center gap-[4px]">
           <ReportToolbar />
@@ -166,12 +165,12 @@ export default function DealerReportPage() {
             <div className="bg-white rounded-sm flex flex-col gap-[2px]" style={{ padding: 10 }}>
               <p className="text-[15px] font-normal">{formatPrice(kassa?.debtSum || 0)}$</p>
               <div className="flex items-center gap-1 text-[12px] text-green-500"><TrendingDown className="w-3 h-3" /><span>--%</span></div>
-              <p className="text-[13px] text-[#1a1a1a] opacity-60">Qarzdorlik</p>
+              <p className="text-[13px] text-[#1a1a1a] opacity-60">Qarz Savdosi</p>
             </div>
             <div className="bg-white rounded-sm flex flex-col gap-[2px]" style={{ padding: 10 }}>
               <p className="text-[15px] font-normal">{formatPrice(kassa?.debtSize || 0)} m²</p>
               <div className="flex items-center gap-1 text-[12px] text-green-500"><TrendingDown className="w-3 h-3" /><span>--%</span></div>
-              <p className="text-[13px] text-[#1a1a1a] opacity-60">Qarz hajmi</p>
+              <p className="text-[13px] text-[#1a1a1a] opacity-60">Hajmi</p>
             </div>
             <div className="bg-white rounded-sm flex flex-col gap-[2px]" style={{ padding: 10 }}>
               <p className="text-[15px] font-normal" style={{ color: "#FF6314" }}>-{formatPrice(Math.abs(kassa?.discountSum || 0))}$</p>
@@ -186,36 +185,19 @@ export default function DealerReportPage() {
           </div>
         </div>
 
-        {/* Davriy ko'rsatkichlar */}
-        {totals && (
-          <div className="flex gap-[4px] mt-[10px]">
-            <div className="bg-white rounded-sm px-[12px] py-[8px] flex-1 flex items-center gap-[10px]">
-              <span className="text-[13px] text-[#1a1a1a] opacity-60">Davriy yuborilgan:</span>
-              <span className="text-[13px] text-[#EC6724]">{formatPrice(totals.period_owed || 0)}$</span>
-            </div>
-            <div className="bg-white rounded-sm px-[12px] py-[8px] flex-1 flex items-center gap-[10px]">
-              <span className="text-[13px] text-[#1a1a1a] opacity-60">Davriy qaytarilgan:</span>
-              <span className="text-[13px] text-[#47B13C]">{formatPrice(totals.period_given || 0)}$</span>
-            </div>
-            <div className="bg-white rounded-sm px-[12px] py-[8px] flex-1 flex items-center gap-[10px]">
-              <span className="text-[13px] text-[#1a1a1a] opacity-60">Davriy chegirma:</span>
-              <span className="text-[13px] text-[#FF6314]">-{formatPrice(Math.abs(totals.period_balance || 0))}$</span>
-            </div>
+        <div className="flex-1 min-h-0 flex flex-col gap-[10px]">
+          {/* Column labels */}
+          <div
+            className="shrink-0 px-[12px]"
+            style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+          >
+            {columnLabels.map((label, i) => (
+              <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
+            ))}
           </div>
-        )}
 
-        {/* Column labels */}
-        <div
-          className="mt-[16px] mb-[10px] shrink-0 px-[12px]"
-          style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
-        >
-          {columnLabels.map((label, i) => (
-            <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
-          ))}
-        </div>
-
-        {/* List */}
-        <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
+          {/* List */}
+          <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
           {isLoading ? (
             <div className="flex items-center justify-center h-[200px]">
               <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
@@ -299,6 +281,7 @@ export default function DealerReportPage() {
               );
             })
           )}
+          </div>
         </div>
       </div>
 
