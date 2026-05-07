@@ -181,7 +181,7 @@ export default function DealerReportPage() {
             <div className="bg-white rounded-sm flex flex-col gap-[2px]" style={{ padding: 10 }}>
               <p className="text-[15px] font-normal" style={{ color: "#EC6724" }}>{formatPrice(kassa?.frozenOwed || 0)}$</p>
               <div className="flex items-center gap-1 text-[12px] text-green-500"><TrendingDown className="w-3 h-3" /><span>--%</span></div>
-              <p className="text-[13px] text-[#1a1a1a] opacity-60">Muzlatilgan qoldiq</p>
+              <p className="text-[13px] text-[#1a1a1a] opacity-60">Qoldiq</p>
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ const metricCards: { key: keyof TKassareportData; label: string; suffix?: string
   { key: "totalDebtSum", label: "Qarzdorlik" },
   { key: "totalDebtSize", label: "Qarz hajmi", suffix: " m²" },
   { key: "totalDiscountSum", label: "Chegirma", negative: true, valueColor: "#FF6314" },
-  { key: "totalFrozenOwed", label: "Muzlatilgan qoldiq", valueColor: "#EC6724" },
+  { key: "totalFrozenOwed", label: "Qoldiq", valueColor: "#EC6724" },
 ];
 
 function CashIcon() {
