@@ -6,11 +6,10 @@ interface ReportTotalsProps {
 }
 
 const metricCards: { key: keyof TKassareportData; label: string; suffix?: string; negative?: boolean; valueColor?: string }[] = [
-  { key: "totalSale", label: "Umumiy sotuv" },
-  { key: "totalSize", label: "Sotuv hajmi", suffix: " m²" },
-  { key: "totalDiscount", label: "Chegirma", negative: true, valueColor: "#FF6314" },
-  { key: "debtSum", label: "Yuborilgan" },
-  { key: "frozenOwed", label: "Qarzdorlik qoldig'i" },
+  { key: "totalDebtSum", label: "Qarzdorlik" },
+  { key: "totalDebtSize", label: "Qarz hajmi", suffix: " m²" },
+  { key: "totalDiscountSum", label: "Chegirma", negative: true, valueColor: "#FF6314" },
+  { key: "totalFrozenOwed", label: "Muzlatilgan qoldiq", valueColor: "#EC6724" },
 ];
 
 function CashIcon() {
@@ -31,8 +30,8 @@ function ArrowsExchangeIcon() {
 
 export default function ReportTotals({ data }: ReportTotalsProps) {
   const mainSum = data?.totalIncome || 0;
-  const naqd = data?.inHand || 0;
-  const terminal = data?.totalPlasticSum || 0;
+  const naqd = data?.managerSum || 0;
+  const terminal = data?.accountantSum || 0;
 
   return (
     <div className="flex gap-[4px] flex-col lg:flex-row">
@@ -64,8 +63,8 @@ export default function ReportTotals({ data }: ReportTotalsProps) {
         </svg>
       </div>
 
-      {/* 5 ta oq metrika card */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-[4px] flex-1" style={{ maxHeight: 80 }}>
+      {/* 4 ta oq metrika card */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-[4px] flex-1" style={{ maxHeight: 80 }}>
         {metricCards.map((card) => {
           const value = (data as any)?.[card.key] || 0;
           const displayValue = card.suffix

@@ -46,6 +46,15 @@ export interface TKassareportData {
   // Extra fields specific to this file
   owed?: number;
   frozenOwed?: number;
+  // Report-level totals (Report entity field nomi)
+  managerSum?: number;
+  accountantSum?: number;
+  totalDebtSum?: number;
+  totalDebtSize?: number;
+  totalDiscountSum?: number;
+  totalFrozenOwed?: number;
+  // Per-kassa fields (Kassa entity)
+  discountSum?: number;
   kassaReport?: TKassareportData[];
 }
 

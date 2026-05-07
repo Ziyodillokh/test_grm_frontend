@@ -59,7 +59,7 @@ export default function PageKassaReport() {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar: search + sort + oyni yopish button */}
-      <div className="flex items-center gap-[4px] mb-[10px]">
+      <div className="flex items-center gap-[4px]">
         <ReportToolbar />
         <div className="ml-auto">
           {canClose && (
