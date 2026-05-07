@@ -121,8 +121,6 @@ export default function DealerReportPage() {
     setDate("");
   }, [dialogOpen]);
 
-  const kassaDiscount = kassaData?.discount ?? kassaData?.totalDiscount ?? 0;
-
   const gridTemplate = "48px 100px 100px 130px 1fr 40px";
   const columnLabels = ["", "Summa", "Turi", "Sana", "Ma'lumot", ""];
 
