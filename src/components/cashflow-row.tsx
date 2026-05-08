@@ -94,12 +94,15 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
-  // Order: order.price = NAQD qism (cash), order.plastic = TERMINAL qism (alohida saqlangan)
-  // cashflow.price = order.price + order.plastic (gross). Lekin display'da naqd va terminal alohida.
+  // Order: order.price = NAQD qism, order.plastic = TERMINAL qism, order.debtAmount = QARZ
+  // cashflow.price = order.price + order.plastic + order.debtAmount (full receipt).
   const orderPlastic = item.order?.plastic ?? item.order?.plasticSum ?? 0;
   const orderPrice = item.order?.price ?? 0;
+  const orderDebt = Number((item.order as any)?.debtAmount ?? 0);
   const cashPrice = isOrder ? orderPrice : (item.price || 0);
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
+  const debtPrice = isOrder && isIncome ? orderDebt : 0;
+  const isOrderDebt = isOrder && (item.order as any)?.isDebt;
 
   // Ko'cha (street) cashflow: price = asosiy summa (kassaga), streetPercent = foiz (kassaga emas)
   const isStreet = item.cashflow_type?.slug === "street";
@@ -181,12 +184,17 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
             + {formatPrice(terminalPrice)}
           </p>
         )}
+        {debtPrice > 0 && (
+          <p className="text-[13px] font-medium text-[#EC6724]">
+            + {formatPrice(debtPrice)} qarz
+          </p>
+        )}
         {streetPercentVal > 0 && (
           <p className="text-[12px] font-medium text-[#1a1a1a] opacity-60">
             + {formatPrice(streetPercentVal)} foiz
           </p>
         )}
-        {cashPrice === 0 && terminalPrice === 0 && streetPercentVal === 0 && (
+        {cashPrice === 0 && terminalPrice === 0 && debtPrice === 0 && streetPercentVal === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
         )}
       </div>
@@ -205,6 +213,11 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
       <div className="flex items-center gap-[6px] whitespace-nowrap">
         <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
         <span className="text-[13px] font-medium text-[#1a1a1a]">{typeName}</span>
+        {isOrderDebt && (
+          <span className="text-[11px] font-medium text-[#EC6724] bg-[#fff5e6] px-[6px] py-[1px] rounded-full">
+            Qarz
+          </span>
+        )}
       </div>
 
       {/* Sana */}
