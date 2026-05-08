@@ -54,7 +54,7 @@ const typeFilter: Record<string, string> = {
   return: "expense",
 };
 
-const cashflowGridTemplate = "60px 60px 120px 120px 1fr 70px";
+const cashflowGridTemplate = "max-content 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
 const cashflowLabels = [
   { text: "Summa", right: true },
   { text: "Status", center: true },
@@ -512,11 +512,14 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
   const isIncome = item.type === "income";
   const avatar = getCashflowAvatar(item);
 
-  // order.price = NAQD (cash), order.plastic = TERMINAL alohida
+  // order.price = NAQD (cash), order.plastic = TERMINAL, order.debtAmount = QARZ
   const orderPlastic = item.order?.plastic ?? item.order?.plasticSum ?? 0;
   const orderPrice = item.order?.price ?? 0;
+  const orderDebt = Number((item.order as any)?.debtAmount ?? 0);
   const cashPrice = isOrder ? orderPrice : (item.price || 0);
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
+  const debtPrice = isOrder && isIncome ? orderDebt : 0;
+  const isOrderDebt = isOrder && (item.order as any)?.isDebt;
   const typeName = item.cashflow_type?.title || (isOrder ? "Order" : "—");
   const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
   const dateStr = item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—";
@@ -565,16 +568,23 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
 
   return (
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
-      <div className="text-right">
+      <div className="flex flex-col items-end whitespace-nowrap">
         {cashPrice > 0 && (
           <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
             {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
           </span>
         )}
-        {terminalPrice > 0 && (
-          <p className="text-[15px] font-medium text-[#0078D4]">+ {formatPrice(terminalPrice)}</p>
+        {(terminalPrice > 0 || debtPrice > 0) && (
+          <div className="flex items-center gap-[8px]">
+            {terminalPrice > 0 && (
+              <span className="text-[15px] font-medium text-[#0078D4]">+ {formatPrice(terminalPrice)}</span>
+            )}
+            {debtPrice > 0 && (
+              <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">+ {formatPrice(debtPrice)}</span>
+            )}
+          </div>
         )}
-        {cashPrice === 0 && terminalPrice === 0 && (
+        {cashPrice === 0 && terminalPrice === 0 && debtPrice === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
         )}
       </div>
@@ -583,9 +593,14 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
         <TebleAvatar size={42} name={avatar.name} url={avatar.url} status={avatar.status} />
       </div>
 
-      <div className="flex items-center gap-[6px]">
+      <div className="flex items-center gap-[6px] whitespace-nowrap">
         <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
         <span className="text-[13px] font-medium text-[#1a1a1a]">{typeName}</span>
+        {isOrderDebt && (
+          <span className="text-[11px] font-medium text-[#EC6724] bg-[#fff5e6] px-[6px] py-[1px] rounded-full">
+            Qarz
+          </span>
+        )}
       </div>
 
       <span className="text-[13px] text-[#1a1a1a]">{dateStr}</span>

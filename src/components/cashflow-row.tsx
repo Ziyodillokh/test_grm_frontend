@@ -18,7 +18,7 @@ import formatPrice from "@/utils/formatPrice";
 import TebleAvatar from "@/components/teble-avatar";
 import type { TransactionItem } from "@/pages/cashflow/types";
 
-export const cashflowGridTemplate = "minmax(80px,max-content) 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
+export const cashflowGridTemplate = "max-content 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
 export const cashflowLabels = [
   { text: "Summa", right: true },
   { text: "Status", center: true },
@@ -173,21 +173,25 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   return (
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
       {/* Summa */}
-      <div className="text-right whitespace-nowrap">
+      <div className="flex flex-col items-end whitespace-nowrap">
         {cashPrice > 0 && (
           <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
             {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
           </span>
         )}
-        {terminalPrice > 0 && (
-          <p className="text-[15px] font-medium text-[#0078D4]">
-            + {formatPrice(terminalPrice)}
-          </p>
-        )}
-        {debtPrice > 0 && (
-          <p className="text-[13px] font-medium text-[#EC6724]">
-            + {formatPrice(debtPrice)} qarz
-          </p>
+        {(terminalPrice > 0 || debtPrice > 0) && (
+          <div className="flex items-center gap-[8px]">
+            {terminalPrice > 0 && (
+              <span className="text-[15px] font-medium text-[#0078D4]">
+                + {formatPrice(terminalPrice)}
+              </span>
+            )}
+            {debtPrice > 0 && (
+              <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">
+                + {formatPrice(debtPrice)}
+              </span>
+            )}
+          </div>
         )}
         {streetPercentVal > 0 && (
           <p className="text-[12px] font-medium text-[#1a1a1a] opacity-60">
