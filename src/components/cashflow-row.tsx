@@ -185,7 +185,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
           </span>
         )}
         {debtPrice > 0 && (
-          <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">
+          <span className="text-[13px] font-medium text-[#EC6724]">
             + {formatPrice(debtPrice)}
           </span>
         )}

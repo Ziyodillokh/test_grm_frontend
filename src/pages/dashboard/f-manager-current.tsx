@@ -578,7 +578,7 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
           <span className="text-[15px] font-medium text-[#0078D4]">+ {formatPrice(terminalPrice)}</span>
         )}
         {debtPrice > 0 && (
-          <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">+ {formatPrice(debtPrice)}</span>
+          <span className="text-[13px] font-medium text-[#EC6724]">+ {formatPrice(debtPrice)}</span>
         )}
         {cashPrice === 0 && terminalPrice === 0 && debtPrice === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
