@@ -28,6 +28,7 @@ import { getAllData, AddData, PatchData, UpdatePatchData } from "@/service/apiHe
 import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type";
 import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
 import UpdateCashflowDialog from "@/pages/reports/m-manager/report/update-cashflow-dialog";
+import { useDebtClients } from "@/pages/reports/m-manager/reports-hub/client-debt/queries";
 import { useMeStore } from "@/store/me-store";
 import useData from "@/pages/employees/table/queries";
 import formatPrice from "@/utils/formatPrice";
@@ -80,6 +81,7 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<"parish" | "flow">("parish");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [clientId, setClientId] = useState("");
   const [amount, setAmount] = useState("");
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
@@ -115,6 +117,10 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
     (ct) => ct.slug !== "balance"
   ) || [];
 
+  // Qarzdorlar (slug='debt' tanlanganda)
+  const { data: debtorsData } = useDebtClients(meUser?.filial?.id, "qarzdor", 1, 200);
+  const debtors = (debtorsData as any)?.items || [];
+
   // Kirim/Chiqim qo'shish
   const { mutate: addCashflow, isPending: addPending } = useMutation({
     mutationFn: (data: any) => AddData(apiRoutes.cashflow, data),
@@ -129,20 +135,29 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
   const openDialog = (type: "parish" | "flow") => {
     setDialogType(type);
     setSelectedCategory("");
+    setClientId("");
     setAmount("");
     setComment("");
     setDate("");
     setDialogOpen(true);
   };
 
+  const selectedCategorySlug = useMemo(
+    () => (cashflowTypesData as unknown as CashflowType[])?.find((ct) => ct.id === selectedCategory)?.slug,
+    [selectedCategory, cashflowTypesData],
+  );
+  const isDebtCategory = selectedCategorySlug === "debt";
+
   const handleSubmit = () => {
     if (!selectedCategory) { toast.error("Turni tanlang"); return; }
     if (!amount || parseFloat(amount) <= 0) { toast.error("Summani kiriting"); return; }
+    if (isDebtCategory && !clientId) { toast.error("Qarzdorni tanlang"); return; }
     addCashflow({
       price: parseFloat(amount),
       type: dialogType === "parish" ? "income" : "expense",
       comment,
       ...(date ? { date } : {}),
+      ...(isDebtCategory && clientId ? { clientId } : {}),
       createdBy: meUser?.id,
       kassa: reportData?.id,
       cashflow_type: selectedCategory,
@@ -460,6 +475,20 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
                 <div className="text-4xl text-[#5D5D53] mx-4">$</div>
               </div>
               <Input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]" />
+              {isDebtCategory && (
+                <select
+                  value={clientId}
+                  onChange={(e) => setClientId(e.target.value)}
+                  className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px] bg-input outline-none"
+                >
+                  <option value="">Qarzdorni tanlang…</option>
+                  {debtors.map((d: any) => (
+                    <option key={d.id} value={d.id}>
+                      {d.fullName} {d.phone ? `— ${d.phone}` : ""}
+                    </option>
+                  ))}
+                </select>
+              )}
               <Textarea placeholder="Izoh" value={comment} onChange={(e) => setComment(e.target.value)} className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5" />
             </div>
           </div>
