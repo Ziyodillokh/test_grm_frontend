@@ -568,21 +568,17 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
 
   return (
     <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
-      <div className="flex flex-col items-end whitespace-nowrap">
+      <div className="flex flex-col items-end whitespace-nowrap leading-tight">
         {cashPrice > 0 && (
           <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
             {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
           </span>
         )}
-        {(terminalPrice > 0 || debtPrice > 0) && (
-          <div className="flex items-center gap-[8px]">
-            {terminalPrice > 0 && (
-              <span className="text-[15px] font-medium text-[#0078D4]">+ {formatPrice(terminalPrice)}</span>
-            )}
-            {debtPrice > 0 && (
-              <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">+ {formatPrice(debtPrice)}</span>
-            )}
-          </div>
+        {terminalPrice > 0 && (
+          <span className="text-[15px] font-medium text-[#0078D4]">+ {formatPrice(terminalPrice)}</span>
+        )}
+        {debtPrice > 0 && (
+          <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">+ {formatPrice(debtPrice)}</span>
         )}
         {cashPrice === 0 && terminalPrice === 0 && debtPrice === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
@@ -613,7 +609,7 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
             <span>{barCode.size?.title}</span>
             <span>{barCode.color?.title}</span>
             <span>${formatPrice(barCode.collection?.collection_prices?.[0]?.priceMeter || barCode.collection?.priceMeter || 0)}</span>
-            <span>{barCode.isMetric ? `${item.order?.kv || 0}sm` : `${item.order?.x || 0}x`}</span>
+            <span>{barCode.isMetric ? `${item.order?.x || 0}sm` : `${item.order?.x || 0}x`}</span>
             {additionalProfit > 0 && <span className="text-[#47B13C] font-medium">+{formatPrice(additionalProfit)}$</span>}
             {discount > 0 && <span className="text-[#EF5C12] font-medium">-{formatPrice(discount)}$</span>}
           </>
