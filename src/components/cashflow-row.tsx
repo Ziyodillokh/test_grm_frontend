@@ -186,7 +186,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
       {/* Summa */}
       <div className="flex flex-col items-end whitespace-nowrap leading-tight">
         {cashPrice > 0 && (
-          <span className={`text-[15px] font-medium ${isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
+          <span className={`text-[15px] font-medium ${isOrderTransfer ? "text-[#0078D4]" : isIncome ? "text-[#1a1a1a]" : "text-[#EF5C12]"}`}>
             {isIncome ? "+" : "-"} {formatPrice(cashPrice)}
           </span>
         )}
