@@ -72,14 +72,14 @@ export const useReportsSingle = ({ queries,id ,enabled}: IKassaReportData) =>
         enabled: enabled,
       });
 
-export const useCashflowForMainManager = ({enabled,id,userId}: ICashflowForMainManager) =>
+export const useCashflowForMainManager = ({enabled,id,userId,role}: ICashflowForMainManager & { role?: number }) =>
   useQuery({
-    queryKey: [apiRoutes.cashflowForMainManager, id, userId],
+    queryKey: [apiRoutes.cashflowForMainManager, id, userId, role],
     queryFn: () =>
-      getByIdData<TReportData, TDealearQuery>(
+      getByIdData<TReportData, TDealearQuery & { role?: number }>(
         apiRoutes.cashflowForMainManager,
         id || "",
-        userId ? { userId } : undefined,
+        (userId || role !== undefined ? { userId, role } : undefined) as any,
       ),
     enabled: enabled,
   });

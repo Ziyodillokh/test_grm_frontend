@@ -1,6 +1,5 @@
 import { useYear } from "@/store/year-store";
 import { useNavigate } from "react-router-dom";
-import { ListRow } from "@/components/ui/list-row";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useReports, useReportsTotal } from "./queries";
@@ -44,62 +43,86 @@ export default function MonthlyReportsPage() {
 
   const currentYear = new Date().getFullYear();
   const yearOptions = [currentYear - 1, currentYear, currentYear + 1].map((y) => ({ label: String(y), value: String(y) }));
-  const gridTemplate = "4px 100px 100px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 60px";
-  const columnLabels = ["", "Oy", "Status", "Saldo", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", ""];
+  const gridTemplate = "4px max-content max-content max-content max-content max-content max-content max-content max-content max-content max-content 1fr 60px";
+  const columnLabels = ["", "Oy", "Status", "Saldo", "Savdo", "Qarz", "Terminal", "Inkassa", "Hajm", "Foyda", "Chegirma", "", ""];
 
   return (
     <div className="flex flex-col h-full">
-      <ReportToolbar
-        filterCols={1}
-        hasActiveFilter={year !== currentYear}
-        onClearFilters={() => setYear(currentYear)}
-        filterContent={
-          <div className="flex flex-col gap-[6px]">
-            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
-            <ShadcnSelect
-              value={String(year)}
-              onChange={(v) => v && setYear(Number(v))}
-              options={yearOptions}
-              placeholder="Yil tanlang"
-              className="bg-white h-[44px] rounded-[4px]"
-            />
-          </div>
-        }
-      />
+      <div className="mb-[20px]">
+        <ReportToolbar
+          filterCols={1}
+          hasActiveFilter={year !== currentYear}
+          onClearFilters={() => setYear(currentYear)}
+          filterContent={
+            <div className="flex flex-col gap-[6px]">
+              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
+              <ShadcnSelect
+                value={String(year)}
+                onChange={(v) => v && setYear(Number(v))}
+                options={yearOptions}
+                placeholder="Yil tanlang"
+                className="bg-white h-[44px] rounded-[4px]"
+              />
+            </div>
+          }
+        />
+      </div>
 
       <ReportTotals
         data={totals}
         onGreenCardClick={() => {}}
       />
 
-      {/* Labellar */}
+      {/* Labellar + Listlar — bitta grid; har bir row subgrid bilan parent grid ustunlarini meros qiladi */}
       <div
-        className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "10px" }}
+        className="flex-1 min-h-0 overflow-auto scrollCastom mt-[20px]"
       >
-        {columnLabels.map((label, i) => (
-          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" ? "text-center" : ""}`}>{label}</span>
-        ))}
-      </div>
-
-      {/* Listlar */}
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: gridTemplate,
+            columnGap: "24px",
+            rowGap: "4px",
+          }}
+        >
+          {/* Header labels — subgrid bilan rowlar bilan bir tekisda */}
+          <div
+            style={{
+              gridColumn: "1 / -1",
+              display: "grid",
+              gridTemplateColumns: "subgrid",
+              columnGap: "24px",
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              marginBottom: "6px",
+            }}
+          >
+            {columnLabels.map((label, i) => (
+              <span key={`label-${i}`} className={`text-[13px] text-[#A3A3A3] ${label === "Status" ? "text-center" : ""}`}>{label}</span>
+            ))}
           </div>
-        ) : (
-          flatData.map((item: TKassareportData, i: number) => (
-            <MonthlyRow key={item?.id || i} item={item} gridTemplate={gridTemplate} onRowClick={(item) => {
-              if (item?.id) {
-                const monthLabel = item?.month ? MonthsArray[item.month - 1]?.label : "Hisobot";
-                const path = `/m-manager/reports-hub/monthly/${item.id}/info`;
-                push(monthLabel || "Hisobot", path);
-                navigate(path);
-              }
-            }} />
-          ))
-        )}
+
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[200px]" style={{ gridColumn: "1 / -1" }}>
+              <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+            </div>
+          ) : (
+            flatData.map((item: TKassareportData, i: number) => (
+              <MonthlyRow
+                key={item?.id || i}
+                item={item}
+                onRowClick={(item) => {
+                  if (item?.id) {
+                    const monthLabel = item?.month ? MonthsArray[item.month - 1]?.label : "Hisobot";
+                    const path = `/m-manager/reports-hub/monthly/${item.id}/info`;
+                    push(monthLabel || "Hisobot", path);
+                    navigate(path);
+                  }
+                }}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
@@ -111,15 +134,31 @@ function getRowStatus(item: TKassareportData): {
   showConfirmBtn: boolean;
   getBadgeStatus: (userRole: number) => string;
 } {
+  // Per-role badge — har role uchun o'z confirmation/rejection statusiga qarab.
+  const perRoleBadge = (role: number): string => {
+    if (role === 9) {
+      if (item?.isManagerRejected) return "fail";
+      if (item?.isMManagerConfirmed) return "success";
+      return "none";
+    }
+    if (role === 10) {
+      if (item?.isAccountantRejected) return "fail";
+      if (item?.isAccountantConfirmed) return "success";
+      return "none";
+    }
+    return "none";
+  };
+
   const bothConfirmed = item?.isMManagerConfirmed && item?.isAccountantConfirmed;
   const isRejected = item?.isManagerRejected || item?.isAccountantRejected;
 
+  // Yopilgan: yashil tayoqcha yashirinadi
   if (item?.status === "accepted" || bothConfirmed) {
     return {
       barColor: "transparent",
       showBar: false,
       showConfirmBtn: false,
-      getBadgeStatus: () => "success",
+      getBadgeStatus: perRoleBadge,
     };
   }
 
@@ -128,46 +167,33 @@ function getRowStatus(item: TKassareportData): {
       barColor: "#EF5C12",
       showBar: true,
       showConfirmBtn: false,
-      getBadgeStatus: (role: number) => {
-        if (role === 9 && item?.isManagerRejected) return "fail";
-        if (role === 10 && item?.isAccountantRejected) return "fail";
-        if (role === 9 && item?.isMManagerConfirmed) return "success";
-        if (role === 10 && item?.isAccountantConfirmed) return "success";
-        return "fail";
-      },
+      getBadgeStatus: perRoleBadge,
     };
   }
 
-  const isClosed = item?.status === "closed" || item?.status === "closed_by_d";
-  if (isClosed) {
-    return {
-      barColor: "#FFA91E",
-      showBar: true,
-      showConfirmBtn: true,
-      getBadgeStatus: (role: number) => {
-        if (role === 9 && item?.isMManagerConfirmed) return "success";
-        if (role === 10 && item?.isAccountantConfirmed) return "success";
-        return "panding";
-      },
-    };
-  }
-
+  // Default: yashil tayoqcha (open/normal)
   return {
     barColor: "#3ABC49",
     showBar: true,
     showConfirmBtn: false,
-    getBadgeStatus: () => "none",
+    getBadgeStatus: perRoleBadge,
   };
 }
 
-function MonthlyRow({ item, onRowClick, gridTemplate }: { item: TKassareportData; onRowClick: (item: TKassareportData) => void; gridTemplate: string }) {
+function MonthlyRow({ item, onRowClick }: { item: TKassareportData; onRowClick: (item: TKassareportData) => void }) {
+  const { meUser } = useMeStore();
   const { data: usersData } = useQuery({
     queryKey: [apiRoutes.userManagersAccountants],
     queryFn: () =>
       getAllData<TResponse<IUserData>, object>(apiRoutes.userManagersAccountants, {}),
   });
 
-  const saldo = item?.inHand || 0;
+  const role = meUser?.position?.role;
+  const saldo = role === 9
+    ? Number((item as any)?.managerSum || 0)
+    : role === 10
+      ? Number((item as any)?.accountantSum || (item as any)?.accauntantSum || 0)
+      : (item?.inHand || 0);
   const monthName = item?.month ? MonthsArray[item.month - 1]?.label : "—";
   const sale = item?.sale ?? item?.totalSale ?? 0;
   const terminal = item?.plasticSum ?? item?.totalPlasticSum ?? 0;
@@ -180,10 +206,18 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: TKassareportData
   const rowStatus = getRowStatus(item);
 
   return (
-    <ListRow
-      gridTemplate={gridTemplate}
-      gridGap="10px"
+    <div
       onClick={() => onRowClick(item)}
+      className="cursor-pointer hover:bg-gray-50 transition-colors items-center bg-white rounded-sm"
+      style={{
+        gridColumn: "1 / -1",
+        display: "grid",
+        gridTemplateColumns: "subgrid",
+        columnGap: "24px",
+        paddingLeft: "10px",
+        paddingRight: "10px",
+        minHeight: 74,
+      }}
     >
       {/* Tayoqcha */}
       {rowStatus.showBar ? (
@@ -234,26 +268,27 @@ function MonthlyRow({ item, onRowClick, gridTemplate }: { item: TKassareportData
       {/* Chegirma */}
       <span className="text-[13px] text-[#EC6724]">{chegirma ? `-${Math.abs(chegirma).toLocaleString()}$` : "0$"}</span>
 
+      {/* Filler — 1fr ustun list kengligini saqlaydi */}
+      <div />
+
       {/* Action */}
       <RowAction item={item} showConfirmBtn={rowStatus.showConfirmBtn} />
-    </ListRow>
+    </div>
   );
 }
 
-function RowAction({ item, showConfirmBtn }: { item: TKassareportData; showConfirmBtn: boolean }) {
+function RowAction({ item }: { item: TKassareportData; showConfirmBtn: boolean }) {
   const { meUser } = useMeStore();
   const queryClient = useQueryClient();
+  const role = meUser?.position?.role;
 
-  const { mutate: confirm, isPending: isConfirming } = useMutation({
+  const { mutate: closeReport, isPending: isClosing } = useMutation({
     mutationFn: () =>
-      PatchData(
-        apiRoutes.kassaReports + "/" + item?.id,
-        {}
-      ),
+      PatchData(`${apiRoutes.reports}/${item?.id}/close`, {}),
     onSuccess: () => {
-      toast.success("Tasdiqlandi");
-      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
+      toast.success("Yopildi");
       queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
     },
   });
 
@@ -267,34 +302,30 @@ function RowAction({ item, showConfirmBtn }: { item: TKassareportData; showConfi
     },
   });
 
-  const canConfirm = showConfirmBtn && (
-    item?.status === "closed" ||
-    item?.status === "closed_by_d" ||
-    (meUser?.position?.role == 10 && item?.isMManagerConfirmed) ||
-    (meUser?.position?.role == 9 && item?.isAccountantConfirmed)
-  );
+  // Yopish tugmasi: shu role ostida hali tasdiqlamagan bo'lsa
+  const canClose =
+    (role === 9 && !item?.isMManagerConfirmed) ||
+    (role === 10 && !item?.isAccountantConfirmed);
 
   return (
     <div className="flex items-center justify-end gap-[4px]" onClick={(e) => e.stopPropagation()}>
-      {canConfirm && (
+      {canClose && (
         <button
-          onClick={() => confirm()}
-          disabled={isConfirming}
-          className="w-[42px] h-[42px] rounded-full bg-[#47B13C] flex items-center justify-center shrink-0 hover:bg-[#3da032] transition-colors disabled:opacity-50"
+          type="button"
+          onClick={() => closeReport()}
+          disabled={isClosing}
+          className="h-[40px] px-[14px] rounded-full flex items-center gap-[6px] text-[13px] font-medium transition-colors bg-white text-[#47B13C] hover:bg-[#47B13C]/10 disabled:opacity-50"
         >
-          {isConfirming ? (
-            <Loader className="w-[18px] h-[18px] text-white animate-spin" />
+          {isClosing ? (
+            <Loader className="w-[16px] h-[16px] animate-spin" />
           ) : (
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clipPath="url(#clip_check)">
-                <path d="M16.5 8.31039V9.00039C16.4991 10.6177 15.9754 12.1914 15.007 13.4868C14.0386 14.7821 12.6775 15.7297 11.1265 16.1883C9.57557 16.6469 7.91794 16.5918 6.40085 16.0313C4.88376 15.4708 3.58849 14.435 2.70822 13.0782C1.82795 11.7214 1.40984 10.1164 1.51626 8.50262C1.62267 6.88881 2.24791 5.35263 3.29871 4.12319C4.34951 2.89375 5.76959 2.03692 7.34714 1.6805C8.92469 1.32407 10.5752 1.48714 12.0525 2.14539" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M16.5 3L9 10.5075L6.75 8.2575" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-              </g>
-              <defs>
-                <clipPath id="clip_check"><rect width="18" height="18" fill="white"/></clipPath>
-              </defs>
-            </svg>
+            <span className="w-[16px] h-[16px] flex items-center justify-center shrink-0 text-[#47B13C]">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.99984 7.33464L7.99984 9.33464L13.3332 4.0013M13.3332 8.0013V12.0013C13.3332 12.3549 13.1927 12.6941 12.9426 12.9441C12.6926 13.1942 12.3535 13.3346 11.9998 13.3346H3.99984C3.64622 13.3346 3.30708 13.1942 3.05703 12.9441C2.80698 12.6941 2.6665 12.3549 2.6665 12.0013V4.0013C2.6665 3.64768 2.80698 3.30854 3.05703 3.05849C3.30708 2.80844 3.64622 2.66797 3.99984 2.66797H9.99984" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           )}
+          <span>Yopish</span>
         </button>
       )}
 

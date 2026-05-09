@@ -6,6 +6,7 @@ import {
   useReportDealer,
 } from "./queries";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
+import { useMeStore } from "@/store/me-store";
 import MonthlyReportView from "@/pages/reports/m-manager/_shared/monthly-report-view";
 
 export default function ReportDetailPage() {
@@ -13,6 +14,9 @@ export default function ReportDetailPage() {
   const navigate = useNavigate();
   const push = useBreadcrumbStore((s) => s.push);
   const { year } = useYear();
+  const { meUser } = useMeStore();
+  const role = meUser?.position?.role;
+  const roleFilter = role === 9 || role === 10 ? role : undefined;
 
   const { data: reportData } = useReportsSingle({
     id,
@@ -23,6 +27,7 @@ export default function ReportDetailPage() {
   const { data: cashflowData } = useCashflowForMainManager({
     id,
     enabled: Boolean(id),
+    role: roleFilter,
   });
 
   const { data: dealerData } = useReportDealer({

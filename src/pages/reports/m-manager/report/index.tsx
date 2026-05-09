@@ -238,8 +238,15 @@ export default function ReportPage() {
 
   const { data: myCashFlowReports } = useReportsSingle({
     id: id || undefined,
-    enabled: Boolean(myCashFlow && id),
+    enabled: Boolean(id),
   });
+
+  // Yopilgan reportda M-Manager (role=9) yoki Accountant (role=10) qo'shish/tahrirlash imkoniyatini hide qilamiz
+  const role = meUser?.position?.role;
+  const isReportLockedForUser =
+    (role === 9 && Boolean((myCashFlowReports as any)?.isMManagerConfirmed)) ||
+    (role === 10 && Boolean((myCashFlowReports as any)?.isAccountantConfirmed)) ||
+    (myCashFlowReports as any)?.status === "accepted";
 
   // O'z prixod/rasxodim (myCashFlow uchun)
   const { data: myTotals } = useCashflowForMainManager({
@@ -381,7 +388,7 @@ export default function ReportPage() {
                 </>
               }
               actions={
-                meUser?.position?.role != 12 ? (
+                meUser?.position?.role != 12 && !isReportLockedForUser ? (
                   <>
                     <Button
                       onClick={() => openCfDialog("income")}
@@ -396,6 +403,10 @@ export default function ReportPage() {
                       <Plus size={16} className="mr-1" /> Chiqim qo'shish
                     </Button>
                   </>
+                ) : isReportLockedForUser ? (
+                  <span className="text-[13px] font-medium text-[#A3A3A3] bg-[#F5F5F5] rounded-[6px] px-[12px] h-[42px] flex items-center">
+                    Report yopilgan — tahrirlash mumkin emas
+                  </span>
                 ) : undefined
               }
             />
