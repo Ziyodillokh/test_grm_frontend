@@ -48,25 +48,23 @@ export default function MonthlyReportsPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mb-[20px]">
-        <ReportToolbar
-          filterCols={1}
-          hasActiveFilter={year !== currentYear}
-          onClearFilters={() => setYear(currentYear)}
-          filterContent={
-            <div className="flex flex-col gap-[6px]">
-              <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
-              <ShadcnSelect
-                value={String(year)}
-                onChange={(v) => v && setYear(Number(v))}
-                options={yearOptions}
-                placeholder="Yil tanlang"
-                className="bg-white h-[44px] rounded-[4px]"
-              />
-            </div>
-          }
-        />
-      </div>
+      <ReportToolbar
+        filterCols={1}
+        hasActiveFilter={year !== currentYear}
+        onClearFilters={() => setYear(currentYear)}
+        filterContent={
+          <div className="flex flex-col gap-[6px]">
+            <p className="text-[13px] text-[#1a1a1a] pl-[10px]">Yil</p>
+            <ShadcnSelect
+              value={String(year)}
+              onChange={(v) => v && setYear(Number(v))}
+              options={yearOptions}
+              placeholder="Yil tanlang"
+              className="bg-white h-[44px] rounded-[4px]"
+            />
+          </div>
+        }
+      />
 
       <ReportTotals
         data={totals}
