@@ -665,6 +665,15 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
   const debtPrice = isOrder && isIncome ? orderDebt : 0;
   const isOrderDebt = isOrder && (item.order as any)?.isDebt;
+  const isOrderTransfer = isOrder && (item.order as any)?.isTransfer;
+  const isTransferParent =
+    !!(item as any).is_static &&
+    item.cashflow_type?.slug === 'transfer' &&
+    item.type === 'expense' &&
+    !(item as any).parent;
+  const transferRemainderUI = isTransferParent
+    ? Math.max(Number(((item as any).child?.[0]?.price ?? item.price) || 0) - Number(item.price || 0), 0)
+    : 0;
   const typeName = item.cashflow_type?.title || (isOrder ? "Order" : "—");
   const typeColor = isIncome ? "#3ABC49" : "#EF5C12";
   const dateStr = item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—";
@@ -725,6 +734,9 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
         {debtPrice > 0 && (
           <span className="text-[13px] font-medium text-[#EC6724]">+ {formatPrice(debtPrice)}</span>
         )}
+        {isTransferParent && transferRemainderUI > 0 && (
+          <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">+ {formatPrice(transferRemainderUI)}</span>
+        )}
         {cashPrice === 0 && terminalPrice === 0 && debtPrice === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
         )}
@@ -740,6 +752,11 @@ function CashflowRow({ item, isWarning, onEdit }: { item: TransactionItem; isWar
         {isOrderDebt && (
           <span className="text-[11px] font-medium text-[#EC6724] bg-[#fff5e6] px-[6px] py-[1px] rounded-full">
             Qarz
+          </span>
+        )}
+        {isOrderTransfer && (
+          <span className="text-[11px] font-medium text-[#0078D4] bg-[#E0F0FF] px-[6px] py-[1px] rounded-full">
+            O't-ma
           </span>
         )}
       </div>

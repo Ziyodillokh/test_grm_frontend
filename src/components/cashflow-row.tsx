@@ -103,6 +103,17 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   const terminalPrice = isOrder && isIncome ? orderPlastic : 0;
   const debtPrice = isOrder && isIncome ? orderDebt : 0;
   const isOrderDebt = isOrder && (item.order as any)?.isDebt;
+  const isOrderTransfer = isOrder && (item.order as any)?.isTransfer;
+
+  // Transfer parent (kassa expense): price = ordersSum, child.price = ordersSum + remainder
+  const isTransferParent =
+    !!(item as any).is_static &&
+    item.cashflow_type?.slug === 'transfer' &&
+    item.type === 'expense' &&
+    !(item as any).parent;
+  const transferRemainderUI = isTransferParent
+    ? Math.max(Number(((item as any).child?.[0]?.price ?? item.price) || 0) - Number(item.price || 0), 0)
+    : 0;
 
   // Ko'cha (street) cashflow: price = asosiy summa (kassaga), streetPercent = foiz (kassaga emas)
   const isStreet = item.cashflow_type?.slug === "street";
@@ -194,6 +205,11 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
             + {formatPrice(streetPercentVal)} foiz
           </p>
         )}
+        {isTransferParent && transferRemainderUI > 0 && (
+          <span className="text-[13px] font-medium text-[#1a1a1a] opacity-50">
+            + {formatPrice(transferRemainderUI)}
+          </span>
+        )}
         {cashPrice === 0 && terminalPrice === 0 && debtPrice === 0 && streetPercentVal === 0 && (
           <span className="text-[15px] font-medium text-[#1a1a1a]">0</span>
         )}
@@ -216,6 +232,11 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
         {isOrderDebt && (
           <span className="text-[11px] font-medium text-[#EC6724] bg-[#fff5e6] px-[6px] py-[1px] rounded-full">
             Qarz
+          </span>
+        )}
+        {isOrderTransfer && (
+          <span className="text-[11px] font-medium text-[#0078D4] bg-[#E0F0FF] px-[6px] py-[1px] rounded-full">
+            O't-ma
           </span>
         )}
       </div>

@@ -31,9 +31,11 @@ interface DebtClient {
   id: string;
   fullName: string;
   phone?: string;
+  address?: string;
   owed?: number;
   given?: number;
   balance?: number;
+  seller?: { firstName?: string; lastName?: string; phone?: string } | null;
 }
 
 export default function ClientDebtClients() {
@@ -72,24 +74,28 @@ export default function ClientDebtClients() {
   const [editClient, setEditClient] = useState<DebtClient | null>(null);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
+  const [editAddress, setEditAddress] = useState("");
 
   const openEdit = (c: DebtClient) => {
     setEditClient(c);
     setEditName(c.fullName || "");
     setEditPhone(c.phone || "");
+    setEditAddress(c.address || "");
   };
 
   const closeEdit = () => {
     setEditClient(null);
     setEditName("");
     setEditPhone("");
+    setEditAddress("");
   };
 
   const { mutate: updateClient, isPending: updating } = useMutation({
-    mutationFn: (payload: { id: string; fullName: string; phone: string }) =>
+    mutationFn: (payload: { id: string; fullName: string; phone: string; address: string }) =>
       UpdatePatchData(apiRoutes.clients, payload.id, {
         fullName: payload.fullName,
         phone: payload.phone,
+        address: payload.address,
       }),
     onSuccess: () => {
       toast.success("Yangilandi");
@@ -103,22 +109,25 @@ export default function ClientDebtClients() {
     if (!editClient) return;
     if (!editName.trim()) { toast.error("Ismni kiriting"); return; }
     if (!editPhone.trim()) { toast.error("Telefon raqamni kiriting"); return; }
-    updateClient({ id: editClient.id, fullName: editName.trim(), phone: editPhone.trim() });
+    if (!editAddress.trim()) { toast.error("Manzilni kiriting"); return; }
+    updateClient({ id: editClient.id, fullName: editName.trim(), phone: editPhone.trim(), address: editAddress.trim() });
   };
 
   // Add dialog
   const [addOpen, setAddOpen] = useState(false);
   const [addName, setAddName] = useState("");
   const [addPhone, setAddPhone] = useState("");
+  const [addAddress, setAddAddress] = useState("");
 
   const closeAdd = () => {
     setAddOpen(false);
     setAddName("");
     setAddPhone("");
+    setAddAddress("");
   };
 
   const { mutate: createClient, isPending: creating } = useMutation({
-    mutationFn: (payload: { fullName: string; phone: string; isDebtor: boolean; filialId: string; userId: string }) =>
+    mutationFn: (payload: { fullName: string; phone: string; address: string; isDebtor: boolean; filialId: string; userId: string }) =>
       AddData(apiRoutes.clients, payload),
     onSuccess: () => {
       toast.success(activeType === "qarzdor" ? "Qarzdor qo'shildi" : "Mijoz qo'shildi");
@@ -131,10 +140,12 @@ export default function ClientDebtClients() {
   const handleSaveAdd = () => {
     if (!addName.trim()) { toast.error("Ismni kiriting"); return; }
     if (!addPhone.trim()) { toast.error("Telefon raqamni kiriting"); return; }
+    if (!addAddress.trim()) { toast.error("Manzilni kiriting"); return; }
     if (!filialId || !meUser?.id) { toast.error("Filial yoki user topilmadi"); return; }
     createClient({
       fullName: addName.trim(),
       phone: addPhone.trim(),
+      address: addAddress.trim(),
       isDebtor: activeType === "qarzdor",
       filialId,
       userId: meUser.id,
@@ -247,6 +258,12 @@ export default function ClientDebtClients() {
               onChange={(e) => setAddPhone(e.target.value)}
               className="h-[44px] text-[14px]"
             />
+            <Input
+              placeholder="Manzil"
+              value={addAddress}
+              onChange={(e) => setAddAddress(e.target.value)}
+              className="h-[44px] text-[14px]"
+            />
             <div className="flex gap-2 mt-2">
               <Button
                 onClick={handleSaveAdd}
@@ -283,6 +300,12 @@ export default function ClientDebtClients() {
               placeholder="+998901234567"
               value={editPhone}
               onChange={(e) => setEditPhone(e.target.value)}
+              className="h-[44px] text-[14px]"
+            />
+            <Input
+              placeholder="Manzil"
+              value={editAddress}
+              onChange={(e) => setEditAddress(e.target.value)}
               className="h-[44px] text-[14px]"
             />
             <div className="flex gap-2 mt-2">

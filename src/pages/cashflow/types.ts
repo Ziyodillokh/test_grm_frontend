@@ -71,6 +71,9 @@ export interface TransactionItem {
     type: "filial";
   }
   isCancelled:boolean;
+  is_static?: boolean;
+  parent?: { id: string } | null;
+  child?: Array<{ id: string; price: number }>;
   cashflow_type:{
     id: string;
     title: string;
@@ -124,6 +127,9 @@ order: {
   tip: string;
   plastic: number;
   plasticSum?: number;
+  isTransfer?: boolean;
+  isDebt?: boolean;
+  debtAmount?: number;
   seller: {
     id: string;
     isActive: boolean;
