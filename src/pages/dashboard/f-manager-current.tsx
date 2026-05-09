@@ -29,6 +29,7 @@ import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type"
 import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
 import UpdateCashflowDialog from "@/pages/reports/m-manager/report/update-cashflow-dialog";
 import { useDebtClients } from "@/pages/reports/m-manager/reports-hub/client-debt/queries";
+import ShadcnSelect from "@/components/Select";
 import { useMeStore } from "@/store/me-store";
 import useData from "@/pages/employees/table/queries";
 import formatPrice from "@/utils/formatPrice";
@@ -82,6 +83,9 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
   const [dialogType, setDialogType] = useState<"parish" | "flow">("parish");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [clientId, setClientId] = useState("");
+  const [showCreateDebtor, setShowCreateDebtor] = useState(false);
+  const [newDebtorName, setNewDebtorName] = useState("");
+  const [newDebtorPhone, setNewDebtorPhone] = useState("");
   const [amount, setAmount] = useState("");
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
@@ -118,8 +122,26 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
   ) || [];
 
   // Qarzdorlar (slug='debt' tanlanganda)
-  const { data: debtorsData } = useDebtClients(meUser?.filial?.id, "qarzdor", 1, 200);
+  const { data: debtorsData, refetch: refetchDebtors } = useDebtClients(meUser?.filial?.id, "qarzdor", 1, 200);
   const debtors = (debtorsData as any)?.items || [];
+
+  // Qarzi bor Mijozlar (slug='debt_repayment' tanlanganda) — totalDebt > 0
+  const { data: debtMijozlarData } = useDebtClients(meUser?.filial?.id, "mijoz", 1, 200);
+  const debtMijozlar = (debtMijozlarData as any)?.items || [];
+
+  const { mutate: createDebtor, isPending: createDebtorPending } = useMutation({
+    mutationFn: (data: { fullName: string; phone: string; isDebtor: boolean; filialId: string; userId: string }) =>
+      AddData(apiRoutes.clients, data),
+    onSuccess: (created: any) => {
+      toast.success("Qarzdor qo'shildi");
+      const newId = created?.id || created?.data?.id;
+      if (newId) setClientId(newId);
+      setShowCreateDebtor(false);
+      setNewDebtorName("");
+      setNewDebtorPhone("");
+      refetchDebtors();
+    },
+  });
 
   // Kirim/Chiqim qo'shish
   const { mutate: addCashflow, isPending: addPending } = useMutation({
@@ -136,6 +158,9 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
     setDialogType(type);
     setSelectedCategory("");
     setClientId("");
+    setShowCreateDebtor(false);
+    setNewDebtorName("");
+    setNewDebtorPhone("");
     setAmount("");
     setComment("");
     setDate("");
@@ -147,11 +172,32 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
     [selectedCategory, cashflowTypesData],
   );
   const isDebtCategory = selectedCategorySlug === "debt";
+  const isRepaymentCategory = selectedCategorySlug === "debt_repayment";
+  const needsClient = isDebtCategory || isRepaymentCategory;
+
+  const { mutate: payDebt, isPending: payDebtPending } = useMutation({
+    mutationFn: (payload: { id: string; amount: number }) =>
+      UpdatePatchData(apiRoutes.clients, payload.id + "/pay", { amount: payload.amount }),
+    onSuccess: () => {
+      toast.success("Qarz qabul qilindi");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.openKassa] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.clientDebtReportClients] });
+      setDialogOpen(false);
+    },
+  });
 
   const handleSubmit = () => {
     if (!selectedCategory) { toast.error("Turni tanlang"); return; }
     if (!amount || parseFloat(amount) <= 0) { toast.error("Summani kiriting"); return; }
-    if (isDebtCategory && !clientId) { toast.error("Qarzdorni tanlang"); return; }
+    if (needsClient && !clientId) {
+      toast.error(isRepaymentCategory ? "Mijozni tanlang" : "Qarzdorni tanlang");
+      return;
+    }
+    if (isRepaymentCategory) {
+      payDebt({ id: clientId, amount: parseFloat(amount) });
+      return;
+    }
     addCashflow({
       price: parseFloat(amount),
       type: dialogType === "parish" ? "income" : "expense",
@@ -470,34 +516,104 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
               )}
             </div>
             <div className="w-full">
+              {isRepaymentCategory && (
+                <div className="flex flex-col gap-1 mb-0.5">
+                  <ShadcnSelect
+                    value={clientId}
+                    options={debtMijozlar.map((d: any) => ({
+                      value: d.id,
+                      label: `${d.fullName} — ${Number(d.balance ?? d.totalDebt ?? 0).toFixed(2)}$`,
+                    }))}
+                    placeholder="Mijozni tanlang"
+                    onChange={(v) => setClientId(v || "")}
+                    className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
+                  />
+                </div>
+              )}
+              {isDebtCategory && (
+                <div className="flex flex-col gap-1 mb-0.5">
+                  <ShadcnSelect
+                    value={clientId}
+                    options={debtors.map((d: any) => ({
+                      value: d.id,
+                      label: `${d.fullName}${d.phone ? " — " + d.phone : ""}`,
+                    }))}
+                    placeholder="Qarzdorni tanlang"
+                    onChange={(v) => setClientId(v || "")}
+                    className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
+                  />
+                  {!showCreateDebtor ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateDebtor(true)}
+                      className="text-[13px] font-medium text-[#5D5D53] bg-input rounded-sm h-[40px] flex items-center justify-center gap-1 hover:opacity-90"
+                    >
+                      <Plus className="w-[14px] h-[14px]" /> Yangi Qarzdor
+                    </button>
+                  ) : (
+                    <div className="flex flex-col gap-1 bg-input rounded-sm p-2">
+                      <Input
+                        placeholder="To'liq ism"
+                        value={newDebtorName}
+                        onChange={(e) => setNewDebtorName(e.target.value)}
+                        className="w-full bg-background border-none h-[40px] text-[14px] rounded-sm px-3"
+                      />
+                      <Input
+                        placeholder="+998901234567"
+                        value={newDebtorPhone}
+                        onChange={(e) => setNewDebtorPhone(e.target.value)}
+                        className="w-full bg-background border-none h-[40px] text-[14px] rounded-sm px-3"
+                      />
+                      <div className="flex gap-1">
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            if (!newDebtorName.trim()) { toast.error("Ismni kiriting"); return; }
+                            if (!newDebtorPhone.trim()) { toast.error("Telefon raqamni kiriting"); return; }
+                            if (!meUser?.filial?.id || !meUser?.id) { toast.error("Filial yoki user topilmadi"); return; }
+                            createDebtor({
+                              fullName: newDebtorName.trim(),
+                              phone: newDebtorPhone.trim(),
+                              isDebtor: true,
+                              filialId: meUser.filial.id,
+                              userId: meUser.id,
+                            });
+                          }}
+                          disabled={createDebtorPending}
+                          className="flex-1 h-[40px] rounded-sm bg-[#47B13C] text-white"
+                        >
+                          {createDebtorPending ? <Spinner className="h-4 w-4" /> : "Saqlash"}
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setShowCreateDebtor(false);
+                            setNewDebtorName("");
+                            setNewDebtorPhone("");
+                          }}
+                          className="flex-1 h-[40px] rounded-sm bg-background text-primary border border-border"
+                        >
+                          Bekor qilish
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="flex pl-2 items-center bg-input rounded-sm h-[90px]">
                 <Input placeholder="0.00" value={amount} type="number" min={0} onChange={(e) => setAmount(e.target.value)} className="w-full border-none h-[90px] placeholder:text-[32px] !text-[32px] font-semibold rounded-sm bg-transparent px-0" />
                 <div className="text-4xl text-[#5D5D53] mx-4">$</div>
               </div>
               <Input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px]" />
-              {isDebtCategory && (
-                <select
-                  value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
-                  className="w-full border-none h-[45px] mt-0.5 text-[14px] font-semibold rounded-sm px-[17px] py-[10px] bg-input outline-none"
-                >
-                  <option value="">Qarzdorni tanlang…</option>
-                  {debtors.map((d: any) => (
-                    <option key={d.id} value={d.id}>
-                      {d.fullName} {d.phone ? `— ${d.phone}` : ""}
-                    </option>
-                  ))}
-                </select>
-              )}
               <Textarea placeholder="Izoh" value={comment} onChange={(e) => setComment(e.target.value)} className="w-full border-none focus:border-none outline-none shadow-none mt-0.5 h-[90px] text-[13px] bg-input font-semibold rounded-sm px-2 py-2.5" />
             </div>
           </div>
           <Button
             onClick={handleSubmit}
-            disabled={addPending || !selectedCategory || !amount}
+            disabled={addPending || payDebtPending || !selectedCategory || !amount}
             className={`p-5 rounded-sm mt-1 ${dialogType === "parish" ? "bg-[#47B13C]" : "bg-[#EF5C12]"} text-white`}
           >
-            {addPending ? (
+            {addPending || payDebtPending ? (
               <span className="flex items-center gap-2"><Spinner className="h-4 w-4" />Qo'shilmoqda...</span>
             ) : dialogType === "parish" ? "Kirimga qo'shish" : "Chiqimga qo'shish"}
           </Button>
