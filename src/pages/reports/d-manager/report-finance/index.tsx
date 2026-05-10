@@ -1,6 +1,5 @@
 import { useYear } from "@/store/year-store";
 import { useNavigate } from "react-router-dom";
-import { ListRow } from "@/components/ui/list-row";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useBreadcrumbStore } from "@/store/breadcrumb-store";
 import { MonthsArray } from "@/consts";
@@ -32,49 +31,64 @@ export default function PageFinance() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
-  const gridTemplate = "4px 80px 100px 1fr 1fr 1fr 1fr 1fr 1fr 50px";
-  const columnLabels = ["", "Oy", "Status", "Naqd", "Terminal", "Hajm", "Chegirma", "Yuborilgan", "Qarzdorlik", ""];
+  const gridTemplate = "4px max-content max-content max-content max-content max-content max-content max-content max-content 1fr max-content";
+  const columnLabels = ["", "Oy", "Status", "Naqd", "Terminal", "Hajm", "Chegirma", "Yuborilgan", "Qarzdorlik", "", ""];
 
   return (
     <div className="flex flex-col h-full">
       <ReportToolbar />
       <ReportTotals data={totals} />
 
-      {/* Column labels */}
-      <div
-        className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
-      >
-        {columnLabels.map((label, i) => (
-          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label === "Status" ? "text-center" : ""}`}>
-            {label}
-          </span>
-        ))}
-      </div>
-
-      {/* Month rows */}
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+      {/* Labellar + Listlar — bitta grid; har bir row subgrid bilan parent grid ustunlarini meros qiladi */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom mt-[20px]">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: gridTemplate,
+            columnGap: "40px",
+            rowGap: "4px",
+          }}
+        >
+          {/* Header labels — subgrid */}
+          <div
+            style={{
+              gridColumn: "1 / -1",
+              display: "grid",
+              gridTemplateColumns: "subgrid",
+              columnGap: "40px",
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              marginBottom: "6px",
+            }}
+          >
+            {columnLabels.map((label, i) => (
+              <span key={`label-${i}`} className={`text-[13px] text-[#A3A3A3] ${label === "Status" ? "text-center" : ""}`}>
+                {label}
+              </span>
+            ))}
           </div>
-        ) : (
-          flatData.map((item: TKassareportData, i: number) => (
-            <MonthlyRow
-              key={item?.id || i}
-              item={item}
-              gridTemplate={gridTemplate}
-              onRowClick={(item) => {
-                if (item?.id) {
-                  const monthLabel = item?.month ? MonthsArray[item.month - 1]?.label : "Hisobot";
-                  const path = `/d-manager/reports-hub/monthly/${item.id}/info`;
-                  push(monthLabel || "Hisobot", path);
-                  navigate(path);
-                }
-              }}
-            />
-          ))
-        )}
+
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[200px]" style={{ gridColumn: "1 / -1" }}>
+              <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+            </div>
+          ) : (
+            flatData.map((item: TKassareportData, i: number) => (
+              <MonthlyRow
+                key={item?.id || i}
+                item={item}
+                onRowClick={(item) => {
+                  if (item?.id) {
+                    const monthLabel = item?.month ? MonthsArray[item.month - 1]?.label : "Hisobot";
+                    const path = `/d-manager/reports-hub/monthly/${item.id}/info`;
+                    push(monthLabel || "Hisobot", path);
+                    navigate(path);
+                  }
+                }}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
@@ -133,11 +147,9 @@ function getRowStatus(item: TKassareportData): {
 function MonthlyRow({
   item,
   onRowClick,
-  gridTemplate,
 }: {
   item: TKassareportData;
   onRowClick: (item: TKassareportData) => void;
-  gridTemplate: string;
 }) {
   const queryClient = useQueryClient();
   const { data: usersData } = useQuery({
@@ -174,17 +186,29 @@ function MonthlyRow({
   });
 
   const monthName = item?.month ? MonthsArray[item.month - 1]?.label : "—";
-  const naqd = item?.inHand ?? 0;
+  const naqd = (item as any)?.managerSum ?? item?.inHand ?? 0;
   const terminal = item?.totalPlasticSum ?? item?.plasticSum ?? 0;
   const hajm = item?.debtSize ?? item?.totalSize ?? 0;
   const chegirma = item?.discount ?? item?.totalDiscount ?? 0;
   const yuborilgan = item?.debtSum ?? 0;
-  const qarzdorlik = item?.frozenOwed ?? 0;
+  const qarzdorlik = (item as any)?.totalFrozenOwed ?? item?.frozenOwed ?? 0;
 
   const rowStatus = getRowStatus(item);
 
   return (
-    <ListRow gridTemplate={gridTemplate} onClick={() => onRowClick(item)}>
+    <div
+      onClick={() => onRowClick(item)}
+      className="cursor-pointer hover:bg-gray-50 transition-colors items-center bg-white rounded-sm"
+      style={{
+        gridColumn: "1 / -1",
+        display: "grid",
+        gridTemplateColumns: "subgrid",
+        columnGap: "40px",
+        paddingLeft: "10px",
+        paddingRight: "10px",
+        minHeight: 74,
+      }}
+    >
       {/* Status bar */}
       {rowStatus.showBar ? (
         <div className="w-[2px] h-[30px] rounded-full" style={{ backgroundColor: rowStatus.barColor }} />
@@ -226,6 +250,9 @@ function MonthlyRow({
       {/* Qarzdorlik */}
       <span className="text-[13px] text-[#1a1a1a]">{qarzdorlik ? `${qarzdorlik.toLocaleString()}$` : "0$"}</span>
 
+      {/* Bo'sh ustun — actionni o'ngga itaradi */}
+      <div />
+
       {/* Action — statusga qarab */}
       <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
         {item?.status === "accepted" ? (
@@ -233,7 +260,9 @@ function MonthlyRow({
         ) : (item?.isManagerRejected || item?.isAccountantRejected) ? (
           <ActionBadge status="fail" />
         ) : item?.status === "closed_by_d" || item?.status === "closed" ? (
-          <ActionBadge status="panding" />
+          <span className="h-[40px] px-[14px] rounded-full flex items-center text-[13px] font-medium bg-white text-[#1a1a1a] opacity-70">
+            Kutilmoqda
+          </span>
         ) : canClose ? (
           <button
             type="button"
@@ -258,6 +287,6 @@ function MonthlyRow({
           <div />
         )}
       </div>
-    </ListRow>
+    </div>
   );
 }

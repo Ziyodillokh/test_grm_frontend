@@ -1,0 +1,31 @@
+export const UZ_REGIONS = [
+  { value: "Toshkent shahri", label: "Toshkent shahri" },
+  { value: "Toshkent viloyati", label: "Toshkent viloyati" },
+  { value: "Andijon viloyati", label: "Andijon viloyati" },
+  { value: "Buxoro viloyati", label: "Buxoro viloyati" },
+  { value: "Farg'ona viloyati", label: "Farg'ona viloyati" },
+  { value: "Jizzax viloyati", label: "Jizzax viloyati" },
+  { value: "Xorazm viloyati", label: "Xorazm viloyati" },
+  { value: "Namangan viloyati", label: "Namangan viloyati" },
+  { value: "Navoiy viloyati", label: "Navoiy viloyati" },
+  { value: "Qashqadaryo viloyati", label: "Qashqadaryo viloyati" },
+  { value: "Qoraqalpog'iston Respublikasi", label: "Qoraqalpog'iston Respublikasi" },
+  { value: "Samarqand viloyati", label: "Samarqand viloyati" },
+  { value: "Sirdaryo viloyati", label: "Sirdaryo viloyati" },
+  { value: "Surxondaryo viloyati", label: "Surxondaryo viloyati" },
+];
+
+export const TASHKENT_DISTRICTS = [
+  { value: "Bektemir", label: "Bektemir tumani" },
+  { value: "Chilonzor", label: "Chilonzor tumani" },
+  { value: "Mirobod", label: "Mirobod tumani" },
+  { value: "Mirzo Ulug'bek", label: "Mirzo Ulug'bek tumani" },
+  { value: "Olmazor", label: "Olmazor tumani" },
+  { value: "Sergeli", label: "Sergeli tumani" },
+  { value: "Shayxontohur", label: "Shayxontohur tumani" },
+  { value: "Uchtepa", label: "Uchtepa tumani" },
+  { value: "Yakkasaroy", label: "Yakkasaroy tumani" },
+  { value: "Yashnobod", label: "Yashnobod tumani" },
+  { value: "Yunusobod", label: "Yunusobod tumani" },
+  { value: "Yangihayot", label: "Yangihayot tumani" },
+];

@@ -2,7 +2,7 @@ import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ListRow } from "@/components/ui/list-row";
 import { parseAsString, useQueryState } from "nuqs";
-import { Loader, MoreVertical, Plus, Lock, CheckCircle } from "lucide-react";
+import { Loader, MoreVertical, Plus, Lock, CheckCircle, ChevronDown } from "lucide-react";
 import qs from "qs";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -11,6 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import ShadcnSelect from "@/components/Select";
+import { UZ_REGIONS, TASHKENT_DISTRICTS } from "@/data/uz-regions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +33,6 @@ import { TKassareportData } from "@/pages/reports/m-manager/report-finance/type"
 import ReportTotals from "@/pages/reports/m-manager/report-finance/monthly/report-totals";
 import UpdateCashflowDialog from "@/pages/reports/m-manager/report/update-cashflow-dialog";
 import { useDebtClients } from "@/pages/reports/m-manager/reports-hub/client-debt/queries";
-import ShadcnSelect from "@/components/Select";
 import { useMeStore } from "@/store/me-store";
 import useData from "@/pages/employees/table/queries";
 import formatPrice from "@/utils/formatPrice";
@@ -83,13 +86,15 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
   const [dialogType, setDialogType] = useState<"parish" | "flow">("parish");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [clientId, setClientId] = useState("");
-  const [showCreateDebtor, setShowCreateDebtor] = useState(false);
-  const [newDebtorName, setNewDebtorName] = useState("");
-  const [newDebtorPhone, setNewDebtorPhone] = useState("");
   const [amount, setAmount] = useState("");
   const [comment, setComment] = useState("");
   const [date, setDate] = useState("");
   const [editCashflowId, setEditCashflowId] = useState<string | null>(null);
+  const [showCreateDebtor, setShowCreateDebtor] = useState(false);
+  const [newDebtorName, setNewDebtorName] = useState("");
+  const [newDebtorPhone, setNewDebtorPhone] = useState("");
+  const [newDebtorRegion, setNewDebtorRegion] = useState("");
+  const [newDebtorDistrict, setNewDebtorDistrict] = useState("");
 
   // F-Manager o'z kassasi (faqat kassaIdProp bo'lmaganda)
   const { data: openKassaData } = useOpenKassa({
@@ -121,16 +126,20 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
     (ct) => ct.slug !== "balance"
   ) || [];
 
-  // Qarzdorlar (slug='debt' tanlanganda)
-  const { data: debtorsData, refetch: refetchDebtors } = useDebtClients(meUser?.filial?.id, "qarzdor", 1, 200);
+  const [clientSearch, setClientSearch] = useState("");
+  const [clientPopoverOpen, setClientPopoverOpen] = useState(false);
+
+  // Qarzdorlar (slug='debt' tanlanganda) — faqat oddiy qarz olib qarzdor bo'lganlar (isDebtor=true)
+  const { data: debtorsData } = useDebtClients(meUser?.filial?.id, "oddiy_qarzdor", 1, 200, clientSearch);
   const debtors = (debtorsData as any)?.items || [];
 
-  // Qarzi bor Mijozlar (slug='debt_repayment' tanlanganda) — totalDebt > 0
-  const { data: debtMijozlarData } = useDebtClients(meUser?.filial?.id, "mijoz", 1, 200);
+  // Qoplash uchun (slug='debt_repayment' tanlanganda) — sotuvdan qarz bo'lganlar (isDebtor=false + qarz>0)
+  const { data: debtMijozlarData } = useDebtClients(meUser?.filial?.id, "savdo_qarzdor", 1, 200, clientSearch);
   const debtMijozlar = (debtMijozlarData as any)?.items || [];
 
+  // Yangi Qarzdor yaratish (faqat Qarz expense flow'ida)
   const { mutate: createDebtor, isPending: createDebtorPending } = useMutation({
-    mutationFn: (data: { fullName: string; phone: string; isDebtor: boolean; filialId: string; userId: string }) =>
+    mutationFn: (data: { fullName: string; phone: string; address: string; isDebtor: boolean; filialId: string; userId: string }) =>
       AddData(apiRoutes.clients, data),
     onSuccess: (created: any) => {
       toast.success("Qarzdor qo'shildi");
@@ -139,7 +148,9 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
       setShowCreateDebtor(false);
       setNewDebtorName("");
       setNewDebtorPhone("");
-      refetchDebtors();
+      setNewDebtorRegion("");
+      setNewDebtorDistrict("");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.clientDebtReportClients] });
     },
   });
 
@@ -158,12 +169,15 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
     setDialogType(type);
     setSelectedCategory("");
     setClientId("");
-    setShowCreateDebtor(false);
-    setNewDebtorName("");
-    setNewDebtorPhone("");
+    setClientSearch("");
     setAmount("");
     setComment("");
     setDate("");
+    setShowCreateDebtor(false);
+    setNewDebtorName("");
+    setNewDebtorPhone("");
+    setNewDebtorRegion("");
+    setNewDebtorDistrict("");
     setDialogOpen(true);
   };
 
@@ -516,39 +530,83 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
               )}
             </div>
             <div className="w-full">
-              {isRepaymentCategory && (
-                <div className="flex flex-col gap-1 mb-0.5">
-                  <ShadcnSelect
-                    value={clientId}
-                    options={debtMijozlar.map((d: any) => ({
-                      value: d.id,
-                      label: `${d.fullName} — ${Number(d.balance ?? d.totalDebt ?? 0).toFixed(2)}$`,
-                    }))}
-                    placeholder="Mijozni tanlang"
-                    onChange={(v) => setClientId(v || "")}
-                    className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
-                  />
-                </div>
-              )}
-              {isDebtCategory && (
-                <div className="flex flex-col gap-1 mb-0.5">
-                  <ShadcnSelect
-                    value={clientId}
-                    options={debtors.map((d: any) => ({
-                      value: d.id,
-                      label: `${d.fullName}${d.phone ? " — " + d.phone : ""}`,
-                    }))}
-                    placeholder="Qarzdorni tanlang"
-                    onChange={(v) => setClientId(v || "")}
-                    className="w-full text-[#5D5D53] border-none h-[90px] !bg-input !text-[22px] font-semibold rounded-sm px-[17px] py-[26px]"
-                  />
+              {(isRepaymentCategory || isDebtCategory) && (() => {
+                const list = isRepaymentCategory ? debtMijozlar : debtors;
+                const formatLabel = (d: any) =>
+                  `${d.fullName} — ${Number(d.balance ?? d.totalDebt ?? 0).toFixed(2)}$`;
+                const selected = list.find((d: any) => d.id === clientId);
+                const placeholder = isRepaymentCategory ? "Mijozni tanlang" : "Qarzdorni tanlang";
+                const searchPlaceholder = isRepaymentCategory
+                  ? "Mijoz ismini izlash..."
+                  : "Qarzdor ismini izlash...";
+                return (
+                  <div className="flex flex-col gap-1 mb-0.5">
+                    <Popover
+                      open={clientPopoverOpen}
+                      onOpenChange={(o) => {
+                        setClientPopoverOpen(o);
+                        if (!o) setClientSearch("");
+                      }}
+                    >
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className="w-full text-left text-[#5D5D53] border-none h-[90px] bg-input text-[22px] font-semibold rounded-sm px-[17px] py-[26px] flex items-center justify-between"
+                        >
+                          <span className={selected ? "" : "text-[#A3A3A3]"}>
+                            {selected ? formatLabel(selected) : placeholder}
+                          </span>
+                          <ChevronDown className="w-5 h-5 opacity-50" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="p-0 w-[var(--radix-popover-trigger-width)]"
+                        align="start"
+                        onWheel={(e) => e.stopPropagation()}
+                        onTouchMove={(e) => e.stopPropagation()}
+                      >
+                        <Command shouldFilter={false}>
+                          <CommandInput
+                            placeholder={searchPlaceholder}
+                            value={clientSearch}
+                            onValueChange={setClientSearch}
+                          />
+                          <CommandList className="max-h-[280px] overflow-y-auto overscroll-contain">
+                            {list.length === 0 ? (
+                              <CommandEmpty>
+                                {isRepaymentCategory ? "Mijoz topilmadi" : "Qarzdor topilmadi"}
+                              </CommandEmpty>
+                            ) : (
+                              list.map((d: any) => (
+                                <CommandItem
+                                  key={d.id}
+                                  value={d.id}
+                                  onSelect={() => {
+                                    setClientId(d.id);
+                                    setClientPopoverOpen(false);
+                                    setClientSearch("");
+                                  }}
+                                >
+                                  {formatLabel(d)}
+                                </CommandItem>
+                              ))
+                            )}
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                );
+              })()}
+              {isDebtCategory && dialogType === "flow" && (
+                <div className="mb-0.5">
                   {!showCreateDebtor ? (
                     <button
                       type="button"
                       onClick={() => setShowCreateDebtor(true)}
-                      className="text-[13px] font-medium text-[#5D5D53] bg-input rounded-sm h-[40px] flex items-center justify-center gap-1 hover:opacity-90"
+                      className="w-full text-[13px] font-medium text-[#5D5D53] bg-input rounded-sm h-[40px] flex items-center justify-center gap-1 hover:opacity-90"
                     >
-                      <Plus className="w-[14px] h-[14px]" /> Yangi Qarzdor
+                      <Plus className="w-[14px] h-[14px]" /> Yangi Qarzdor qo'shish
                     </button>
                   ) : (
                     <div className="flex flex-col gap-1 bg-input rounded-sm p-2">
@@ -558,22 +616,55 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
                         onChange={(e) => setNewDebtorName(e.target.value)}
                         className="w-full bg-background border-none h-[40px] text-[14px] rounded-sm px-3"
                       />
-                      <Input
-                        placeholder="+998901234567"
-                        value={newDebtorPhone}
-                        onChange={(e) => setNewDebtorPhone(e.target.value)}
+                      <div className="flex items-center bg-background rounded-sm h-[40px] px-3">
+                        <span className="text-[14px] text-[#5D5D53] select-none">+998</span>
+                        <input
+                          type="tel"
+                          inputMode="numeric"
+                          maxLength={9}
+                          placeholder="901234567"
+                          value={newDebtorPhone}
+                          onChange={(e) => setNewDebtorPhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                          className="flex-1 bg-transparent border-none outline-none ml-2 text-[14px]"
+                        />
+                      </div>
+                      <ShadcnSelect
+                        value={newDebtorRegion}
+                        options={UZ_REGIONS}
+                        placeholder="Viloyat / Shaharni tanlang"
+                        onChange={(v) => {
+                          setNewDebtorRegion(v || "");
+                          setNewDebtorDistrict("");
+                        }}
                         className="w-full bg-background border-none h-[40px] text-[14px] rounded-sm px-3"
                       />
+                      {newDebtorRegion === "Toshkent shahri" && (
+                        <ShadcnSelect
+                          value={newDebtorDistrict}
+                          options={TASHKENT_DISTRICTS}
+                          placeholder="Tumanni tanlang"
+                          onChange={(v) => setNewDebtorDistrict(v || "")}
+                          className="w-full bg-background border-none h-[40px] text-[14px] rounded-sm px-3"
+                        />
+                      )}
                       <div className="flex gap-1">
                         <Button
                           type="button"
                           onClick={() => {
                             if (!newDebtorName.trim()) { toast.error("Ismni kiriting"); return; }
-                            if (!newDebtorPhone.trim()) { toast.error("Telefon raqamni kiriting"); return; }
+                            if (newDebtorPhone.length !== 9) { toast.error("Telefon raqamni to'liq kiriting (9 ta raqam)"); return; }
+                            if (!newDebtorRegion) { toast.error("Viloyatni tanlang"); return; }
+                            if (newDebtorRegion === "Toshkent shahri" && !newDebtorDistrict) {
+                              toast.error("Tumanni tanlang"); return;
+                            }
                             if (!meUser?.filial?.id || !meUser?.id) { toast.error("Filial yoki user topilmadi"); return; }
+                            const address = newDebtorDistrict
+                              ? `${newDebtorRegion}, ${newDebtorDistrict} tumani`
+                              : newDebtorRegion;
                             createDebtor({
                               fullName: newDebtorName.trim(),
-                              phone: newDebtorPhone.trim(),
+                              phone: `+998${newDebtorPhone}`,
+                              address,
                               isDebtor: true,
                               filialId: meUser.filial.id,
                               userId: meUser.id,
@@ -590,6 +681,8 @@ export default function FManagerCurrent({ kassaIdProp }: { kassaIdProp?: string 
                             setShowCreateDebtor(false);
                             setNewDebtorName("");
                             setNewDebtorPhone("");
+                            setNewDebtorRegion("");
+                            setNewDebtorDistrict("");
                           }}
                           className="flex-1 h-[40px] rounded-sm bg-background text-primary border border-border"
                         >

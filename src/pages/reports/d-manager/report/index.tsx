@@ -92,7 +92,7 @@ export default function DealerReportPage() {
 
   const openEditDialog = (item: DealerDetailItem) => {
     setEditingId(item.id);
-    setPrice(item.total_cost);
+    setPrice(Number(item.total_cost));
     setComment(item.comment || "");
     setDate(item.date ? new Date(item.date).toISOString().slice(0, 16) : "");
     setTypePay(item.is_online ? "online" : "cash");
@@ -129,7 +129,7 @@ export default function DealerReportPage() {
       }
       if (editingId) {
         await api.patch(`${apiRoutes.cashflow}/${editingId}/update`, {
-          price,
+          price: Number(price),
           comment,
           ...(date ? { date } : {}),
         });

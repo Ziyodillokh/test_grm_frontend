@@ -16,6 +16,9 @@ const yearsArray = Array.from({ length: 3 }, (_, i) => {
 const gridTemplate = "40px 1fr 100px 80px 60px 80px 120px 140px 100px";
 const columnLabels = ["№", "Kolleksiya", "Model", "Razmer", "Soni", "m²", "Narx", "Sotuvchi", "Sana"];
 
+const cashflowGridTemplate = "40px 110px 110px 1fr 140px 100px";
+const cashflowColumnLabels = ["№", "Tipi", "Summa", "Izoh", "Yaratuvchi", "Sana"];
+
 export default function ClientDebtOrders() {
   const { clientId } = useParams();
   const currentYear = String(new Date().getFullYear());
@@ -37,8 +40,11 @@ export default function ClientDebtOrders() {
     limit: 100,
   });
 
-  const items = data?.items || [];
+  const orders = data?.items || [];
+  const cashflows = (data as any)?.cashflows || [];
   const client = data?.client || {};
+  const isDebtor = !!(client as any)?.isDebtor;
+  const items = isDebtor ? cashflows : orders;
 
   return (
     <div className="flex flex-col h-full">
@@ -79,9 +85,9 @@ export default function ClientDebtOrders() {
       {/* Column labels */}
       <div
         className="mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "8px" }}
+        style={{ display: "grid", gridTemplateColumns: isDebtor ? cashflowGridTemplate : gridTemplate, gap: "8px" }}
       >
-        {columnLabels.map((label, i) => (
+        {(isDebtor ? cashflowColumnLabels : columnLabels).map((label, i) => (
           <span key={i} className="text-[13px] text-[#A3A3A3]">{label}</span>
         ))}
       </div>
@@ -92,6 +98,38 @@ export default function ClientDebtOrders() {
           <div className="flex items-center justify-center h-[200px]">
             <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
           </div>
+        ) : items.length === 0 ? (
+          <div className="flex items-center justify-center h-[200px] text-[13px] text-[#a3a3a3]">
+            Ma'lumot topilmadi
+          </div>
+        ) : isDebtor ? (
+          items.map((item: any, i: number) => {
+            const slug = item.cashflow_type?.slug;
+            const isRepay = slug === "debt_repayment" || item.type === "income";
+            return (
+              <ListRow
+                key={item.id || i}
+                gridTemplate={cashflowGridTemplate}
+                className="pl-[12px]"
+                minHeight={56}
+              >
+                <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
+                <span className={`text-[13px] font-medium ${isRepay ? "text-[#47B13C]" : "text-[#EC6724]"}`}>
+                  {isRepay ? "Qarz yopish" : "Qarz"}
+                </span>
+                <span className={`text-[13px] font-medium ${isRepay ? "text-[#47B13C]" : "text-[#EC6724]"}`}>
+                  {isRepay ? "+" : "-"}{formatPrice(item.price || 0)} $
+                </span>
+                <span className="text-[13px] text-[#1a1a1a] truncate">{item.comment || "—"}</span>
+                <span className="text-[13px] text-[#a3a3a3]">
+                  {item.createdBy?.firstName || ""} {item.createdBy?.lastName || ""}
+                </span>
+                <span className="text-[13px] text-[#a3a3a3]">
+                  {item.date ? new Date(item.date).toLocaleDateString("ru-RU") : "—"}
+                </span>
+              </ListRow>
+            );
+          })
         ) : (
           items.map((item: any, i: number) => (
             <ListRow

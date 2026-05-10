@@ -201,6 +201,10 @@ function KassaRow({ item, gridTemplate, onRowClick }: { item: TKassareportData; 
           <span className="text-[13px] text-[#47B13C]">Jarayonda...</span>
         ) : item?.kassaStatus === 2 ? (
           <ActionBadge status="willSell" />
+        ) : item?.status === "closed" ? (
+          <span className="h-[40px] px-[14px] rounded-full flex items-center text-[13px] font-medium bg-white text-[#1a1a1a] opacity-70">
+            Yopilgan
+          </span>
         ) : isPastWarning ? (
           <button
             type="button"
