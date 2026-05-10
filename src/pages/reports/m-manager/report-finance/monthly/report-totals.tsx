@@ -57,7 +57,10 @@ export default function ReportTotals({ data, filteredTotals, hasActiveFilter, on
   } else {
     // Yashil card asosiy raqami: inHand (kassadagi naqd)
     mainSum = data?.inHand ?? 0;
-    saldo = showDebtLabel ? (data?.debtSum || 0) : (data?.totalSale ?? data?.sale ?? 0);
+    // Saldo balans = kassa.openingBalance (avvalgi oydan o'tgan saldo)
+    saldo = showDebtLabel
+      ? (data?.debtSum || 0)
+      : ((data as any)?.openingBalance ?? data?.managerSaldo ?? 0);
   }
 
   return (

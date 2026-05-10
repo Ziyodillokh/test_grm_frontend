@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Loader,
   Banknote,
+  MoreVertical,
 } from "lucide-react";
 import { ListRow } from "@/components/ui/list-row";
 import { useYear } from "@/store/year-store";
@@ -20,6 +21,12 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { apiRoutes } from "@/service/apiRoutes";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -81,6 +88,36 @@ export default function DealerReportPage() {
   const [date, setDate] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const openEditDialog = (item: DealerDetailItem) => {
+    setEditingId(item.id);
+    setPrice(item.total_cost);
+    setComment(item.comment || "");
+    setDate(item.date ? new Date(item.date).toISOString().slice(0, 16) : "");
+    setTypePay(item.is_online ? "online" : "cash");
+    setDialogOpen(true);
+  };
+
+  const resetDialog = () => {
+    setEditingId(null);
+    setComment("");
+    setPrice(undefined);
+    setDate("");
+    setTypePay("cash");
+  };
+
+  const handleDelete = async (cashflowId: string) => {
+    if (!window.confirm("Bu kirimni o'chirishni xohlaysizmi?")) return;
+    try {
+      await api.delete(`${apiRoutes.cashflow}/${cashflowId}`);
+      toast.success("O'chirildi");
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.dealerKassaDetail] });
+      queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "O'chirishda xatolik");
+    }
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -90,24 +127,30 @@ export default function DealerReportPage() {
         setLoading(false);
         return;
       }
-      const body = {
-        comment,
-        price,
-        ...(date ? { date } : {}),
-        kassa: id,
-        is_online: typePay === "online",
-      };
-      await api.post(apiRoutes.cashflowDealerIncome, body);
-      toast.success("Kirim qo'shildi");
-      setComment("");
-      setPrice(undefined);
-      setDate("");
+      if (editingId) {
+        await api.patch(`${apiRoutes.cashflow}/${editingId}/update`, {
+          price,
+          comment,
+          ...(date ? { date } : {}),
+        });
+        toast.success("Yangilandi");
+      } else {
+        const body = {
+          comment,
+          price,
+          ...(date ? { date } : {}),
+          kassa: id,
+          is_online: typePay === "online",
+        };
+        await api.post(apiRoutes.cashflowDealerIncome, body);
+        toast.success("Kirim qo'shildi");
+      }
+      resetDialog();
       setDialogOpen(false);
-      setTypePay("cash");
       queryClient.invalidateQueries({ queryKey: [apiRoutes.dealerKassaDetail] });
       queryClient.invalidateQueries({ queryKey: [apiRoutes.kassaReports] });
-    } catch (error) {
-      toast.error(String(error));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || String(error));
     } finally {
       setLoading(false);
     }
@@ -124,7 +167,7 @@ export default function DealerReportPage() {
   const columnLabels = ["", "Summa", "Turi", "Sana", "Ma'lumot", ""];
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetDialog(); }}>
       <div className="flex flex-col h-full gap-[20px]">
         {/* Toolbar + Kirim qo'shish button */}
         <div className="flex items-center gap-[4px]">
@@ -253,10 +296,26 @@ export default function DealerReportPage() {
                       )}
                     </span>
 
-                    {/* Chevron */}
-                    <div className="flex items-center justify-center">
+                    {/* Chevron / Menu */}
+                    <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                       {hasCollections ? (
                         isExpanded ? <ChevronDown className="h-4 w-4 text-[#a3a3a3]" /> : <ChevronRight className="h-4 w-4 text-[#a3a3a3]" />
+                      ) : !isPackage ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="w-[24px] h-[24px] flex items-center justify-center rounded hover:bg-gray-100">
+                              <MoreVertical className="w-[16px] h-[16px] text-[#A3A3A3]" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openEditDialog(item)}>
+                              Tahrirlash
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDelete(item.id)}>
+                              O'chirish
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       ) : null}
                     </div>
                   </ListRow>
@@ -288,7 +347,7 @@ export default function DealerReportPage() {
       {/* Kirim dialog */}
       <DialogContent className="costomModal border-0 gap-[0px] min-w-[494px] p-1 rounded-sm">
         <div className="p-3 h-[44px] font-bold pb-0 text-center mx-auto rounded-t-sm w-1/2 -mt-[48px] bg-[#47B13C] text-white">
-          Kirim qo'shish
+          {editingId ? "Kirimni tahrirlash" : "Kirim qo'shish"}
         </div>
         <div className="grid grid-cols-2 gap-1">
           <div className="w-full">
