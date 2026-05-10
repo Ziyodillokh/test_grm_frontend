@@ -157,10 +157,14 @@ export default function DealerReportPage() {
   };
 
   useEffect(() => {
-    setTypePay("cash");
-    setComment("");
-    setPrice(undefined);
-    setDate("");
+    // Faqat dialog yopilganda state'ni tozalaymiz; ochilganda openEditDialog set qilgan qiymatlar saqlanadi
+    if (!dialogOpen) {
+      setTypePay("cash");
+      setComment("");
+      setPrice(undefined);
+      setDate("");
+      setEditingId(null);
+    }
   }, [dialogOpen]);
 
   const gridTemplate = "48px 100px 100px 130px 1fr 40px";
