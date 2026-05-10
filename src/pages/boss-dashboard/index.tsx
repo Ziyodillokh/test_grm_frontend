@@ -43,8 +43,8 @@ export default function BossDashboard() {
     enabled: true,
   });
 
-  // Manager/Accountant kassa progress uchun — eski endpoint (backend'da yo'q, hozircha disabled)
-  const { data: kassaData } = useCurrentMonthOverview(leftFilter, false);
+  // Manager/Accountant kassa progress uchun — restored endpoint
+  const { data: kassaData } = useCurrentMonthOverview(leftFilter);
 
   // Filiallar
   const { data: filialsResp } = useFilialsList();
