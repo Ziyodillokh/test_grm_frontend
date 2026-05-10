@@ -25,7 +25,9 @@ export type TData = {
   extra_income: PriceKv;        // qo'shimcha prixodlar
   factory: PriceKv;
   return_orders: PriceKv;
-  tamojniy: PriceKv;
+  share_income: PriceKv;     // Sherikdan ulush (capital)
+  share_expense: PriceKv;    // Sherikka ulush
+  other_expense: PriceKv;    // Boshqa chiqimlar
   navar_expense: PriceKv;
   navar_income: PriceKv;
 };

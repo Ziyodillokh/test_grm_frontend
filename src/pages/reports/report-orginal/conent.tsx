@@ -43,6 +43,8 @@ export function Conent() {
   const isFManager = meUser?.position?.role == 4;
   const isFilial = !!(filial || isFManager) && !isDealers;
   const isUmumiy = !filial && !isFManager;
+  // Profit/Profit-remaining filialda M-manager (9), Accountant (10), Boss uchun ko'rinadi (F-manager 4 ga ko'rinmaydi)
+  const canSeeFilialProfit = isFilial && !isFManager;
 
   const { data, isLoading } = useDataFetch({
     queries: {
@@ -79,10 +81,10 @@ export function Conent() {
     { label: "Savdo aylanmasi", key: "turnover", hasKv: true },
     { label: "Qarz savdosi", key: "debt_trading", hasKv: true },
     { label: "Chegirma", key: "discount" },
-    ...((isUmumiy || isDealers)
+    ...((isUmumiy || isDealers || canSeeFilialProfit)
       ? [{ label: "Foyda hisobi", key: "profit" as keyof TData }]
       : []),
-    ...(isUmumiy
+    ...((isUmumiy || canSeeFilialProfit)
       ? [{ label: "Foyda qoldig'i", key: "profit_remaining" as keyof TData }]
       : []),
     { label: "Ustama (navar)", key: "navar_income" },
@@ -109,7 +111,8 @@ export function Conent() {
           { label: "Kelgan qarzlar", key: "owed_debt", detail: "kelgan_qarz" },
           { label: "Oydan o'tgan pul", key: "openingBalance", detail: "openingBalance" },
           { label: "Bossdan kirim", key: "boss_income", detail: "boss_income" },
-          { label: "Kentdan kirim", key: "kent_income", detail: "kent_income" },
+          { label: "Ko'chadan kirim", key: "kent_income", detail: "kent_income" },
+          { label: "Sherikdan ulush", key: "share_income", detail: "share_income" },
           { label: "Boshqa kirimlar", key: "extra_income", detail: "extra_income" },
         ];
 
@@ -123,18 +126,21 @@ export function Conent() {
           { label: "Inkassatsiya", key: "cashCollection", detail: "inkassatsiya" },
           { label: "Bossdan chiqim", key: "boss_expense", detail: "boss_expense" },
           { label: "Biznes xarajatlari", key: "business_expense", detail: "business_expense" },
+          { label: "Sherikka ulush", key: "share_expense", detail: "share_expense" },
           { label: "Qaytgan tovarlar", key: "return_orders", detail: "return_orders", hasKv: true },
           { label: "Ustama(navar)dan xarajat", key: "navar_expense", detail: "navar_expense" },
+          { label: "Boshqa chiqimlar", key: "other_expense", detail: "other_expense" },
         ]
       : [
           { label: "Biznes xarajatlari", key: "business_expense", detail: "business_expense" },
           { label: "Bossdan chiqim", key: "boss_expense", detail: "boss_expense" },
-          { label: "Kentga chiqim", key: "kent_expense", detail: "kent_expense" },
-          { label: "Taminotchiga to'lov", key: "factory", detail: "factory" },
+          { label: "Ko'chaga chiqim", key: "kent_expense", detail: "kent_expense" },
+          { label: "Sherikka ulush", key: "share_expense", detail: "share_expense" },
+          { label: "Zavodga to'lov", key: "factory", detail: "factory" },
           { label: "Logistika xarajatlari", key: "logistics", detail: "logistics" },
-          { label: "Bojxona xarajatlari", key: "tamojniy", detail: "tamojniy" },
           { label: "Qaytgan tovarlar", key: "return_orders", detail: "return_orders", hasKv: true },
           { label: "Ustama(navar)dan xarajat", key: "navar_expense", detail: "navar_expense" },
+          { label: "Boshqa chiqimlar", key: "other_expense", detail: "other_expense" },
         ];
 
   // ── Bo'lim 4 — Qoldiqlar ──
