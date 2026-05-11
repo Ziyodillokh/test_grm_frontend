@@ -18,13 +18,19 @@ import formatPrice from "@/utils/formatPrice";
 import TebleAvatar from "@/components/teble-avatar";
 import type { TransactionItem } from "@/pages/cashflow/types";
 
-export const cashflowGridTemplate = "max-content 60px minmax(100px,max-content) minmax(110px,max-content) 1fr 70px";
+// 11 ustun: 6 content + 5 progressive spacer (10/15/20/25/30 px). Avatar ham max-content.
+export const cashflowGridTemplate = "max-content 10px max-content 15px max-content 20px max-content 25px 1fr 30px max-content";
 export const cashflowLabels = [
   { text: "Summa", right: true },
+  { text: "", spacer: true },
   { text: "Status", center: true },
+  { text: "", spacer: true },
   { text: "Turi", center: false },
+  { text: "", spacer: true },
   { text: "Sana", center: false },
+  { text: "", spacer: true },
   { text: "Malumotlar", center: false },
+  { text: "", spacer: true },
   { text: "", center: false },
 ];
 
@@ -81,9 +87,11 @@ interface CashflowRowProps {
   onEdit?: (item: TransactionItem) => void;
   onDelete?: (item: TransactionItem) => void;
   isWarning?: boolean;  // kassa.kassaStatus === 1 (closed/historical) — update btn faqat shu holatda
+  /** Parent gridda subgrid sifatida render qilish (columnlar parent bilan tekislanadi) */
+  subgrid?: boolean;
 }
 
-export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
+export function CashflowRow({ item, onEdit, onDelete, subgrid }: CashflowRowProps) {
   const queryClient = useQueryClient();
   const { meUser } = useMeStore();
   const role = meUser?.position?.role ?? 0;
@@ -182,7 +190,7 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
   };
 
   return (
-    <ListRow gridTemplate={cashflowGridTemplate} gridGap="16px">
+    <ListRow gridTemplate={subgrid ? "subgrid" : cashflowGridTemplate} gridGap="16px">
       {/* Summa */}
       <div className="flex flex-col items-end whitespace-nowrap leading-tight">
         {cashPrice > 0 && (
@@ -215,6 +223,9 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
         )}
       </div>
 
+      {/* spacer: Summa → Status (10px) */}
+      <div />
+
       {/* Avatar */}
       <div className="flex items-center justify-center">
         <TebleAvatar
@@ -224,6 +235,9 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
           status={avatar.status}
         />
       </div>
+
+      {/* spacer: Status → Turi (15px) */}
+      <div />
 
       {/* Turi */}
       <div className="flex items-center gap-[6px] whitespace-nowrap">
@@ -241,8 +255,14 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
         )}
       </div>
 
+      {/* spacer: Turi → Sana (20px) */}
+      <div />
+
       {/* Sana */}
       <span className="text-[13px] text-[#1a1a1a] whitespace-nowrap">{dateStr}</span>
+
+      {/* spacer: Sana → Malumotlar (25px) */}
+      <div />
 
       {/* Malumotlar */}
       <div className="flex items-center gap-[16px] text-[13px] text-[#1a1a1a] overflow-hidden">
@@ -265,6 +285,9 @@ export function CashflowRow({ item, onEdit, onDelete }: CashflowRowProps) {
           <span className="truncate">{item.comment || item.product || "—"}</span>
         )}
       </div>
+
+      {/* spacer: Malumotlar → Action (30px) */}
+      <div />
 
       {/* Action */}
       <div className="flex items-center justify-end gap-[4px]">

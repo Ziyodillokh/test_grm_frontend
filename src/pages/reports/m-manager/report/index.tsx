@@ -37,7 +37,7 @@ import { minio_img_url } from "@/constants";
 import ShadcnSelect from "@/components/Select";
 import useDeblsData from "@/pages/debt/table/queries";
 import UpdateCashflowDialog from "./update-cashflow-dialog";
-import { CashflowRow as MyCashflowRow, cashflowGridTemplate as myCashflowGridTemplate, cashflowLabels as myCashflowLabels } from "@/components/cashflow-row";
+import { CashflowList } from "@/components/cashflow-list";
 
 export default function ReportPage() {
   const tipFilter = {
@@ -710,50 +710,27 @@ export default function ReportPage() {
             </DialogContent>
           </Dialog>
 
-          {/* Labellar */}
-          <div
-            className="mb-[10px] shrink-0 px-[12px]"
-            style={{ display: "grid", gridTemplateColumns: myCashflowGridTemplate, gap: "16px" }}
-          >
-            {myCashflowLabels.map((label: any, i: any) => (
-              <span key={i} className={`text-[13px] text-[#A3A3A3] ${label.center ? "text-center" : ""} ${(label as any).right ? "text-right" : ""}`}>{label.text}</span>
-            ))}
-          </div>
-
-          {/* Cashflow listlar */}
-          <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-            {isLoading && flatData.length === 0 ? (
-              <div className="flex items-center justify-center py-[40px]">
-                <Loader className="w-[24px] h-[24px] animate-spin text-[#A3A3A3]" />
-              </div>
-            ) : flatData.length === 0 ? (
-              <div className="flex items-center justify-center py-[40px]">
-                <span className="text-[13px] text-[#A3A3A3]">Ma'lumot topilmadi</span>
-              </div>
-            ) : (
-              <>
-                {flatData.map((item: any, i: number) => (
-                  <MyCashflowRow
-                    key={item?.id || i}
-                    item={item}
-                    onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
-                    onDelete={(cf: any) => {
-                      api.delete(apiRoutes.cashflow + "/" + cf.id).then(() => {
-                        toast.success("O'chirildi");
-                        queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
-                        queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
-                      });
-                    }}
-                  />
-                ))}
-                {hasNextPage && (
-                  <div ref={loadMoreRef} className="flex items-center justify-center py-[16px]">
-                    {isFetchingNextPage && (
-                      <Loader className="w-[20px] h-[20px] animate-spin text-[#A3A3A3]" />
-                    )}
-                  </div>
+          {/* Cashflow listlar — reusable component */}
+          <div className="flex-1 min-h-0 overflow-auto scrollCastom">
+            <CashflowList
+              items={flatData as any}
+              isLoading={isLoading && flatData.length === 0}
+              gap={10}
+              onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
+              onDelete={(cf: any) => {
+                api.delete(apiRoutes.cashflow + "/" + cf.id).then(() => {
+                  toast.success("O'chirildi");
+                  queryClient.invalidateQueries({ queryKey: [apiRoutes.cashflow] });
+                  queryClient.invalidateQueries({ queryKey: [apiRoutes.reports] });
+                });
+              }}
+            />
+            {hasNextPage && (
+              <div ref={loadMoreRef} className="flex items-center justify-center py-[16px]">
+                {isFetchingNextPage && (
+                  <Loader className="w-[20px] h-[20px] animate-spin text-[#A3A3A3]" />
                 )}
-              </>
+              </div>
             )}
           </div>
           </>

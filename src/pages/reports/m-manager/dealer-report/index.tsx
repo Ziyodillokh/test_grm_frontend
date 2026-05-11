@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { Loader, Plus } from "lucide-react";
 
-import { CashflowRow, cashflowGridTemplate, cashflowLabels } from "@/components/cashflow-row";
+import { CashflowList } from "@/components/cashflow-list";
 import ReportToolbar from "@/components/report-toolbar";
 import ReportTotals from "../../d-manager/report-finance/report-totals";
 import AddingParishOrFlow from "@/components/adding-parish-flow";
@@ -63,38 +63,9 @@ export default function DealerReportPage() {
 
       <ReportTotals data={kassaReport as any} />
 
-      {/* Column labels */}
-      <div
-        className="mt-[10px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: cashflowGridTemplate, gap: "8px" }}
-      >
-        {cashflowLabels.map((label, i) => (
-          <span
-            key={i}
-            className={`text-[13px] text-[#A3A3A3] ${
-              label.right ? "text-right" : label.center ? "text-center" : ""
-            }`}
-          >
-            {label.text}
-          </span>
-        ))}
-      </div>
-
-      {/* Cashflow rows */}
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
-          </div>
-        ) : flatData.length === 0 ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <span className="text-[14px] text-[#a3a3a3]">Ma'lumot topilmadi</span>
-          </div>
-        ) : (
-          flatData.map((item: any, i: number) => (
-            <CashflowRow key={item?.id || i} item={item} />
-          ))
-        )}
+      {/* Cashflow rows — reusable component */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom mt-[10px]">
+        <CashflowList items={flatData} isLoading={isLoading} gap={10} />
         {isFetchingNextPage && (
           <div className="flex items-center justify-center py-3">
             <Loader className="w-4 h-4 animate-spin text-[#a3a3a3]" />

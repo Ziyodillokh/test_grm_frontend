@@ -36,7 +36,7 @@ const typeFilter: Record<string, string> = {
   return: "expense",
 };
 
-import { CashflowRow, cashflowGridTemplate, cashflowLabels } from "@/components/cashflow-row";
+import { CashflowList } from "@/components/cashflow-list";
 import UpdateCashflowDialog from "@/pages/reports/m-manager/report/update-cashflow-dialog";
 import ReportToolbar from "@/components/report-toolbar";
 
@@ -285,48 +285,20 @@ export default function DashboardKassaDetail() {
         onGreenCardClick={() => setTip(null)}
       />
 
-      {/* Labellar */}
-      <div
-        className="mt-[20px] mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: cashflowGridTemplate, gap: "16px" }}
-      >
-        {cashflowLabels.map((label: any, i: any) => (
-          <span key={i} className={`text-[13px] text-[#A3A3A3] ${label.center ? "text-center" : ""} ${(label as any).right ? "text-right" : ""}`}>{label.text}</span>
-        ))}
-      </div>
-
-      {/* Cashflow listlar */}
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-        {isLoading && flatData.length === 0 ? (
-          <div className="flex items-center justify-center py-[40px]">
-            <Loader className="w-[24px] h-[24px] animate-spin text-[#A3A3A3]" />
+      {/* Cashflow listlar (subgrid pattern + 10px gap) */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom mt-[20px]">
+        <CashflowList
+          items={flatData}
+          isLoading={isLoading && flatData.length === 0}
+          gap={10}
+          isWarning={kassaData?.kassaStatus === 1}
+          onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
+        />
+        <div ref={loadMoreRef} className="h-[1px]" />
+        {isFetchingNextPage && (
+          <div className="flex items-center justify-center py-[10px]">
+            <Loader className="w-[20px] h-[20px] animate-spin text-[#A3A3A3]" />
           </div>
-        ) : flatData.length === 0 ? (
-          <div className="flex items-center justify-center py-[40px]">
-            <span className="text-[13px] text-[#A3A3A3]">Ma'lumot topilmadi</span>
-          </div>
-        ) : (
-          <>
-            {flatData.map((item: any, i: number) => {
-              const isWarning = kassaData?.kassaStatus === 1;
-              return (
-                <CashflowRow
-                  key={item?.id || i}
-                  item={item}
-                  isWarning={isWarning}
-                  // Tahrirlash hammasida (open + warning kassa, order + cashflow)
-                  onEdit={(cf: any) => setEditCashflowId(String(cf.id))}
-                />
-              );
-            })}
-            {/* Infinite scroll trigger */}
-            <div ref={loadMoreRef} className="h-[1px]" />
-            {isFetchingNextPage && (
-              <div className="flex items-center justify-center py-[10px]">
-                <Loader className="w-[20px] h-[20px] animate-spin text-[#A3A3A3]" />
-              </div>
-            )}
-          </>
         )}
       </div>
 

@@ -1,11 +1,12 @@
-import { DataTable } from "@/components/ui/data-table";
+import { useEffect, useRef } from "react";
+import { Loader } from "lucide-react";
 import { useMeStore } from "@/store/me-store";
 
 import Filter from "./filter";
 import CardSort from "@/components/card-sort";
+import { CashflowList } from "@/components/cashflow-list";
 import {  parseAsIsoDate, parseAsString, useQueryState } from "nuqs";
 import { useParams } from "react-router-dom";
-import { Columns } from "./columns";
 import { useDataCashflow } from "./queries";
 
 const tipFilter = {
@@ -59,24 +60,35 @@ export default function SinglePage() {
 
   const flatData = data?.pages?.flatMap((page) => page?.items || []) || [];
 
+  // Infinite scroll
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el || !hasNextPage || isFetchingNextPage) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) fetchNextPage(); },
+      { rootMargin: "200px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
     <>
       <Filter />
-      <div className="h-[calc(100vh-140px)] scrollCastom">
+      <div className="flex flex-col h-[calc(100vh-140px)]">
         <CardSort
-        //  isAddible={Boolean(report && id == 'my')} 
-         KassaId={id != 'my'? id : undefined} kassaId={report}
-          // KassaReport={KassaReportSingle}
-          />
-        <DataTable
-          columns={Columns}
-          data={flatData || []}
-          isLoading={isLoading}
-          isRowClickble={false}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage ?? false}
-          isFetchingNextPage={isFetchingNextPage}
+          KassaId={id != 'my'? id : undefined} kassaId={report}
         />
+        <div className="flex-1 min-h-0 overflow-auto scrollCastom mt-[10px]">
+          <CashflowList items={flatData as any} isLoading={isLoading} gap={10} />
+          <div ref={loadMoreRef} className="h-[1px]" />
+          {isFetchingNextPage && (
+            <div className="flex items-center justify-center py-[10px]">
+              <Loader className="w-[20px] h-[20px] animate-spin text-[#A3A3A3]" />
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

@@ -31,7 +31,9 @@ export function ListRow({
           ? {
               display: "grid",
               gridTemplateColumns: gridTemplate,
-              gap: gridGap,
+              ...(gridTemplate === "subgrid"
+                ? { gridColumn: "1 / -1" }
+                : { gap: gridGap }),
             }
           : {}),
       }}

@@ -1,26 +1,12 @@
 import { parseAsString, useQueryState } from "nuqs";
 import { useParams } from "react-router-dom";
-import { Loader } from "lucide-react";
-import { format } from "date-fns";
 import ReportToolbar from "@/components/report-toolbar";
 import FilterSelect from "@/components/filters-ui/filter-select";
 import { DateRangePicker } from "@/components/filters-ui/date-picker-range";
-import { ListRow } from "@/components/ui/list-row";
-import TebleAvatar from "@/components/teble-avatar";
+import { CashflowList } from "@/components/cashflow-list";
 import { useYear } from "@/store/year-store";
-import formatPrice from "@/utils/formatPrice";
 
 import { useShareDetail } from "./queries";
-
-const gridTemplate = "minmax(80px,max-content) 60px minmax(120px,max-content) minmax(110px,max-content) 1fr 70px";
-const columnLabels = [
-  { text: "Summa", right: true },
-  { text: "Status", center: true },
-  { text: "Turi", center: false },
-  { text: "Sana", center: false },
-  { text: "Ma'lumotlar", center: false },
-  { text: "", center: false },
-];
 
 export default function SherikchilikDetailPage() {
   const { shareId } = useParams();
@@ -111,78 +97,8 @@ export default function SherikchilikDetailPage() {
         />
       </div>
 
-      <div
-        className="mb-[10px] shrink-0 px-[12px]"
-        style={{ display: "grid", gridTemplateColumns: gridTemplate, gap: "16px" }}
-      >
-        {columnLabels.map((label, i) => (
-          <span
-            key={i}
-            className={`text-[13px] text-[#A3A3A3] ${label.right ? "text-right" : ""} ${label.center ? "text-center" : ""}`}
-          >
-            {label.text}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
-          </div>
-        ) : (
-          items.map((item, i: number) => {
-            const isIncome = item.type === "income";
-            const isCapital = item.shareKind === "capital";
-            const typeLabel = isCapital
-              ? isIncome
-                ? "Tan kirim"
-                : "Tan chiqim"
-              : isIncome
-                ? "Foyda kirim"
-                : "Foyda chiqim";
-            const typeColor = isIncome
-              ? isCapital
-                ? "#47B13C"
-                : "#3ABC49"
-              : isCapital
-                ? "#EF5C12"
-                : "#FF6600";
-            const user = item.createdBy;
-
-            return (
-              <ListRow key={item.id || i} gridTemplate={gridTemplate} gridGap="16px">
-                <div className="text-right whitespace-nowrap">
-                  <span className={`text-[15px] font-medium ${isIncome ? "text-[#47B13C]" : "text-[#EF5C12]"}`}>
-                    {isIncome ? "+" : "-"} {formatPrice(item.price || 0)}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <TebleAvatar
-                    size={42}
-                    name={user?.firstName || "?"}
-                    url={user?.avatar?.path}
-                    status="none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-[6px] whitespace-nowrap">
-                  <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
-                  <span className="text-[13px] font-medium text-[#1a1a1a]">{typeLabel}</span>
-                </div>
-
-                <span className="text-[13px] text-[#1a1a1a] whitespace-nowrap">
-                  {item.date ? format(new Date(item.date), "dd MMM HH:mm") : "—"}
-                </span>
-
-                <span className="text-[13px] text-[#1a1a1a] truncate">{item.comment || "—"}</span>
-
-                <div />
-              </ListRow>
-            );
-          })
-        )}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom">
+        <CashflowList items={items as any} isLoading={isLoading} gap={10} />
       </div>
     </div>
   );

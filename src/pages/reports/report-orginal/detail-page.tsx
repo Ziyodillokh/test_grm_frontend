@@ -4,7 +4,7 @@ import { getMonth } from "date-fns";
 import { Loader } from "lucide-react";
 
 import { ListRow } from "@/components/ui/list-row";
-import { CashflowRow, cashflowGridTemplate, cashflowLabels } from "@/components/cashflow-row";
+import { CashflowList } from "@/components/cashflow-list";
 import ReportToolbar from "@/components/report-toolbar";
 import { useYear } from "@/store/year-store";
 import { useMeStore } from "@/store/me-store";
@@ -90,64 +90,60 @@ export default function ReportDetailPage() {
         ]}
       />
 
-      {/* Column labels */}
-      {!isFilialList && (
-        <div
-          className="mb-[10px] shrink-0 px-[12px]"
-          style={{ display: "grid", gridTemplateColumns: cashflowGridTemplate, gap: "16px" }}
-        >
-          {cashflowLabels.map((label, i) => (
-            <span
-              key={i}
-              className={`text-[13px] text-[#A3A3A3] ${label.right ? "text-right" : ""} ${label.center ? "text-center" : ""}`}
+      {/* List (subgrid pattern — header + rows ustunlari teng tekislanadi) */}
+      <div className="flex-1 min-h-0 overflow-auto scrollCastom">
+        {isFilialList ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: filialGridTemplate,
+              columnGap: "20px",
+              rowGap: "4px",
+            }}
+          >
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                display: "grid",
+                gridTemplateColumns: "subgrid",
+                columnGap: "20px",
+                paddingLeft: "12px",
+                paddingRight: "12px",
+                marginBottom: "6px",
+              }}
             >
-              {label.text}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {isFilialList && (
-        <div
-          className="mb-[10px] shrink-0 px-[12px]"
-          style={{ display: "grid", gridTemplateColumns: filialGridTemplate, gap: "8px" }}
-        >
-          <span className="text-[13px] text-[#A3A3A3]">#</span>
-          <span className="text-[13px] text-[#A3A3A3]">Filial</span>
-          <span className="text-[13px] text-[#A3A3A3] text-right">Summa</span>
-        </div>
-      )}
-
-      {/* List */}
-      <div className="flex-1 min-h-0 overflow-auto scrollCastom flex flex-col gap-[4px]">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+              <span className="text-[13px] text-[#A3A3A3]">#</span>
+              <span className="text-[13px] text-[#A3A3A3]">Filial</span>
+              <span className="text-[13px] text-[#A3A3A3] text-right">Summa</span>
+            </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center h-[200px]" style={{ gridColumn: "1 / -1" }}>
+                <Loader className="w-6 h-6 animate-spin text-[#a3a3a3]" />
+              </div>
+            ) : items.length === 0 ? (
+              <div className="flex items-center justify-center h-[200px]" style={{ gridColumn: "1 / -1" }}>
+                <span className="text-[13px] text-[#a3a3a3]">Ma'lumot topilmadi</span>
+              </div>
+            ) : (
+              items.map((item: any, i: number) => (
+                <ListRow
+                  key={item.filialId || item.id || i}
+                  gridTemplate="subgrid"
+                  minHeight={52}
+                >
+                  <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
+                  <span className="text-[13px] font-medium text-[#1a1a1a]">
+                    {item.filialTitle}
+                  </span>
+                  <span className="text-[13px] font-medium text-[#1a1a1a] text-right">
+                    {formatPrice(Number(item.plasticSum || item.price || 0))} $
+                  </span>
+                </ListRow>
+              ))
+            )}
           </div>
-        ) : items.length === 0 ? (
-          <div className="flex items-center justify-center h-[200px]">
-            <span className="text-[13px] text-[#a3a3a3]">Ma'lumot topilmadi</span>
-          </div>
-        ) : isFilialList ? (
-          items.map((item: any, i: number) => (
-            <ListRow
-              key={item.filialId || item.id || i}
-              gridTemplate={filialGridTemplate}
-              minHeight={52}
-            >
-              <span className="text-[13px] text-[#a3a3a3]">{i + 1}</span>
-              <span className="text-[13px] font-medium text-[#1a1a1a]">
-                {item.filialTitle}
-              </span>
-              <span className="text-[13px] font-medium text-[#1a1a1a] text-right">
-                {formatPrice(Number(item.plasticSum || item.price || 0))} $
-              </span>
-            </ListRow>
-          ))
         ) : (
-          items.map((item: any, i: number) => (
-            <CashflowRow key={item.id || i} item={item} />
-          ))
+          <CashflowList items={items} isLoading={isLoading} gap={10} />
         )}
       </div>
     </div>
